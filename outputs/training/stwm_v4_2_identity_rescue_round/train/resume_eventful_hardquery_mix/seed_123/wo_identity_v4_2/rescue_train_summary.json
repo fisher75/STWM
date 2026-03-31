@@ -1,0 +1,52 @@
+{
+  "run_name": "wo_identity_v4_2",
+  "mode": "train",
+  "steps": 60,
+  "model_preset": "prototype_220m_v4_2",
+  "model_parameters": 207543382,
+  "rough_parameter_budget": 201469952,
+  "ablation": {
+    "disable_semantics": false,
+    "disable_identity_memory": true,
+    "use_teacher_priors": true,
+    "enable_reconnect_loss": false
+  },
+  "average_losses": {
+    "total": 2.3601022005081176,
+    "trajectory": 0.05052969397511333,
+    "trajectory_l1": 0.25801465585827826,
+    "visibility": 1.0479203543422044,
+    "semantic": 2.4537814795970916,
+    "reid": 0.0,
+    "query": 3.282806766033173,
+    "query_localization_error": 0.27226076771815616,
+    "query_traj_gap": 0.014246111859877904
+  },
+  "diagnostics": {
+    "assignment_entropy": 0.9620946665604909,
+    "token_usage_entropy": 0.9634029477834701,
+    "objectness_mean": 0.3800069212370242,
+    "memory_gate_mean": 0.0,
+    "bg_fg_attention_ratio": 0.0,
+    "reappearance_event_ratio": 0.6,
+    "reconnect_success_rate": 0.25,
+    "reconnect_min_error": 0.1391505571703116
+  },
+  "risk_flags": {
+    "tokenizer_collapse_risk": false,
+    "background_bias_risk": false,
+    "memory_inactive_risk": false,
+    "semantic_decorative_risk": true,
+    "identity_decorative_risk": false
+  },
+  "paths": {
+    "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_identity_rescue_round/train/resume_eventful_hardquery_mix/seed_123/wo_identity_v4_2/rescue_train_log.jsonl",
+    "summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_identity_rescue_round/train/resume_eventful_hardquery_mix/seed_123/wo_identity_v4_2/rescue_train_summary.json",
+    "checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_identity_rescue_round/train/resume_eventful_hardquery_mix/seed_123/wo_identity_v4_2/rescue_final_model.pt"
+  },
+  "resume": {
+    "resume_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_minival_multiseed/seed_123/wo_identity_v4_2/final_model.pt",
+    "eval_only": false,
+    "log_name": "rescue_train_log.jsonl"
+  }
+}

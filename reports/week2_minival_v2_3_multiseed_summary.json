@@ -1,0 +1,335 @@
+{
+  "runs_root": "outputs/training/week2_minival_v2_3",
+  "seeds": [
+    "42",
+    "123",
+    "456"
+  ],
+  "runs": [
+    "full",
+    "wo_semantics",
+    "wo_identity_memory"
+  ],
+  "metrics": [
+    "future_mask_iou",
+    "future_trajectory_l1",
+    "query_localization_error",
+    "query_top1_acc",
+    "query_hit_rate",
+    "identity_consistency",
+    "identity_switch_rate",
+    "occlusion_recovery_acc"
+  ],
+  "per_seed": {
+    "full": {
+      "42": {
+        "future_mask_iou": 0.0062425602390252756,
+        "future_trajectory_l1": 0.03532993100169632,
+        "query_localization_error": 0.03535303639041053,
+        "query_top1_acc": 0.1111111111111111,
+        "query_hit_rate": 1.0,
+        "identity_consistency": 0.08333333333333333,
+        "identity_switch_rate": 0.9166666666666666,
+        "occlusion_recovery_acc": 0.0
+      },
+      "123": {
+        "future_mask_iou": 0.007005154792672582,
+        "future_trajectory_l1": 0.04851933506627878,
+        "query_localization_error": 0.048721622261736125,
+        "query_top1_acc": 0.0,
+        "query_hit_rate": 1.0,
+        "identity_consistency": 0.08333333333333333,
+        "identity_switch_rate": 0.9166666666666666,
+        "occlusion_recovery_acc": 0.0
+      },
+      "456": {
+        "future_mask_iou": 0.008433574664690628,
+        "future_trajectory_l1": 0.05058508366346359,
+        "query_localization_error": 0.05076578507820765,
+        "query_top1_acc": 0.05555555555555555,
+        "query_hit_rate": 0.05555555555555555,
+        "identity_consistency": 0.0625,
+        "identity_switch_rate": 0.9375,
+        "occlusion_recovery_acc": 0.0
+      }
+    },
+    "wo_semantics": {
+      "42": {
+        "future_mask_iou": 0.00737792401301587,
+        "future_trajectory_l1": 0.054657773632142276,
+        "query_localization_error": 0.05448685089747111,
+        "query_top1_acc": 0.2222222222222222,
+        "query_hit_rate": 0.1111111111111111,
+        "identity_consistency": 0.08333333333333333,
+        "identity_switch_rate": 0.9166666666666666,
+        "occlusion_recovery_acc": 0.0
+      },
+      "123": {
+        "future_mask_iou": 0.006529919846108841,
+        "future_trajectory_l1": 0.04504101692388455,
+        "query_localization_error": 0.045243254138363734,
+        "query_top1_acc": 0.05555555555555555,
+        "query_hit_rate": 1.0,
+        "identity_consistency": 0.08333333333333333,
+        "identity_switch_rate": 0.9166666666666666,
+        "occlusion_recovery_acc": 0.0
+      },
+      "456": {
+        "future_mask_iou": 0.008192573758078005,
+        "future_trajectory_l1": 0.04624645608580775,
+        "query_localization_error": 0.04621688856018914,
+        "query_top1_acc": 0.05555555555555555,
+        "query_hit_rate": 0.05555555555555555,
+        "identity_consistency": 0.0763888888888889,
+        "identity_switch_rate": 0.9236111111111112,
+        "occlusion_recovery_acc": 0.0
+      }
+    },
+    "wo_identity_memory": {
+      "42": {
+        "future_mask_iou": 0.009159739445265436,
+        "future_trajectory_l1": 0.06036831686894099,
+        "query_localization_error": 0.06022478640079498,
+        "query_top1_acc": 0.05555555555555555,
+        "query_hit_rate": 0.05555555555555555,
+        "identity_consistency": 0.05555555555555555,
+        "identity_switch_rate": 0.9444444444444444,
+        "occlusion_recovery_acc": 0.0
+      },
+      "123": {
+        "future_mask_iou": 0.008389992234371776,
+        "future_trajectory_l1": 0.06845125845736927,
+        "query_localization_error": 0.068335745897558,
+        "query_top1_acc": 0.05555555555555555,
+        "query_hit_rate": 0.05555555555555555,
+        "identity_consistency": 0.027777777777777776,
+        "identity_switch_rate": 0.9722222222222222,
+        "occlusion_recovery_acc": 0.0
+      },
+      "456": {
+        "future_mask_iou": 0.006031118758149444,
+        "future_trajectory_l1": 0.03181265905085537,
+        "query_localization_error": 0.03180487950642904,
+        "query_top1_acc": 0.1111111111111111,
+        "query_hit_rate": 1.0,
+        "identity_consistency": 0.0763888888888889,
+        "identity_switch_rate": 0.9236111111111112,
+        "occlusion_recovery_acc": 0.0
+      }
+    }
+  },
+  "aggregate": {
+    "full": {
+      "future_mask_iou": {
+        "mean": 0.007227096565462828,
+        "std": 0.000908140835718916,
+        "count": 3
+      },
+      "future_trajectory_l1": {
+        "mean": 0.04481144991047956,
+        "std": 0.006757279034734983,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.04494681457678477,
+        "std": 0.0068349633172424,
+        "count": 3
+      },
+      "query_top1_acc": {
+        "mean": 0.05555555555555555,
+        "std": 0.045360921162651446,
+        "count": 3
+      },
+      "query_hit_rate": {
+        "mean": 0.6851851851851852,
+        "std": 0.4452153807470855,
+        "count": 3
+      },
+      "identity_consistency": {
+        "mean": 0.07638888888888888,
+        "std": 0.009820927516479824,
+        "count": 3
+      },
+      "identity_switch_rate": {
+        "mean": 0.923611111111111,
+        "std": 0.009820927516479843,
+        "count": 3
+      },
+      "occlusion_recovery_acc": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    },
+    "wo_semantics": {
+      "future_mask_iou": {
+        "mean": 0.0073668058724009056,
+        "std": 0.0006788211436181803,
+        "count": 3
+      },
+      "future_trajectory_l1": {
+        "mean": 0.04864841554727819,
+        "std": 0.004277659744717551,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.048648997865341326,
+        "std": 0.0041470782498365414,
+        "count": 3
+      },
+      "query_top1_acc": {
+        "mean": 0.1111111111111111,
+        "std": 0.07856742013183861,
+        "count": 3
+      },
+      "query_hit_rate": {
+        "mean": 0.3888888888888889,
+        "std": 0.4327156090943675,
+        "count": 3
+      },
+      "identity_consistency": {
+        "mean": 0.08101851851851852,
+        "std": 0.0032736425054932703,
+        "count": 3
+      },
+      "identity_switch_rate": {
+        "mean": 0.9189814814814815,
+        "std": 0.0032736425054933163,
+        "count": 3
+      },
+      "occlusion_recovery_acc": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    },
+    "wo_identity_memory": {
+      "future_mask_iou": {
+        "mean": 0.00786028347926222,
+        "std": 0.00133104229206346,
+        "count": 3
+      },
+      "future_trajectory_l1": {
+        "mean": 0.05354407812572187,
+        "std": 0.015716751518387206,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.05345513726826068,
+        "std": 0.015663059766104576,
+        "count": 3
+      },
+      "query_top1_acc": {
+        "mean": 0.07407407407407407,
+        "std": 0.026189140043946204,
+        "count": 3
+      },
+      "query_hit_rate": {
+        "mean": 0.37037037037037035,
+        "std": 0.4452153807470855,
+        "count": 3
+      },
+      "identity_consistency": {
+        "mean": 0.05324074074074074,
+        "std": 0.019912789970006083,
+        "count": 3
+      },
+      "identity_switch_rate": {
+        "mean": 0.9467592592592593,
+        "std": 0.01991278997000606,
+        "count": 3
+      },
+      "occlusion_recovery_acc": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    }
+  },
+  "delta_vs_full": {
+    "wo_semantics": {
+      "future_mask_iou": {
+        "mean": 0.00013970930693807683,
+        "std": 0.0007104985384405233,
+        "count": 3
+      },
+      "future_trajectory_l1": {
+        "mean": 0.0038369656367986276,
+        "std": 0.01095933348354525,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.0037021832885565605,
+        "std": 0.010920559793614573,
+        "count": 3
+      },
+      "query_top1_acc": {
+        "mean": 0.05555555555555555,
+        "std": 0.045360921162651446,
+        "count": 3
+      },
+      "query_hit_rate": {
+        "mean": -0.2962962962962963,
+        "std": 0.41902624070313926,
+        "count": 3
+      },
+      "identity_consistency": {
+        "mean": 0.004629629629629632,
+        "std": 0.0065472850109865545,
+        "count": 3
+      },
+      "identity_switch_rate": {
+        "mean": -0.004629629629629613,
+        "std": 0.006547285010986528,
+        "count": 3
+      },
+      "occlusion_recovery_acc": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    },
+    "wo_identity_memory": {
+      "future_mask_iou": {
+        "mean": 0.00063318691379939,
+        "std": 0.0022358239823911433,
+        "count": 3
+      },
+      "future_trajectory_l1": {
+        "mean": 0.008732628215242311,
+        "std": 0.019560418162746066,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.008508322691475908,
+        "std": 0.019541912816775975,
+        "count": 3
+      },
+      "query_top1_acc": {
+        "mean": 0.018518518518518517,
+        "std": 0.05237828008789241,
+        "count": 3
+      },
+      "query_hit_rate": {
+        "mean": -0.3148148148148148,
+        "std": 0.8904307614941709,
+        "count": 3
+      },
+      "identity_consistency": {
+        "mean": -0.023148148148148143,
+        "std": 0.028538953717448967,
+        "count": 3
+      },
+      "identity_switch_rate": {
+        "mean": 0.023148148148148178,
+        "std": 0.028538953717448953,
+        "count": 3
+      },
+      "occlusion_recovery_acc": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    }
+  }
+}

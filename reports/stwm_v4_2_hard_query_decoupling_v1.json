@@ -1,0 +1,170 @@
+{
+  "runs_root": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_protocol_repair/hard_query",
+  "seeds": [
+    "42",
+    "123"
+  ],
+  "runs": [
+    "full_v4_2",
+    "wo_identity_v4_2"
+  ],
+  "close_threshold": 0.002,
+  "per_seed": {
+    "full_v4_2": {
+      "42": {
+        "num_rows": 120,
+        "pearson_corr": 0.6037031703064414,
+        "close_ratio": 0.03333333333333333,
+        "mean_abs_gap": 0.108586189787214,
+        "mean_signed_gap": 0.028111999093865355,
+        "decoupling_score": 0.6814817481801126,
+        "exact_equal_ratio": 0.0,
+        "proxy_like": false
+      },
+      "123": {
+        "num_rows": 120,
+        "pearson_corr": 0.7971288764166595,
+        "close_ratio": 0.025,
+        "mean_abs_gap": 0.0672208902426064,
+        "mean_signed_gap": 0.007481459310899178,
+        "decoupling_score": 0.5889355617916703,
+        "exact_equal_ratio": 0.0,
+        "proxy_like": false
+      }
+    },
+    "wo_identity_v4_2": {
+      "42": {
+        "num_rows": 120,
+        "pearson_corr": 0.8656392309405222,
+        "close_ratio": 0.0,
+        "mean_abs_gap": 0.060187092438961066,
+        "mean_signed_gap": 0.00043888320215046406,
+        "decoupling_score": 0.567180384529739,
+        "exact_equal_ratio": 0.0,
+        "proxy_like": false
+      },
+      "123": {
+        "num_rows": 120,
+        "pearson_corr": 0.7964048124623059,
+        "close_ratio": 0.03333333333333333,
+        "mean_abs_gap": 0.06788814958805839,
+        "mean_signed_gap": 0.006330873661985,
+        "decoupling_score": 0.5851309271021804,
+        "exact_equal_ratio": 0.0,
+        "proxy_like": false
+      }
+    }
+  },
+  "aggregate": {
+    "full_v4_2": {
+      "pearson_corr": {
+        "mean": 0.7004160233615504,
+        "std": 0.09671285305510907,
+        "count": 2
+      },
+      "close_ratio": {
+        "mean": 0.029166666666666667,
+        "std": 0.004166666666666666,
+        "count": 2
+      },
+      "mean_abs_gap": {
+        "mean": 0.0879035400149102,
+        "std": 0.0206826497723038,
+        "count": 2
+      },
+      "mean_signed_gap": {
+        "mean": 0.017796729202382268,
+        "std": 0.010315269891483089,
+        "count": 2
+      },
+      "decoupling_score": {
+        "mean": 0.6352086549858915,
+        "std": 0.04627309319422118,
+        "count": 2
+      },
+      "exact_equal_ratio": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 2
+      },
+      "proxy_like_count": 0
+    },
+    "wo_identity_v4_2": {
+      "pearson_corr": {
+        "mean": 0.831022021701414,
+        "std": 0.03461720923910816,
+        "count": 2
+      },
+      "close_ratio": {
+        "mean": 0.016666666666666666,
+        "std": 0.016666666666666666,
+        "count": 2
+      },
+      "mean_abs_gap": {
+        "mean": 0.06403762101350972,
+        "std": 0.003850528574548661,
+        "count": 2
+      },
+      "mean_signed_gap": {
+        "mean": 0.003384878432067732,
+        "std": 0.002945995229917268,
+        "count": 2
+      },
+      "decoupling_score": {
+        "mean": 0.5761556558159597,
+        "std": 0.00897527128622072,
+        "count": 2
+      },
+      "exact_equal_ratio": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 2
+      },
+      "proxy_like_count": 0
+    }
+  },
+  "comparison_vs_full": {
+    "wo_identity_v4_2": {
+      "per_seed_delta": {
+        "42": {
+          "delta_corr_abs": 0.2619360606340808,
+          "delta_close_ratio": -0.03333333333333333,
+          "delta_decoupling_score": -0.11430136365037369
+        },
+        "123": {
+          "delta_corr_abs": -0.0007240639543536487,
+          "delta_close_ratio": 0.008333333333333331,
+          "delta_decoupling_score": -0.003804634689489883
+        }
+      },
+      "aggregate_delta": {
+        "delta_corr_abs": {
+          "mean": 0.13060599833986358,
+          "std": 0.13133006229421723,
+          "count": 2
+        },
+        "delta_close_ratio": {
+          "mean": -0.0125,
+          "std": 0.020833333333333332,
+          "count": 2
+        },
+        "delta_decoupling_score": {
+          "mean": -0.059052999169931786,
+          "std": 0.0552483644804419,
+          "count": 2
+        }
+      }
+    }
+  },
+  "old_v1_reference": {
+    "proxy_like_signature": {
+      "abs_corr_gt": 0.95,
+      "close_ratio_gt": 0.7,
+      "exact_equal_ratio_approx": 1.0
+    }
+  },
+  "judgement": {
+    "full_stably_better_than_old_v1_proxy_state": true,
+    "full_proxy_like_count": 0
+  }
+}

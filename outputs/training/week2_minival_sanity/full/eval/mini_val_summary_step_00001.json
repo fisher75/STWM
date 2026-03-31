@@ -1,0 +1,76 @@
+{
+  "run_name": "sanity_full",
+  "num_clips": 2,
+  "protocol": {
+    "obs_steps": 8,
+    "pred_steps": 8,
+    "dataset": "vspw",
+    "fixed_seed": true,
+    "metrics": [
+      "future_mask_iou",
+      "future_trajectory_l1",
+      "visibility_accuracy",
+      "visibility_f1",
+      "identity_consistency",
+      "identity_switch_rate",
+      "occlusion_recovery_acc",
+      "query_localization_error"
+    ]
+  },
+  "ablation": {
+    "disable_semantics": false,
+    "disable_trajectory": false,
+    "disable_identity_memory": false,
+    "identity_memory_dim": 8
+  },
+  "metrics": {
+    "future_mask_iou": 0.15904248649691358,
+    "future_trajectory_l1": 0.066602922976017,
+    "visibility_accuracy": 1.0,
+    "visibility_f1": 1.0,
+    "identity_consistency": 1.0,
+    "identity_switch_rate": 0.0,
+    "occlusion_recovery_acc": 0.0,
+    "query_localization_error": 0.06660292483866215
+  },
+  "per_clip": [
+    {
+      "clip_id": "1041_kIXALP9plU0",
+      "future_mask_iou": 0.15904188368055555,
+      "future_trajectory_l1": 0.06601761281490326,
+      "visibility_accuracy": 1.0,
+      "visibility_f1": 1.0,
+      "identity_consistency": 1.0,
+      "identity_switch_rate": 0.0,
+      "occlusion_recovery_acc": 0.0,
+      "query_localization_error": 0.06601761654019356,
+      "case_file": "outputs/training/week2_minival_sanity/full/eval/cases/step_00001/1041_kIXALP9plU0.json"
+    },
+    {
+      "clip_id": "1061_hWl2HQh1MG8",
+      "future_mask_iou": 0.1590430893132716,
+      "future_trajectory_l1": 0.06718823313713074,
+      "visibility_accuracy": 1.0,
+      "visibility_f1": 1.0,
+      "identity_consistency": 1.0,
+      "identity_switch_rate": 0.0,
+      "occlusion_recovery_acc": 0.0,
+      "query_localization_error": 0.06718823313713074,
+      "case_file": "outputs/training/week2_minival_sanity/full/eval/cases/step_00001/1061_hWl2HQh1MG8.json"
+    }
+  ],
+  "case_files": [
+    "outputs/training/week2_minival_sanity/full/eval/cases/step_00001/1041_kIXALP9plU0.json",
+    "outputs/training/week2_minival_sanity/full/eval/cases/step_00001/1061_hWl2HQh1MG8.json"
+  ],
+  "step": 1,
+  "model_config": {
+    "input_dim": 45,
+    "hidden_size": 1024,
+    "num_layers": 18,
+    "num_heads": 16,
+    "semantic_dim": 64
+  },
+  "train_split_size": 2,
+  "val_split_size": 2
+}

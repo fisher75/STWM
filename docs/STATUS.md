@@ -1,0 +1,230 @@
+# STWM Status
+
+- Updated: 2026-04-01 01:22:06 +08
+- Current phase: STWM V4.2 final paperization mode (main-text evidence chain consolidation)
+
+## Completed
+
+- Initialized the STWM project layout under `/home/chen034/workspace/stwm`.
+- Added environment, bootstrap, storage, repo-clone, model-download, dataset-download, and tmux launcher scripts.
+- Added the initial `code/stwm` package skeleton with dataset, adapters, tokenizer, model, trainer, evaluators, and smoke-test entry point.
+- Cloned the primary third-party repos and recorded their commit hashes in `manifests/repos.csv`.
+- Confirmed resource profile: `224` CPU threads and `8 x NVIDIA B200`.
+- Downloaded the full checkpoint bundle: TraceAnything, SAM2.1, DEVA dependencies, Cutie checkpoints, and YOLO-World S/M/L.
+- Re-ran environment setup cleanly, exported `env/stwm.yml`, and confirmed `stwm`, `sam2`, `deva`, `cutie`, and `trace_anything` all import successfully in the `stwm` environment.
+- Extracted `VSPW`, `VISOR`, `VIPSeg`, `BURST` annotations, `TAO train`, and `TAO val` into `data/external/`.
+- Completed `TAO test` download and extraction to `data/external/burst/images/test/`.
+- Verified `TAO test` extracted file count: `982,754` files.
+- Refreshed storage manifest with `scripts/check_storage.sh`; latest report: `manifests/storage_report_20260331_004839.txt`.
+- Latest storage snapshot shows `631G` under `data/`, `11G` under `models/`, and `8.5T` free on `/raid`.
+- Fixed the `VIPSeg` extractor path to handle the official archive even when the file extension says `.zip` but the payload is actually a tar archive.
+- Ran the local STWM smoke test and a minimal training step successfully in the `stwm` environment.
+- Wired `STWMDataset`, `trace_adapter`, and `semantic_adapter` to real mini-split samples with validated frame/mask paths and cache writes.
+- Re-ran STWM smoke + minimal train through `manifests/minisplits/stwm_week1_mini.json` and produced updated outputs.
+- Ran the first baseline single-sample smoke test with `SAM2` on a real `VSPW` clip and saved 45 propagated masks to `outputs/smoke_tests/sam2_vspw/`.
+- Ran `DEVA` baseline smoke on `VSPW: 43_-LB7cp3_mqY`; produced 45 masks + 45 visualizations + `pred.json` at `outputs/smoke_tests/deva_vspw/`.
+- Ran `YOLO-World` fallback smoke via ultralytics and produced 45 annotated frames at `outputs/smoke_tests/yolo_world_ultralytics/vspw_43`.
+- Completed `Cutie` smoke on `VSPW: 43_-LB7cp3_mqY`; produced 45 masks at `outputs/smoke_tests/cutie_vspw/Annotations/43_-LB7cp3_mqY`.
+- Completed `XMem` smoke on `VSPW: 43_-LB7cp3_mqY`; produced 45 masks at `outputs/smoke_tests/xmem_vspw/43_-LB7cp3_mqY`.
+- Completed isolated official YOLO-World environment audit run (`stwm_yolo_official`): final status is blocked by missing LVIS minival file (`data/coco/lvis/lvis_v1_minival_inserted_image_name.json`) and NumPy ABI risk after `lvis` install (`numpy==2.2.6`).
+- Added week-2 model preset support and completed a `prototype_220m` training smoke with `227,891,267` parameters at `outputs/training/prototype_220m_minimal_train_step.json`.
+- Added week-2 ablation execution script `scripts/run_week2_ablations.sh`.
+- Completed week-2 four-way minimal runs (`full`, `wo_semantics`, `wo_trajectory`, `wo_identity_memory`) and saved outputs under `outputs/training/week2_ablations/`.
+- Built week-1 mini split manifests:
+  - `VSPW`: 20 clips
+  - `VIPSeg`: 20 clips
+  - `BURST`: 20 clips
+  - `VISOR`: 10 sequences
+- Materialized lightweight `VISOR` sequence cache in `data/cache/visor_sequences` for the sampled mini split only.
+- Finalized V2.3 protocol closeout docs and stopped evaluator churn escalation.
+- Added STWM V4.2 design docs:
+  - `docs/STWM_V4_2_DESIGN.md`
+  - `docs/STWM_V4_2_TOKENIZER_AND_MEMORY.md`
+  - `docs/STWM_V4_2_SUPERVISION_PLAN.md`
+  - `docs/STWM_V4_2_TO_1B_ROADMAP.md`
+- Added STWM V4.2 code path (new files only):
+  - `code/stwm/modules/state_tokenizer_v4_2.py`
+  - `code/stwm/modules/retrieval_memory_v4_2.py`
+  - `code/stwm/models/stwm_v4_2.py`
+  - `code/stwm/trainers/train_stwm_v4_2.py`
+  - `code/stwm/configs/model_presets_v4_2.json`
+  - `scripts/run_stwm_v4_2_smoke.sh`
+- Completed V4.2 smoke trio (`full_v4_2`, `wo_semantics_v4_2`, `wo_identity_v4_2`) under:
+  - `outputs/training/stwm_v4_2_smoke/`
+  - logs: `logs/stwm_v4_2_smoke_master.log` and per-run logs.
+- Added V4.2 seed42 mini-val runner:
+  - `scripts/run_stwm_v4_2_minival_seed42.sh`
+- Extended V4.2 trainer logging/checkpoint support for posthoc diagnostics (without architecture/loss expansion).
+- Completed V4.2 mini-val runs (`full_v4_2`, `wo_semantics_v4_2`, `wo_identity_v4_2`) at 120 steps under:
+  - `outputs/training/stwm_v4_2_minival_seed42/`
+  - logs: `logs/stwm_v4_2_minival_seed42_master.log` and per-run logs.
+- Added and executed posthoc analyses:
+  - `code/stwm/tools/summarize_stwm_v4_2_minival.py`
+  - `code/stwm/tools/query_trajectory_decoupling_analysis.py`
+  - `code/stwm/tools/occlusion_reconnect_bucket_analysis.py`
+  - outputs: `comparison_seed42.json/md`, `reports/stwm_v4_2_query_decoupling_seed42.json`, `reports/stwm_v4_2_occlusion_reconnect_seed42.json`
+- Added qualitative pack generator and produced three groups (8 cases each):
+  - `code/stwm/evaluators/build_stwm_v4_2_qualitative.py`
+  - `outputs/visualizations/stwm_v4_2_minival_seed42/`
+- Added V4.2 reporting docs:
+  - `docs/STWM_V4_2_MINIVAL_SEED42_SUMMARY.md`
+  - `docs/STWM_V4_2_QUERY_DECOUPLING.md`
+  - `docs/STWM_V4_2_OCCLUSION_RECONNECT_ANALYSIS.md`
+  - `docs/STWM_V4_2_QUALITATIVE_NOTES.md`
+- Added V4.2 multi-seed runner and completed 9 runs (`3 seeds x 3 runs`) under:
+  - `scripts/run_stwm_v4_2_minival_multiseed.sh`
+  - `outputs/training/stwm_v4_2_minival_multiseed/`
+  - logs: `logs/stwm_v4_2_minival_multiseed_master.log` and per-run logs.
+- Added and executed V4.2 multi-seed summary/posthoc tools:
+  - `code/stwm/tools/summarize_stwm_v4_2_minival_multiseed.py`
+  - `code/stwm/tools/query_trajectory_decoupling_multiseed.py`
+  - `code/stwm/tools/occlusion_reconnect_bucket_multiseed.py`
+  - outputs:
+    - `outputs/training/stwm_v4_2_minival_multiseed/comparison_multiseed.json`
+    - `outputs/training/stwm_v4_2_minival_multiseed/comparison_multiseed.md`
+    - `reports/stwm_v4_2_query_decoupling_multiseed.json`
+    - `reports/stwm_v4_2_occlusion_reconnect_multiseed.json`
+- Added multi-seed shared qualitative casebook generator and outputs:
+  - `code/stwm/evaluators/build_stwm_v4_2_multiseed_casebook.py`
+  - `outputs/visualizations/stwm_v4_2_multiseed_casebook/`
+- Added multi-seed reporting docs:
+  - `docs/STWM_V4_2_MINIVAL_MULTI_SEED_SUMMARY.md`
+  - `docs/STWM_V4_2_MULTI_SEED_QUERY_DECOUPLING.md`
+  - `docs/STWM_V4_2_MULTI_SEED_OCCLUSION_RECONNECT.md`
+  - `docs/STWM_V4_2_MULTI_SEED_CASEBOOK_NOTES.md`
+- Fixed trace cache keying for target-label correctness:
+  - `code/stwm/modules/trace_adapter.py`
+  - cache key now includes `target_label_id` to avoid stale visibility reuse across different target labels.
+- Added protocol-repair builders (no architecture/loss change):
+  - `code/stwm/tools/build_stwm_v4_2_eventful_protocol.py`
+  - `code/stwm/tools/build_stwm_v4_2_hard_query_protocol.py`
+- Built protocol artifacts:
+  - `manifests/minisplits/stwm_v4_2_eventful_minival_v1.json`
+  - `manifests/minisplits/stwm_v4_2_eventful_clip_ids_v1.json`
+  - `reports/stwm_v4_2_eventful_protocol_v1.json`
+  - `manifests/minisplits/stwm_v4_2_hard_query_minival_v1.json`
+  - `manifests/minisplits/stwm_v4_2_hard_query_clip_ids_v1.json`
+  - `reports/stwm_v4_2_hard_query_protocol_v1.json`
+- Added and executed protocol-repair run script:
+  - `scripts/run_stwm_v4_2_protocol_repair.sh`
+  - completed runs under `outputs/training/stwm_v4_2_protocol_repair/`:
+    - protocol `eventful`: seeds `42,123`, runs `full_v4_2`, `wo_identity_v4_2`
+    - protocol `hard_query`: seeds `42,123`, runs `full_v4_2`, `wo_identity_v4_2`
+- Added protocol-repair summaries and posthoc outputs:
+  - `outputs/training/stwm_v4_2_protocol_repair/eventful/comparison_eventful.json`
+  - `outputs/training/stwm_v4_2_protocol_repair/eventful/comparison_eventful.md`
+  - `outputs/training/stwm_v4_2_protocol_repair/hard_query/comparison_hard_query.json`
+  - `outputs/training/stwm_v4_2_protocol_repair/hard_query/comparison_hard_query.md`
+  - `reports/stwm_v4_2_eventful_occlusion_reconnect_v1.json`
+  - `reports/stwm_v4_2_hard_query_decoupling_v1.json`
+  - `reports/stwm_v4_2_baseline_decoupling_seed42_123.json`
+- Improved reconnect bucket tool to correctly handle subset comparisons (e.g., only `full_v4_2` vs `wo_identity_v4_2`):
+  - `code/stwm/tools/occlusion_reconnect_bucket_multiseed.py`
+- Added protocol-repair docs:
+  - `docs/STWM_V4_2_EVENTFUL_PROTOCOL.md`
+  - `docs/STWM_V4_2_HARD_QUERY_PROTOCOL.md`
+  - `docs/STWM_V4_2_EVENTFUL_RESULTS.md`
+  - `docs/STWM_V4_2_IDENTITY_DECISION_NOTE.md`
+- Extended V4.2 trainer for controlled continuation/evaluation (no architecture/loss change):
+  - `code/stwm/trainers/train_stwm_v4_2.py`
+  - added `--resume-checkpoint`, `--eval-only`, `--log-name`
+- Added identity-rescue tooling:
+  - `code/stwm/tools/build_stwm_v4_2_identity_rescue_manifests.py`
+  - `code/stwm/tools/summarize_stwm_v4_2_identity_rescue_round.py`
+  - `scripts/run_stwm_v4_2_identity_rescue_round.sh`
+- Built fixed-ratio rescue manifests:
+  - `manifests/minisplits/stwm_v4_2_identity_rescue_v1_control_resume_base.json`
+  - `manifests/minisplits/stwm_v4_2_identity_rescue_v1_resume_eventful_mix.json`
+  - `manifests/minisplits/stwm_v4_2_identity_rescue_v1_resume_eventful_hardquery_mix.json`
+  - report: `manifests/minisplits/stwm_v4_2_identity_rescue_v1_manifest_report.json`
+- Completed final controlled identity rescue round under:
+  - `outputs/training/stwm_v4_2_identity_rescue_round/`
+  - settings:
+    - variants: `control_resume_base`, `resume_eventful_mix`, `resume_eventful_hardquery_mix`
+    - runs: `full_v4_2`, `wo_identity_v4_2`
+    - seeds: `42,123`
+    - continuation steps: `60`
+    - eval-only steps per protocol: `60`
+  - protocols evaluated: `base`, `eventful`, `hard_query`
+- Added identity-rescue summary outputs:
+  - `reports/stwm_v4_2_identity_rescue_round_v1.json`
+  - `reports/stwm_v4_2_identity_rescue_round_v1.md`
+  - `docs/STWM_V4_2_IDENTITY_RESCUE_ROUND.md`
+- Updated decision note after final rescue round:
+  - `docs/STWM_V4_2_IDENTITY_DECISION_NOTE.md`
+- Added state-identifiability protocol tooling:
+  - `code/stwm/tools/build_stwm_v4_2_state_identifiability_protocol.py`
+  - `code/stwm/tools/summarize_stwm_v4_2_state_identifiability.py`
+  - `code/stwm/evaluators/build_stwm_v4_2_state_identifiability_figures.py`
+  - `scripts/run_stwm_v4_2_state_identifiability.sh`
+- Added matched-budget representation control switch (no module/loss change):
+  - `code/stwm/trainers/train_stwm_v4_2.py`
+  - new flag: `--neutralize-object-bias`
+- Built state-identifiability protocol artifacts:
+  - `manifests/minisplits/stwm_v4_2_state_identifiability_v1.json`
+  - `manifests/minisplits/stwm_v4_2_state_identifiability_clip_ids_v1.json`
+  - `reports/stwm_v4_2_state_identifiability_protocol_v1.json`
+- Completed state-identifiability evaluations under:
+  - `outputs/training/stwm_v4_2_state_identifiability/`
+  - runs: `full_v4_2`, `wo_semantics_v4_2`, `wo_object_bias_v4_2`
+  - seeds: `42,123,456`
+  - eval-only steps: `60`
+- Added second-contribution summary outputs:
+  - `outputs/training/stwm_v4_2_state_identifiability/comparison_state_identifiability.json`
+  - `outputs/training/stwm_v4_2_state_identifiability/comparison_state_identifiability.md`
+  - `reports/stwm_v4_2_state_identifiability_decoupling_v1.json`
+  - `outputs/visualizations/stwm_v4_2_state_identifiability_figures/figure_manifest.json`
+- Added paperization docs for second contribution:
+  - `docs/STWM_V4_2_STATE_IDENTIFIABILITY_PROTOCOL.md`
+  - `docs/STWM_V4_2_STATE_IDENTIFIABILITY_RESULTS.md`
+  - `docs/STWM_V4_2_STATE_IDENTIFIABILITY_DECOUPLING.md`
+  - `docs/STWM_V4_2_STATE_IDENTIFIABILITY_FIGURES.md`
+- Added final paperization deliverables:
+  - `docs/STWM_V4_2_FINAL_PAPER_TABLES.md`
+  - `reports/stwm_v4_2_final_paper_tables.json`
+  - `docs/STWM_V4_2_FINAL_PAPER_FIGURES.md`
+  - `outputs/visualizations/stwm_v4_2_final_paper_figures/`
+  - `outputs/visualizations/stwm_v4_2_final_paper_figures/final_figure_manifest.json`
+  - `docs/STWM_V4_2_FINAL_CLAIM_BOUNDARY.md`
+  - `docs/STWM_V4_2_REVIEWER_ATTACKS.md`
+
+## Blockers (Resolved)
+
+- Command:
+  - `bash scripts/run_stwm_v4_2_smoke.sh`
+- Error summary:
+  - PyTorch backward failed with inplace/autograd version conflict in memory state reuse.
+- Attempted fixes:
+  - moved retrieval memory updates to no-grad detached state cache
+  - detached memory state between steps in `train_stwm_v4_2.py`
+- Impact to V4.2 mainline:
+  - temporary run interruption only; no architecture rollback needed
+- Next-step implication:
+  - keep memory state detached between iterations for smoke-stage stability
+
+## Running
+
+- No active long-running STWM training session.
+- Last completed long jobs:
+  - `tmux` session `stwm_v4_2_smoke` (finished)
+  - `tmux` session `stwm_v4_2_minival_seed42` (finished)
+  - background terminal batch `run_stwm_v4_2_minival_multiseed.sh` (finished, exit 0)
+  - background terminal batch `run_stwm_v4_2_protocol_repair.sh` (finished, exit 0)
+  - background terminal batch `run_stwm_v4_2_identity_rescue_round.sh` (finished, exit 0)
+  - background terminal batch `run_stwm_v4_2_state_identifiability.sh` (finished, exit 0)
+
+## Next
+
+- Keep current V4.2 architecture/loss/evaluator frozen (no 1B).
+- Keep identity/reconnect as constrained secondary analysis (not a positive headline claim).
+- Main paper structure:
+  - contribution 1: semantic trajectory state
+  - contribution 2: instance-grounded future-state identification
+- Main text priority:
+  - state-identifiability protocol table + matched-budget representation control
+  - hard-protocol decoupling table
+  - three-group figure casebook (semantic / instance / future)
+- Final-write priority:
+  - keep title/abstract claims bounded to contribution-1 + contribution-2 core evidence
+  - keep identity/reconnect in boundary/appendix scope only
+  - avoid over-claiming legacy baseline and wo_object_bias_v4_2 positioning

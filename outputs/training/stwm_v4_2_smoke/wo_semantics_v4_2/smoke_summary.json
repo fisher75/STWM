@@ -1,0 +1,39 @@
+{
+  "run_name": "wo_semantics_v4_2",
+  "steps": 24,
+  "model_preset": "prototype_220m_v4_2",
+  "model_parameters": 207543382,
+  "rough_parameter_budget": 201469952,
+  "ablation": {
+    "disable_semantics": true,
+    "disable_identity_memory": false,
+    "use_teacher_priors": true,
+    "enable_reconnect_loss": false
+  },
+  "average_losses": {
+    "total": 1.1761175766587257,
+    "trajectory": 0.06520754556792478,
+    "visibility": 0.031090726166742872,
+    "semantic": 0.0,
+    "reid": 0.710542251666387,
+    "query": 3.7020071148872375
+  },
+  "diagnostics": {
+    "assignment_entropy": 0.9927704532941183,
+    "token_usage_entropy": 0.9927724997202555,
+    "objectness_mean": 0.30346188601106405,
+    "memory_gate_mean": 0.42382964740196866,
+    "bg_fg_attention_ratio": 0.0
+  },
+  "risk_flags": {
+    "tokenizer_collapse_risk": false,
+    "background_bias_risk": false,
+    "memory_inactive_risk": false,
+    "semantic_decorative_risk": false,
+    "identity_decorative_risk": true
+  },
+  "paths": {
+    "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_smoke/wo_semantics_v4_2/train_log.jsonl",
+    "summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_smoke/wo_semantics_v4_2/smoke_summary.json"
+  }
+}

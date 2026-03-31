@@ -1,0 +1,52 @@
+{
+  "run_name": "full_v4_2",
+  "mode": "train",
+  "steps": 60,
+  "model_preset": "prototype_220m_v4_2",
+  "model_parameters": 207543382,
+  "rough_parameter_budget": 201469952,
+  "ablation": {
+    "disable_semantics": false,
+    "disable_identity_memory": false,
+    "use_teacher_priors": true,
+    "enable_reconnect_loss": false
+  },
+  "average_losses": {
+    "total": 2.422507474819819,
+    "trajectory": 0.047241596629222234,
+    "trajectory_l1": 0.2576392018546661,
+    "visibility": 1.0892129911158313,
+    "semantic": 1.596269080042839,
+    "reid": 2.1716201742490133,
+    "query": 3.047692213455836,
+    "query_localization_error": 0.25751302267114323,
+    "query_traj_gap": -0.0001261791835228602
+  },
+  "diagnostics": {
+    "assignment_entropy": 0.9570018251736959,
+    "token_usage_entropy": 0.9585457583268483,
+    "objectness_mean": 0.3738572084994909,
+    "memory_gate_mean": 0.9784815887610118,
+    "bg_fg_attention_ratio": 0.0,
+    "reappearance_event_ratio": 0.6,
+    "reconnect_success_rate": 0.3,
+    "reconnect_min_error": 0.12716673115889232
+  },
+  "risk_flags": {
+    "tokenizer_collapse_risk": false,
+    "background_bias_risk": false,
+    "memory_inactive_risk": false,
+    "semantic_decorative_risk": true,
+    "identity_decorative_risk": true
+  },
+  "paths": {
+    "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_identity_rescue_round/train/resume_eventful_mix/seed_42/full_v4_2/rescue_train_log.jsonl",
+    "summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_identity_rescue_round/train/resume_eventful_mix/seed_42/full_v4_2/rescue_train_summary.json",
+    "checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_identity_rescue_round/train/resume_eventful_mix/seed_42/full_v4_2/rescue_final_model.pt"
+  },
+  "resume": {
+    "resume_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_minival_multiseed/seed_42/full_v4_2/final_model.pt",
+    "eval_only": false,
+    "log_name": "rescue_train_log.jsonl"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "target_size": 18,
+  "inputs": {
+    "base_manifest": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_week2_minival_v2.json",
+    "base_clip_ids": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_week2_minival_v2_val_clip_ids.json",
+    "eventful_manifest": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_v4_2_eventful_minival_v1.json",
+    "hard_query_manifest": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_v4_2_hard_query_minival_v1.json"
+  },
+  "outputs": {
+    "control_resume_base": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_v4_2_identity_rescue_v1_control_resume_base.json",
+    "resume_eventful_mix": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_v4_2_identity_rescue_v1_resume_eventful_mix.json",
+    "resume_eventful_hardquery_mix": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_v4_2_identity_rescue_v1_resume_eventful_hardquery_mix.json",
+    "report": "/home/chen034/workspace/stwm/manifests/minisplits/stwm_v4_2_identity_rescue_v1_manifest_report.json"
+  },
+  "sampling_ratios": {
+    "control_resume_base": {
+      "base": 18
+    },
+    "resume_eventful_mix": {
+      "base": 6,
+      "eventful": 12
+    },
+    "resume_eventful_hardquery_mix": {
+      "base": 2,
+      "eventful": 8,
+      "hard_query": 8
+    }
+  },
+  "summaries": [
+    {
+      "variant": "control_resume_base",
+      "count": 18,
+      "unique_clip_count": 18,
+      "component_counts": {
+        "base": 18
+      },
+      "first_clip_ids": [
+        "1061_hWl2HQh1MG8",
+        "857_NQKL_UzQCd8",
+        "476_mNnY0LY1Tq0",
+        "747_ILU2occQNYQ",
+        "90_bPui3fxQq4k",
+        "1133_1dG6RUos-TQ",
+        "1041_kIXALP9plU0",
+        "1125_5Eplp7nV12E",
+        "62_gmxfXIvSBNs",
+        "1214_7uQUZ3GP568"
+      ]
+    },
+    {
+      "variant": "resume_eventful_mix",
+      "count": 18,
+      "unique_clip_count": 13,
+      "component_counts": {
+        "base": 6,
+        "eventful": 12
+      },
+      "first_clip_ids": [
+        "1061_hWl2HQh1MG8",
+        "857_NQKL_UzQCd8",
+        "476_mNnY0LY1Tq0",
+        "747_ILU2occQNYQ",
+        "90_bPui3fxQq4k",
+        "1133_1dG6RUos-TQ",
+        "263_sDUQIpAOpvs",
+        "1061_hWl2HQh1MG8",
+        "675_5zppNjTgKNg",
+        "298_ma7hngzCd-I"
+      ]
+    },
+    {
+      "variant": "resume_eventful_hardquery_mix",
+      "count": 18,
+      "unique_clip_count": 11,
+      "component_counts": {
+        "base": 2,
+        "eventful": 8,
+        "hard_query": 8
+      },
+      "first_clip_ids": [
+        "1061_hWl2HQh1MG8",
+        "857_NQKL_UzQCd8",
+        "263_sDUQIpAOpvs",
+        "1061_hWl2HQh1MG8",
+        "675_5zppNjTgKNg",
+        "298_ma7hngzCd-I",
+        "734_PSUGaj7_5LI",
+        "727_JmzFH4O5WUI",
+        "747_ILU2occQNYQ",
+        "90_bPui3fxQq4k"
+      ]
+    }
+  ]
+}
