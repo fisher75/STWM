@@ -7,6 +7,7 @@ import json
 import torch
 import torch.nn.functional as F
 from torch import nn
+from torch.utils.checkpoint import checkpoint
 
 from stwm.modules.retrieval_memory_v4_2 import RetrievalMemoryStateV42, RetrievalReconnectMemoryV42
 from stwm.modules.state_tokenizer_v4_2 import ObjectBiasedStateTokenizerV42
@@ -26,6 +27,7 @@ class STWMV42Config:
     identity_dim: int = 64
     memory_slots: int = 32
     dropout: float = 0.1
+    activation_checkpointing: bool = False
 
 
 def _default_preset_path() -> Path:
@@ -66,6 +68,7 @@ def load_model_config_v4_2(
         "identity_dim": base.identity_dim,
         "memory_slots": base.memory_slots,
         "dropout": base.dropout,
+          "activation_checkpointing": base.activation_checkpointing,
     }
     merged.update(payload[preset])
     merged["trace_dim"] = trace_dim
@@ -160,7 +163,10 @@ class STWMV42(nn.Module):
 
         seq_input = torch.cat([trace_features, semantic_features, prior_features], dim=-1)
         seq_hidden = self.seq_input_norm(self.seq_input_proj(seq_input))
-        seq_hidden = self.seq_backbone(seq_hidden)
+        if self.config.activation_checkpointing and self.training:
+            seq_hidden = checkpoint(self.seq_backbone, seq_hidden, use_reentrant=False)
+        else:
+            seq_hidden = self.seq_backbone(seq_hidden)
 
         tokenizer_out = self.tokenizer(
             trace_features,
@@ -175,7 +181,10 @@ class STWMV42(nn.Module):
             seq_hidden,
         )
         token_hidden = tokenizer_out.state_tokens + token_context
-        token_hidden = self.token_backbone(token_hidden)
+        if self.config.activation_checkpointing and self.training:
+            token_hidden = checkpoint(self.token_backbone, token_hidden, use_reentrant=False)
+        else:
+            token_hidden = self.token_backbone(token_hidden)
 
         memory_diag: dict[str, float] = {
             "memory_gate_mean": 0.0,
