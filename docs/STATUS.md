@@ -1,7 +1,7 @@
 # STWM Status
 
-- Updated: 2026-04-01 01:22:06 +08
-- Current phase: STWM V4.2 final paperization mode (main-text evidence chain consolidation)
+- Updated: 2026-04-01 12:46:05 +08
+- Current phase: STWM V4.2 1B confirmation + visualization round (FIFO queue execution)
 
 ## Completed
 
@@ -187,6 +187,24 @@
   - `outputs/visualizations/stwm_v4_2_final_paper_figures/final_figure_manifest.json`
   - `docs/STWM_V4_2_FINAL_CLAIM_BOUNDARY.md`
   - `docs/STWM_V4_2_REVIEWER_ATTACKS.md`
+- Added 1B confirmation assets (frozen V4.2 topology, no new module/loss/protocol type):
+  - `code/stwm/configs/model_presets_v4_2_1b.json`
+  - `scripts/run_stwm_v4_2_1b_smoke.sh`
+  - `scripts/run_stwm_v4_2_1b_minival_multiseed.sh`
+  - `scripts/run_stwm_v4_2_1b_state_identifiability.sh`
+  - `scripts/run_stwm_v4_2_1b_confirmation_round.sh`
+  - `code/stwm/tools/compare_stwm_v4_2_220m_vs_1b.py`
+- Added FIFO GPU queue layer for first-come-first-run multi-experiment submission:
+  - `scripts/gpu_queue_submit.sh`
+  - `scripts/gpu_queue_worker.sh`
+  - `scripts/start_gpu_queue_tmux.sh`
+- Added 1B visualization/video packaging pipeline:
+  - `scripts/build_stwm_v4_2_1b_visualization.sh`
+  - `code/stwm/tools/package_stwm_v4_2_video_demo.py`
+  - `docs/STWM_V4_2_1B_VISUALIZATION_PIPELINE.md`
+- Added 1B setup and go/no-go docs:
+  - `docs/STWM_V4_2_1B_SETUP.md`
+  - `docs/STWM_V4_2_3B_GO_NO_GO.md`
 
 ## Blockers (Resolved)
 
@@ -204,7 +222,13 @@
 
 ## Running
 
-- No active long-running STWM training session.
+- Active long-running queue session:
+  - `tmux` session `stwm_1b_queue` (running)
+  - queue root: `outputs/queue/stwm_1b/`
+  - worker log: `logs/stwm_1b_queue.log`
+- Queued jobs (FIFO):
+  - `stwm_1b_smoke` (running/waiting for available GPUs)
+  - `stwm_1b_confirmation` (pending)
 - Last completed long jobs:
   - `tmux` session `stwm_v4_2_smoke` (finished)
   - `tmux` session `stwm_v4_2_minival_seed42` (finished)
@@ -215,16 +239,13 @@
 
 ## Next
 
-- Keep current V4.2 architecture/loss/evaluator frozen (no 1B).
-- Keep identity/reconnect as constrained secondary analysis (not a positive headline claim).
-- Main paper structure:
-  - contribution 1: semantic trajectory state
-  - contribution 2: instance-grounded future-state identification
-- Main text priority:
-  - state-identifiability protocol table + matched-budget representation control
-  - hard-protocol decoupling table
-  - three-group figure casebook (semantic / instance / future)
-- Final-write priority:
-  - keep title/abstract claims bounded to contribution-1 + contribution-2 core evidence
-  - keep identity/reconnect in boundary/appendix scope only
-  - avoid over-claiming legacy baseline and wo_object_bias_v4_2 positioning
+- Wait for queue completion and then verify generated artifacts:
+  - `outputs/training/stwm_v4_2_1b_minival_multiseed/`
+  - `outputs/training/stwm_v4_2_1b_state_identifiability/`
+  - `reports/stwm_v4_2_220m_vs_1b.json`
+  - `docs/STWM_V4_2_3B_GO_NO_GO.md`
+  - `outputs/visualizations/stwm_v4_2_1b_demo/`
+- Keep strict boundary for this round:
+  - no module/loss/protocol-type expansion
+  - no identity-rescue continuation
+  - no direct 3B training run before 1B go/no-go is answered

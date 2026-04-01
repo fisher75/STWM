@@ -1,0 +1,53 @@
+{
+  "run_name": "wo_semantics_v4_2",
+  "mode": "train",
+  "steps": 120,
+  "model_preset": "prototype_1b_v4_2",
+  "model_parameters": 1020660598,
+  "rough_parameter_budget": 1002222592,
+  "ablation": {
+    "disable_semantics": true,
+    "disable_identity_memory": false,
+    "neutralize_object_bias": false,
+    "use_teacher_priors": true,
+    "enable_reconnect_loss": false
+  },
+  "average_losses": {
+    "total": 1.9380149712165198,
+    "trajectory": 0.18338286040040355,
+    "trajectory_l1": 0.5267314291248719,
+    "visibility": 1.0207826441334011,
+    "semantic": 0.0,
+    "reid": 2.552346173922221,
+    "query": 3.445399647951126,
+    "query_localization_error": 0.5031243612368902,
+    "query_traj_gap": -0.023607067887981732
+  },
+  "diagnostics": {
+    "assignment_entropy": 0.9836120297511418,
+    "token_usage_entropy": 0.9842311561107635,
+    "objectness_mean": 0.3600549928811233,
+    "memory_gate_mean": 0.6537692884604136,
+    "bg_fg_attention_ratio": 0.0,
+    "reappearance_event_ratio": 0.225,
+    "reconnect_success_rate": 0.008333333333333333,
+    "reconnect_min_error": 0.11061262749135495
+  },
+  "risk_flags": {
+    "tokenizer_collapse_risk": false,
+    "background_bias_risk": false,
+    "memory_inactive_risk": false,
+    "semantic_decorative_risk": false,
+    "identity_decorative_risk": true
+  },
+  "paths": {
+    "train_log": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_123/wo_semantics_v4_2/train_log.jsonl",
+    "summary": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_123/wo_semantics_v4_2/mini_val_summary.json",
+    "checkpoint": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_123/wo_semantics_v4_2/final_model.pt"
+  },
+  "resume": {
+    "resume_checkpoint": "",
+    "eval_only": false,
+    "log_name": "train_log.jsonl"
+  }
+}

@@ -1,0 +1,441 @@
+{
+  "runs_root": "outputs/training/stwm_v4_2_1b_confirmation_staged/base",
+  "seeds": [
+    "42",
+    "123",
+    "456"
+  ],
+  "runs": [
+    "full_v4_2",
+    "wo_semantics_v4_2",
+    "wo_object_bias_v4_2"
+  ],
+  "summary_name": "mini_val_summary.json",
+  "core_metrics": [
+    "trajectory_l1",
+    "query_localization_error",
+    "semantic_loss",
+    "reid_loss",
+    "query_traj_gap",
+    "memory_gate_mean",
+    "reconnect_success_rate",
+    "reappearance_event_ratio"
+  ],
+  "summary_paths": {
+    "full_v4_2": {
+      "42": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_42/full_v4_2/mini_val_summary.json",
+      "123": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_123/full_v4_2/mini_val_summary.json",
+      "456": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_456/full_v4_2/mini_val_summary.json"
+    },
+    "wo_semantics_v4_2": {
+      "42": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_42/wo_semantics_v4_2/mini_val_summary.json",
+      "123": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_123/wo_semantics_v4_2/mini_val_summary.json",
+      "456": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_456/wo_semantics_v4_2/mini_val_summary.json"
+    },
+    "wo_object_bias_v4_2": {
+      "42": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_42/wo_object_bias_v4_2/mini_val_summary.json",
+      "123": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_123/wo_object_bias_v4_2/mini_val_summary.json",
+      "456": "outputs/training/stwm_v4_2_1b_confirmation_staged/base/seed_456/wo_object_bias_v4_2/mini_val_summary.json"
+    }
+  },
+  "per_seed": {
+    "full_v4_2": {
+      "42": {
+        "trajectory_l1": 0.4148198059449593,
+        "query_localization_error": 0.43908182966212433,
+        "semantic_loss": 1.1267622674504916,
+        "reid_loss": 2.548321868975957,
+        "query_traj_gap": 0.024262023717164995,
+        "memory_gate_mean": 0.9883760591348012,
+        "reconnect_success_rate": 0.11666666666666667,
+        "reappearance_event_ratio": 0.225
+      },
+      "123": {
+        "trajectory_l1": 0.4146757158140341,
+        "query_localization_error": 0.45732239677260317,
+        "semantic_loss": 1.223814104994138,
+        "reid_loss": 2.549858804543813,
+        "query_traj_gap": 0.04264668095856905,
+        "memory_gate_mean": 0.9657503581295411,
+        "reconnect_success_rate": 0.11666666666666667,
+        "reappearance_event_ratio": 0.225
+      },
+      "456": {
+        "trajectory_l1": 0.3892638412925104,
+        "query_localization_error": 0.41328959389744946,
+        "semantic_loss": 1.0547558377186457,
+        "reid_loss": 2.549718209107717,
+        "query_traj_gap": 0.024025752604939044,
+        "memory_gate_mean": 0.943425876647234,
+        "reconnect_success_rate": 0.075,
+        "reappearance_event_ratio": 0.225
+      }
+    },
+    "wo_semantics_v4_2": {
+      "42": {
+        "trajectory_l1": 0.5255323365951577,
+        "query_localization_error": 0.4994105187555154,
+        "semantic_loss": 0.0,
+        "reid_loss": 2.553324774901072,
+        "query_traj_gap": -0.026121817839642365,
+        "memory_gate_mean": 0.8117294564843178,
+        "reconnect_success_rate": 0.008333333333333333,
+        "reappearance_event_ratio": 0.225
+      },
+      "123": {
+        "trajectory_l1": 0.5267314291248719,
+        "query_localization_error": 0.5031243612368902,
+        "semantic_loss": 0.0,
+        "reid_loss": 2.552346173922221,
+        "query_traj_gap": -0.023607067887981732,
+        "memory_gate_mean": 0.6537692884604136,
+        "reconnect_success_rate": 0.008333333333333333,
+        "reappearance_event_ratio": 0.225
+      },
+      "456": {
+        "trajectory_l1": 0.41469914074987174,
+        "query_localization_error": 0.4624423312023282,
+        "semantic_loss": 0.0,
+        "reid_loss": 2.5551262497901917,
+        "query_traj_gap": 0.04774319045245647,
+        "memory_gate_mean": 0.4601180299107606,
+        "reconnect_success_rate": 0.11666666666666667,
+        "reappearance_event_ratio": 0.225
+      }
+    },
+    "wo_object_bias_v4_2": {
+      "42": {
+        "trajectory_l1": 0.4147117190063,
+        "query_localization_error": 0.4511834405362606,
+        "semantic_loss": 1.13460739950339,
+        "reid_loss": 2.548169763882955,
+        "query_traj_gap": 0.03647172152996063,
+        "memory_gate_mean": 0.9882323404153188,
+        "reconnect_success_rate": 0.11666666666666667,
+        "reappearance_event_ratio": 0.225
+      },
+      "123": {
+        "trajectory_l1": 0.35517735239118337,
+        "query_localization_error": 0.37813996700569985,
+        "semantic_loss": 1.4049721231063208,
+        "reid_loss": 2.551458670695623,
+        "query_traj_gap": 0.022962614614516496,
+        "memory_gate_mean": 0.09532532699716588,
+        "reconnect_success_rate": 0.11666666666666667,
+        "reappearance_event_ratio": 0.225
+      },
+      "456": {
+        "trajectory_l1": 0.41838461613903444,
+        "query_localization_error": 0.4588361502935489,
+        "semantic_loss": 1.0869304259618124,
+        "reid_loss": 2.550423389673233,
+        "query_traj_gap": 0.040451534154514475,
+        "memory_gate_mean": 0.14934994193414847,
+        "reconnect_success_rate": 0.11666666666666667,
+        "reappearance_event_ratio": 0.225
+      }
+    }
+  },
+  "aggregate": {
+    "full_v4_2": {
+      "trajectory_l1": {
+        "mean": 0.40625312101716793,
+        "std": 0.012013378921392944,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.43656460677739234,
+        "std": 0.018064223215130695,
+        "count": 3
+      },
+      "semantic_loss": {
+        "mean": 1.1351107367210918,
+        "std": 0.06926974875042047,
+        "count": 3
+      },
+      "reid_loss": {
+        "mean": 2.5492996275424957,
+        "std": 0.0006937581855336436,
+        "count": 3
+      },
+      "query_traj_gap": {
+        "mean": 0.030311485760224362,
+        "std": 0.008722833501623483,
+        "count": 3
+      },
+      "memory_gate_mean": {
+        "mean": 0.9658507646371921,
+        "std": 0.018350972499506804,
+        "count": 3
+      },
+      "reconnect_success_rate": {
+        "mean": 0.10277777777777777,
+        "std": 0.019641855032959656,
+        "count": 3
+      },
+      "reappearance_event_ratio": {
+        "mean": 0.225,
+        "std": 0.0,
+        "count": 3
+      }
+    },
+    "wo_semantics_v4_2": {
+      "trajectory_l1": {
+        "mean": 0.48898763548996715,
+        "std": 0.052532179304914876,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.4883257370649113,
+        "std": 0.01836502438113484,
+        "count": 3
+      },
+      "semantic_loss": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      },
+      "reid_loss": {
+        "mean": 2.553599066204495,
+        "std": 0.0011514142744955393,
+        "count": 3
+      },
+      "query_traj_gap": {
+        "mean": -0.0006618984250558747,
+        "std": 0.03424295999432824,
+        "count": 3
+      },
+      "memory_gate_mean": {
+        "mean": 0.641872258285164,
+        "std": 0.14379105980441692,
+        "count": 3
+      },
+      "reconnect_success_rate": {
+        "mean": 0.044444444444444446,
+        "std": 0.051068823085695096,
+        "count": 3
+      },
+      "reappearance_event_ratio": {
+        "mean": 0.225,
+        "std": 0.0,
+        "count": 3
+      }
+    },
+    "wo_object_bias_v4_2": {
+      "trajectory_l1": {
+        "mean": 0.39609122917883927,
+        "std": 0.028969311678435722,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.42938651927850313,
+        "std": 0.03637121418140259,
+        "count": 3
+      },
+      "semantic_loss": {
+        "mean": 1.2088366495238412,
+        "std": 0.140047888118288,
+        "count": 3
+      },
+      "reid_loss": {
+        "mean": 2.5500172747506036,
+        "std": 0.0013730559598672189,
+        "count": 3
+      },
+      "query_traj_gap": {
+        "mean": 0.033295290099663866,
+        "std": 0.007484778515657121,
+        "count": 3
+      },
+      "memory_gate_mean": {
+        "mean": 0.4109692031155444,
+        "std": 0.408782103341667,
+        "count": 3
+      },
+      "reconnect_success_rate": {
+        "mean": 0.11666666666666667,
+        "std": 0.0,
+        "count": 3
+      },
+      "reappearance_event_ratio": {
+        "mean": 0.225,
+        "std": 0.0,
+        "count": 3
+      }
+    }
+  },
+  "delta_vs_full": {
+    "wo_semantics_v4_2": {
+      "trajectory_l1": {
+        "mean": 0.08273451447279918,
+        "std": 0.04052037401895491,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": 0.05176113028751894,
+        "std": 0.006210701386927216,
+        "count": 3
+      },
+      "semantic_loss": {
+        "mean": -1.1351107367210918,
+        "std": 0.06926974875042047,
+        "count": 3
+      },
+      "reid_loss": {
+        "mean": 0.00429943866199937,
+        "std": 0.0012919571353328407,
+        "count": 3
+      },
+      "query_traj_gap": {
+        "mean": -0.030973384185280235,
+        "std": 0.03921120588397848,
+        "count": 3
+      },
+      "memory_gate_mean": {
+        "mean": -0.3239785063520281,
+        "std": 0.1254810304954815,
+        "count": 3
+      },
+      "reconnect_success_rate": {
+        "mean": -0.058333333333333334,
+        "std": 0.07071067811865477,
+        "count": 3
+      },
+      "reappearance_event_ratio": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    },
+    "wo_object_bias_v4_2": {
+      "trajectory_l1": {
+        "mean": -0.010161891838328682,
+        "std": 0.03687046841418484,
+        "count": 3
+      },
+      "query_localization_error": {
+        "mean": -0.007178087498889207,
+        "std": 0.05271375579061417,
+        "count": 3
+      },
+      "semantic_loss": {
+        "mean": 0.07372591280274936,
+        "std": 0.07661254704916788,
+        "count": 3
+      },
+      "reid_loss": {
+        "mean": 0.0007176472081080002,
+        "std": 0.0007152935870653977,
+        "count": 3
+      },
+      "query_traj_gap": {
+        "mean": 0.002983804339439504,
+        "std": 0.016120754976355248,
+        "count": 3
+      },
+      "memory_gate_mean": {
+        "mean": -0.5548815615216477,
+        "std": 0.3934953212840109,
+        "count": 3
+      },
+      "reconnect_success_rate": {
+        "mean": 0.01388888888888889,
+        "std": 0.019641855032959656,
+        "count": 3
+      },
+      "reappearance_event_ratio": {
+        "mean": 0.0,
+        "std": 0.0,
+        "count": 3
+      }
+    }
+  },
+  "pairwise_delta_per_seed": {
+    "wo_semantics_v4_2": {
+      "42": {
+        "trajectory_l1": 0.11071253065019843,
+        "query_localization_error": 0.060328689093391064,
+        "semantic_loss": -1.1267622674504916,
+        "reid_loss": 0.005002905925115098,
+        "query_traj_gap": -0.05038384155680736,
+        "memory_gate_mean": -0.17664660265048338,
+        "reconnect_success_rate": -0.10833333333333334,
+        "reappearance_event_ratio": 0.0
+      },
+      "123": {
+        "trajectory_l1": 0.1120557133108378,
+        "query_localization_error": 0.045801964464287026,
+        "semantic_loss": -1.223814104994138,
+        "reid_loss": 0.0024873693784082107,
+        "query_traj_gap": -0.06625374884655078,
+        "memory_gate_mean": -0.31198106966912753,
+        "reconnect_success_rate": -0.10833333333333334,
+        "reappearance_event_ratio": 0.0
+      },
+      "456": {
+        "trajectory_l1": 0.025435299457361338,
+        "query_localization_error": 0.049152737304878735,
+        "semantic_loss": -1.0547558377186457,
+        "reid_loss": 0.005408040682474802,
+        "query_traj_gap": 0.02371743784751743,
+        "memory_gate_mean": -0.48330784673647337,
+        "reconnect_success_rate": 0.04166666666666667,
+        "reappearance_event_ratio": 0.0
+      }
+    },
+    "wo_object_bias_v4_2": {
+      "42": {
+        "trajectory_l1": -0.00010808693865932417,
+        "query_localization_error": 0.012101610874136248,
+        "semantic_loss": 0.007845132052898496,
+        "reid_loss": -0.00015210509300223052,
+        "query_traj_gap": 0.012209697812795635,
+        "memory_gate_mean": -0.00014371871948237747,
+        "reconnect_success_rate": 0.0,
+        "reappearance_event_ratio": 0.0
+      },
+      "123": {
+        "trajectory_l1": -0.05949836342285075,
+        "query_localization_error": -0.07918242976690332,
+        "semantic_loss": 0.1811580181121828,
+        "reid_loss": 0.0015998661518099588,
+        "query_traj_gap": -0.019684066344052554,
+        "memory_gate_mean": -0.8704250311323752,
+        "reconnect_success_rate": 0.0,
+        "reappearance_event_ratio": 0.0
+      },
+      "456": {
+        "trajectory_l1": 0.029120774846524033,
+        "query_localization_error": 0.04554655639609945,
+        "semantic_loss": 0.03217458824316677,
+        "reid_loss": 0.0007051805655162724,
+        "query_traj_gap": 0.01642578154957543,
+        "memory_gate_mean": -0.7940759347130855,
+        "reconnect_success_rate": 0.04166666666666667,
+        "reappearance_event_ratio": 0.0
+      }
+    }
+  },
+  "pairwise_stability_count": {
+    "wo_semantics_v4_2": {
+      "trajectory_l1": 3,
+      "query_localization_error": 3,
+      "semantic_loss": 0,
+      "reid_loss": 3,
+      "query_traj_gap": 1,
+      "memory_gate_mean": 3,
+      "reconnect_success_rate": 2,
+      "reappearance_event_ratio": 0
+    },
+    "wo_object_bias_v4_2": {
+      "trajectory_l1": 1,
+      "query_localization_error": 2,
+      "semantic_loss": 3,
+      "reid_loss": 2,
+      "query_traj_gap": 2,
+      "memory_gate_mean": 3,
+      "reconnect_success_rate": 0,
+      "reappearance_event_ratio": 0
+    }
+  }
+}
