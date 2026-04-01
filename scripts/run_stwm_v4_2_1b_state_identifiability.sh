@@ -11,6 +11,8 @@ SAMPLE_LIMIT="${STWM_V4_2_1B_IDENTIFIABILITY_SAMPLE_LIMIT:-18}"
 SEEDS_CSV="${STWM_V4_2_1B_IDENTIFIABILITY_SEEDS:-42,123,456}"
 RUNS_CSV="${STWM_V4_2_1B_IDENTIFIABILITY_RUNS:-full_v4_2,wo_semantics_v4_2,wo_object_bias_v4_2}"
 SKIP_EXISTING="${STWM_V4_2_1B_IDENTIFIABILITY_SKIP_EXISTING:-0}"
+SAVE_CHECKPOINT="${STWM_V4_2_1B_IDENTIFIABILITY_SAVE_CHECKPOINT:-1}"
+CHECKPOINT_NAME="${STWM_V4_2_1B_IDENTIFIABILITY_CHECKPOINT_NAME:-eval_model.pt}"
 
 BASE_RUNS_ROOT="${STWM_V4_2_1B_BASE_RUNS_ROOT:-$STWM_ROOT/outputs/training/stwm_v4_2_1b_minival_multiseed}"
 SOURCE_MANIFEST="${STWM_V4_2_IDENTIFIABILITY_SOURCE_MANIFEST:-$STWM_ROOT/manifests/minisplits/stwm_week2_minival_v2.json}"
@@ -56,6 +58,7 @@ run_eval_case() {
   local log_file="$STWM_ROOT/logs/stwm_v4_2_1b_state_identifiability_seed${seed}_${run_name}.log"
   local summary_file="$out_dir/mini_val_summary.json"
   local run_log="$out_dir/train_log.jsonl"
+  local checkpoint_args=()
 
   if [[ "$SKIP_EXISTING" == "1" && -f "$summary_file" && -f "$run_log" ]]; then
     echo "[1b-state-identifiability] skip existing seed=${seed} run=${run_name}"
@@ -65,6 +68,10 @@ run_eval_case() {
   if [[ ! -f "$resume_checkpoint" ]]; then
     echo "[1b-state-identifiability] missing checkpoint: $resume_checkpoint" >&2
     exit 2
+  fi
+
+  if [[ "$SAVE_CHECKPOINT" == "1" ]]; then
+    checkpoint_args+=(--save-checkpoint --checkpoint-name "$CHECKPOINT_NAME")
   fi
 
   echo "[1b-state-identifiability] eval seed=${seed} run=${run_name}"
@@ -84,6 +91,7 @@ run_eval_case() {
       --eval-only \
       --summary-name mini_val_summary.json \
       --log-name train_log.jsonl \
+      "${checkpoint_args[@]}" \
       "$@" \
       >"$log_file" 2>&1
 }
