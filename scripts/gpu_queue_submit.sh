@@ -16,6 +16,8 @@ MAX_MEM_USED_MIB=2000
 MAX_UTIL_PERCENT=20
 CANDIDATE_GPUS=""
 TIMEOUT_SECONDS=0
+WATCHDOG_ENABLED="${STWM_GPU_QUEUE_WATCHDOG_ENABLED:-1}"
+WATCHDOG_SLEEP_SECONDS="${STWM_GPU_QUEUE_WATCHDOG_SLEEP_SECONDS:-60}"
 
 usage() {
   cat <<'USAGE'
@@ -37,6 +39,9 @@ Options:
   --max-utilization N       Idle threshold for utilization % (default: 20)
   --candidate-gpus CSV      Restrict candidate GPU ids (e.g. 0,1,2,3)
   --timeout-seconds N       Timeout while waiting for GPUs (0 = wait forever)
+  --disable-watchdog        Disable retry watchdog wrapper for this job
+  --watchdog-sleep-seconds N
+                            Sleep seconds before watchdog retries (default: 60)
   -h, --help                Show this message
 
 Examples:
@@ -98,6 +103,15 @@ while [[ $# -gt 0 ]]; do
       TIMEOUT_SECONDS="$2"
       shift 2
       ;;
+    --disable-watchdog)
+      WATCHDOG_ENABLED=0
+      shift
+      ;;
+    --watchdog-sleep-seconds)
+      [[ $# -ge 2 ]] || { echo "Missing value for --watchdog-sleep-seconds" >&2; exit 1; }
+      WATCHDOG_SLEEP_SECONDS="$2"
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -122,6 +136,19 @@ fi
 
 ensure_dir "$QUEUE_DIR/pending" "$QUEUE_DIR/running" "$QUEUE_DIR/done" "$QUEUE_DIR/failed" "$QUEUE_DIR/logs"
 
+if [[ -z "$CANDIDATE_GPUS" ]]; then
+  lane_name="$(basename "$QUEUE_DIR")"
+  lane_map_file="$(dirname "$QUEUE_DIR")/lane_gpu_map.env"
+  if [[ -f "$lane_map_file" ]]; then
+    lane_gpu_line="$(grep -E "^${lane_name}=" "$lane_map_file" 2>/dev/null | tail -n 1 || true)"
+    lane_gpu="${lane_gpu_line#*=}"
+    lane_gpu="$(echo "$lane_gpu" | tr -d '[:space:]')"
+    if [[ "$lane_gpu" =~ ^[0-9]+([,][0-9]+)*$ ]]; then
+      CANDIDATE_GPUS="$lane_gpu"
+    fi
+  fi
+fi
+
 if [[ -z "$JOB_NAME" ]]; then
   JOB_NAME="$(basename "$1")"
 fi
@@ -136,8 +163,19 @@ ms="$(date +%s%3N 2>/dev/null || date +%s000)"
 job_id="${stamp}_${RANDOM}"
 job_file="$QUEUE_DIR/pending/${ms}_${safe_name}.job"
 
-printf -v cmd_q '%q ' "$@"
-cmd_pretty="$*"
+CMD=("$@")
+if [[ "$WATCHDOG_ENABLED" == "1" ]]; then
+  CMD=(
+    bash "$SCRIPT_DIR/gpu_queue_watchdog_run.sh"
+    --sleep-seconds "$WATCHDOG_SLEEP_SECONDS"
+    --
+    "${CMD[@]}"
+  )
+fi
+
+printf -v cmd_q '%q ' "${CMD[@]}"
+printf -v cmd_pretty '%q ' "${CMD[@]}"
+cmd_pretty="${cmd_pretty% }"
 
 {
   printf 'job_id=%q\n' "$job_id"
@@ -151,6 +189,8 @@ cmd_pretty="$*"
   printf 'max_util_percent=%q\n' "$MAX_UTIL_PERCENT"
   printf 'candidate_gpus=%q\n' "$CANDIDATE_GPUS"
   printf 'timeout_seconds=%q\n' "$TIMEOUT_SECONDS"
+  printf 'watchdog_enabled=%q\n' "$WATCHDOG_ENABLED"
+  printf 'watchdog_sleep_seconds=%q\n' "$WATCHDOG_SLEEP_SECONDS"
   printf 'command_escaped=%q\n' "$cmd_q"
   printf 'command_pretty=%q\n' "$cmd_pretty"
 } > "$job_file"

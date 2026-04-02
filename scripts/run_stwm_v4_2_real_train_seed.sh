@@ -14,7 +14,7 @@ export OPENBLAS_NUM_THREADS=1
 usage() {
   cat <<'USAGE'
 Usage:
-  run_stwm_v4_2_real_train_seed.sh --scale {220m|1b} --seed <int> [out_root]
+  run_stwm_v4_2_real_train_seed.sh --scale {220m|1b} --seed <int> [--resume] [out_root]
 
 Description:
   Run one seed of strict real training matrix on true train split manifest.
@@ -39,6 +39,7 @@ USAGE
 SCALE=""
 SEED=""
 OUT_ROOT=""
+FORCE_RESUME=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -51,6 +52,10 @@ while [[ $# -gt 0 ]]; do
       [[ $# -ge 2 ]] || { echo "Missing value for --seed" >&2; exit 1; }
       SEED="$2"
       shift 2
+      ;;
+    --resume)
+      FORCE_RESUME=1
+      shift
       ;;
     -h|--help)
       usage
@@ -155,6 +160,19 @@ run_case() {
 
   echo "[stwm-v4.2-real] start scale=${SCALE} seed=${SEED} run=${run_name}"
 
+  local resume_args=(--auto-resume)
+  if (( FORCE_RESUME == 1 )); then
+    local latest_ckpt="$out_dir/checkpoints/latest.pt"
+    if [[ -f "$latest_ckpt" ]]; then
+      resume_args=(--resume-checkpoint "$latest_ckpt")
+      echo "[stwm-v4.2-real] force_resume=1 run=${run_name} checkpoint=${latest_ckpt}"
+    else
+      echo "[stwm-v4.2-real] force_resume=1 but checkpoint missing (${latest_ckpt}); fallback to --auto-resume"
+    fi
+  fi
+
+  local rc=0
+  set +e
   PYTHONPATH="$STWM_ROOT/code:${PYTHONPATH:-}" \
     /home/chen034/miniconda3/bin/conda run --no-capture-output -n stwm \
     python "$STWM_ROOT/code/stwm/trainers/train_stwm_v4_2_real.py" \
@@ -173,7 +191,7 @@ run_case() {
       --checkpoint-interval "$CHECKPOINT_INTERVAL" \
       --milestone-interval "$MILESTONE_INTERVAL" \
       --checkpoint-dir-name checkpoints \
-      --auto-resume \
+      "${resume_args[@]}" \
       --micro-batch-per-gpu "$MICRO_BATCH" \
       --grad-accum "$GRAD_ACCUM" \
       --num-workers "$NUM_WORKERS" \
@@ -185,6 +203,16 @@ run_case() {
       "${BUDGET_ARGS[@]}" \
       "$@" \
       >"$log_file" 2>&1
+  rc=$?
+  set -e
+
+  if (( rc != 0 )); then
+    if [[ -f "$log_file" ]] && grep -Eqi 'CUDA out of memory|cuda out of memory|OutOfMemoryError|out of memory|Cannot allocate memory|oom-kill' "$log_file"; then
+      echo "[stwm-v4.2-real] detected OOM signature in ${log_file}; remap exit code to 137 for watchdog retry"
+      return 137
+    fi
+    return "$rc"
+  fi
 
   echo "[stwm-v4.2-real] done scale=${SCALE} seed=${SEED} run=${run_name}"
 }
