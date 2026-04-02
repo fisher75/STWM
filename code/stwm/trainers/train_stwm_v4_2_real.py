@@ -1,5 +1,19 @@
 from __future__ import annotations
 
+import os
+
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+
+try:
+    import cv2
+
+    cv2.setNumThreads(0)
+except Exception:
+    # OpenCV may be absent in some environments; training should still run.
+    cv2 = None
+
 from argparse import ArgumentParser
 from dataclasses import asdict
 from pathlib import Path
@@ -81,7 +95,7 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--log-name", default="train_log.jsonl")
     parser.add_argument("--save-checkpoint", action="store_true")
     parser.add_argument("--checkpoint-dir-name", default="checkpoints")
-    parser.add_argument("--checkpoint-interval", type=int, default=500)
+    parser.add_argument("--checkpoint-interval", type=int, default=100)
     parser.add_argument("--milestone-interval", type=int, default=0)
     parser.add_argument("--checkpoint-name", default="")
     parser.add_argument("--resume-checkpoint", default="")
@@ -381,11 +395,19 @@ def main() -> None:
         milestone_interval=max(0, int(args.milestone_interval)),
     )
 
-    retention_text = "latest+best"
-    if int(args.milestone_interval) > 0:
-        retention_text = f"{retention_text}+milestone_every_{int(args.milestone_interval)}"
+    checkpoint_interval = max(0, int(args.checkpoint_interval))
+    milestone_interval = max(0, int(args.milestone_interval))
+
+    if checkpoint_interval > 0:
+        retention_text = f"latest_every_{checkpoint_interval}+best"
+    else:
+        retention_text = "latest_on_final+best"
+    if milestone_interval > 0:
+        retention_text = f"{retention_text}+milestone_every_{milestone_interval}"
+
     print(f"[stwm-v4.2-real] checkpoint_dir={checkpoint_dir}")
     print(f"[stwm-v4.2-real] retention_policy={retention_text}")
+    print(f"[stwm-v4.2-real] checkpoint_interval={checkpoint_interval} milestone_interval={milestone_interval}")
     print(f"[stwm-v4.2-real] est_checkpoint_each_gb={est_ckpt_gb:.2f} est_max_retained_gb={est_max_retained_gb:.2f}")
 
     prev_identity_cache: dict[str, torch.Tensor] = {}
@@ -406,7 +428,7 @@ def main() -> None:
         if not bool(args.save_checkpoint):
             return
 
-        should_periodic = int(args.checkpoint_interval) > 0 and step % int(args.checkpoint_interval) == 0
+        should_periodic = checkpoint_interval > 0 and step % checkpoint_interval == 0
         should_save = force_final or should_periodic
         if not should_save:
             return
@@ -438,7 +460,7 @@ def main() -> None:
             payload["best_step"] = int(best_step)
             torch.save(payload, best_checkpoint_path)
 
-        if int(args.milestone_interval) > 0 and step % int(args.milestone_interval) == 0:
+        if milestone_interval > 0 and step % milestone_interval == 0:
             milestone_path = checkpoint_dir / f"milestone_step_{step:06d}.pt"
             torch.save(payload, milestone_path)
 
@@ -791,6 +813,8 @@ def main() -> None:
         "checkpoint_policy": {
             "checkpoint_dir": str(checkpoint_dir),
             "retention": retention_text,
+            "checkpoint_interval": int(checkpoint_interval),
+            "milestone_interval": int(milestone_interval),
             "latest": str(latest_checkpoint_path) if latest_checkpoint_path.exists() else "",
             "best": str(best_checkpoint_path) if best_checkpoint_path.exists() else "",
             "min_free_disk_gb": float(args.min_free_disk_gb),

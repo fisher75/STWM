@@ -40,7 +40,9 @@ Dataloader start values:
 Checkpointing:
 
 - retain `latest.pt` and `best.pt`
-- optional sparse milestone files only when enabled and disk budget permits
+- `latest.pt` overwrite interval: every 100 optimizer steps
+- sparse milestones disabled by default (`milestone_interval=0`)
+- optional sparse milestone files only when explicitly enabled and disk budget permits
 
 Resume:
 

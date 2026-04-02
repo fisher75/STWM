@@ -22,7 +22,14 @@ Optional retained files:
 Default intervals:
 
 - phase0/1 warmup: `checkpoint_interval=50`, `milestone_interval=0`
-- main long run: `checkpoint_interval=500`, `milestone_interval=2000`
+- main long run: `checkpoint_interval=100`, `milestone_interval=0`
+
+Default retention string for main long run:
+
+- `latest_every_100+best`
+
+Milestone retention is disabled by default and must be explicitly enabled only
+after disk budget review.
 
 ## Save Conditions
 

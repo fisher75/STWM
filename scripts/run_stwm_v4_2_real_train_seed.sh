@@ -5,6 +5,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/common.sh"
 
+# Keep BLAS/OpenMP thread pools pinned to 1 for predictable CPU scheduling
+# under multi-tenant training loads.
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+
 usage() {
   cat <<'USAGE'
 Usage:
@@ -25,8 +31,8 @@ Environment knobs:
   STWM_V4_2_REAL_TARGET_EPOCHS=3
   STWM_V4_2_REAL_MIN_STEPS=5000
   STWM_V4_2_REAL_MAX_STEPS=8000
-  STWM_V4_2_CHECKPOINT_INTERVAL=500
-  STWM_V4_2_MILESTONE_INTERVAL=2000
+  STWM_V4_2_CHECKPOINT_INTERVAL=300
+  STWM_V4_2_MILESTONE_INTERVAL=0
 USAGE
 }
 
@@ -84,8 +90,8 @@ MIN_STEPS="${STWM_V4_2_REAL_MIN_STEPS:-5000}"
 MAX_STEPS="${STWM_V4_2_REAL_MAX_STEPS:-8000}"
 FORCE_STEPS="${STWM_V4_2_REAL_FORCE_STEPS:-0}"
 SAMPLE_LIMIT="${STWM_V4_2_REAL_SAMPLE_LIMIT:-0}"
-CHECKPOINT_INTERVAL="${STWM_V4_2_CHECKPOINT_INTERVAL:-500}"
-MILESTONE_INTERVAL="${STWM_V4_2_MILESTONE_INTERVAL:-2000}"
+CHECKPOINT_INTERVAL="${STWM_V4_2_CHECKPOINT_INTERVAL:-300}"
+MILESTONE_INTERVAL="${STWM_V4_2_MILESTONE_INTERVAL:-0}"
 
 case "$SCALE" in
   220m)
@@ -93,7 +99,7 @@ case "$SCALE" in
     PRESET_FILE="$STWM_ROOT/code/stwm/configs/model_presets_v4_2.json"
     MICRO_BATCH=2
     GRAD_ACCUM=8
-    NUM_WORKERS=6
+    NUM_WORKERS=12
     RUNS_DEFAULT="full_v4_2,wo_semantics_v4_2,wo_object_bias_v4_2"
     OUT_ROOT="${OUT_ROOT:-$STWM_ROOT/outputs/training/stwm_v4_2_real_220m}"
     ;;
@@ -102,7 +108,7 @@ case "$SCALE" in
     PRESET_FILE="$STWM_ROOT/code/stwm/configs/model_presets_v4_2_1b.json"
     MICRO_BATCH=1
     GRAD_ACCUM=16
-    NUM_WORKERS=8
+    NUM_WORKERS=14
     RUNS_DEFAULT="full_v4_2_1b,wo_semantics_v4_2_1b,wo_object_bias_v4_2_1b"
     OUT_ROOT="${OUT_ROOT:-$STWM_ROOT/outputs/training/stwm_v4_2_real_1b}"
     ;;
@@ -114,6 +120,15 @@ esac
 
 RUNS_CSV="${STWM_V4_2_REAL_RUNS:-$RUNS_DEFAULT}"
 IFS=',' read -r -a RUN_LIST <<< "$RUNS_CSV"
+
+RETENTION_TEXT="latest_every_${CHECKPOINT_INTERVAL}+best"
+if [[ "${MILESTONE_INTERVAL}" =~ ^[0-9]+$ ]] && (( MILESTONE_INTERVAL > 0 )); then
+  RETENTION_TEXT="${RETENTION_TEXT}+milestone_every_${MILESTONE_INTERVAL}"
+fi
+echo "[stwm-v4.2-real] checkpoint_policy=${RETENTION_TEXT}"
+echo "[stwm-v4.2-real] checkpoint_interval=${CHECKPOINT_INTERVAL} milestone_interval=${MILESTONE_INTERVAL}"
+echo "[stwm-v4.2-real] dataloader_policy num_workers=${NUM_WORKERS} prefetch_factor=2 persistent_workers=true pin_memory=true"
+echo "[stwm-v4.2-real] thread_policy OMP_NUM_THREADS=${OMP_NUM_THREADS} MKL_NUM_THREADS=${MKL_NUM_THREADS} OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS}"
 
 if (( FORCE_STEPS > 0 )); then
   BUDGET_ARGS=(
