@@ -1,0 +1,97 @@
+{
+  "policy_version": "protocol_v2",
+  "split_role": {
+    "train_v2": "training only",
+    "protocol_val_main_v1": "official model selection",
+    "protocol_val_eventful_v1": "secondary diagnostics only",
+    "internal_final_test_v1": "final locked reporting only (no model selection)"
+  },
+  "paths": {
+    "train_v2": "/raid/chen034/workspace/stwm/manifests/protocol_v2/train_v2.json",
+    "protocol_val_main_v1": "/raid/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_main_v1.json",
+    "protocol_val_eventful_v1": "/raid/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_eventful_v1.json",
+    "internal_final_test_v1": "/raid/chen034/workspace/stwm/manifests/protocol_v2/internal_final_test_v1.json"
+  },
+  "stats": {
+    "train_v2": {
+      "clip_count": 3814,
+      "video_count": 3814,
+      "dataset_clip_count": {
+        "vipseg": 1012,
+        "vspw": 2802
+      },
+      "dataset_clip_ratio": {
+        "vipseg": 0.26533822758259046,
+        "vspw": 0.7346617724174096
+      }
+    },
+    "protocol_val_main_v1": {
+      "clip_count": 393,
+      "video_count": 393,
+      "dataset_clip_count": {
+        "vipseg": 144,
+        "vspw": 249
+      },
+      "dataset_clip_ratio": {
+        "vipseg": 0.366412213740458,
+        "vspw": 0.6335877862595419
+      }
+    },
+    "protocol_val_eventful_v1": {
+      "clip_count": 133,
+      "video_count": 133,
+      "dataset_clip_count": {
+        "vipseg": 53,
+        "vspw": 80
+      },
+      "dataset_clip_ratio": {
+        "vipseg": 0.39849624060150374,
+        "vspw": 0.6015037593984962
+      }
+    },
+    "internal_final_test_v1": {
+      "clip_count": 140,
+      "video_count": 140,
+      "dataset_clip_count": {
+        "vipseg": 47,
+        "vspw": 93
+      },
+      "dataset_clip_ratio": {
+        "vipseg": 0.3357142857142857,
+        "vspw": 0.6642857142857143
+      }
+    }
+  },
+  "final_test_source": "internal_from_official_val",
+  "official_test_available_in_manifest": false,
+  "disjoint_check": {
+    "train_vs_val_overlap": 0,
+    "train_vs_test_overlap": 0,
+    "val_vs_test_overlap": 0
+  },
+  "eventful_coverage": {
+    "rows": [
+      {
+        "dataset": "vspw",
+        "val_clip_count": 249,
+        "selected_eventful_clip_count": 80,
+        "selected_with_reappearance": 80,
+        "selected_reappearance_event_count": 157,
+        "selected_avg_max_disappear_gap": 16.4125
+      },
+      {
+        "dataset": "vipseg",
+        "val_clip_count": 144,
+        "selected_eventful_clip_count": 53,
+        "selected_with_reappearance": 53,
+        "selected_reappearance_event_count": 206,
+        "selected_avg_max_disappear_gap": 9.377358490566039
+      }
+    ],
+    "combined": {
+      "selected_eventful_clip_count": 133,
+      "selected_with_reappearance": 133,
+      "selected_reappearance_event_count": 363
+    }
+  }
+}

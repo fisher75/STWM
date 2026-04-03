@@ -12,10 +12,35 @@ import torch
 
 from stwm.datasets.stwm_dataset import STWMDataset
 from stwm.models.stwm_1b import STWM1B, STWMConfig, load_model_config
+from stwm.models.stwm_v4_2 import STWMV42, STWMV42Config, load_model_config_v4_2
 from stwm.modules.semantic_adapter import SemanticAdapter
 from stwm.modules.tokenizer import SemanticTrajectoryTokenizer
 from stwm.modules.trace_adapter import TraceAdapter
 from stwm.utils.week2_protocol import AblationConfig, ablation_from_args, build_tokens_for_sample
+
+
+EVALUATOR_VERSION = "v2_4_detached_frozen"
+SUPPORTED_PROTOCOL_VERSIONS = ["v1", "v2", "v2_1", "v2_2", "v2_3", EVALUATOR_VERSION]
+PROTOCOL_VERSION_ALIAS = {
+    EVALUATOR_VERSION: "v2_3",
+}
+STABLE_COMPARABLE_METRICS = [
+    "query_localization_error",
+    "query_top1_acc",
+    "query_hit_rate",
+    "identity_consistency",
+    "identity_switch_rate",
+    "occlusion_recovery_acc",
+    "future_trajectory_l1",
+    "future_mask_iou",
+    "visibility_accuracy",
+    "visibility_f1",
+]
+
+
+def _canonical_protocol_version(protocol_version: str) -> str:
+    raw = str(protocol_version)
+    return PROTOCOL_VERSION_ALIAS.get(raw, raw)
 
 
 def build_parser() -> ArgumentParser:
@@ -42,7 +67,7 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--output", default="/home/chen034/workspace/stwm/outputs/training/week2_minival/full/eval/mini_val_summary_last.json")
     parser.add_argument("--cases-output-dir", default="")
     parser.add_argument("--save-case-limit", type=int, default=20)
-    parser.add_argument("--protocol-version", default="v1", choices=["v1", "v2", "v2_1", "v2_2", "v2_3"])
+    parser.add_argument("--protocol-version", default=EVALUATOR_VERSION, choices=SUPPORTED_PROTOCOL_VERSIONS)
     parser.add_argument("--query-candidates", type=int, default=5)
     parser.add_argument("--query-hit-radius", type=float, default=0.08)
     parser.add_argument("--query-topk", type=int, default=1)
@@ -85,8 +110,10 @@ def select_protocol_samples(
     dataset = STWMDataset(data_root, manifest=manifest, limit=None)
     needed = obs_steps + pred_steps
     selected = []
+    dataset_filter = str(dataset_name).strip().lower()
+    use_all_datasets = dataset_filter in {"all", "*", "mixed"}
     for sample in dataset.samples:
-        if sample.metadata.get("dataset", "").lower() != dataset_name.lower():
+        if not use_all_datasets and sample.metadata.get("dataset", "").lower() != dataset_filter:
             continue
         if len(sample.frame_paths) < needed:
             continue
@@ -119,6 +146,98 @@ def _read_mask_labels(path: str) -> np.ndarray:
     if arr.ndim == 3:
         arr = arr[..., 0]
     return arr.astype(np.int32)
+
+
+def _torch_load_compat(path: str, device: torch.device) -> Any:
+    try:
+        return torch.load(path, map_location=device, weights_only=False)
+    except TypeError:
+        return torch.load(path, map_location=device)
+
+
+def _read_mask_ratio(path: str, target_label_id: int | None) -> float:
+    p = Path(path)
+    if not p.exists():
+        return 0.0
+    arr = np.array(Image.open(p))
+    if arr.ndim == 3:
+        arr = arr[..., 0]
+    if target_label_id is None:
+        return float((arr > 0).mean())
+    tgt = arr == int(target_label_id)
+    if tgt.any():
+        return float(tgt.mean())
+    return float((arr > 0).mean())
+
+
+def _build_v4_2_features_for_sample(
+    sample: Any,
+    *,
+    trace_adapter: TraceAdapter,
+    semantic_adapter: SemanticAdapter,
+    device: torch.device,
+    ablation: AblationConfig,
+) -> dict[str, Any]:
+    trace_summary = trace_adapter.encode(sample.frame_paths, metadata=sample.metadata, clip_id=sample.clip_id)
+    semantic_summary = semantic_adapter.encode(
+        sample.text_labels,
+        len(sample.frame_paths),
+        metadata=sample.metadata,
+        clip_id=sample.clip_id,
+    )
+
+    seq_len = int(min(trace_summary.centers.shape[0], semantic_summary.class_scores.shape[0]))
+    if seq_len <= 1:
+        raise RuntimeError(f"clip {sample.clip_id} has insufficient sequence length")
+
+    centers = trace_summary.centers[:seq_len].to(device=device, dtype=torch.float32)
+    velocities = trace_summary.velocities[:seq_len].to(device=device, dtype=torch.float32)
+    visibility = trace_summary.visibility[:seq_len].to(device=device, dtype=torch.float32)
+    trace_features = torch.cat([centers, velocities, visibility], dim=-1)
+
+    if bool(ablation.disable_trajectory):
+        trace_features[:, 0:4] = 0.0
+
+    sem_text = semantic_summary.text_embeddings[:seq_len].mean(dim=1).to(device=device, dtype=torch.float32)
+    sem_scores = semantic_summary.class_scores[:seq_len].mean(dim=1).to(device=device, dtype=torch.float32)
+    semantic_features = torch.cat([sem_text, sem_scores], dim=-1)
+    if bool(ablation.disable_semantics):
+        semantic_features = torch.zeros_like(semantic_features)
+
+    metadata = sample.metadata if isinstance(sample.metadata, dict) else {}
+    mask_paths = metadata.get("mask_paths") if isinstance(metadata.get("mask_paths"), list) else []
+    target_label_id = _target_label_id(sample)
+
+    mask_ratios: list[float] = []
+    for i in range(seq_len):
+        if i < len(mask_paths):
+            mask_ratios.append(_read_mask_ratio(str(mask_paths[i]), target_label_id=target_label_id))
+        else:
+            mask_ratios.append(mask_ratios[-1] if mask_ratios else 0.0)
+    mask_ratio_t = torch.tensor(mask_ratios, device=device, dtype=torch.float32)
+
+    speed = torch.norm(velocities, dim=-1)
+    semantic_conf = sem_scores.max(dim=-1).values
+    prior_features = torch.stack(
+        [
+            mask_ratio_t.clamp(0.0, 1.0),
+            visibility[:, 0].clamp(0.0, 1.0),
+            speed.clamp(0.0, 1.0),
+            semantic_conf.clamp(0.0, 1.0),
+        ],
+        dim=-1,
+    )
+    teacher_objectness = (0.6 * mask_ratio_t + 0.4 * visibility[:, 0]).clamp(0.0, 1.0)
+
+    return {
+        "trace_summary": trace_summary,
+        "semantic_summary": semantic_summary,
+        "trace_features": trace_features.unsqueeze(0),
+        "semantic_features": semantic_features.unsqueeze(0),
+        "prior_features": prior_features.unsqueeze(0),
+        "teacher_objectness": teacher_objectness.unsqueeze(0),
+        "seq_len": seq_len,
+    }
 
 
 def _target_label_id(sample: Any) -> int | None:
@@ -326,9 +445,11 @@ def _visibility_stats(pred_prob: torch.Tensor, gt_binary: torch.Tensor) -> tuple
 
 
 def evaluate_model(
-    model: STWM1B,
+    model: Any,
     samples: list[Any],
     *,
+    model_family: str,
+    dataset_name: str,
     ablation: AblationConfig,
     obs_steps: int,
     pred_steps: int,
@@ -356,27 +477,62 @@ def evaluate_model(
     occlusion_reconnect_target_overlap_min: float = 0.01,
 ) -> dict[str, Any]:
     model.eval()
+    requested_protocol_version = str(protocol_version)
+    protocol_version = _canonical_protocol_version(requested_protocol_version)
 
     per_clip: list[dict[str, Any]] = []
     case_paths: list[str] = []
 
     with torch.inference_mode():
         for index, sample in enumerate(samples):
-            token_result = build_tokens_for_sample(
-                sample,
-                trace_adapter,
-                semantic_adapter,
-                tokenizer,
-                ablation,
-                device,
-            )
-            tokens = token_result.tokens
-            outputs = model(tokens)
+            token_time_attention: torch.Tensor | None = None
+            query_token_logits: torch.Tensor | None = None
 
-            pred_centers = torch.sigmoid(outputs["trajectory"][0]).detach().cpu()
-            gt_centers = token_result.trace_summary.centers.detach().cpu()
-            pred_visibility_prob = torch.sigmoid(outputs["visibility"][0, :, 0]).detach().cpu()
-            gt_visibility = token_result.trace_summary.visibility[:, 0].detach().cpu()
+            if model_family == "stwm_v4_2":
+                feature_result = _build_v4_2_features_for_sample(
+                    sample,
+                    trace_adapter=trace_adapter,
+                    semantic_adapter=semantic_adapter,
+                    device=device,
+                    ablation=ablation,
+                )
+                outputs = model(
+                    trace_features=feature_result["trace_features"],
+                    semantic_features=feature_result["semantic_features"],
+                    prior_features=feature_result["prior_features"],
+                    teacher_objectness=feature_result["teacher_objectness"],
+                    memory_state=None,
+                    use_memory=not bool(ablation.disable_identity_memory),
+                    update_memory=False,
+                )
+
+                seq_len = int(feature_result["seq_len"])
+                pred_centers = torch.sigmoid(outputs["trajectory"][0, :seq_len]).detach().cpu()
+                gt_centers = feature_result["trace_summary"].centers[:seq_len].detach().cpu()
+                pred_visibility_prob = torch.sigmoid(outputs["visibility"][0, :seq_len, 0]).detach().cpu()
+                gt_visibility = feature_result["trace_summary"].visibility[:seq_len, 0].detach().cpu()
+
+                token_time_attention = outputs["token_time_attention"][0].detach().cpu()
+                query_token_logits = outputs["query_token_logits"][0].detach().cpu()
+                semantic_token_energy = outputs["semantic_logits"][0].detach().cpu().norm(dim=-1)
+                frame_semantic_energy = torch.einsum("n,nt->t", semantic_token_energy, token_time_attention)
+            else:
+                token_result = build_tokens_for_sample(
+                    sample,
+                    trace_adapter,
+                    semantic_adapter,
+                    tokenizer,
+                    ablation,
+                    device,
+                )
+                tokens = token_result.tokens
+                outputs = model(tokens)
+
+                pred_centers = torch.sigmoid(outputs["trajectory"][0]).detach().cpu()
+                gt_centers = token_result.trace_summary.centers.detach().cpu()
+                pred_visibility_prob = torch.sigmoid(outputs["visibility"][0, :, 0]).detach().cpu()
+                gt_visibility = token_result.trace_summary.visibility[:, 0].detach().cpu()
+                frame_semantic_energy = outputs["semantic"][0].detach().cpu().norm(dim=-1)
 
             seq_len = int(min(pred_centers.shape[0], gt_centers.shape[0]))
             start = int(min(obs_steps, seq_len))
@@ -552,8 +708,15 @@ def evaluate_model(
             query_same_class_candidates = 0
             query_total_candidates = 0
             if use_v2_family:
-                semantic_energy = outputs["semantic"][0, start:end].detach().cpu().norm(dim=-1)
-                if len(semantic_energy) > 0:
+                semantic_energy = frame_semantic_energy[start:end]
+                if token_time_attention is not None and query_token_logits is not None and token_time_attention.numel() > 0:
+                    query_token_index = int(torch.argmax(query_token_logits).item())
+                    query_frame_scores = token_time_attention[query_token_index, start:end]
+                    if query_frame_scores.numel() > 0:
+                        query_local_idx = int(torch.argmax(query_frame_scores).item())
+                    else:
+                        query_local_idx = 0
+                elif len(semantic_energy) > 0:
                     query_local_idx = int(torch.argmax(semantic_energy).item())
                 else:
                     query_local_idx = 0
@@ -591,7 +754,7 @@ def evaluate_model(
                     q_err = float(np.mean([float(frame_errors[i].item()) for i in visible_indices]))
                 else:
                     q_err = trajectory_error
-                semantic_energy = outputs["semantic"][0, start:end].detach().cpu().norm(dim=-1)
+                semantic_energy = frame_semantic_energy[start:end]
             case_payload = {
                 "run_name": run_name,
                 "clip_id": sample.clip_id,
@@ -657,13 +820,16 @@ def evaluate_model(
         return float(np.mean([float(item[key]) for item in per_clip]))
 
     summary = {
+        "evaluator_version": EVALUATOR_VERSION,
         "run_name": run_name,
         "num_clips": len(per_clip),
         "protocol": {
             "protocol_version": str(protocol_version),
+            "requested_protocol_version": str(requested_protocol_version),
+            "evaluator_version": EVALUATOR_VERSION,
             "obs_steps": int(obs_steps),
             "pred_steps": int(pred_steps),
-            "dataset": "vspw",
+            "dataset": str(dataset_name),
             "fixed_seed": True,
             "query_candidates": int(query_candidates),
             "query_topk": int(query_topk),
@@ -691,6 +857,7 @@ def evaluate_model(
                 "query_top1_acc",
                 "query_hit_rate",
             ],
+            "stable_comparable_metrics": list(STABLE_COMPARABLE_METRICS),
         },
         "ablation": ablation.to_dict(),
         "metrics": {
@@ -733,40 +900,77 @@ def main() -> None:
     semantic_adapter = SemanticAdapter()
     tokenizer = SemanticTrajectoryTokenizer()
 
-    first_tokens = build_tokens_for_sample(
-        samples[0],
-        trace_adapter,
-        semantic_adapter,
-        tokenizer,
-        ablation,
-        device,
-    )
+    model_family = "stwm_1b"
 
     if args.checkpoint:
-        checkpoint = torch.load(args.checkpoint, map_location=device)
-        model_config_payload = checkpoint.get("model_config")
-        if isinstance(model_config_payload, dict):
-            model_config = STWMConfig(**model_config_payload)
+        checkpoint = _torch_load_compat(args.checkpoint, device=device)
+        model_state = checkpoint.get("model_state") if isinstance(checkpoint, dict) else checkpoint
+        model_config_payload = checkpoint.get("model_config") if isinstance(checkpoint, dict) else None
+
+        if isinstance(model_config_payload, dict) and "trace_dim" in model_config_payload:
+            model_family = "stwm_v4_2"
+            model_config = STWMV42Config(**model_config_payload)
+            model = STWMV42(model_config).to(device)
+            model.load_state_dict(model_state, strict=True)
         else:
+            if isinstance(model_config_payload, dict):
+                model_config = STWMConfig(**model_config_payload)
+            else:
+                first_tokens = build_tokens_for_sample(
+                    samples[0],
+                    trace_adapter,
+                    semantic_adapter,
+                    tokenizer,
+                    ablation,
+                    device,
+                )
+                model_config = load_model_config(
+                    preset=args.model_preset,
+                    input_dim=first_tokens.tokens.shape[-1],
+                    preset_path=args.preset_file,
+                )
+            model = STWM1B(model_config).to(device)
+            model.load_state_dict(model_state, strict=True)
+    else:
+        if "v4_2" in str(args.model_preset):
+            model_family = "stwm_v4_2"
+            warm = _build_v4_2_features_for_sample(
+                samples[0],
+                trace_adapter=trace_adapter,
+                semantic_adapter=semantic_adapter,
+                device=device,
+                ablation=ablation,
+            )
+            model_config = load_model_config_v4_2(
+                preset=args.model_preset,
+                trace_dim=int(warm["trace_features"].shape[-1]),
+                semantic_dim=int(warm["semantic_features"].shape[-1]),
+                prior_dim=int(warm["prior_features"].shape[-1]),
+                preset_path=args.preset_file,
+            )
+            model = STWMV42(model_config).to(device)
+        else:
+            first_tokens = build_tokens_for_sample(
+                samples[0],
+                trace_adapter,
+                semantic_adapter,
+                tokenizer,
+                ablation,
+                device,
+            )
             model_config = load_model_config(
                 preset=args.model_preset,
                 input_dim=first_tokens.tokens.shape[-1],
                 preset_path=args.preset_file,
             )
-        model = STWM1B(model_config).to(device)
-        model.load_state_dict(checkpoint["model_state"])
-    else:
-        model_config = load_model_config(
-            preset=args.model_preset,
-            input_dim=first_tokens.tokens.shape[-1],
-            preset_path=args.preset_file,
-        )
-        model = STWM1B(model_config).to(device)
+            model = STWM1B(model_config).to(device)
 
     case_dir = Path(args.cases_output_dir) if args.cases_output_dir else None
     summary = evaluate_model(
         model,
         samples,
+        model_family=model_family,
+        dataset_name=str(args.dataset),
         ablation=ablation,
         obs_steps=args.obs_steps,
         pred_steps=args.pred_steps,
@@ -793,13 +997,26 @@ def main() -> None:
         occlusion_reconnect_distance=float(args.occlusion_reconnect_distance),
         occlusion_reconnect_target_overlap_min=float(args.occlusion_reconnect_target_overlap_min),
     )
-    summary["model_config"] = {
-        "input_dim": int(model.config.input_dim),
-        "hidden_size": int(model.config.hidden_size),
-        "num_layers": int(model.config.num_layers),
-        "num_heads": int(model.config.num_heads),
-        "semantic_dim": int(model.config.semantic_dim),
-    }
+    if model_family == "stwm_v4_2":
+        summary["model_config"] = {
+            "family": model_family,
+            "trace_dim": int(model.config.trace_dim),
+            "semantic_dim": int(model.config.semantic_dim),
+            "prior_dim": int(model.config.prior_dim),
+            "hidden_size": int(model.config.hidden_size),
+            "seq_num_layers": int(model.config.seq_num_layers),
+            "token_num_layers": int(model.config.token_num_layers),
+            "num_heads": int(model.config.num_heads),
+        }
+    else:
+        summary["model_config"] = {
+            "family": model_family,
+            "input_dim": int(model.config.input_dim),
+            "hidden_size": int(model.config.hidden_size),
+            "num_layers": int(model.config.num_layers),
+            "num_heads": int(model.config.num_heads),
+            "semantic_dim": int(model.config.semantic_dim),
+        }
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)

@@ -22,6 +22,8 @@ import math
 import random
 import shutil
 import statistics
+import subprocess
+import sys
 import time
 from typing import Any
 
@@ -91,6 +93,20 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--reconnect-window", type=int, default=3)
     parser.add_argument("--reconnect-threshold", type=float, default=0.20)
 
+    parser.add_argument("--lambda-traj", type=float, default=1.0)
+    parser.add_argument("--lambda-vis", type=float, default=0.25)
+    parser.add_argument("--lambda-sem", type=float, default=0.5)
+    parser.add_argument("--lambda-reid", type=float, default=0.25)
+    parser.add_argument("--lambda-query", type=float, default=0.25)
+    parser.add_argument("--lambda-reconnect", type=float, default=0.1)
+
+    parser.add_argument("--semantic-warmup", action="store_true")
+    parser.add_argument("--semantic-warmup-start-ratio", type=float, default=0.10)
+    parser.add_argument("--semantic-warmup-end-ratio", type=float, default=0.30)
+
+    parser.add_argument("--gradient-audit-interval", type=int, default=0)
+    parser.add_argument("--gradient-audit-output", default="")
+
     parser.add_argument("--summary-name", default="mini_val_summary.json")
     parser.add_argument("--log-name", default="train_log.jsonl")
     parser.add_argument("--save-checkpoint", action="store_true")
@@ -102,6 +118,18 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--auto-resume", action="store_true")
     parser.add_argument("--eval-only", action="store_true")
     parser.add_argument("--min-free-disk-gb", type=float, default=50.0)
+
+    parser.add_argument("--protocol-eval-interval", type=int, default=0)
+    parser.add_argument("--protocol-eval-manifest", default="")
+    parser.add_argument("--protocol-eval-dataset", default="all")
+    parser.add_argument("--protocol-eval-max-clips", type=int, default=0)
+    parser.add_argument("--protocol-eval-seed", type=int, default=42)
+    parser.add_argument("--protocol-eval-obs-steps", type=int, default=8)
+    parser.add_argument("--protocol-eval-pred-steps", type=int, default=8)
+    parser.add_argument("--protocol-eval-run-name", default="protocol_val_main")
+    parser.add_argument("--protocol-version", default="v2_4_detached_frozen")
+    parser.add_argument("--protocol-best-checkpoint-name", default="best_protocol_main.pt")
+    parser.add_argument("--protocol-best-selection-name", default="best_protocol_main_selection.json")
     return parser
 
 
@@ -261,9 +289,93 @@ def _estimate_checkpoint_budget_gb(model_parameters: int, train_mode: bool, tota
     return estimated_per_checkpoint, estimated_max
 
 
+def _semantic_lambda_for_step(
+    *,
+    step: int,
+    total_steps: int,
+    target_lambda_sem: float,
+    disable_semantics: bool,
+    enable_warmup: bool,
+    warmup_start_ratio: float,
+    warmup_end_ratio: float,
+) -> float:
+    if disable_semantics:
+        return 0.0
+    target = float(target_lambda_sem)
+    if not enable_warmup or total_steps <= 0:
+        return target
+
+    start = max(0.0, float(warmup_start_ratio))
+    end = max(start, float(warmup_end_ratio))
+    progress = float(step) / float(max(1, total_steps))
+    if progress <= start:
+        return 0.0
+    if progress >= end or end <= start:
+        return target
+    alpha = (progress - start) / max(1e-12, end - start)
+    return float(alpha * target)
+
+
+def _shared_trunk_parameters(model: STWMV42) -> list[torch.nn.Parameter]:
+    prefixes = ("seq_input_proj", "seq_input_norm", "seq_backbone")
+    params: list[torch.nn.Parameter] = []
+    for name, param in model.named_parameters():
+        if not param.requires_grad:
+            continue
+        if name.startswith(prefixes):
+            params.append(param)
+    if params:
+        return params
+    return [param for param in model.parameters() if param.requires_grad]
+
+
+def _loss_grads(loss: torch.Tensor, params: list[torch.nn.Parameter]) -> list[torch.Tensor | None]:
+    if not isinstance(loss, torch.Tensor) or not loss.requires_grad:
+        return [None for _ in params]
+    grads = torch.autograd.grad(loss, params, retain_graph=True, allow_unused=True)
+    return [grad for grad in grads]
+
+
+def _grad_norm(grads: list[torch.Tensor | None]) -> float:
+    total = 0.0
+    for grad in grads:
+        if grad is None:
+            continue
+        g = grad.detach().float()
+        total += float(torch.sum(g * g).cpu().item())
+    return float(math.sqrt(max(0.0, total)))
+
+
+def _grad_cos(a: list[torch.Tensor | None], b: list[torch.Tensor | None]) -> float:
+    dot = 0.0
+    na = 0.0
+    nb = 0.0
+    for ga, gb in zip(a, b):
+        if ga is not None:
+            gfa = ga.detach().float()
+            na += float(torch.sum(gfa * gfa).cpu().item())
+        if gb is not None:
+            gfb = gb.detach().float()
+            nb += float(torch.sum(gfb * gfb).cpu().item())
+        if ga is not None and gb is not None:
+            dot += float(torch.sum(ga.detach().float() * gb.detach().float()).cpu().item())
+    if na <= 0.0 or nb <= 0.0:
+        return 0.0
+    return float(dot / (math.sqrt(na) * math.sqrt(nb) + 1e-12))
+
+
+def _write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2))
+
+
 def main() -> None:
     args = build_parser().parse_args()
     _set_seed(args.seed)
+
+    repo_root = Path(__file__).resolve().parents[3]
+    evaluator_script = repo_root / "code" / "stwm" / "evaluators" / "eval_mini_val.py"
+    protocol_update_script = repo_root / "code" / "stwm" / "tools" / "update_protocol_best_main.py"
 
     device = _resolve_device(args.device)
     output_dir = Path(args.output_dir)
@@ -419,9 +531,30 @@ def main() -> None:
     max_memory_gb_history: list[float] = []
     samples_processed = 0
 
+    gradient_audit_interval = max(0, int(args.gradient_audit_interval))
+    gradient_audit_path: Path | None = None
+    if gradient_audit_interval > 0:
+        if str(args.gradient_audit_output).strip():
+            p = Path(str(args.gradient_audit_output))
+            gradient_audit_path = p if p.is_absolute() else (repo_root / p)
+        else:
+            gradient_audit_path = output_dir / "gradient_audit.json"
+    gradient_audit_rows: list[dict[str, Any]] = []
+    shared_trunk_params = _shared_trunk_parameters(model)
+
+    protocol_eval_interval = max(0, int(args.protocol_eval_interval))
+    protocol_eval_manifest = str(args.protocol_eval_manifest).strip()
+    if protocol_eval_manifest:
+        p = Path(protocol_eval_manifest)
+        protocol_eval_manifest = str(p if p.is_absolute() else (repo_root / p))
+    protocol_best_checkpoint_path = checkpoint_dir / str(args.protocol_best_checkpoint_name)
+    protocol_best_sidecar_path = checkpoint_dir / str(args.protocol_best_selection_name)
+    protocol_eval_dir = checkpoint_dir / "protocol_eval"
+    protocol_eval_rows: list[dict[str, Any]] = []
+
     amp_enabled = bool(args.bf16 and device.type == "cuda")
 
-    def maybe_save_checkpoint(step: int, step_total_loss: float, force_final: bool = False) -> None:
+    def maybe_save_checkpoint(step: int, step_total_loss: float, force_final: bool = False, force: bool = False) -> None:
         nonlocal best_total_loss
         nonlocal best_step
 
@@ -429,7 +562,7 @@ def main() -> None:
             return
 
         should_periodic = checkpoint_interval > 0 and step % checkpoint_interval == 0
-        should_save = force_final or should_periodic
+        should_save = force_final or force or should_periodic
         if not should_save:
             return
 
@@ -468,11 +601,154 @@ def main() -> None:
             alias_path = output_dir / str(args.checkpoint_name)
             torch.save(payload, alias_path)
 
+    def maybe_run_protocol_eval(step: int) -> None:
+        if bool(args.eval_only):
+            return
+        if protocol_eval_interval <= 0:
+            return
+        if step % protocol_eval_interval != 0:
+            return
+        if not protocol_eval_manifest:
+            return
+        if not Path(protocol_eval_manifest).exists():
+            protocol_eval_rows.append(
+                {
+                    "step": int(step),
+                    "status": "skipped",
+                    "reason": "manifest_not_found",
+                    "manifest": str(protocol_eval_manifest),
+                }
+            )
+            return
+
+        maybe_save_checkpoint(step=step, step_total_loss=float(log_rows[-1].get("total_loss", 0.0)) if log_rows else 0.0, force=True)
+        if not latest_checkpoint_path.exists():
+            protocol_eval_rows.append(
+                {
+                    "step": int(step),
+                    "status": "skipped",
+                    "reason": "latest_checkpoint_missing",
+                    "latest_checkpoint": str(latest_checkpoint_path),
+                }
+            )
+            return
+
+        protocol_eval_dir.mkdir(parents=True, exist_ok=True)
+        eval_json = protocol_eval_dir / f"{args.protocol_eval_run_name}_step_{step:06d}.json"
+        run_name = f"{args.protocol_eval_run_name}_step_{step:06d}"
+
+        env = os.environ.copy()
+        code_root = str(repo_root / "code")
+        if env.get("PYTHONPATH"):
+            env["PYTHONPATH"] = f"{code_root}:{env['PYTHONPATH']}"
+        else:
+            env["PYTHONPATH"] = code_root
+
+        try:
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(evaluator_script),
+                    "--data-root",
+                    str(args.data_root),
+                    "--manifest",
+                    str(protocol_eval_manifest),
+                    "--dataset",
+                    str(args.protocol_eval_dataset),
+                    "--max-clips",
+                    str(int(args.protocol_eval_max_clips)),
+                    "--obs-steps",
+                    str(int(args.protocol_eval_obs_steps)),
+                    "--pred-steps",
+                    str(int(args.protocol_eval_pred_steps)),
+                    "--seed",
+                    str(int(args.protocol_eval_seed)),
+                    "--checkpoint",
+                    str(latest_checkpoint_path),
+                    "--model-preset",
+                    str(args.model_preset),
+                    "--preset-file",
+                    str(args.preset_file),
+                    "--protocol-version",
+                    str(args.protocol_version),
+                    "--run-name",
+                    run_name,
+                    "--output",
+                    str(eval_json),
+                ],
+                check=True,
+                env=env,
+            )
+
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(protocol_update_script),
+                    "--checkpoint-dir",
+                    str(checkpoint_dir),
+                    "--candidate-checkpoint",
+                    str(latest_checkpoint_path),
+                    "--eval-summary",
+                    str(eval_json),
+                    "--output-checkpoint",
+                    str(protocol_best_checkpoint_path),
+                    "--selection-sidecar",
+                    str(protocol_best_sidecar_path),
+                ],
+                check=True,
+                env=env,
+            )
+
+            action = ""
+            improved = False
+            if protocol_best_sidecar_path.exists():
+                sidecar = json.loads(protocol_best_sidecar_path.read_text())
+                action = str(sidecar.get("action", ""))
+                improved = bool(sidecar.get("improved", False))
+            protocol_eval_rows.append(
+                {
+                    "step": int(step),
+                    "status": "ok",
+                    "eval_summary": str(eval_json),
+                    "candidate_checkpoint": str(latest_checkpoint_path),
+                    "official_best": str(protocol_best_checkpoint_path),
+                    "selection_sidecar": str(protocol_best_sidecar_path),
+                    "action": action,
+                    "improved": bool(improved),
+                }
+            )
+        except Exception as exc:
+            protocol_eval_rows.append(
+                {
+                    "step": int(step),
+                    "status": "error",
+                    "eval_summary": str(eval_json),
+                    "candidate_checkpoint": str(latest_checkpoint_path),
+                    "error": str(exc),
+                }
+            )
+
     if start_step < total_steps:
         for step in range(int(start_step) + 1, int(total_steps) + 1):
             step_start = time.perf_counter()
             if device.type == "cuda":
                 torch.cuda.reset_peak_memory_stats(device)
+
+            lambda_sem_effective = _semantic_lambda_for_step(
+                step=int(step),
+                total_steps=int(total_steps),
+                target_lambda_sem=float(args.lambda_sem),
+                disable_semantics=bool(args.disable_semantics),
+                enable_warmup=bool(args.semantic_warmup),
+                warmup_start_ratio=float(args.semantic_warmup_start_ratio),
+                warmup_end_ratio=float(args.semantic_warmup_end_ratio),
+            )
+            do_grad_audit = bool(
+                (not args.eval_only)
+                and gradient_audit_interval > 0
+                and step % gradient_audit_interval == 0
+            )
+            gradient_audit_row: dict[str, Any] | None = None
 
             if bool(args.eval_only):
                 model.eval()
@@ -611,13 +887,28 @@ def main() -> None:
                             reconnect_loss = (reconnect_target - float(gate_mean)) ** 2
 
                         total_loss = (
-                            traj_loss
-                            + 0.25 * vis_loss
-                            + 0.5 * sem_loss
-                            + 0.25 * reid_loss
-                            + 0.25 * query_loss
-                            + 0.1 * reconnect_loss
+                            float(args.lambda_traj) * traj_loss
+                            + float(args.lambda_vis) * vis_loss
+                            + float(lambda_sem_effective) * sem_loss
+                            + float(args.lambda_reid) * reid_loss
+                            + float(args.lambda_query) * query_loss
+                            + float(args.lambda_reconnect) * reconnect_loss
                         )
+
+                    if do_grad_audit and gradient_audit_row is None:
+                        g_traj = _loss_grads(traj_loss, shared_trunk_params)
+                        g_query = _loss_grads(query_loss, shared_trunk_params)
+                        g_sem = _loss_grads(sem_loss, shared_trunk_params)
+                        gradient_audit_row = {
+                            "step": int(step),
+                            "clip_id": str(batch["clip_id"]),
+                            "lambda_sem_effective": float(lambda_sem_effective),
+                            "g_traj_norm": float(_grad_norm(g_traj)),
+                            "g_query_norm": float(_grad_norm(g_query)),
+                            "g_sem_norm": float(_grad_norm(g_sem)),
+                            "cos_sem_traj": float(_grad_cos(g_sem, g_traj)),
+                            "cos_sem_query": float(_grad_cos(g_sem, g_query)),
+                        }
 
                     loss_div = float(grad_accum * micro_divisor)
                     loss_scaled = total_loss / max(1.0, loss_div)
@@ -640,6 +931,7 @@ def main() -> None:
                         "trajectory_l1": float(trajectory_l1),
                         "visibility_loss": float(vis_loss.detach().float().cpu()),
                         "semantic_loss": float(sem_loss.detach().float().cpu()),
+                        "lambda_sem_effective": float(lambda_sem_effective),
                         "reid_loss": float(reid_loss.detach().float().cpu()),
                         "query_loss": float(query_loss.detach().float().cpu()),
                         "query_localization_error": float(query_localization_error),
@@ -709,10 +1001,25 @@ def main() -> None:
             data_ratios.append(float(data_wait_ratio))
             max_memory_gb_history.append(float(peak_memory_gb))
 
+            if gradient_audit_row is not None:
+                gradient_audit_rows.append(gradient_audit_row)
+                if gradient_audit_path is not None:
+                    _write_json(
+                        gradient_audit_path,
+                        {
+                            "run_name": str(args.run_name),
+                            "seed": int(args.seed),
+                            "shared_trunk": "seq_input_proj+seq_input_norm+seq_backbone",
+                            "interval": int(gradient_audit_interval),
+                            "rows": gradient_audit_rows,
+                        },
+                    )
+
             with train_log_path.open("a", encoding="utf-8") as fp:
                 fp.write(json.dumps(row) + "\n")
 
             maybe_save_checkpoint(step=step, step_total_loss=float(row.get("total_loss", 0.0)), force_final=(step == total_steps))
+            maybe_run_protocol_eval(step=step)
 
     if bool(args.save_checkpoint) and latest_checkpoint_path.exists():
         if not best_checkpoint_path.exists():
@@ -747,12 +1054,24 @@ def main() -> None:
             "use_teacher_priors": bool(args.use_teacher_priors),
             "enable_reconnect_loss": bool(args.enable_reconnect_loss),
         },
+        "loss_weights": {
+            "lambda_traj": float(args.lambda_traj),
+            "lambda_vis": float(args.lambda_vis),
+            "lambda_sem_target": float(args.lambda_sem),
+            "lambda_reid": float(args.lambda_reid),
+            "lambda_query": float(args.lambda_query),
+            "lambda_reconnect": float(args.lambda_reconnect),
+            "semantic_warmup": bool(args.semantic_warmup),
+            "semantic_warmup_start_ratio": float(args.semantic_warmup_start_ratio),
+            "semantic_warmup_end_ratio": float(args.semantic_warmup_end_ratio),
+        },
         "average_losses": {
             "total": _avg("total_loss"),
             "trajectory": _avg("trajectory_loss"),
             "trajectory_l1": _avg("trajectory_l1"),
             "visibility": _avg("visibility_loss"),
             "semantic": _avg("semantic_loss"),
+            "lambda_sem_effective": _avg("lambda_sem_effective"),
             "reid": _avg("reid_loss"),
             "query": _avg("query_loss"),
             "query_localization_error": _avg("query_localization_error"),
@@ -817,9 +1136,27 @@ def main() -> None:
             "milestone_interval": int(milestone_interval),
             "latest": str(latest_checkpoint_path) if latest_checkpoint_path.exists() else "",
             "best": str(best_checkpoint_path) if best_checkpoint_path.exists() else "",
+            "official_best_protocol_main": str(protocol_best_checkpoint_path) if protocol_best_checkpoint_path.exists() else "",
+            "official_best_selection_sidecar": str(protocol_best_sidecar_path) if protocol_best_sidecar_path.exists() else "",
             "min_free_disk_gb": float(args.min_free_disk_gb),
             "estimated_checkpoint_each_gb": float(est_ckpt_gb),
             "estimated_max_retained_gb": float(est_max_retained_gb),
+        },
+        "protocol_best_policy": {
+            "protocol_eval_interval": int(protocol_eval_interval),
+            "protocol_eval_manifest": str(protocol_eval_manifest),
+            "protocol_eval_dataset": str(args.protocol_eval_dataset),
+            "protocol_version": str(args.protocol_version),
+            "official_best_checkpoint_name": str(args.protocol_best_checkpoint_name),
+            "official_best_selection_name": str(args.protocol_best_selection_name),
+            "records": protocol_eval_rows,
+        },
+        "gradient_audit": {
+            "enabled": bool(gradient_audit_interval > 0),
+            "interval": int(gradient_audit_interval),
+            "output": str(gradient_audit_path) if gradient_audit_path is not None else "",
+            "shared_trunk": "seq_input_proj+seq_input_norm+seq_backbone",
+            "rows": int(len(gradient_audit_rows)),
         },
         "paths": {
             "train_log": str(train_log_path),
