@@ -13,6 +13,7 @@ IDLE_SLEEP="15"
 LOG_FILE=""
 STOP_WHEN_EMPTY=0
 ATTACH_AFTER_START=0
+ALLOW_CONCURRENT_WORKERS=0
 
 usage() {
   cat <<'USAGE'
@@ -27,6 +28,7 @@ Options:
   --idle-sleep N            Worker idle sleep seconds
   --log-file PATH           Worker log file
   --stop-when-empty         Exit when queue empty
+  --allow-concurrent-workers  Allow multiple workers on same queue
   --attach                  Attach tmux after start
   -h, --help                Show help
 USAGE
@@ -66,6 +68,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --stop-when-empty)
       STOP_WHEN_EMPTY=1
+      shift
+      ;;
+    --allow-concurrent-workers)
+      ALLOW_CONCURRENT_WORKERS=1
       shift
       ;;
     --attach)
@@ -119,6 +125,9 @@ WORKER_CMD=(
 )
 if (( STOP_WHEN_EMPTY == 1 )); then
   WORKER_CMD+=(--stop-when-empty)
+fi
+if (( ALLOW_CONCURRENT_WORKERS == 1 )); then
+  WORKER_CMD+=(--allow-concurrent-workers)
 fi
 
 printf -v WORKER_CMD_Q '%q ' "${WORKER_CMD[@]}"

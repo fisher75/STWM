@@ -157,6 +157,7 @@ class STWMV42(nn.Module):
         memory_state: RetrievalMemoryStateV42 | None = None,
         use_memory: bool = True,
         update_memory: bool = True,
+        return_shared_trunk_features: bool = False,
     ) -> dict[str, torch.Tensor | dict[str, float] | RetrievalMemoryStateV42]:
         if trace_features.ndim != 3:
             raise ValueError("trace_features must be [B, T, D]")
@@ -206,7 +207,7 @@ class STWMV42(nn.Module):
         identity_embeddings = F.normalize(self.identity_head(token_hidden), dim=-1)
         query_token_logits = self.query_head(token_hidden).squeeze(-1)
 
-        return {
+        out: dict[str, torch.Tensor | dict[str, float] | RetrievalMemoryStateV42] = {
             "trajectory": trajectory,
             "visibility": visibility,
             "semantic_logits": semantic_logits,
@@ -218,3 +219,7 @@ class STWMV42(nn.Module):
             "memory_diagnostics": memory_diag,
             "memory_state": next_memory_state,
         }
+        if return_shared_trunk_features:
+            # Primary gradient-audit anchor: output features from the final shared sequence trunk.
+            out["shared_trunk_features"] = seq_hidden
+        return out

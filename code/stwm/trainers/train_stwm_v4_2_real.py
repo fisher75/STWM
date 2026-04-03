@@ -106,6 +106,7 @@ def build_parser() -> ArgumentParser:
 
     parser.add_argument("--gradient-audit-interval", type=int, default=0)
     parser.add_argument("--gradient-audit-output", default="")
+    parser.add_argument("--gradient-audit-secondary-every", type=int, default=5)
 
     parser.add_argument("--summary-name", default="mini_val_summary.json")
     parser.add_argument("--log-name", default="train_log.jsonl")
@@ -127,6 +128,10 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--protocol-eval-obs-steps", type=int, default=8)
     parser.add_argument("--protocol-eval-pred-steps", type=int, default=8)
     parser.add_argument("--protocol-eval-run-name", default="protocol_val_main")
+    parser.add_argument("--protocol-diagnostics-manifest", default="")
+    parser.add_argument("--protocol-diagnostics-dataset", default="all")
+    parser.add_argument("--protocol-diagnostics-max-clips", type=int, default=0)
+    parser.add_argument("--protocol-diagnostics-run-name", default="protocol_val_eventful")
     parser.add_argument("--protocol-version", default="v2_4_detached_frozen")
     parser.add_argument("--protocol-best-checkpoint-name", default="best_protocol_main.pt")
     parser.add_argument("--protocol-best-selection-name", default="best_protocol_main_selection.json")
@@ -316,17 +321,22 @@ def _semantic_lambda_for_step(
     return float(alpha * target)
 
 
-def _shared_trunk_parameters(model: STWMV42) -> list[torch.nn.Parameter]:
+def _shared_trunk_named_parameters(model: STWMV42) -> list[tuple[str, torch.nn.Parameter]]:
     prefixes = ("seq_input_proj", "seq_input_norm", "seq_backbone")
-    params: list[torch.nn.Parameter] = []
+    named_params: list[tuple[str, torch.nn.Parameter]] = []
     for name, param in model.named_parameters():
         if not param.requires_grad:
             continue
         if name.startswith(prefixes):
-            params.append(param)
-    if params:
-        return params
-    return [param for param in model.parameters() if param.requires_grad]
+            named_params.append((name, param))
+    if named_params:
+        return named_params
+    fallback = [(f"fallback_param_{idx}", param) for idx, param in enumerate(model.parameters()) if param.requires_grad]
+    return fallback
+
+
+def _shared_trunk_parameters(model: STWMV42) -> list[torch.nn.Parameter]:
+    return [param for _, param in _shared_trunk_named_parameters(model)]
 
 
 def _loss_grads(loss: torch.Tensor, params: list[torch.nn.Parameter]) -> list[torch.Tensor | None]:
@@ -334,6 +344,41 @@ def _loss_grads(loss: torch.Tensor, params: list[torch.nn.Parameter]) -> list[to
         return [None for _ in params]
     grads = torch.autograd.grad(loss, params, retain_graph=True, allow_unused=True)
     return [grad for grad in grads]
+
+
+def _tensor_grad(loss: torch.Tensor, anchor: torch.Tensor | None) -> torch.Tensor | None:
+    if anchor is None or not isinstance(anchor, torch.Tensor):
+        return None
+    if not anchor.requires_grad:
+        return None
+    if not isinstance(loss, torch.Tensor) or not loss.requires_grad:
+        return None
+    grad = torch.autograd.grad(loss, [anchor], retain_graph=True, allow_unused=True)[0]
+    return grad
+
+
+def _tensor_norm(grad: torch.Tensor | None) -> float:
+    if grad is None:
+        return 0.0
+    v = grad.detach().float().reshape(-1)
+    if v.numel() == 0:
+        return 0.0
+    return float(torch.linalg.vector_norm(v).cpu().item())
+
+
+def _tensor_cos(a: torch.Tensor | None, b: torch.Tensor | None) -> float:
+    if a is None or b is None:
+        return 0.0
+    va = a.detach().float().reshape(-1)
+    vb = b.detach().float().reshape(-1)
+    if va.numel() == 0 or vb.numel() == 0:
+        return 0.0
+    na = float(torch.linalg.vector_norm(va).cpu().item())
+    nb = float(torch.linalg.vector_norm(vb).cpu().item())
+    if na <= 0.0 or nb <= 0.0:
+        return 0.0
+    dot = float(torch.dot(va, vb).cpu().item())
+    return float(dot / (na * nb + 1e-12))
 
 
 def _grad_norm(grads: list[torch.Tensor | None]) -> float:
@@ -532,6 +577,7 @@ def main() -> None:
     samples_processed = 0
 
     gradient_audit_interval = max(0, int(args.gradient_audit_interval))
+    gradient_audit_secondary_every = max(1, int(args.gradient_audit_secondary_every))
     gradient_audit_path: Path | None = None
     if gradient_audit_interval > 0:
         if str(args.gradient_audit_output).strip():
@@ -540,13 +586,22 @@ def main() -> None:
         else:
             gradient_audit_path = output_dir / "gradient_audit.json"
     gradient_audit_rows: list[dict[str, Any]] = []
-    shared_trunk_params = _shared_trunk_parameters(model)
+    gradient_audit_cycle = 0
+    shared_trunk_named_params = _shared_trunk_named_parameters(model)
+    shared_trunk_params = [param for _, param in shared_trunk_named_params]
+    primary_anchor_name = "seq_backbone.output_features"
+    secondary_anchor_name = shared_trunk_named_params[-1][0] if shared_trunk_named_params else ""
+    secondary_anchor_param = shared_trunk_named_params[-1][1] if shared_trunk_named_params else None
 
     protocol_eval_interval = max(0, int(args.protocol_eval_interval))
     protocol_eval_manifest = str(args.protocol_eval_manifest).strip()
     if protocol_eval_manifest:
         p = Path(protocol_eval_manifest)
         protocol_eval_manifest = str(p if p.is_absolute() else (repo_root / p))
+    protocol_diag_manifest = str(args.protocol_diagnostics_manifest).strip()
+    if protocol_diag_manifest:
+        p = Path(protocol_diag_manifest)
+        protocol_diag_manifest = str(p if p.is_absolute() else (repo_root / p))
     protocol_best_checkpoint_path = checkpoint_dir / str(args.protocol_best_checkpoint_name)
     protocol_best_sidecar_path = checkpoint_dir / str(args.protocol_best_selection_name)
     protocol_eval_dir = checkpoint_dir / "protocol_eval"
@@ -601,6 +656,62 @@ def main() -> None:
             alias_path = output_dir / str(args.checkpoint_name)
             torch.save(payload, alias_path)
 
+    def _build_eval_env() -> dict[str, str]:
+        env = os.environ.copy()
+        code_root = str(repo_root / "code")
+        if env.get("PYTHONPATH"):
+            env["PYTHONPATH"] = f"{code_root}:{env['PYTHONPATH']}"
+        else:
+            env["PYTHONPATH"] = code_root
+        return env
+
+    def _run_detached_eval(
+        *,
+        step: int,
+        manifest_path: str,
+        dataset_name: str,
+        max_clips: int,
+        run_name_prefix: str,
+        env: dict[str, str],
+    ) -> Path:
+        eval_json = protocol_eval_dir / f"{run_name_prefix}_step_{step:06d}.json"
+        run_name = f"{run_name_prefix}_step_{step:06d}"
+        subprocess.run(
+            [
+                sys.executable,
+                str(evaluator_script),
+                "--data-root",
+                str(args.data_root),
+                "--manifest",
+                str(manifest_path),
+                "--dataset",
+                str(dataset_name),
+                "--max-clips",
+                str(int(max_clips)),
+                "--obs-steps",
+                str(int(args.protocol_eval_obs_steps)),
+                "--pred-steps",
+                str(int(args.protocol_eval_pred_steps)),
+                "--seed",
+                str(int(args.protocol_eval_seed)),
+                "--checkpoint",
+                str(latest_checkpoint_path),
+                "--model-preset",
+                str(args.model_preset),
+                "--preset-file",
+                str(args.preset_file),
+                "--protocol-version",
+                str(args.protocol_version),
+                "--run-name",
+                run_name,
+                "--output",
+                str(eval_json),
+            ],
+            check=True,
+            env=env,
+        )
+        return eval_json
+
     def maybe_run_protocol_eval(step: int) -> None:
         if bool(args.eval_only):
             return
@@ -608,24 +719,13 @@ def main() -> None:
             return
         if step % protocol_eval_interval != 0:
             return
-        if not protocol_eval_manifest:
-            return
-        if not Path(protocol_eval_manifest).exists():
-            protocol_eval_rows.append(
-                {
-                    "step": int(step),
-                    "status": "skipped",
-                    "reason": "manifest_not_found",
-                    "manifest": str(protocol_eval_manifest),
-                }
-            )
-            return
 
         maybe_save_checkpoint(step=step, step_total_loss=float(log_rows[-1].get("total_loss", 0.0)) if log_rows else 0.0, force=True)
         if not latest_checkpoint_path.exists():
             protocol_eval_rows.append(
                 {
                     "step": int(step),
+                    "kind": "official_main",
                     "status": "skipped",
                     "reason": "latest_checkpoint_missing",
                     "latest_checkpoint": str(latest_checkpoint_path),
@@ -634,49 +734,21 @@ def main() -> None:
             return
 
         protocol_eval_dir.mkdir(parents=True, exist_ok=True)
-        eval_json = protocol_eval_dir / f"{args.protocol_eval_run_name}_step_{step:06d}.json"
-        run_name = f"{args.protocol_eval_run_name}_step_{step:06d}"
+        env = _build_eval_env()
 
-        env = os.environ.copy()
-        code_root = str(repo_root / "code")
-        if env.get("PYTHONPATH"):
-            env["PYTHONPATH"] = f"{code_root}:{env['PYTHONPATH']}"
-        else:
-            env["PYTHONPATH"] = code_root
-
+        main_eval_json = protocol_eval_dir / f"{args.protocol_eval_run_name}_step_{step:06d}.json"
         try:
-            subprocess.run(
-                [
-                    sys.executable,
-                    str(evaluator_script),
-                    "--data-root",
-                    str(args.data_root),
-                    "--manifest",
-                    str(protocol_eval_manifest),
-                    "--dataset",
-                    str(args.protocol_eval_dataset),
-                    "--max-clips",
-                    str(int(args.protocol_eval_max_clips)),
-                    "--obs-steps",
-                    str(int(args.protocol_eval_obs_steps)),
-                    "--pred-steps",
-                    str(int(args.protocol_eval_pred_steps)),
-                    "--seed",
-                    str(int(args.protocol_eval_seed)),
-                    "--checkpoint",
-                    str(latest_checkpoint_path),
-                    "--model-preset",
-                    str(args.model_preset),
-                    "--preset-file",
-                    str(args.preset_file),
-                    "--protocol-version",
-                    str(args.protocol_version),
-                    "--run-name",
-                    run_name,
-                    "--output",
-                    str(eval_json),
-                ],
-                check=True,
+            if not protocol_eval_manifest:
+                raise FileNotFoundError("protocol_eval_manifest_empty")
+            if not Path(protocol_eval_manifest).exists():
+                raise FileNotFoundError(f"protocol_eval_manifest_not_found:{protocol_eval_manifest}")
+
+            main_eval_json = _run_detached_eval(
+                step=int(step),
+                manifest_path=str(protocol_eval_manifest),
+                dataset_name=str(args.protocol_eval_dataset),
+                max_clips=int(args.protocol_eval_max_clips),
+                run_name_prefix=str(args.protocol_eval_run_name),
                 env=env,
             )
 
@@ -689,7 +761,7 @@ def main() -> None:
                     "--candidate-checkpoint",
                     str(latest_checkpoint_path),
                     "--eval-summary",
-                    str(eval_json),
+                    str(main_eval_json),
                     "--output-checkpoint",
                     str(protocol_best_checkpoint_path),
                     "--selection-sidecar",
@@ -708,8 +780,10 @@ def main() -> None:
             protocol_eval_rows.append(
                 {
                     "step": int(step),
+                    "kind": "official_main",
                     "status": "ok",
-                    "eval_summary": str(eval_json),
+                    "manifest": str(protocol_eval_manifest),
+                    "eval_summary": str(main_eval_json),
                     "candidate_checkpoint": str(latest_checkpoint_path),
                     "official_best": str(protocol_best_checkpoint_path),
                     "selection_sidecar": str(protocol_best_sidecar_path),
@@ -721,9 +795,53 @@ def main() -> None:
             protocol_eval_rows.append(
                 {
                     "step": int(step),
+                    "kind": "official_main",
                     "status": "error",
-                    "eval_summary": str(eval_json),
+                    "manifest": str(protocol_eval_manifest),
+                    "eval_summary": str(main_eval_json),
                     "candidate_checkpoint": str(latest_checkpoint_path),
+                    "error": str(exc),
+                }
+            )
+
+        if not protocol_diag_manifest:
+            return
+
+        diag_eval_json = protocol_eval_dir / f"{args.protocol_diagnostics_run_name}_step_{step:06d}.json"
+        try:
+            if not Path(protocol_diag_manifest).exists():
+                raise FileNotFoundError(f"protocol_diag_manifest_not_found:{protocol_diag_manifest}")
+
+            diag_eval_json = _run_detached_eval(
+                step=int(step),
+                manifest_path=str(protocol_diag_manifest),
+                dataset_name=str(args.protocol_diagnostics_dataset),
+                max_clips=int(args.protocol_diagnostics_max_clips),
+                run_name_prefix=str(args.protocol_diagnostics_run_name),
+                env=env,
+            )
+
+            protocol_eval_rows.append(
+                {
+                    "step": int(step),
+                    "kind": "diagnostic_eventful",
+                    "status": "ok",
+                    "manifest": str(protocol_diag_manifest),
+                    "eval_summary": str(diag_eval_json),
+                    "candidate_checkpoint": str(latest_checkpoint_path),
+                    "official_best_unchanged": True,
+                }
+            )
+        except Exception as exc:
+            protocol_eval_rows.append(
+                {
+                    "step": int(step),
+                    "kind": "diagnostic_eventful",
+                    "status": "error",
+                    "manifest": str(protocol_diag_manifest),
+                    "eval_summary": str(diag_eval_json),
+                    "candidate_checkpoint": str(latest_checkpoint_path),
+                    "official_best_unchanged": True,
                     "error": str(exc),
                 }
             )
@@ -803,6 +921,7 @@ def main() -> None:
                             memory_state=memory_state,
                             use_memory=use_memory,
                             update_memory=use_memory,
+                            return_shared_trunk_features=do_grad_audit,
                         )
 
                         if use_memory:
@@ -896,18 +1015,62 @@ def main() -> None:
                         )
 
                     if do_grad_audit and gradient_audit_row is None:
-                        g_traj = _loss_grads(traj_loss, shared_trunk_params)
-                        g_query = _loss_grads(query_loss, shared_trunk_params)
-                        g_sem = _loss_grads(sem_loss, shared_trunk_params)
+                        gradient_audit_cycle += 1
+                        audit_t0 = time.perf_counter()
+                        audit_mem_before_mb = 0.0
+                        if device.type == "cuda":
+                            audit_mem_before_mb = float(torch.cuda.memory_allocated(device) / float(1024**2))
+
+                        primary_anchor = outputs.get("shared_trunk_features")
+                        if isinstance(primary_anchor, torch.Tensor):
+                            g_traj = _tensor_grad(traj_loss, primary_anchor)
+                            g_query = _tensor_grad(query_loss, primary_anchor)
+                            g_sem = _tensor_grad(sem_loss, primary_anchor)
+                            primary_anchor_shape = list(primary_anchor.shape)
+                        else:
+                            g_traj = None
+                            g_query = None
+                            g_sem = None
+                            primary_anchor_shape = []
+
+                        secondary_due = bool(
+                            secondary_anchor_param is not None
+                            and gradient_audit_cycle % gradient_audit_secondary_every == 0
+                        )
+                        g_traj_secondary = None
+                        g_query_secondary = None
+                        g_sem_secondary = None
+                        if secondary_due and secondary_anchor_param is not None:
+                            g_traj_secondary = _loss_grads(traj_loss, [secondary_anchor_param])[0]
+                            g_query_secondary = _loss_grads(query_loss, [secondary_anchor_param])[0]
+                            g_sem_secondary = _loss_grads(sem_loss, [secondary_anchor_param])[0]
+
+                        audit_mem_after_mb = audit_mem_before_mb
+                        if device.type == "cuda":
+                            audit_mem_after_mb = float(torch.cuda.memory_allocated(device) / float(1024**2))
+                        audit_time_ms = float((time.perf_counter() - audit_t0) * 1000.0)
+
                         gradient_audit_row = {
                             "step": int(step),
                             "clip_id": str(batch["clip_id"]),
                             "lambda_sem_effective": float(lambda_sem_effective),
-                            "g_traj_norm": float(_grad_norm(g_traj)),
-                            "g_query_norm": float(_grad_norm(g_query)),
-                            "g_sem_norm": float(_grad_norm(g_sem)),
-                            "cos_sem_traj": float(_grad_cos(g_sem, g_traj)),
-                            "cos_sem_query": float(_grad_cos(g_sem, g_query)),
+                            "audit_cycle": int(gradient_audit_cycle),
+                            "primary_anchor": str(primary_anchor_name),
+                            "primary_anchor_shape": primary_anchor_shape,
+                            "g_traj_norm": float(_tensor_norm(g_traj)),
+                            "g_query_norm": float(_tensor_norm(g_query)),
+                            "g_sem_norm": float(_tensor_norm(g_sem)),
+                            "cos_sem_traj": float(_tensor_cos(g_sem, g_traj)),
+                            "cos_sem_query": float(_tensor_cos(g_sem, g_query)),
+                            "secondary_anchor": str(secondary_anchor_name),
+                            "secondary_due": bool(secondary_due),
+                            "secondary_g_traj_norm": float(_grad_norm([g_traj_secondary])) if secondary_due else 0.0,
+                            "secondary_g_query_norm": float(_grad_norm([g_query_secondary])) if secondary_due else 0.0,
+                            "secondary_g_sem_norm": float(_grad_norm([g_sem_secondary])) if secondary_due else 0.0,
+                            "secondary_cos_sem_traj": float(_grad_cos([g_sem_secondary], [g_traj_secondary])) if secondary_due else 0.0,
+                            "secondary_cos_sem_query": float(_grad_cos([g_sem_secondary], [g_query_secondary])) if secondary_due else 0.0,
+                            "audit_time_ms": float(audit_time_ms),
+                            "audit_memory_delta_mb": float(audit_mem_after_mb - audit_mem_before_mb),
                         }
 
                     loss_div = float(grad_accum * micro_divisor)
@@ -1004,13 +1167,19 @@ def main() -> None:
             if gradient_audit_row is not None:
                 gradient_audit_rows.append(gradient_audit_row)
                 if gradient_audit_path is not None:
+                    audit_time_vals = [float(x.get("audit_time_ms", 0.0)) for x in gradient_audit_rows]
+                    audit_mem_vals = [float(x.get("audit_memory_delta_mb", 0.0)) for x in gradient_audit_rows]
                     _write_json(
                         gradient_audit_path,
                         {
                             "run_name": str(args.run_name),
                             "seed": int(args.seed),
-                            "shared_trunk": "seq_input_proj+seq_input_norm+seq_backbone",
+                            "primary_anchor": str(primary_anchor_name),
+                            "secondary_anchor": str(secondary_anchor_name),
                             "interval": int(gradient_audit_interval),
+                            "secondary_every_audit_cycles": int(gradient_audit_secondary_every),
+                            "average_audit_time_ms": float(sum(audit_time_vals) / max(1, len(audit_time_vals))),
+                            "average_audit_memory_delta_mb": float(sum(audit_mem_vals) / max(1, len(audit_mem_vals))),
                             "rows": gradient_audit_rows,
                         },
                     )
@@ -1146,6 +1315,8 @@ def main() -> None:
             "protocol_eval_interval": int(protocol_eval_interval),
             "protocol_eval_manifest": str(protocol_eval_manifest),
             "protocol_eval_dataset": str(args.protocol_eval_dataset),
+            "protocol_diagnostics_manifest": str(protocol_diag_manifest),
+            "protocol_diagnostics_dataset": str(args.protocol_diagnostics_dataset),
             "protocol_version": str(args.protocol_version),
             "official_best_checkpoint_name": str(args.protocol_best_checkpoint_name),
             "official_best_selection_name": str(args.protocol_best_selection_name),
@@ -1154,8 +1325,12 @@ def main() -> None:
         "gradient_audit": {
             "enabled": bool(gradient_audit_interval > 0),
             "interval": int(gradient_audit_interval),
+            "secondary_every_audit_cycles": int(gradient_audit_secondary_every),
             "output": str(gradient_audit_path) if gradient_audit_path is not None else "",
-            "shared_trunk": "seq_input_proj+seq_input_norm+seq_backbone",
+            "primary_anchor": str(primary_anchor_name),
+            "secondary_anchor": str(secondary_anchor_name),
+            "average_audit_time_ms": float(sum(float(x.get("audit_time_ms", 0.0)) for x in gradient_audit_rows) / max(1, len(gradient_audit_rows))),
+            "average_audit_memory_delta_mb": float(sum(float(x.get("audit_memory_delta_mb", 0.0)) for x in gradient_audit_rows) / max(1, len(gradient_audit_rows))),
             "rows": int(len(gradient_audit_rows)),
         },
         "paths": {

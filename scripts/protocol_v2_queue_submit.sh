@@ -11,6 +11,7 @@ CLASS_TYPE="A"
 WORKDIR="$STWM_ROOT"
 NOTES=""
 RESUME_HINT=""
+PREFERRED_GPU=""
 
 usage() {
   cat <<'USAGE'
@@ -24,6 +25,7 @@ Options:
   --workdir PATH            Working directory
   --notes TEXT              Notes for status metadata
   --resume-hint TEXT        Resume hint text for status metadata
+  --preferred-gpu N         Preferred GPU index (best-effort)
   -h, --help                Show help
 USAGE
 }
@@ -60,6 +62,11 @@ while [[ $# -gt 0 ]]; do
       RESUME_HINT="$2"
       shift 2
       ;;
+    --preferred-gpu)
+      [[ $# -ge 2 ]] || { echo "Missing value for --preferred-gpu" >&2; exit 1; }
+      PREFERRED_GPU="$2"
+      shift 2
+      ;;
     --)
       shift
       break
@@ -85,6 +92,11 @@ fi
 CLASS_TYPE="$(echo "$CLASS_TYPE" | tr '[:lower:]' '[:upper:]')"
 if [[ "$CLASS_TYPE" != "A" && "$CLASS_TYPE" != "B" && "$CLASS_TYPE" != "C" ]]; then
   echo "class-type must be A/B/C" >&2
+  exit 1
+fi
+
+if [[ -n "$PREFERRED_GPU" && ! "$PREFERRED_GPU" =~ ^[0-9]+$ ]]; then
+  echo "preferred-gpu must be a non-negative integer" >&2
   exit 1
 fi
 
@@ -124,9 +136,10 @@ cmd_pretty="${cmd_pretty% }"
   printf 'main_log=%q\n' "$main_log"
   printf 'notes=%q\n' "$NOTES"
   printf 'resume_hint=%q\n' "$RESUME_HINT"
+  printf 'preferred_gpu=%q\n' "$PREFERRED_GPU"
 } > "$job_file"
 
-python - "$status_file" "$job_id" "$JOB_NAME" "$CLASS_TYPE" "$job_file" "$main_log" "$pid_file" "$NOTES" "$RESUME_HINT" <<'PY'
+python - "$status_file" "$job_id" "$JOB_NAME" "$CLASS_TYPE" "$job_file" "$main_log" "$pid_file" "$NOTES" "$RESUME_HINT" "$PREFERRED_GPU" <<'PY'
 from pathlib import Path
 import json
 import sys
@@ -142,6 +155,7 @@ payload = {
     "pid_file": sys.argv[7],
     "notes": sys.argv[8],
     "resume_hint": sys.argv[9],
+    "preferred_gpu": sys.argv[10],
 }
 status_path.write_text(json.dumps(payload, indent=2))
 PY

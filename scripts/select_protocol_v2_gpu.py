@@ -29,9 +29,9 @@ CLASS_POLICIES = {
             "max_active_apps": 3,
         },
         "fallback": {
-            "after_seconds": 20 * 60,
+            "after_seconds": 0,
             "min_free_mem_gib": 20.0,
-            "max_gpu_util": 93.0,
+            "max_gpu_util": 95.0,
             "max_active_apps": 4,
         },
     },
@@ -224,28 +224,19 @@ def _lease_blockers(class_type: str, lease_counts: dict[str, int]) -> list[str]:
     a = int(lease_counts.get("A", 0))
     b = int(lease_counts.get("B", 0))
     c = int(lease_counts.get("C", 0))
+    total = a + b + c
 
     out: list[str] = []
-    if class_type == "A":
-        # Up to 2 detached evals OR 1 training + 1 detached eval.
-        if c > 0:
-            out.append("lease_conflict_class_c_present")
-        if b > 0 and a >= 1:
-            out.append("lease_conflict_train_plus_eval_cap")
-        if b == 0 and a >= 2:
-            out.append("lease_conflict_eval_cap")
-    elif class_type == "B":
-        # Never allow training+training co-card. Allow at most one detached eval co-card.
-        if b > 0:
-            out.append("lease_conflict_training_training")
-        if c > 0:
-            out.append("lease_conflict_with_class_c")
-        if a > 1:
-            out.append("lease_conflict_too_many_detached_eval")
-    else:
+    if class_type == "C":
         # Class C keeps conservative isolation for future 1B training.
         if a > 0 or b > 0 or c > 0:
             out.append("lease_conflict_class_c_isolation")
+        return out
+
+    if c > 0:
+        out.append("lease_conflict_with_class_c")
+    if total >= 2:
+        out.append("lease_conflict_stwm_card_cap_2")
 
     return out
 

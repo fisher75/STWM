@@ -8,6 +8,7 @@ QUEUE_DIR="$QUEUE_ROOT/d1_train"
 TRAIN_SCRIPT="$REPO_ROOT/code/stwm/trainers/train_stwm_v4_2_real.py"
 TRAIN_MANIFEST="${STWM_D1_TRAIN_MANIFEST:-$REPO_ROOT/manifests/protocol_v2/train_v2.json}"
 PROTOCOL_MAIN_MANIFEST="${STWM_D1_PROTOCOL_MAIN_MANIFEST:-$REPO_ROOT/manifests/protocol_v2/protocol_val_main_v1.json}"
+PROTOCOL_EVENTFUL_MANIFEST="${STWM_D1_PROTOCOL_EVENTFUL_MANIFEST:-$REPO_ROOT/manifests/protocol_v2/protocol_val_eventful_v1.json}"
 MODEL_PRESET="${STWM_D1_MODEL_PRESET:-prototype_220m_v4_2}"
 PRESET_FILE="${STWM_D1_PRESET_FILE:-$REPO_ROOT/code/stwm/configs/model_presets_v4_2.json}"
 DATA_ROOT="${STWM_D1_DATA_ROOT:-$REPO_ROOT/data/external}"
@@ -16,14 +17,13 @@ SEED="${STWM_D1_SEED:-42}"
 STEPS="${STWM_D1_STEPS:-2000}"
 SAMPLE_LIMIT="${STWM_D1_SAMPLE_LIMIT:-0}"
 
-LAMBDA0="${STWM_D1_LAMBDA0:-0.5}"
-LSEM_01="${STWM_D1_LSEM_01:-0.05}"
-LSEM_025="${STWM_D1_LSEM_025:-0.125}"
-LSEM_05="${STWM_D1_LSEM_05:-0.25}"
 LSEM_10="${STWM_D1_LSEM_10:-0.5}"
 
 GRAD_AUDIT_INTERVAL="${STWM_D1_GRAD_AUDIT_INTERVAL:-100}"
 PROTOCOL_EVAL_INTERVAL="${STWM_D1_PROTOCOL_EVAL_INTERVAL:-500}"
+CHECKPOINT_INTERVAL="${STWM_D1_CHECKPOINT_INTERVAL:-500}"
+TASK1_PREFERRED_GPU="${STWM_D1_TASK1_PREFERRED_GPU:-3}"
+TASK2_PREFERRED_GPU="${STWM_D1_TASK2_PREFERRED_GPU:-7}"
 
 OUT_ROOT="${STWM_D1_OUT_ROOT:-$REPO_ROOT/outputs/training/stwm_v4_2_220m_protocol_diag_v1}"
 mkdir -p "$OUT_ROOT"
@@ -33,6 +33,8 @@ submit_one() {
   local lambda_sem="$2"
   local warmup="$3"
   local extra_flag="$4"
+  local enable_grad_audit="$5"
+  local preferred_gpu="${6:-}"
 
   local out_dir="$OUT_ROOT/seed_${SEED}/${run_name}"
   local grad_json="$REPO_ROOT/reports/stwm_v4_2_gradient_audit_220m_seed${SEED}_${run_name}.json"
@@ -58,7 +60,7 @@ submit_one() {
     --use-teacher-priors
     --save-checkpoint
     --checkpoint-dir-name checkpoints
-    --checkpoint-interval 100
+    --checkpoint-interval "$CHECKPOINT_INTERVAL"
     --milestone-interval 0
     --auto-resume
     --micro-batch-per-gpu 2
@@ -75,8 +77,6 @@ submit_one() {
     --lambda-reid 0.25
     --lambda-query 0.25
     --lambda-reconnect 0.1
-    --gradient-audit-interval "$GRAD_AUDIT_INTERVAL"
-    --gradient-audit-output "$grad_json"
     --protocol-eval-interval "$PROTOCOL_EVAL_INTERVAL"
     --protocol-eval-manifest "$PROTOCOL_MAIN_MANIFEST"
     --protocol-eval-dataset all
@@ -85,10 +85,23 @@ submit_one() {
     --protocol-eval-obs-steps 8
     --protocol-eval-pred-steps 8
     --protocol-eval-run-name protocol_val_main
+    --protocol-diagnostics-manifest "$PROTOCOL_EVENTFUL_MANIFEST"
+    --protocol-diagnostics-dataset all
+    --protocol-diagnostics-max-clips 0
+    --protocol-diagnostics-run-name protocol_val_eventful
     --protocol-version v2_4_detached_frozen
     --protocol-best-checkpoint-name best_protocol_main.pt
     --protocol-best-selection-name best_protocol_main_selection.json
   )
+
+  if [[ "$enable_grad_audit" == "1" ]]; then
+    cmd+=(
+      --gradient-audit-interval "$GRAD_AUDIT_INTERVAL"
+      --gradient-audit-output "$grad_json"
+    )
+  else
+    cmd+=(--gradient-audit-interval 0)
+  fi
 
   if [[ "$warmup" == "1" ]]; then
     cmd+=(--semantic-warmup --semantic-warmup-start-ratio 0.10 --semantic-warmup-end-ratio 0.30)
@@ -99,27 +112,27 @@ submit_one() {
     cmd+=(--neutralize-object-bias)
   fi
 
+  local submit_args=(
+    --queue-dir "$QUEUE_DIR"
+    --job-name "$run_name"
+    --class-type B
+    --workdir "$REPO_ROOT"
+    --notes "$notes"
+    --resume-hint "$resume_hint"
+  )
+  if [[ -n "$preferred_gpu" ]]; then
+    submit_args+=(--preferred-gpu "$preferred_gpu")
+  fi
+
   bash "$REPO_ROOT/scripts/protocol_v2_queue_submit.sh" \
-    --queue-dir "$QUEUE_DIR" \
-    --job-name "$run_name" \
-    --class-type B \
-    --workdir "$REPO_ROOT" \
-    --notes "$notes" \
-    --resume-hint "$resume_hint" \
+    "${submit_args[@]}" \
     -- "${cmd[@]}"
 }
 
 # Core 4 runs only in first launch wave.
-submit_one "full_v4_2_seed42_fixed_nowarm_lambda1" "$LSEM_10" "0" "none"
-submit_one "full_v4_2_seed42_fixed_warmup_lambda1" "$LSEM_10" "1" "none"
-submit_one "wo_semantics_v4_2_seed42" "$LSEM_10" "0" "disable_semantics"
-submit_one "wo_object_bias_v4_2_seed42" "$LSEM_10" "0" "neutralize_object_bias"
-
-# Sweep jobs are only designed and not enqueued now by default.
-if [[ "${STWM_D1_ENQUEUE_SWEEP:-0}" == "1" ]]; then
-  submit_one "full_v4_2_seed42_lsem_0p1_lambda0" "$LSEM_01" "0" "none"
-  submit_one "full_v4_2_seed42_lsem_0p25_lambda0" "$LSEM_025" "0" "none"
-  submit_one "full_v4_2_seed42_lsem_0p5_lambda0" "$LSEM_05" "0" "none"
-fi
+submit_one "full_v4_2_seed42_fixed_nowarm_lambda1" "$LSEM_10" "0" "none" "1" "$TASK1_PREFERRED_GPU"
+submit_one "full_v4_2_seed42_fixed_warmup_lambda1" "$LSEM_10" "1" "none" "1" "$TASK2_PREFERRED_GPU"
+submit_one "wo_semantics_v4_2_seed42" "$LSEM_10" "0" "disable_semantics" "0"
+submit_one "wo_object_bias_v4_2_seed42" "$LSEM_10" "0" "neutralize_object_bias" "0"
 
 echo "[d1-enqueue] done queue_dir=$QUEUE_DIR"

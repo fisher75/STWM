@@ -1,0 +1,38 @@
+{
+  "run_name": "full_v4_2_seed42_fixed_nowarm_lambda1",
+  "seed": 42,
+  "primary_anchor": "seq_backbone.output_features",
+  "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+  "interval": 100,
+  "secondary_every_audit_cycles": 5,
+  "average_audit_time_ms": 15.999122988432646,
+  "average_audit_memory_delta_mb": 0.3515625,
+  "rows": [
+    {
+      "step": 100,
+      "clip_id": "245_KZxB_ez_KGg",
+      "lambda_sem_effective": 0.5,
+      "audit_cycle": 1,
+      "primary_anchor": "seq_backbone.output_features",
+      "primary_anchor_shape": [
+        1,
+        45,
+        1024
+      ],
+      "g_traj_norm": 0.00040929697570391,
+      "g_query_norm": 0.0,
+      "g_sem_norm": 3.6613212159863906e-06,
+      "cos_sem_traj": -0.0011765899572602602,
+      "cos_sem_query": 0.0,
+      "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+      "secondary_due": false,
+      "secondary_g_traj_norm": 0.0,
+      "secondary_g_query_norm": 0.0,
+      "secondary_g_sem_norm": 0.0,
+      "secondary_cos_sem_traj": 0.0,
+      "secondary_cos_sem_query": 0.0,
+      "audit_time_ms": 15.999122988432646,
+      "audit_memory_delta_mb": 0.3515625
+    }
+  ]
+}
