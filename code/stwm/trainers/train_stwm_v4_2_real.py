@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import OrderedDict
 import os
 
 os.environ["OMP_NUM_THREADS"] = "1"
@@ -54,6 +55,90 @@ def _collate_samples(batch: list[Any]) -> list[Any]:
     return batch
 
 
+class _FrontendCacheReader:
+    def __init__(
+        self,
+        *,
+        cache_dir: str | Path,
+        index_path: str | Path,
+        max_shards_in_memory: int = 4,
+    ) -> None:
+        self.cache_dir = Path(cache_dir)
+        self.index_path = Path(index_path)
+        self.max_shards_in_memory = max(1, int(max_shards_in_memory))
+
+        if not self.cache_dir.exists():
+            raise FileNotFoundError(f"frontend cache dir not found: {self.cache_dir}")
+        if not self.index_path.exists():
+            raise FileNotFoundError(f"frontend cache index not found: {self.index_path}")
+
+        payload = json.loads(self.index_path.read_text())
+        entries = payload.get("entries", []) if isinstance(payload, dict) else []
+        if not isinstance(entries, list):
+            raise ValueError(f"invalid frontend cache index payload: {self.index_path}")
+
+        self.index: dict[str, dict[str, Any]] = {}
+        for item in entries:
+            if not isinstance(item, dict):
+                continue
+            clip_id = str(item.get("clip_id", "")).strip()
+            shard = str(item.get("shard", "")).strip()
+            if not clip_id or not shard:
+                continue
+            try:
+                offset = int(item.get("offset", 0))
+            except (TypeError, ValueError):
+                continue
+            self.index[clip_id] = {"shard": shard, "offset": offset}
+
+        if not self.index:
+            raise RuntimeError(f"frontend cache index has no valid entries: {self.index_path}")
+
+        self._shard_cache: OrderedDict[str, list[dict[str, Any]]] = OrderedDict()
+
+    def _load_shard_records(self, shard_name: str) -> list[dict[str, Any]]:
+        if shard_name in self._shard_cache:
+            records = self._shard_cache.pop(shard_name)
+            self._shard_cache[shard_name] = records
+            return records
+
+        shard_path = self.cache_dir / shard_name
+        if not shard_path.exists():
+            raise FileNotFoundError(f"frontend cache shard not found: {shard_path}")
+
+        try:
+            payload = torch.load(shard_path, map_location="cpu", weights_only=False)
+        except TypeError:
+            payload = torch.load(shard_path, map_location="cpu")
+
+        records = payload.get("records") if isinstance(payload, dict) else None
+        if not isinstance(records, list):
+            raise ValueError(f"invalid frontend cache shard payload: {shard_path}")
+
+        self._shard_cache[shard_name] = records
+        while len(self._shard_cache) > self.max_shards_in_memory:
+            self._shard_cache.popitem(last=False)
+        return records
+
+    def get(self, clip_id: str) -> dict[str, Any] | None:
+        key = str(clip_id)
+        entry = self.index.get(key)
+        if entry is None:
+            return None
+
+        records = self._load_shard_records(str(entry["shard"]))
+        offset = int(entry["offset"])
+        if offset < 0 or offset >= len(records):
+            raise IndexError(
+                f"frontend cache offset out of range: clip_id={key}, shard={entry['shard']}, offset={offset}"
+            )
+
+        record = records[offset]
+        if not isinstance(record, dict):
+            raise ValueError(f"invalid frontend cache record type for clip_id={key}")
+        return record
+
+
 def build_parser() -> ArgumentParser:
     parser = ArgumentParser(description="Train/Eval STWM V4.2 real-budget pipeline")
     parser.add_argument("--data-root", default="/home/chen034/workspace/stwm/data/external")
@@ -77,6 +162,10 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--prefetch-factor", type=int, default=2)
     parser.add_argument("--persistent-workers", action="store_true")
     parser.add_argument("--pin-memory", action="store_true")
+    parser.add_argument("--data-mode", choices=("raw", "frontend_cache"), default="raw")
+    parser.add_argument("--frontend-cache-dir", default="")
+    parser.add_argument("--frontend-cache-index", default="")
+    parser.add_argument("--frontend-cache-max-shards-in-memory", type=int, default=4)
 
     parser.add_argument("--model-preset", default="prototype_220m_v4_2")
     parser.add_argument("--preset-file", default="/home/chen034/workspace/stwm/code/stwm/configs/model_presets_v4_2.json")
@@ -175,7 +264,92 @@ def _build_features_for_sample(
     device: torch.device,
     disable_semantics: bool,
     use_teacher_priors: bool,
+    data_mode: str = "raw",
+    frontend_cache_reader: _FrontendCacheReader | None = None,
 ) -> dict[str, torch.Tensor | str | int]:
+    if data_mode == "frontend_cache":
+        if frontend_cache_reader is None:
+            raise RuntimeError("frontend cache reader is required when data-mode=frontend_cache")
+        cached = frontend_cache_reader.get(str(sample.clip_id))
+        if cached is None:
+            raise KeyError(f"clip_id missing in frontend cache index: {sample.clip_id}")
+
+        trace_features = torch.as_tensor(cached["trace_features"], dtype=torch.float32, device=device)
+        semantic_features = torch.as_tensor(cached["semantic_features"], dtype=torch.float32, device=device)
+        target_trajectory = torch.as_tensor(cached["target_trajectory"], dtype=torch.float32, device=device)
+        target_visibility = torch.as_tensor(cached["target_visibility"], dtype=torch.float32, device=device)
+        target_semantic_probs = torch.as_tensor(cached["target_semantic_probs"], dtype=torch.float32, device=device)
+        mask_ratio_t = torch.as_tensor(cached["mask_ratios"], dtype=torch.float32, device=device)
+
+        if trace_features.ndim != 2:
+            raise ValueError(f"cached trace_features must be [T,D], got {tuple(trace_features.shape)}")
+        if semantic_features.ndim != 2:
+            raise ValueError(f"cached semantic_features must be [T,D], got {tuple(semantic_features.shape)}")
+        if target_trajectory.ndim != 2 or target_trajectory.shape[-1] != 2:
+            raise ValueError(f"cached target_trajectory must be [T,2], got {tuple(target_trajectory.shape)}")
+        if target_visibility.ndim == 1:
+            target_visibility = target_visibility.unsqueeze(-1)
+        if target_visibility.ndim != 2 or target_visibility.shape[-1] != 1:
+            raise ValueError(f"cached target_visibility must be [T,1], got {tuple(target_visibility.shape)}")
+        if target_semantic_probs.ndim != 2:
+            raise ValueError(
+                f"cached target_semantic_probs must be [T,C], got {tuple(target_semantic_probs.shape)}"
+            )
+        if mask_ratio_t.ndim != 1:
+            mask_ratio_t = mask_ratio_t.reshape(-1)
+
+        seq_len = int(
+            min(
+                trace_features.shape[0],
+                semantic_features.shape[0],
+                target_trajectory.shape[0],
+                target_visibility.shape[0],
+                target_semantic_probs.shape[0],
+                mask_ratio_t.shape[0],
+            )
+        )
+        if seq_len <= 1:
+            raise RuntimeError(f"clip {sample.clip_id} has insufficient cached sequence length")
+
+        trace_features = trace_features[:seq_len]
+        semantic_features = semantic_features[:seq_len]
+        target_trajectory = target_trajectory[:seq_len]
+        target_visibility = target_visibility[:seq_len]
+        target_semantic_probs = target_semantic_probs[:seq_len]
+        mask_ratio_t = mask_ratio_t[:seq_len]
+
+        if disable_semantics:
+            semantic_features = torch.zeros_like(semantic_features)
+
+        speed = torch.norm(trace_features[:, 2:4], dim=-1) if trace_features.shape[-1] >= 4 else torch.zeros_like(mask_ratio_t)
+        semantic_conf = target_semantic_probs.max(dim=-1).values
+        prior_features = torch.stack(
+            [
+                mask_ratio_t.clamp(0.0, 1.0),
+                target_visibility[:, 0].clamp(0.0, 1.0),
+                speed.clamp(0.0, 1.0),
+                semantic_conf.clamp(0.0, 1.0),
+            ],
+            dim=-1,
+        )
+
+        if use_teacher_priors:
+            teacher_objectness = (0.6 * mask_ratio_t + 0.4 * target_visibility[:, 0]).clamp(0.0, 1.0)
+        else:
+            teacher_objectness = target_visibility[:, 0].clamp(0.0, 1.0)
+
+        return {
+            "clip_id": sample.clip_id,
+            "seq_len": seq_len,
+            "trace_features": trace_features.unsqueeze(0),
+            "semantic_features": semantic_features.unsqueeze(0),
+            "prior_features": prior_features.unsqueeze(0),
+            "teacher_objectness": teacher_objectness.unsqueeze(0),
+            "target_trajectory": target_trajectory.unsqueeze(0),
+            "target_visibility": target_visibility.unsqueeze(0),
+            "target_semantic_probs": target_semantic_probs.unsqueeze(0),
+        }
+
     trace_summary = trace_adapter.encode(sample.frame_paths, metadata=sample.metadata, clip_id=sample.clip_id)
     semantic_summary = semantic_adapter.encode(
         sample.text_labels,
@@ -472,6 +646,23 @@ def main() -> None:
     train_loader = DataLoader(sample_dataset, **loader_kwargs)
     data_iter = iter(train_loader)
 
+    data_mode = str(args.data_mode).strip().lower()
+    resolved_frontend_cache_dir = ""
+    resolved_frontend_cache_index = ""
+    frontend_cache_reader: _FrontendCacheReader | None = None
+    if data_mode == "frontend_cache":
+        resolved_frontend_cache_dir = str(args.frontend_cache_dir).strip()
+        resolved_frontend_cache_index = str(args.frontend_cache_index).strip()
+        if not resolved_frontend_cache_dir:
+            raise RuntimeError("--frontend-cache-dir is required when --data-mode frontend_cache")
+        if not resolved_frontend_cache_index:
+            resolved_frontend_cache_index = str(Path(resolved_frontend_cache_dir) / "index.json")
+        frontend_cache_reader = _FrontendCacheReader(
+            cache_dir=resolved_frontend_cache_dir,
+            index_path=resolved_frontend_cache_index,
+            max_shards_in_memory=int(args.frontend_cache_max_shards_in_memory),
+        )
+
     def next_micro_batch() -> list[Any]:
         nonlocal data_iter
         try:
@@ -490,6 +681,8 @@ def main() -> None:
         device=device,
         disable_semantics=bool(args.disable_semantics),
         use_teacher_priors=bool(args.use_teacher_priors),
+        data_mode=data_mode,
+        frontend_cache_reader=frontend_cache_reader,
     )
 
     config = load_model_config_v4_2(
@@ -590,6 +783,7 @@ def main() -> None:
     shared_trunk_named_params = _shared_trunk_named_parameters(model)
     shared_trunk_params = [param for _, param in shared_trunk_named_params]
     primary_anchor_name = "seq_backbone.output_features"
+    query_path_anchor_name = "token_time_attention"
     secondary_anchor_name = shared_trunk_named_params[-1][0] if shared_trunk_named_params else ""
     secondary_anchor_param = shared_trunk_named_params[-1][1] if shared_trunk_named_params else None
 
@@ -902,6 +1096,8 @@ def main() -> None:
                         device=device,
                         disable_semantics=bool(args.disable_semantics),
                         use_teacher_priors=bool(args.use_teacher_priors),
+                        data_mode=data_mode,
+                        frontend_cache_reader=frontend_cache_reader,
                     )
                     data_time_s += time.perf_counter() - feature_t0
 
@@ -1033,6 +1229,18 @@ def main() -> None:
                             g_sem = None
                             primary_anchor_shape = []
 
+                        query_path_anchor = outputs.get("token_time_attention")
+                        if isinstance(query_path_anchor, torch.Tensor):
+                            qpath_g_query = _tensor_grad(query_loss, query_path_anchor)
+                            qpath_g_sem = _tensor_grad(sem_loss, query_path_anchor)
+                            qpath_g_traj = _tensor_grad(traj_loss, query_path_anchor)
+                            query_path_anchor_shape = list(query_path_anchor.shape)
+                        else:
+                            qpath_g_query = None
+                            qpath_g_sem = None
+                            qpath_g_traj = None
+                            query_path_anchor_shape = []
+
                         secondary_due = bool(
                             secondary_anchor_param is not None
                             and gradient_audit_cycle % gradient_audit_secondary_every == 0
@@ -1062,6 +1270,14 @@ def main() -> None:
                             "g_sem_norm": float(_tensor_norm(g_sem)),
                             "cos_sem_traj": float(_tensor_cos(g_sem, g_traj)),
                             "cos_sem_query": float(_tensor_cos(g_sem, g_query)),
+                            "query_path_anchor": str(query_path_anchor_name),
+                            "query_path_anchor_shape": query_path_anchor_shape,
+                            "qpath_g_query_norm": float(_tensor_norm(qpath_g_query)),
+                            "qpath_g_sem_norm": float(_tensor_norm(qpath_g_sem)),
+                            "qpath_g_traj_norm": float(_tensor_norm(qpath_g_traj)),
+                            "qpath_cos_sem_query": float(_tensor_cos(qpath_g_sem, qpath_g_query)),
+                            "qpath_cos_traj_query": float(_tensor_cos(qpath_g_traj, qpath_g_query)),
+                            "qpath_cos_sem_traj": float(_tensor_cos(qpath_g_sem, qpath_g_traj)),
                             "secondary_anchor": str(secondary_anchor_name),
                             "secondary_due": bool(secondary_due),
                             "secondary_g_traj_norm": float(_grad_norm([g_traj_secondary])) if secondary_due else 0.0,
@@ -1175,6 +1391,7 @@ def main() -> None:
                             "run_name": str(args.run_name),
                             "seed": int(args.seed),
                             "primary_anchor": str(primary_anchor_name),
+                            "query_path_anchor": str(query_path_anchor_name),
                             "secondary_anchor": str(secondary_anchor_name),
                             "interval": int(gradient_audit_interval),
                             "secondary_every_audit_cycles": int(gradient_audit_secondary_every),
@@ -1289,6 +1506,12 @@ def main() -> None:
             "persistent_workers": bool(loader_kwargs.get("persistent_workers", False)),
             "pin_memory": bool(loader_kwargs.get("pin_memory", False)),
         },
+        "data": {
+            "data_mode": str(data_mode),
+            "frontend_cache_dir": str(resolved_frontend_cache_dir),
+            "frontend_cache_index": str(resolved_frontend_cache_index),
+            "frontend_cache_max_shards_in_memory": int(args.frontend_cache_max_shards_in_memory),
+        },
         "runtime": {
             "step_time_p50_s": _pct(step_times, 50.0),
             "step_time_p95_s": _pct(step_times, 95.0),
@@ -1328,6 +1551,7 @@ def main() -> None:
             "secondary_every_audit_cycles": int(gradient_audit_secondary_every),
             "output": str(gradient_audit_path) if gradient_audit_path is not None else "",
             "primary_anchor": str(primary_anchor_name),
+            "query_path_anchor": str(query_path_anchor_name),
             "secondary_anchor": str(secondary_anchor_name),
             "average_audit_time_ms": float(sum(float(x.get("audit_time_ms", 0.0)) for x in gradient_audit_rows) / max(1, len(gradient_audit_rows))),
             "average_audit_memory_delta_mb": float(sum(float(x.get("audit_memory_delta_mb", 0.0)) for x in gradient_audit_rows) / max(1, len(gradient_audit_rows))),

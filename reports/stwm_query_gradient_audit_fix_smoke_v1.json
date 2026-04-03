@@ -1,0 +1,89 @@
+{
+  "run_name": "query_gradient_audit_fix_smoke_v1",
+  "seed": 42,
+  "primary_anchor": "seq_backbone.output_features",
+  "query_path_anchor": "token_time_attention",
+  "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+  "interval": 1,
+  "secondary_every_audit_cycles": 5,
+  "average_audit_time_ms": 1152.902797999559,
+  "average_audit_memory_delta_mb": 4.65380859375,
+  "rows": [
+    {
+      "step": 1,
+      "clip_id": "103_5ZujNM_MouM",
+      "lambda_sem_effective": 0.5,
+      "audit_cycle": 1,
+      "primary_anchor": "seq_backbone.output_features",
+      "primary_anchor_shape": [
+        1,
+        46,
+        1024
+      ],
+      "g_traj_norm": 0.001234697992913425,
+      "g_query_norm": 0.0,
+      "g_sem_norm": 0.022608861327171326,
+      "cos_sem_traj": 0.02301749114642001,
+      "cos_sem_query": 0.0,
+      "query_path_anchor": "token_time_attention",
+      "query_path_anchor_shape": [
+        1,
+        16,
+        46
+      ],
+      "qpath_g_query_norm": 45.93931198120117,
+      "qpath_g_sem_norm": 0.07713409513235092,
+      "qpath_g_traj_norm": 0.0,
+      "qpath_cos_sem_query": 0.10291668322196384,
+      "qpath_cos_traj_query": 0.0,
+      "qpath_cos_sem_traj": 0.0,
+      "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+      "secondary_due": false,
+      "secondary_g_traj_norm": 0.0,
+      "secondary_g_query_norm": 0.0,
+      "secondary_g_sem_norm": 0.0,
+      "secondary_cos_sem_traj": 0.0,
+      "secondary_cos_sem_query": 0.0,
+      "audit_time_ms": 2268.1986300158314,
+      "audit_memory_delta_mb": 9.490234375
+    },
+    {
+      "step": 2,
+      "clip_id": "1026_kJ_8F7YIEg4",
+      "lambda_sem_effective": 0.5,
+      "audit_cycle": 2,
+      "primary_anchor": "seq_backbone.output_features",
+      "primary_anchor_shape": [
+        1,
+        46,
+        1024
+      ],
+      "g_traj_norm": 0.001788321533240378,
+      "g_query_norm": 0.0,
+      "g_sem_norm": 0.009945769794285297,
+      "cos_sem_traj": -0.020395231018720664,
+      "cos_sem_query": 0.0,
+      "query_path_anchor": "token_time_attention",
+      "query_path_anchor_shape": [
+        1,
+        16,
+        46
+      ],
+      "qpath_g_query_norm": 45.90024185180664,
+      "qpath_g_sem_norm": 0.033165860921144485,
+      "qpath_g_traj_norm": 0.0,
+      "qpath_cos_sem_query": -0.022658702093260763,
+      "qpath_cos_traj_query": 0.0,
+      "qpath_cos_sem_traj": 0.0,
+      "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+      "secondary_due": false,
+      "secondary_g_traj_norm": 0.0,
+      "secondary_g_query_norm": 0.0,
+      "secondary_g_sem_norm": 0.0,
+      "secondary_cos_sem_traj": 0.0,
+      "secondary_cos_sem_query": 0.0,
+      "audit_time_ms": 37.6069659832865,
+      "audit_memory_delta_mb": -0.1826171875
+    }
+  ]
+}

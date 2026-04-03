@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+import hashlib
 import json
 import random
 
@@ -71,7 +72,9 @@ class STWMDataset(Dataset):
 
     def _load_manifest(self, manifest: str | Path) -> list[ClipSample]:
         manifest_path = Path(manifest)
-        data = json.loads(manifest_path.read_text())
+        manifest_raw = manifest_path.read_text()
+        data = json.loads(manifest_raw)
+        manifest_hash = hashlib.sha1(manifest_raw.encode("utf-8")).hexdigest()
         samples: list[ClipSample] = []
 
         for item in data:
@@ -90,6 +93,7 @@ class STWMDataset(Dataset):
 
             metadata.setdefault("dataset", metadata.get("dataset", "unknown"))
             metadata["manifest_path"] = str(manifest_path)
+            metadata["manifest_hash"] = manifest_hash
             metadata["num_frames"] = len(frame_paths)
             metadata["num_masks"] = len(metadata.get("mask_paths", []))
 

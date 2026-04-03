@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-04-03 17:28:31",
+  "inputs": {
+    "raw_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_frontend_cache_pilot_v1/raw_seed42/mini_val_summary.json",
+    "frontend_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_frontend_cache_pilot_v1/frontend_cache_seed42/mini_val_summary.json",
+    "monitor_report": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/ab_report.json"
+  },
+  "ab_12step": {
+    "raw": {
+      "step_time_p50_s": 23.395719276479213,
+      "step_time_p95_s": 36.28725650058768,
+      "data_time_p50_s": 20.764858410460874,
+      "data_wait_ratio_p50": 0.8894411969736653,
+      "gpu_peak_memory_gb_max": 3.883119583129883
+    },
+    "frontend_cache": {
+      "step_time_p50_s": 2.559184267971432,
+      "step_time_p95_s": 11.325190501875468,
+      "data_time_p50_s": 0.0294292084290646,
+      "data_wait_ratio_p50": 0.018205117524193418,
+      "gpu_peak_memory_gb_max": 3.883119583129883
+    },
+    "delta": {
+      "step_time_p50_ratio": 0.1093868599519527,
+      "step_time_p50_reduction_pct": 89.06131400480473,
+      "data_time_p50_ratio": 0.001417260250339045,
+      "data_time_p50_reduction_pct": 99.8582739749661,
+      "data_wait_ratio_abs_drop": 0.8712360794494719,
+      "data_wait_ratio_delta": -0.8712360794494719
+    }
+  },
+  "ab_monitor_6step": {
+    "raw": {
+      "exit_ok": true,
+      "cpu_pct_mean": 90.90847457627119,
+      "gpu_sm_util_mean": 2.440677966101695,
+      "gpu_used_mem_mib_mean": 3903.6271186440677
+    },
+    "frontend_cache": {
+      "exit_ok": true,
+      "cpu_pct_mean": 87.31923076923077,
+      "gpu_sm_util_mean": 2.3076923076923075,
+      "gpu_used_mem_mib_mean": 3056.230769230769
+    },
+    "delta": {
+      "cpu_pct_mean_delta": -3.5892438070404182,
+      "gpu_sm_util_mean_delta": -0.13298565840938759,
+      "gpu_used_mem_mib_mean_delta": -847.3963494132986
+    }
+  },
+  "decision": {
+    "go": true,
+    "reason": "meets_throughput_threshold_and_stability",
+    "criteria": {
+      "wait_ratio_abs_drop_ge_0p15": true,
+      "step_time_reduction_ge_20pct": true,
+      "stability_ok": true
+    }
+  }
+}

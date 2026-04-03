@@ -4,6 +4,7 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from pathlib import Path
 import json
+import os
 import subprocess
 from typing import Any
 
@@ -291,7 +292,30 @@ def select_gpu(
     _augment_compute_apps(rows)
     lease_map = _read_leases(queue_root)
 
-    policy = _policy_for(str(class_type), int(wait_seconds))
+    force_min_free_gib = _safe_float(str(os.environ.get("STWM_PROTOCOL_V2_FORCE_MIN_FREE_GIB", "0")).strip(), 0.0)
+    force_enabled = force_min_free_gib > 0.0
+
+    if force_enabled:
+        policy = {
+            "mode": "force_min_free_mem_only",
+            "wait_seconds": int(wait_seconds),
+            "fallback_after_seconds": 0,
+            "thresholds": {
+                "min_free_mem_gib": float(force_min_free_gib),
+                "max_gpu_util": 100.0,
+                "max_active_apps": 999,
+            },
+            "force_override": {
+                "enabled": True,
+                "ignore_gpu_util": True,
+                "ignore_active_apps": True,
+                "ignore_stwm_lease_caps": True,
+                "reason": "STWM_PROTOCOL_V2_FORCE_MIN_FREE_GIB",
+            },
+        }
+    else:
+        policy = _policy_for(str(class_type), int(wait_seconds))
+
     thresholds = dict(policy["thresholds"])
 
     decorated: list[dict[str, Any]] = []
@@ -303,12 +327,23 @@ def select_gpu(
         row["lease_counts"] = dict(lease_counts)
         row["occupancy_class"] = _occupancy_class(int(row["active_compute_apps"]))
 
-        ok, blockers, gap = _eligibility(
-            row,
-            class_type=str(class_type),
-            thresholds=thresholds,
-            lease_counts=lease_counts,
-        )
+        if force_enabled:
+            free_mem_gib = float(row["free_mem_gib"])
+            min_free = float(thresholds["min_free_mem_gib"])
+            ok = free_mem_gib >= min_free
+            blockers = [] if ok else ["force_min_free_mem"]
+            gap = {
+                "free_mem_gib_short": float(max(0.0, min_free - free_mem_gib)),
+                "gpu_util_excess": 0.0,
+                "active_apps_excess": 0.0,
+            }
+        else:
+            ok, blockers, gap = _eligibility(
+                row,
+                class_type=str(class_type),
+                thresholds=thresholds,
+                lease_counts=lease_counts,
+            )
 
         row["eligible"] = bool(ok)
         row["threshold_gap"] = gap

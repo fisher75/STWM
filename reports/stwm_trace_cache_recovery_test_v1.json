@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-04-03 16:59:52",
+  "phase": "phase1_trace_cache_hardening",
+  "sample_clip_id": "0_wHveSGjXyDY",
+  "manifest_path": "/raid/chen034/workspace/stwm/manifests/protocol_v2/train_v2.json",
+  "manifest_hash": "55268f34b263108c374842350a12c2de61f309ee",
+  "tests": {
+    "corruption_rebuild": {
+      "ok": true,
+      "cache_rebuild_reason": "ValueError: This file contains pickled (object) data. If you trust the file you can load it unsafely using the `allow_pickle=` keyword argument or `pickle.load()`.",
+      "cache_quarantine_path": "/raid/chen034/workspace/stwm/data/cache/trace_summaries_phase1_test/quarantine/0_wHveSGjXyDY_57b29aaf0140.bad_20260403_165950_6f999161.npz",
+      "cache_path_exists_after_rebuild": true,
+      "quarantine_file_count": 1
+    },
+    "cache_version_key_isolation": {
+      "ok": true,
+      "cache_version": "trace_mask_center_v3",
+      "cache_path": "/raid/chen034/workspace/stwm/data/cache/trace_summaries_phase1_test/0_wHveSGjXyDY_5b411e1a293e.npz",
+      "matches_v2_cache_path": false
+    },
+    "concurrent_encode_same_key": {
+      "ok": true,
+      "process_results": [
+        {
+          "idx": 0,
+          "ok": true,
+          "cache_path": "/raid/chen034/workspace/stwm/data/cache/trace_summaries_phase1_test/concurrency_case/0_wHveSGjXyDY_57b29aaf0140.npz",
+          "cache_rebuilt": false
+        },
+        {
+          "idx": 1,
+          "ok": true,
+          "cache_path": "/raid/chen034/workspace/stwm/data/cache/trace_summaries_phase1_test/concurrency_case/0_wHveSGjXyDY_57b29aaf0140.npz",
+          "cache_rebuilt": false
+        }
+      ],
+      "npz_file_count": 1
+    }
+  }
+}

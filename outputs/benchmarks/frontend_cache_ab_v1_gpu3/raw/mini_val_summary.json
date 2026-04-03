@@ -1,0 +1,146 @@
+{
+  "run_name": "ab_raw_seed42",
+  "mode": "train",
+  "steps": 6,
+  "model_preset": "prototype_220m_v4_2",
+  "model_parameters": 207543382,
+  "rough_parameter_budget": 201469952,
+  "ablation": {
+    "disable_semantics": false,
+    "disable_identity_memory": false,
+    "neutralize_object_bias": false,
+    "use_teacher_priors": true,
+    "enable_reconnect_loss": false
+  },
+  "loss_weights": {
+    "lambda_traj": 1.0,
+    "lambda_vis": 0.25,
+    "lambda_sem_target": 0.5,
+    "lambda_reid": 0.25,
+    "lambda_query": 0.25,
+    "lambda_reconnect": 0.1,
+    "semantic_warmup": false,
+    "semantic_warmup_start_ratio": 0.1,
+    "semantic_warmup_end_ratio": 0.3
+  },
+  "average_losses": {
+    "total": 2.1195976498226323,
+    "trajectory": 0.008815885740962889,
+    "trajectory_l1": 0.10521507383479427,
+    "visibility": 0.08019754757212165,
+    "semantic": 2.411093056201935,
+    "lambda_sem_effective": 0.5,
+    "reid": 0.0,
+    "query": 3.5407433634003005,
+    "query_localization_error": 0.10289321296537916,
+    "query_traj_gap": -0.0023218608694151044
+  },
+  "diagnostics": {
+    "assignment_entropy": 0.9999909245719513,
+    "token_usage_entropy": 0.9999910853803158,
+    "objectness_mean": 0.6558245718479156,
+    "memory_gate_mean": 0.4702351888020833,
+    "bg_fg_attention_ratio": 0.0,
+    "reappearance_event_ratio": 0.0,
+    "reconnect_success_rate": 0.0,
+    "reconnect_min_error": 0.0,
+    "gpu_peak_memory_gb": 3.8831187089284263,
+    "data_wait_ratio": 0.6708789954053347
+  },
+  "risk_flags": {
+    "tokenizer_collapse_risk": false,
+    "background_bias_risk": false,
+    "memory_inactive_risk": false,
+    "semantic_decorative_risk": false,
+    "identity_decorative_risk": true
+  },
+  "budget": {
+    "sample_count": 256,
+    "steps_per_epoch": 16,
+    "target_epochs": 0.0,
+    "steps_for_target_epochs": 0,
+    "min_optimizer_steps": 0,
+    "max_optimizer_steps": 0,
+    "requested_steps": 6,
+    "resolved_optimizer_steps": 6,
+    "micro_batch_per_gpu": 2,
+    "grad_accum": 8,
+    "effective_batch": 16
+  },
+  "precision": {
+    "bf16": true,
+    "activation_checkpointing": true,
+    "device": "cuda"
+  },
+  "dataloader": {
+    "num_workers": 12,
+    "prefetch_factor": 2,
+    "persistent_workers": true,
+    "pin_memory": true
+  },
+  "data": {
+    "data_mode": "raw",
+    "frontend_cache_dir": "",
+    "frontend_cache_index": "",
+    "frontend_cache_max_shards_in_memory": 4
+  },
+  "runtime": {
+    "step_time_p50_s": 12.484418516018195,
+    "step_time_p95_s": 22.6951260487549,
+    "data_time_p50_s": 7.672640909033362,
+    "data_wait_ratio_p50": 0.7104137401470374,
+    "data_wait_ratio_p95": 0.9001702625726518,
+    "gpu_peak_memory_gb_max": 3.883119583129883,
+    "samples_processed": 96
+  },
+  "checkpoint_policy": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/raw/checkpoints",
+    "retention": "latest_every_1000+best",
+    "checkpoint_interval": 1000,
+    "milestone_interval": 0,
+    "latest": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/raw/checkpoints/latest.pt",
+    "best": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/raw/checkpoints/best.pt",
+    "official_best_protocol_main": "",
+    "official_best_selection_sidecar": "",
+    "min_free_disk_gb": 50.0,
+    "estimated_checkpoint_each_gb": 2.569478042423725,
+    "estimated_max_retained_gb": 5.13895608484745
+  },
+  "protocol_best_policy": {
+    "protocol_eval_interval": 0,
+    "protocol_eval_manifest": "",
+    "protocol_eval_dataset": "all",
+    "protocol_diagnostics_manifest": "",
+    "protocol_diagnostics_dataset": "all",
+    "protocol_version": "v2_4_detached_frozen",
+    "official_best_checkpoint_name": "best_protocol_main.pt",
+    "official_best_selection_name": "best_protocol_main_selection.json",
+    "records": []
+  },
+  "gradient_audit": {
+    "enabled": false,
+    "interval": 0,
+    "secondary_every_audit_cycles": 5,
+    "output": "",
+    "primary_anchor": "seq_backbone.output_features",
+    "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+    "average_audit_time_ms": 0.0,
+    "average_audit_memory_delta_mb": 0.0,
+    "rows": 0
+  },
+  "paths": {
+    "train_log": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/raw/train_log.jsonl",
+    "summary": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/raw/mini_val_summary.json",
+    "checkpoint": "/home/chen034/workspace/stwm/outputs/benchmarks/frontend_cache_ab_v1_gpu3/raw/checkpoints/latest.pt"
+  },
+  "resume": {
+    "requested_resume_checkpoint": "",
+    "auto_resume": false,
+    "resolved_resume_checkpoint": "",
+    "start_step": 0,
+    "best_step": 6,
+    "best_total_loss": 1.6200668662786484,
+    "eval_only": false,
+    "log_name": "train_log.jsonl"
+  }
+}
