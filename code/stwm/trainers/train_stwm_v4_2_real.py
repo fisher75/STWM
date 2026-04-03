@@ -176,6 +176,10 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--disable-semantics", action="store_true")
     parser.add_argument("--disable-identity-memory", action="store_true")
     parser.add_argument("--neutralize-object-bias", action="store_true")
+    parser.add_argument("--object-bias-alpha", type=float, default=1.0)
+    parser.add_argument("--object-bias-delay-steps", type=int, default=0)
+    parser.add_argument("--object-bias-gated", action="store_true")
+    parser.add_argument("--object-bias-gate-threshold", type=float, default=0.5)
     parser.add_argument("--use-teacher-priors", action="store_true")
     parser.add_argument("--enable-reconnect-loss", action="store_true")
     parser.add_argument("--contrastive-temperature", type=float, default=0.07)
@@ -1104,9 +1108,29 @@ def main() -> None:
                     use_memory = not bool(args.disable_identity_memory)
                     model_prior_features = batch["prior_features"]
                     model_teacher_objectness = batch["teacher_objectness"]
+
+                    object_bias_alpha = float(args.object_bias_alpha)
+                    object_bias_alpha = max(0.0, min(1.0, object_bias_alpha))
+                    if int(args.object_bias_delay_steps) > 0 and int(step) <= int(args.object_bias_delay_steps):
+                        object_bias_alpha = 0.0
                     if bool(args.neutralize_object_bias):
-                        model_prior_features = torch.zeros_like(model_prior_features)
-                        model_teacher_objectness = torch.full_like(model_teacher_objectness, 0.5)
+                        object_bias_alpha = 0.0
+
+                    model_prior_features = model_prior_features * object_bias_alpha
+                    neutral_teacher_objectness = torch.full_like(model_teacher_objectness, 0.5)
+                    model_teacher_objectness = neutral_teacher_objectness + object_bias_alpha * (
+                        model_teacher_objectness - neutral_teacher_objectness
+                    )
+
+                    object_bias_gate_mean = 1.0
+                    if bool(args.object_bias_gated):
+                        visibility_source = batch["target_visibility"][..., 0].clamp(0.0, 1.0)
+                        gate = (visibility_source >= float(args.object_bias_gate_threshold)).to(dtype=model_prior_features.dtype)
+                        object_bias_gate_mean = float(gate.mean().detach().float().cpu())
+                        model_prior_features = model_prior_features * gate.unsqueeze(-1)
+                        model_teacher_objectness = neutral_teacher_objectness + gate * (
+                            model_teacher_objectness - neutral_teacher_objectness
+                        )
 
                     with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=amp_enabled):
                         outputs = model(
@@ -1321,6 +1345,8 @@ def main() -> None:
                         "query_gt_x": float(q_gt[0].item()),
                         "query_gt_y": float(q_gt[1].item()),
                         "query_traj_gap": float(query_localization_error - trajectory_l1),
+                        "object_bias_alpha_effective": float(object_bias_alpha),
+                        "object_bias_gate_mean": float(object_bias_gate_mean),
                         "reconnect_loss": float(reconnect_loss.detach().float().cpu()),
                         "has_reappearance_event": float(has_reappearance_event),
                         "reappearance_count": float(reappearance_count),
@@ -1437,6 +1463,10 @@ def main() -> None:
             "disable_semantics": bool(args.disable_semantics),
             "disable_identity_memory": bool(args.disable_identity_memory),
             "neutralize_object_bias": bool(args.neutralize_object_bias),
+            "object_bias_alpha": float(args.object_bias_alpha),
+            "object_bias_delay_steps": int(args.object_bias_delay_steps),
+            "object_bias_gated": bool(args.object_bias_gated),
+            "object_bias_gate_threshold": float(args.object_bias_gate_threshold),
             "use_teacher_priors": bool(args.use_teacher_priors),
             "enable_reconnect_loss": bool(args.enable_reconnect_loss),
         },

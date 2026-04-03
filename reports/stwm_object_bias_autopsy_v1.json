@@ -1,0 +1,872 @@
+{
+  "generated_at": "2026-04-04 00:27:12",
+  "repo_root": "/home/chen034/workspace/stwm",
+  "seed": 42,
+  "full_run": "full_v4_2_seed42_fixed_nowarm_lambda1",
+  "wo_run": "wo_object_bias_v4_2_seed42",
+  "full_eval_path": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_default_v1/seed_42/full_v4_2_seed42_fixed_nowarm_lambda1/checkpoints/protocol_eval/protocol_val_main_step_002000.json",
+  "wo_eval_path": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_default_v1/seed_42/wo_object_bias_v4_2_seed42/checkpoints/protocol_eval/protocol_val_main_step_002000.json",
+  "global_metrics": {
+    "full": {
+      "future_mask_iou": 0.1604957929660223,
+      "future_trajectory_l1": 0.006538258073969955,
+      "visibility_accuracy": 1.0,
+      "visibility_f1": 1.0,
+      "identity_consistency": 0.9990458015267175,
+      "identity_switch_rate": 0.0,
+      "occlusion_recovery_acc": 0.0,
+      "query_localization_error": 0.0066951184934028836,
+      "query_top1_acc": 0.926208651399491,
+      "query_hit_rate": 0.9949109414758269
+    },
+    "wo_object_bias": {
+      "future_mask_iou": 0.16049471405638766,
+      "future_trajectory_l1": 0.0024298117105059952,
+      "visibility_accuracy": 1.0,
+      "visibility_f1": 1.0,
+      "identity_consistency": 0.9990458015267175,
+      "identity_switch_rate": 0.0,
+      "occlusion_recovery_acc": 0.0,
+      "query_localization_error": 0.0022589355403837053,
+      "query_top1_acc": 0.9796437659033079,
+      "query_hit_rate": 0.9949109414758269
+    }
+  },
+  "per_clip_comparison": {
+    "paired_clips": 393,
+    "metrics": {
+      "query_localization_error": {
+        "count": 393,
+        "full_worse_rate": 0.9847328244274809,
+        "full_better_rate": 0.015267175572519083,
+        "tie_rate": 0.0,
+        "mean_full_minus_wo": 0.004436182953019179,
+        "median_full_minus_wo": 0.004267275333404541,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "2216_3Nq9zNAtI3s",
+            "occurrence": 0,
+            "full": 0.03664834797382355,
+            "wo_object_bias": 0.01238943636417389,
+            "full_minus_wo": 0.024258911609649658,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2249_DaeGaqASjeY",
+            "occurrence": 0,
+            "full": 0.040477454662323,
+            "wo_object_bias": 0.023540720343589783,
+            "full_minus_wo": 0.016936734318733215,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "231_-_w6ZFauJBI",
+            "occurrence": 0,
+            "full": 0.11541233956813812,
+            "wo_object_bias": 0.09875227510929108,
+            "full_minus_wo": 0.016660064458847046,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2245_CUJfZkWzx9Q",
+            "occurrence": 1,
+            "full": 0.01406349241733551,
+            "wo_object_bias": 0.002420872449874878,
+            "full_minus_wo": 0.011642619967460632,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1984_Km3UEW34R_Q",
+            "occurrence": 0,
+            "full": 0.01432238519191742,
+            "wo_object_bias": 0.002775341272354126,
+            "full_minus_wo": 0.011547043919563293,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "516_5bqIhLCjTzE",
+            "occurrence": 0,
+            "full": 0.017972931265830994,
+            "wo_object_bias": 0.00687563419342041,
+            "full_minus_wo": 0.011097297072410583,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1010_kI0mOZirPGs",
+            "occurrence": 0,
+            "full": 0.012131288647651672,
+            "wo_object_bias": 0.001634344458580017,
+            "full_minus_wo": 0.010496944189071655,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2325_Tp33Bt_mc0c",
+            "occurrence": 0,
+            "full": 0.012157753109931946,
+            "wo_object_bias": 0.003468051552772522,
+            "full_minus_wo": 0.008689701557159424,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2271__5dMMZFgaN4",
+            "occurrence": 0,
+            "full": 0.014928475022315979,
+            "wo_object_bias": 0.0064950138330459595,
+            "full_minus_wo": 0.00843346118927002,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1223_xD8VN2r_h2s",
+            "occurrence": 0,
+            "full": 0.009659647941589355,
+            "wo_object_bias": 0.0012702643871307373,
+            "full_minus_wo": 0.008389383554458618,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2136_C-RGc1V_Zq0",
+            "occurrence": 0,
+            "full": 0.00897948443889618,
+            "wo_object_bias": 0.0007940679788589478,
+            "full_minus_wo": 0.008185416460037231,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "972_DWyYNsbN41w",
+            "occurrence": 0,
+            "full": 0.009249836206436157,
+            "wo_object_bias": 0.0012697577476501465,
+            "full_minus_wo": 0.00798007845878601,
+            "comparison": "full_worse"
+          }
+        ]
+      },
+      "query_top1_acc": {
+        "count": 393,
+        "full_worse_rate": 0.058524173027989825,
+        "full_better_rate": 0.005089058524173028,
+        "tie_rate": 0.9363867684478372,
+        "mean_full_minus_wo": -0.05343511450381679,
+        "median_full_minus_wo": 0.0,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "141_pdbnHgo554Q",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "184_qOLd2_WB7WA",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1984_Km3UEW34R_Q",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2136_C-RGc1V_Zq0",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2196_-mxij1iv1Qs",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2205_1eo2-7k_Wds",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2218_3xpH6BQyWwk",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2235_9qtZy4A5W0Q",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2269_IpOBwbwg7-s",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2271__5dMMZFgaN4",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2294_eTLiN427CdU",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2295_erx87N1WwWw",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": -1.0,
+            "comparison": "full_worse"
+          }
+        ]
+      },
+      "future_trajectory_l1": {
+        "count": 393,
+        "full_worse_rate": 0.9821882951653944,
+        "full_better_rate": 0.017811704834605598,
+        "tie_rate": 0.0,
+        "mean_full_minus_wo": 0.00410844636346396,
+        "median_full_minus_wo": 0.004267275333404541,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "2216_3Nq9zNAtI3s",
+            "occurrence": 0,
+            "full": 0.02366497553884983,
+            "wo_object_bias": 0.01795256696641445,
+            "full_minus_wo": 0.005712408572435379,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "506_XmnmK7k8TkY",
+            "occurrence": 0,
+            "full": 0.007710607722401619,
+            "wo_object_bias": 0.0019982289522886276,
+            "full_minus_wo": 0.005712378770112991,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "443_hPrsXtTg3lM",
+            "occurrence": 0,
+            "full": 0.01830720156431198,
+            "wo_object_bias": 0.012594979256391525,
+            "full_minus_wo": 0.005712222307920456,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1200_B6ROh3Y2hIA",
+            "occurrence": 0,
+            "full": 0.01669829711318016,
+            "wo_object_bias": 0.010986227542161942,
+            "full_minus_wo": 0.005712069571018219,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2377_ydyvAyS8Uzw",
+            "occurrence": 0,
+            "full": 0.01021200604736805,
+            "wo_object_bias": 0.004499970003962517,
+            "full_minus_wo": 0.005712036043405533,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2249_DaeGaqASjeY",
+            "occurrence": 0,
+            "full": 0.035763099789619446,
+            "wo_object_bias": 0.03005129285156727,
+            "full_minus_wo": 0.005711806938052177,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "505_qF-Cl2BOMqs",
+            "occurrence": 0,
+            "full": 0.010717874392867088,
+            "wo_object_bias": 0.0050063226372003555,
+            "full_minus_wo": 0.005711551755666733,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2387_3502lHaZQIo",
+            "occurrence": 0,
+            "full": 0.07119493186473846,
+            "wo_object_bias": 0.0654837116599083,
+            "full_minus_wo": 0.00571122020483017,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2245_CUJfZkWzx9Q",
+            "occurrence": 1,
+            "full": 0.011823941022157669,
+            "wo_object_bias": 0.006115596741437912,
+            "full_minus_wo": 0.005708344280719757,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1010_kI0mOZirPGs",
+            "occurrence": 0,
+            "full": 0.009130589663982391,
+            "wo_object_bias": 0.003422349691390991,
+            "full_minus_wo": 0.0057082399725914,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2360_umdlxHU96J4",
+            "occurrence": 0,
+            "full": 0.006591092795133591,
+            "wo_object_bias": 0.0008828975260257721,
+            "full_minus_wo": 0.005708195269107819,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "443_hPrsXtTg3lM",
+            "occurrence": 1,
+            "full": 0.01547682099044323,
+            "wo_object_bias": 0.009768659248948097,
+            "full_minus_wo": 0.0057081617414951324,
+            "comparison": "full_worse"
+          }
+        ]
+      },
+      "future_mask_iou": {
+        "count": 393,
+        "full_worse_rate": 0.7353689567430025,
+        "full_better_rate": 0.26463104325699743,
+        "tie_rate": 0.0,
+        "mean_full_minus_wo": 1.0789096346573801e-06,
+        "median_full_minus_wo": -2.170138888896167e-06,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "721_YBlwixQxXiM",
+            "occurrence": 0,
+            "full": 0.10825674984881584,
+            "wo_object_bias": 0.11056725305435239,
+            "full_minus_wo": -0.0023105032055365515,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "963_yLXjMlx6AYw",
+            "occurrence": 0,
+            "full": 0.12493099455240958,
+            "wo_object_bias": 0.12687664255757972,
+            "full_minus_wo": -0.0019456480051701364,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2271__5dMMZFgaN4",
+            "occurrence": 0,
+            "full": 0.1535898732722218,
+            "wo_object_bias": 0.15542348839884101,
+            "full_minus_wo": -0.0018336151266192258,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1063_JaSnvS-XNas",
+            "occurrence": 0,
+            "full": 0.15316285760732007,
+            "wo_object_bias": 0.15363321041180447,
+            "full_minus_wo": -0.000470352804484403,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2387_3502lHaZQIo",
+            "occurrence": 0,
+            "full": 0.18187328223416688,
+            "wo_object_bias": 0.18233214730563627,
+            "full_minus_wo": -0.0004588650714693887,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1078_83TjDU7LjH4",
+            "occurrence": 0,
+            "full": 0.15673385813762802,
+            "wo_object_bias": 0.15698581860431707,
+            "full_minus_wo": -0.00025196046668904404,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1177_DOHip1C_jMU",
+            "occurrence": 0,
+            "full": 0.1580418917261911,
+            "wo_object_bias": 0.15825250688133147,
+            "full_minus_wo": -0.0002106151551403701,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2377_ydyvAyS8Uzw",
+            "occurrence": 0,
+            "full": 0.14637899637151253,
+            "wo_object_bias": 0.14658791805875002,
+            "full_minus_wo": -0.00020892168723748994,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "2341_ZvLKbhXqEKw",
+            "occurrence": 0,
+            "full": 0.15036878248362856,
+            "wo_object_bias": 0.15055737566535862,
+            "full_minus_wo": -0.00018859318173006234,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1010_kI0mOZirPGs",
+            "occurrence": 0,
+            "full": 0.16110601829528942,
+            "wo_object_bias": 0.16128544736782063,
+            "full_minus_wo": -0.00017942907253121199,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1283_8wZKDinJg40",
+            "occurrence": 0,
+            "full": 0.15523522022883418,
+            "wo_object_bias": 0.15540553105934862,
+            "full_minus_wo": -0.00017031083051444185,
+            "comparison": "full_worse"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 0,
+            "full": 0.15629424563915784,
+            "wo_object_bias": 0.15644518820199824,
+            "full_minus_wo": -0.00015094256284040042,
+            "comparison": "full_worse"
+          }
+        ]
+      },
+      "identity_consistency": {
+        "count": 393,
+        "full_worse_rate": 0.0,
+        "full_better_rate": 0.0,
+        "tie_rate": 1.0,
+        "mean_full_minus_wo": 0.0,
+        "median_full_minus_wo": 0.0,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "1010_kI0mOZirPGs",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1017_8aIZCJKQL1s",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1019_OfFne6dmXvE",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1019_OfFne6dmXvE",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "101_gx9PZZuwvoI",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "101_gx9PZZuwvoI",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1029_OPfjoAQxvcQ",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1029_OPfjoAQxvcQ",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1039_QZROp4t0doU",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1046_tg0kzFoiCZ8",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          }
+        ]
+      },
+      "identity_switch_rate": {
+        "count": 393,
+        "full_worse_rate": 0.0,
+        "full_better_rate": 0.0,
+        "tie_rate": 1.0,
+        "mean_full_minus_wo": 0.0,
+        "median_full_minus_wo": 0.0,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "1010_kI0mOZirPGs",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1017_8aIZCJKQL1s",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1019_OfFne6dmXvE",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1019_OfFne6dmXvE",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "101_gx9PZZuwvoI",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "101_gx9PZZuwvoI",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1029_OPfjoAQxvcQ",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1029_OPfjoAQxvcQ",
+            "occurrence": 1,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1039_QZROp4t0doU",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1046_tg0kzFoiCZ8",
+            "occurrence": 0,
+            "full": 0.0,
+            "wo_object_bias": 0.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          }
+        ]
+      },
+      "query_hit_rate": {
+        "count": 393,
+        "full_worse_rate": 0.0,
+        "full_better_rate": 0.0,
+        "tie_rate": 1.0,
+        "mean_full_minus_wo": 0.0,
+        "median_full_minus_wo": 0.0,
+        "top_full_worse_examples": [
+          {
+            "clip_id": "1010_kI0mOZirPGs",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1013_gyBXqmh4VBo",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1017_8aIZCJKQL1s",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1019_OfFne6dmXvE",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1019_OfFne6dmXvE",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "101_gx9PZZuwvoI",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "101_gx9PZZuwvoI",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1029_OPfjoAQxvcQ",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1029_OPfjoAQxvcQ",
+            "occurrence": 1,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1039_QZROp4t0doU",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          },
+          {
+            "clip_id": "1046_tg0kzFoiCZ8",
+            "occurrence": 0,
+            "full": 1.0,
+            "wo_object_bias": 1.0,
+            "full_minus_wo": 0.0,
+            "comparison": "tie"
+          }
+        ]
+      }
+    },
+    "query_traj_coupling": {
+      "query_traj_delta_corr": 0.5471548812615825,
+      "share_query_worse_traj_worse": 0.9821882951653944,
+      "share_query_worse_traj_not_worse": 0.002544529262086514
+    }
+  },
+  "train_windows": {
+    "step_0001_0200": {
+      "query_localization_error": {
+        "full": 0.0923519814061001,
+        "wo_object_bias": 0.041173101775348185,
+        "full_minus_wo": 0.05117887963075191
+      },
+      "trajectory_l1": {
+        "full": 0.09244494325161214,
+        "wo_object_bias": 0.04112284212082159,
+        "full_minus_wo": 0.05132210113079055
+      },
+      "objectness_mean": {
+        "full": 0.6062890854064608,
+        "wo_object_bias": 0.3576174304142478,
+        "full_minus_wo": 0.24867165499221294
+      }
+    },
+    "step_0201_0600": {
+      "query_localization_error": {
+        "full": 0.014262775015085936,
+        "wo_object_bias": 0.013106803596019744,
+        "full_minus_wo": 0.001155971419066192
+      },
+      "trajectory_l1": {
+        "full": 0.014365413894047378,
+        "wo_object_bias": 0.013178090408982825,
+        "full_minus_wo": 0.0011873234850645533
+      },
+      "objectness_mean": {
+        "full": 0.6658162689992605,
+        "wo_object_bias": 0.11397229593894735,
+        "full_minus_wo": 0.5518439730603132
+      }
+    },
+    "step_0601_1200": {
+      "query_localization_error": {
+        "full": 0.010567363350031276,
+        "wo_object_bias": 0.009819862277557453,
+        "full_minus_wo": 0.0007475010724738232
+      },
+      "trajectory_l1": {
+        "full": 0.010776147430539519,
+        "wo_object_bias": 0.009857637759341741,
+        "full_minus_wo": 0.0009185096711977776
+      },
+      "objectness_mean": {
+        "full": 0.8113397958259521,
+        "wo_object_bias": 0.09241148845835899,
+        "full_minus_wo": 0.7189283073675931
+      }
+    },
+    "step_1201_2000": {
+      "query_localization_error": {
+        "full": 0.00780518282437697,
+        "wo_object_bias": 0.007621929324232042,
+        "full_minus_wo": 0.00018325350014492849
+      },
+      "trajectory_l1": {
+        "full": 0.007961633596896717,
+        "wo_object_bias": 0.007659639174034965,
+        "full_minus_wo": 0.00030199442286175243
+      },
+      "objectness_mean": {
+        "full": 0.8047986710851321,
+        "wo_object_bias": 0.11370331458427245,
+        "full_minus_wo": 0.6910953565008597
+      }
+    },
+    "query_gap_early_late_ratio": 279.27913840814176
+  },
+  "hypothesis": {
+    "most_suspicious_issue": "object_bias_strength_and_timing",
+    "narrative": "full path appears over-biased to objectness and injects this bias too early: query/trajectory are worse on almost all clips while objectness_mean remains much higher than wo_object_bias, and the largest query gap occurs in early steps.",
+    "evidence": {
+      "query_localization_full_worse_rate": 0.9847328244274809,
+      "future_trajectory_full_worse_rate": 0.9821882951653944,
+      "query_top1_full_worse_rate": 0.058524173027989825,
+      "query_gap_early_late_ratio": 279.27913840814176,
+      "objectness_gap_mid": 0.7189283073675931,
+      "objectness_gap_late": 0.6910953565008597,
+      "query_traj_delta_corr": 0.5471548812615825,
+      "share_query_worse_traj_not_worse": 0.002544529262086514
+    }
+  }
+}
