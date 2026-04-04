@@ -1,0 +1,98 @@
+{
+  "generated_at": "2026-04-04 23:54:14 +0800",
+  "workspace_root": "/home/chen034/workspace/stwm",
+  "audit_mode": "read_only",
+  "scope": [
+    "seed42_clean_matrix_final_decision",
+    "seed123_replication_final_decision",
+    "wo_semantics_selection_sidecar_and_eval_summary",
+    "qstr_seed42_matrix",
+    "qtsa_seed42_matrix",
+    "object_bias_autopsy",
+    "v4_2_design_and_trainer_definition"
+  ],
+  "answers": {
+    "A": {
+      "question": "In V4.2 design definition, is semantics always a system component (semantic head / semantic supervision)?",
+      "answer": "yes",
+      "evidence": [
+        "docs/STWM_V4_2_DESIGN.md",
+        "docs/STWM_V4_2_SUPERVISION_PLAN.md",
+        "code/stwm/trainers/train_stwm_v4_2_real.py"
+      ]
+    },
+    "B": {
+      "question": "Does the current strongest baseline include semantics, only not entering transition?",
+      "answer": "yes",
+      "evidence": {
+        "best_run": "trace_sem_baseline_seed42_qtsa_control_v1",
+        "source": "reports/stwm_qtsa_mainline_seed42_report_v1.json",
+        "mini_val_ablation": {
+          "disable_semantics": false,
+          "qtsa_disable_semantic_transition": true
+        },
+        "job_command_flags": [
+          "--neutralize-object-bias",
+          "--qtsa-disable-semantic-transition"
+        ]
+      }
+    },
+    "C": {
+      "question": "Which line is more directly negated by clean evidence: object prior or semantics?",
+      "answer": "object_prior",
+      "evidence": {
+        "seed42_d1_clean_matrix": {
+          "source": "reports/stwm_d1_clean_matrix_final_report_v1.json",
+          "full_vs_wo_object_bias": {
+            "qloc": [
+              0.0066951184934028836,
+              0.0022589355403837053
+            ],
+            "qtop1": [
+              0.926208651399491,
+              0.9796437659033079
+            ],
+            "l1": [
+              0.006538258073969955,
+              0.0024298117105059952
+            ],
+            "result": "wo_object_bias_beats_full_on_all_3"
+          }
+        },
+        "object_bias_autopsy": {
+          "source": "reports/stwm_object_bias_autopsy_v1.json",
+          "query_full_worse_rate": 0.9847328244274809,
+          "trajectory_full_worse_rate": 0.9821882951653944,
+          "query_early_late_ratio": 279.279138,
+          "diagnosis": "over_strong_over_early_object_bias_injection"
+        }
+      }
+    },
+    "D": {
+      "question": "Final internal label for semantics: proved / disproved / unresolved-high-risk",
+      "answer": "unresolved_high_risk",
+      "reasoning": {
+        "seed42": "full_nowarm beats wo_semantics on all 3 official metrics",
+        "seed123": "wo_semantics beats full on all 3 official metrics",
+        "qstr_qtsa": "semantic routing/readout challenge variants underperform trace_sem_baseline"
+      }
+    },
+    "E": {
+      "question": "One standard sentence for paper/report",
+      "answer": "In STWM V4.2, semantics remains a core modeled component, but current clean evidence is cross-seed inconsistent for net gain, while object-prior over-injection is the more directly falsified failure mode; therefore semantics is presently classified as unresolved/high-risk rather than proved or disproved."
+    }
+  },
+  "wo_semantics_control_verification": {
+    "seed42": {
+      "job_file": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/done/1775216868076_wo_semantics_v4_2_seed42.job",
+      "contains_disable_semantics_flag": true,
+      "mini_val_summary_ablation_disable_semantics": true
+    },
+    "seed123": {
+      "job_file": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/done/1775278443248_wo_semantics_v4_2_seed123_control_v1.job",
+      "contains_disable_semantics_flag": true,
+      "mini_val_summary_ablation_disable_semantics": true
+    }
+  },
+  "note_on_eval_summary_ablation_field": "protocol_eval summary files may show ablation.disable_semantics=false even for wo_semantics runs; training job commands and mini_val_summary ablation fields were used as authoritative run-config evidence."
+}

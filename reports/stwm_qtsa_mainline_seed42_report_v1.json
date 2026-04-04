@@ -1,0 +1,152 @@
+{
+  "generated_at": "2026-04-04 23:26:57",
+  "submit_tsv": "/home/chen034/workspace/stwm/reports/stwm_qtsa_mainline_seed42_submit_v1.tsv",
+  "queue_status_dir": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status",
+  "run_names": [
+    "trace_sem_baseline_seed42_qtsa_control_v1",
+    "qtsa_readout_only_seed42_challenge_v1",
+    "qtsa_readout_temporal_consistency_seed42_challenge_v1"
+  ],
+  "monitoring": {
+    "all_entered_running": true,
+    "all_train_log_growth_observed": true,
+    "all_sidecar_generated": true,
+    "all_terminal": true
+  },
+  "first_running_job": {
+    "run_name": "trace_sem_baseline_seed42_qtsa_control_v1",
+    "running_seen_ts": "2026-04-04 20:30:42"
+  },
+  "first_training_job": {
+    "run_name": "trace_sem_baseline_seed42_qtsa_control_v1",
+    "first_train_log_nonzero_ts": "2026-04-04 20:32:42"
+  },
+  "runs": [
+    {
+      "run_name": "trace_sem_baseline_seed42_qtsa_control_v1",
+      "unique_change_point": "strongest non-object baseline; semantics not in transition",
+      "state": "done",
+      "output_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/trace_sem_baseline_seed42_qtsa_control_v1",
+      "status_path": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status/1775305811473_trace_sem_baseline_seed42_qtsa_control_v1.status.json",
+      "job_id": "20260404_203011_16712",
+      "main_log": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/logs/1775305811473_trace_sem_baseline_seed42_qtsa_control_v1.log",
+      "worker_session": "unknown",
+      "gpu_index": "4",
+      "status_update_ts": "2026-04-04 23:21:16",
+      "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/trace_sem_baseline_seed42_qtsa_control_v1/train_log.jsonl",
+      "train_log_rows": 2000,
+      "max_step": 2000,
+      "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/trace_sem_baseline_seed42_qtsa_control_v1/checkpoints/best_protocol_main_selection.json",
+      "selection_sidecar_exists": true,
+      "selection_metrics": {
+        "query_localization_error": 0.0016402164260849697,
+        "query_top1_acc": 0.9770992366412213,
+        "future_trajectory_l1": 0.001841615586904169,
+        "future_mask_iou": null,
+        "identity_consistency": null,
+        "identity_switch_rate": null
+      },
+      "running_seen": true,
+      "running_seen_ts": "2026-04-04 20:30:42",
+      "train_log_growth_observed": true,
+      "first_train_log_nonzero_ts": "2026-04-04 20:32:42",
+      "sidecar_seen": true,
+      "sidecar_seen_ts": "2026-04-04 21:14:45"
+    },
+    {
+      "run_name": "qtsa_readout_only_seed42_challenge_v1",
+      "unique_change_point": "query-conditioned trace-semantic alignment/readout only; no transition rewrite",
+      "state": "done",
+      "output_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/qtsa_readout_only_seed42_challenge_v1",
+      "status_path": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status/1775305811663_qtsa_readout_only_seed42_challenge_v1.status.json",
+      "job_id": "20260404_203011_20366",
+      "main_log": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/logs/1775305811663_qtsa_readout_only_seed42_challenge_v1.log",
+      "worker_session": "unknown",
+      "gpu_index": "4",
+      "status_update_ts": "2026-04-04 23:25:48",
+      "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/qtsa_readout_only_seed42_challenge_v1/train_log.jsonl",
+      "train_log_rows": 2000,
+      "max_step": 2000,
+      "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/qtsa_readout_only_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+      "selection_sidecar_exists": true,
+      "selection_metrics": {
+        "query_localization_error": 0.0046807863102614426,
+        "query_top1_acc": 0.9516539440203562,
+        "future_trajectory_l1": 0.004788885438108566,
+        "future_mask_iou": null,
+        "identity_consistency": null,
+        "identity_switch_rate": null
+      },
+      "running_seen": true,
+      "running_seen_ts": "2026-04-04 20:30:42",
+      "train_log_growth_observed": true,
+      "first_train_log_nonzero_ts": "2026-04-04 20:32:42",
+      "sidecar_seen": true,
+      "sidecar_seen_ts": "2026-04-04 21:14:45"
+    },
+    {
+      "run_name": "qtsa_readout_temporal_consistency_seed42_challenge_v1",
+      "unique_change_point": "qtsa readout + temporal semantic consistency regularization",
+      "state": "done",
+      "output_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/qtsa_readout_temporal_consistency_seed42_challenge_v1",
+      "status_path": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status/1775305811826_qtsa_readout_temporal_consistency_seed42_challenge_v1.status.json",
+      "job_id": "20260404_203011_395",
+      "main_log": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/logs/1775305811826_qtsa_readout_temporal_consistency_seed42_challenge_v1.log",
+      "worker_session": "unknown",
+      "gpu_index": "4",
+      "status_update_ts": "2026-04-04 23:25:32",
+      "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/qtsa_readout_temporal_consistency_seed42_challenge_v1/train_log.jsonl",
+      "train_log_rows": 2000,
+      "max_step": 2000,
+      "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qtsa_mainline_seed42_v1/seed_42/qtsa_readout_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+      "selection_sidecar_exists": true,
+      "selection_metrics": {
+        "query_localization_error": 0.005884215690707432,
+        "query_top1_acc": 0.9414758269720102,
+        "future_trajectory_l1": 0.006022880711704114,
+        "future_mask_iou": null,
+        "identity_consistency": null,
+        "identity_switch_rate": null
+      },
+      "running_seen": true,
+      "running_seen_ts": "2026-04-04 20:30:42",
+      "train_log_growth_observed": true,
+      "first_train_log_nonzero_ts": "2026-04-04 20:32:42",
+      "sidecar_seen": true,
+      "sidecar_seen_ts": "2026-04-04 21:14:45"
+    }
+  ],
+  "official_ranking": [
+    {
+      "run_name": "trace_sem_baseline_seed42_qtsa_control_v1",
+      "query_localization_error": 0.0016402164260849697,
+      "query_top1_acc": 0.9770992366412213,
+      "future_trajectory_l1": 0.001841615586904169,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null,
+      "rank": 1
+    },
+    {
+      "run_name": "qtsa_readout_only_seed42_challenge_v1",
+      "query_localization_error": 0.0046807863102614426,
+      "query_top1_acc": 0.9516539440203562,
+      "future_trajectory_l1": 0.004788885438108566,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null,
+      "rank": 2
+    },
+    {
+      "run_name": "qtsa_readout_temporal_consistency_seed42_challenge_v1",
+      "query_localization_error": 0.005884215690707432,
+      "query_top1_acc": 0.9414758269720102,
+      "future_trajectory_l1": 0.006022880711704114,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null,
+      "rank": 3
+    }
+  ],
+  "best_run_by_official_rule": "trace_sem_baseline_seed42_qtsa_control_v1"
+}

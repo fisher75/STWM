@@ -199,6 +199,12 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--qstr-route-temperature", type=float, default=0.25)
     parser.add_argument("--qstr-temporal-consistency-weight", type=float, default=0.0)
 
+    parser.add_argument("--qtsa-enable", action="store_true")
+    parser.add_argument("--qtsa-disable-semantic-transition", action="store_true")
+    parser.add_argument("--qtsa-readout-weight", type=float, default=0.15)
+    parser.add_argument("--qtsa-association-temperature", type=float, default=0.25)
+    parser.add_argument("--qtsa-temporal-consistency-weight", type=float, default=0.0)
+
     parser.add_argument("--semantic-warmup", action="store_true")
     parser.add_argument("--semantic-warmup-start-ratio", type=float, default=0.10)
     parser.add_argument("--semantic-warmup-end-ratio", type=float, default=0.30)
@@ -1165,6 +1171,12 @@ def main() -> None:
                         residual_scale = max(0.0, float(args.qstr_residual_scale))
                         model_semantic_features = neutral_w * sem_feat + residual_scale * route_gate * sem_residual
 
+                    if bool(args.qtsa_disable_semantic_transition):
+                        # QTSA control: semantics should not directly modify latent transition inputs.
+                        model_semantic_features = torch.zeros_like(model_semantic_features)
+
+                    qtsa_route_mean = 0.0
+
                     with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=amp_enabled):
                         outputs = model(
                             trace_features=batch["trace_features"],
@@ -1233,6 +1245,45 @@ def main() -> None:
                                     frame_sem_probs[:, :-1, :],
                                 )
 
+                        qtsa_readout_alignment_loss = _safe_zero(device)
+                        qtsa_temporal_consistency_loss = _safe_zero(device)
+                        if bool(args.qtsa_enable):
+                            sem_probs = F.softmax(outputs["semantic_logits"], dim=-1)
+                            assoc_temp = max(1e-3, float(args.qtsa_association_temperature))
+                            query_token_weights = F.softmax(gather / assoc_temp, dim=-1)
+                            qtsa_route_mean = float(
+                                query_token_weights.max(dim=-1).values.mean().detach().float().cpu()
+                            )
+
+                            query_sem_readout = torch.einsum("bn,bnc->bc", query_token_weights, sem_probs)
+                            target_semantic_at_query = torch.gather(
+                                batch["target_semantic_probs"],
+                                dim=1,
+                                index=q_idx.view(-1, 1, 1).expand(
+                                    batch["target_semantic_probs"].shape[0],
+                                    1,
+                                    batch["target_semantic_probs"].shape[-1],
+                                ),
+                            ).squeeze(1)
+                            target_semantic_at_query = target_semantic_at_query / target_semantic_at_query.sum(
+                                dim=-1,
+                                keepdim=True,
+                            ).clamp(min=1e-6)
+
+                            qtsa_readout_alignment_loss = F.kl_div(
+                                torch.log(query_sem_readout.clamp(min=1e-6)),
+                                target_semantic_at_query,
+                                reduction="batchmean",
+                            )
+
+                            if float(args.qtsa_temporal_consistency_weight) > 0.0:
+                                frame_sem_probs_qtsa = torch.einsum("bnt,bnc->btc", token_attn, sem_probs)
+                                if frame_sem_probs_qtsa.shape[1] > 1:
+                                    qtsa_temporal_consistency_loss = F.smooth_l1_loss(
+                                        frame_sem_probs_qtsa[:, 1:, :],
+                                        frame_sem_probs_qtsa[:, :-1, :],
+                                    )
+
                         query_token_index = int(torch.argmax(outputs["query_token_logits"][0]).item())
                         query_frame_scores = token_attn[0, query_token_index]
                         query_frame_idx = int(torch.argmax(query_frame_scores).item())
@@ -1276,6 +1327,8 @@ def main() -> None:
                             + float(args.lambda_query) * query_loss
                             + float(args.lambda_reconnect) * reconnect_loss
                             + float(args.qstr_temporal_consistency_weight) * temporal_semantic_consistency_loss
+                            + float(args.qtsa_readout_weight) * qtsa_readout_alignment_loss
+                            + float(args.qtsa_temporal_consistency_weight) * qtsa_temporal_consistency_loss
                         )
 
                     if do_grad_audit and gradient_audit_row is None:
@@ -1378,8 +1431,12 @@ def main() -> None:
                         "trajectory_l1": float(trajectory_l1),
                         "visibility_loss": float(vis_loss.detach().float().cpu()),
                         "semantic_loss": float(sem_loss.detach().float().cpu()),
+                        "qtsa_readout_alignment_loss": float(qtsa_readout_alignment_loss.detach().float().cpu()),
+                        "qtsa_temporal_consistency_loss": float(qtsa_temporal_consistency_loss.detach().float().cpu()),
                         "qstr_temporal_consistency_loss": float(temporal_semantic_consistency_loss.detach().float().cpu()),
                         "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
+                        "qtsa_readout_weight": float(args.qtsa_readout_weight),
+                        "qtsa_temporal_consistency_weight": float(args.qtsa_temporal_consistency_weight),
                         "lambda_sem_effective": float(lambda_sem_effective),
                         "reid_loss": float(reid_loss.detach().float().cpu()),
                         "query_loss": float(query_loss.detach().float().cpu()),
@@ -1405,6 +1462,8 @@ def main() -> None:
                         "bg_fg_attention_ratio": float(bg_attn / max(fg_attn, 1e-6)),
                         "qstr_enabled": float(bool(args.qstr_enable)),
                         "qstr_route_mean": float(qstr_route_mean),
+                        "qtsa_enabled": float(bool(args.qtsa_enable)),
+                        "qtsa_route_mean": float(qtsa_route_mean),
                     }
                     for key, value in row_values.items():
                         metric_sum[key] = metric_sum.get(key, 0.0) + float(value)
@@ -1522,6 +1581,11 @@ def main() -> None:
             "qstr_neutral_path_weight": float(args.qstr_neutral_path_weight),
             "qstr_route_temperature": float(args.qstr_route_temperature),
             "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
+            "qtsa_enable": bool(args.qtsa_enable),
+            "qtsa_disable_semantic_transition": bool(args.qtsa_disable_semantic_transition),
+            "qtsa_readout_weight": float(args.qtsa_readout_weight),
+            "qtsa_association_temperature": float(args.qtsa_association_temperature),
+            "qtsa_temporal_consistency_weight": float(args.qtsa_temporal_consistency_weight),
         },
         "loss_weights": {
             "lambda_traj": float(args.lambda_traj),
@@ -1531,6 +1595,8 @@ def main() -> None:
             "lambda_query": float(args.lambda_query),
             "lambda_reconnect": float(args.lambda_reconnect),
             "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
+            "qtsa_readout_weight": float(args.qtsa_readout_weight),
+            "qtsa_temporal_consistency_weight": float(args.qtsa_temporal_consistency_weight),
             "semantic_warmup": bool(args.semantic_warmup),
             "semantic_warmup_start_ratio": float(args.semantic_warmup_start_ratio),
             "semantic_warmup_end_ratio": float(args.semantic_warmup_end_ratio),
@@ -1541,6 +1607,8 @@ def main() -> None:
             "trajectory_l1": _avg("trajectory_l1"),
             "visibility": _avg("visibility_loss"),
             "semantic": _avg("semantic_loss"),
+            "qtsa_readout_alignment": _avg("qtsa_readout_alignment_loss"),
+            "qtsa_temporal_consistency": _avg("qtsa_temporal_consistency_loss"),
             "qstr_temporal_consistency": _avg("qstr_temporal_consistency_loss"),
             "lambda_sem_effective": _avg("lambda_sem_effective"),
             "reid": _avg("reid_loss"),
@@ -1555,6 +1623,7 @@ def main() -> None:
             "memory_gate_mean": _avg("memory_gate_mean"),
             "bg_fg_attention_ratio": _avg("bg_fg_attention_ratio"),
             "qstr_route_mean": _avg("qstr_route_mean"),
+            "qtsa_route_mean": _avg("qtsa_route_mean"),
             "reappearance_event_ratio": _avg("has_reappearance_event"),
             "reconnect_success_rate": _avg("reconnect_success"),
             "reconnect_min_error": _avg("reconnect_min_error"),
