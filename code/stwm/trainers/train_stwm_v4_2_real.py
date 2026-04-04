@@ -193,6 +193,12 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--lambda-query", type=float, default=0.25)
     parser.add_argument("--lambda-reconnect", type=float, default=0.1)
 
+    parser.add_argument("--qstr-enable", action="store_true")
+    parser.add_argument("--qstr-residual-scale", type=float, default=0.2)
+    parser.add_argument("--qstr-neutral-path-weight", type=float, default=1.0)
+    parser.add_argument("--qstr-route-temperature", type=float, default=0.25)
+    parser.add_argument("--qstr-temporal-consistency-weight", type=float, default=0.0)
+
     parser.add_argument("--semantic-warmup", action="store_true")
     parser.add_argument("--semantic-warmup-start-ratio", type=float, default=0.10)
     parser.add_argument("--semantic-warmup-end-ratio", type=float, default=0.30)
@@ -1108,6 +1114,7 @@ def main() -> None:
                     use_memory = not bool(args.disable_identity_memory)
                     model_prior_features = batch["prior_features"]
                     model_teacher_objectness = batch["teacher_objectness"]
+                    model_semantic_features = batch["semantic_features"]
 
                     object_bias_alpha = float(args.object_bias_alpha)
                     object_bias_alpha = max(0.0, min(1.0, object_bias_alpha))
@@ -1132,10 +1139,36 @@ def main() -> None:
                             model_teacher_objectness - neutral_teacher_objectness
                         )
 
+                    qstr_route_mean = 0.0
+                    if bool(args.qstr_enable):
+                        # QSTR: keep neutral path while adding query-conditioned semantic residual routing.
+                        sem_feat = model_semantic_features
+                        bsz, _, sdim = sem_feat.shape
+                        query_idx = torch.argmax(model_teacher_objectness, dim=-1)
+                        query_feat = torch.gather(
+                            sem_feat,
+                            dim=1,
+                            index=query_idx.view(bsz, 1, 1).expand(-1, 1, sdim),
+                        ).squeeze(1)
+
+                        neutral_sem = sem_feat.mean(dim=1, keepdim=True)
+                        sem_residual = sem_feat - neutral_sem
+
+                        sem_norm = F.normalize(sem_feat, dim=-1)
+                        query_norm = F.normalize(query_feat, dim=-1).unsqueeze(1)
+                        route_logits = torch.sum(sem_norm * query_norm, dim=-1, keepdim=True)
+                        route_temp = max(1e-3, float(args.qstr_route_temperature))
+                        route_gate = torch.sigmoid(route_logits / route_temp)
+                        qstr_route_mean = float(route_gate.mean().detach().float().cpu())
+
+                        neutral_w = max(0.0, float(args.qstr_neutral_path_weight))
+                        residual_scale = max(0.0, float(args.qstr_residual_scale))
+                        model_semantic_features = neutral_w * sem_feat + residual_scale * route_gate * sem_residual
+
                     with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=amp_enabled):
                         outputs = model(
                             trace_features=batch["trace_features"],
-                            semantic_features=batch["semantic_features"],
+                            semantic_features=model_semantic_features,
                             prior_features=model_prior_features,
                             teacher_objectness=model_teacher_objectness,
                             memory_state=memory_state,
@@ -1190,6 +1223,16 @@ def main() -> None:
                         ).squeeze(-1)
                         query_loss = -torch.log(gather.max(dim=1).values.clamp(min=1e-6)).mean()
 
+                        temporal_semantic_consistency_loss = _safe_zero(device)
+                        if bool(args.qstr_enable) and float(args.qstr_temporal_consistency_weight) > 0.0:
+                            sem_probs = F.softmax(outputs["semantic_logits"], dim=-1)
+                            frame_sem_probs = torch.einsum("bnt,bnc->btc", token_attn, sem_probs)
+                            if frame_sem_probs.shape[1] > 1:
+                                temporal_semantic_consistency_loss = F.smooth_l1_loss(
+                                    frame_sem_probs[:, 1:, :],
+                                    frame_sem_probs[:, :-1, :],
+                                )
+
                         query_token_index = int(torch.argmax(outputs["query_token_logits"][0]).item())
                         query_frame_scores = token_attn[0, query_token_index]
                         query_frame_idx = int(torch.argmax(query_frame_scores).item())
@@ -1232,6 +1275,7 @@ def main() -> None:
                             + float(args.lambda_reid) * reid_loss
                             + float(args.lambda_query) * query_loss
                             + float(args.lambda_reconnect) * reconnect_loss
+                            + float(args.qstr_temporal_consistency_weight) * temporal_semantic_consistency_loss
                         )
 
                     if do_grad_audit and gradient_audit_row is None:
@@ -1334,6 +1378,8 @@ def main() -> None:
                         "trajectory_l1": float(trajectory_l1),
                         "visibility_loss": float(vis_loss.detach().float().cpu()),
                         "semantic_loss": float(sem_loss.detach().float().cpu()),
+                        "qstr_temporal_consistency_loss": float(temporal_semantic_consistency_loss.detach().float().cpu()),
+                        "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
                         "lambda_sem_effective": float(lambda_sem_effective),
                         "reid_loss": float(reid_loss.detach().float().cpu()),
                         "query_loss": float(query_loss.detach().float().cpu()),
@@ -1357,6 +1403,8 @@ def main() -> None:
                         "objectness_mean": float(tdiag.get("objectness_mean", 0.0)),
                         "memory_gate_mean": float(mdiag.get("memory_gate_mean", 0.0)),
                         "bg_fg_attention_ratio": float(bg_attn / max(fg_attn, 1e-6)),
+                        "qstr_enabled": float(bool(args.qstr_enable)),
+                        "qstr_route_mean": float(qstr_route_mean),
                     }
                     for key, value in row_values.items():
                         metric_sum[key] = metric_sum.get(key, 0.0) + float(value)
@@ -1469,6 +1517,11 @@ def main() -> None:
             "object_bias_gate_threshold": float(args.object_bias_gate_threshold),
             "use_teacher_priors": bool(args.use_teacher_priors),
             "enable_reconnect_loss": bool(args.enable_reconnect_loss),
+            "qstr_enable": bool(args.qstr_enable),
+            "qstr_residual_scale": float(args.qstr_residual_scale),
+            "qstr_neutral_path_weight": float(args.qstr_neutral_path_weight),
+            "qstr_route_temperature": float(args.qstr_route_temperature),
+            "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
         },
         "loss_weights": {
             "lambda_traj": float(args.lambda_traj),
@@ -1477,6 +1530,7 @@ def main() -> None:
             "lambda_reid": float(args.lambda_reid),
             "lambda_query": float(args.lambda_query),
             "lambda_reconnect": float(args.lambda_reconnect),
+            "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
             "semantic_warmup": bool(args.semantic_warmup),
             "semantic_warmup_start_ratio": float(args.semantic_warmup_start_ratio),
             "semantic_warmup_end_ratio": float(args.semantic_warmup_end_ratio),
@@ -1487,6 +1541,7 @@ def main() -> None:
             "trajectory_l1": _avg("trajectory_l1"),
             "visibility": _avg("visibility_loss"),
             "semantic": _avg("semantic_loss"),
+            "qstr_temporal_consistency": _avg("qstr_temporal_consistency_loss"),
             "lambda_sem_effective": _avg("lambda_sem_effective"),
             "reid": _avg("reid_loss"),
             "query": _avg("query_loss"),
@@ -1499,6 +1554,7 @@ def main() -> None:
             "objectness_mean": _avg("objectness_mean"),
             "memory_gate_mean": _avg("memory_gate_mean"),
             "bg_fg_attention_ratio": _avg("bg_fg_attention_ratio"),
+            "qstr_route_mean": _avg("qstr_route_mean"),
             "reappearance_event_ratio": _avg("has_reappearance_event"),
             "reconnect_success_rate": _avg("reconnect_success"),
             "reconnect_min_error": _avg("reconnect_min_error"),
