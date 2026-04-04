@@ -1,0 +1,152 @@
+{
+  "generated_at": "2026-04-04 16:10:15",
+  "submit_tsv": "reports/stwm_delayed_router_mainline_submit_v1.tsv",
+  "queue_status_dir": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status",
+  "run_names": [
+    "delayed_only_seed42_challenge_v1",
+    "two_path_residual_seed42_challenge_v1",
+    "delayed_residual_router_seed42_challenge_v1"
+  ],
+  "monitoring": {
+    "all_entered_running": true,
+    "all_train_log_growth_observed": true,
+    "all_sidecar_generated": true,
+    "all_terminal": true
+  },
+  "first_running_job": {
+    "run_name": "delayed_only_seed42_challenge_v1",
+    "running_seen_ts": "2026-04-04 15:16:12"
+  },
+  "first_training_job": {
+    "run_name": "delayed_only_seed42_challenge_v1",
+    "first_train_log_nonzero_ts": "2026-04-04 15:16:12"
+  },
+  "runs": [
+    {
+      "run_name": "delayed_only_seed42_challenge_v1",
+      "unique_change_point": "Enable delay only: --object-bias-delay-steps 200",
+      "state": "done",
+      "output_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/delayed_only_seed42_challenge_v1",
+      "status_path": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status/1775286917650_delayed_only_seed42_challenge_v1.status.json",
+      "job_id": "20260404_151517_29745",
+      "main_log": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/logs/1775286917650_delayed_only_seed42_challenge_v1.log",
+      "worker_session": "unknown",
+      "gpu_index": "3",
+      "status_update_ts": "2026-04-04 16:08:04",
+      "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/delayed_only_seed42_challenge_v1/train_log.jsonl",
+      "train_log_rows": 2000,
+      "max_step": 2000,
+      "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/delayed_only_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+      "selection_sidecar_exists": true,
+      "selection_metrics": {
+        "query_localization_error": 0.005995111573136793,
+        "query_top1_acc": 0.9338422391857506,
+        "future_trajectory_l1": 0.005896113955110084,
+        "future_mask_iou": null,
+        "identity_consistency": null,
+        "identity_switch_rate": null
+      },
+      "running_seen": true,
+      "running_seen_ts": "2026-04-04 15:16:12",
+      "train_log_growth_observed": true,
+      "first_train_log_nonzero_ts": "2026-04-04 15:16:12",
+      "sidecar_seen": true,
+      "sidecar_seen_ts": "2026-04-04 15:30:13"
+    },
+    {
+      "run_name": "two_path_residual_seed42_challenge_v1",
+      "unique_change_point": "Residual two-path proxy: --object-bias-alpha 0.50 + gated(th=0.5)",
+      "state": "done",
+      "output_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/two_path_residual_seed42_challenge_v1",
+      "status_path": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status/1775286917999_two_path_residual_seed42_challenge_v1.status.json",
+      "job_id": "20260404_151517_6593",
+      "main_log": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/logs/1775286917999_two_path_residual_seed42_challenge_v1.log",
+      "worker_session": "unknown",
+      "gpu_index": "3",
+      "status_update_ts": "2026-04-04 16:09:13",
+      "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/two_path_residual_seed42_challenge_v1/train_log.jsonl",
+      "train_log_rows": 2000,
+      "max_step": 2000,
+      "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/two_path_residual_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+      "selection_sidecar_exists": true,
+      "selection_metrics": {
+        "query_localization_error": 0.005061522543278662,
+        "query_top1_acc": 0.9567430025445293,
+        "future_trajectory_l1": 0.005183082604757095,
+        "future_mask_iou": null,
+        "identity_consistency": null,
+        "identity_switch_rate": null
+      },
+      "running_seen": true,
+      "running_seen_ts": "2026-04-04 15:16:12",
+      "train_log_growth_observed": true,
+      "first_train_log_nonzero_ts": "2026-04-04 15:16:12",
+      "sidecar_seen": true,
+      "sidecar_seen_ts": "2026-04-04 15:30:13"
+    },
+    {
+      "run_name": "delayed_residual_router_seed42_challenge_v1",
+      "unique_change_point": "Combined: delay 200 + residual alpha 0.50 + gated(th=0.5)",
+      "state": "done",
+      "output_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/delayed_residual_router_seed42_challenge_v1",
+      "status_path": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/status/1775286918437_delayed_residual_router_seed42_challenge_v1.status.json",
+      "job_id": "20260404_151518_26484",
+      "main_log": "/home/chen034/workspace/stwm/outputs/queue/stwm_protocol_v2_frontend_default_v1/d1_train/logs/1775286918437_delayed_residual_router_seed42_challenge_v1.log",
+      "worker_session": "unknown",
+      "gpu_index": "3",
+      "status_update_ts": "2026-04-04 16:09:18",
+      "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/delayed_residual_router_seed42_challenge_v1/train_log.jsonl",
+      "train_log_rows": 2000,
+      "max_step": 2000,
+      "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_delayed_router_mainline_seed42_v1/seed_42/delayed_residual_router_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+      "selection_sidecar_exists": true,
+      "selection_metrics": {
+        "query_localization_error": 0.005391578827498827,
+        "query_top1_acc": 0.9567430025445293,
+        "future_trajectory_l1": 0.00534080308281435,
+        "future_mask_iou": null,
+        "identity_consistency": null,
+        "identity_switch_rate": null
+      },
+      "running_seen": true,
+      "running_seen_ts": "2026-04-04 15:16:12",
+      "train_log_growth_observed": true,
+      "first_train_log_nonzero_ts": "2026-04-04 15:16:12",
+      "sidecar_seen": true,
+      "sidecar_seen_ts": "2026-04-04 15:30:13"
+    }
+  ],
+  "official_ranking": [
+    {
+      "run_name": "two_path_residual_seed42_challenge_v1",
+      "query_localization_error": 0.005061522543278662,
+      "query_top1_acc": 0.9567430025445293,
+      "future_trajectory_l1": 0.005183082604757095,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null,
+      "rank": 1
+    },
+    {
+      "run_name": "delayed_residual_router_seed42_challenge_v1",
+      "query_localization_error": 0.005391578827498827,
+      "query_top1_acc": 0.9567430025445293,
+      "future_trajectory_l1": 0.00534080308281435,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null,
+      "rank": 2
+    },
+    {
+      "run_name": "delayed_only_seed42_challenge_v1",
+      "query_localization_error": 0.005995111573136793,
+      "query_top1_acc": 0.9338422391857506,
+      "future_trajectory_l1": 0.005896113955110084,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null,
+      "rank": 3
+    }
+  ],
+  "best_run_by_official_rule": "two_path_residual_seed42_challenge_v1"
+}

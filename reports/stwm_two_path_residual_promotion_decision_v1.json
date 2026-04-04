@@ -1,0 +1,260 @@
+{
+  "generated_at": "2026-04-04 16:15:18",
+  "inputs": {
+    "delayed_router_seed42_report": "/home/chen034/workspace/stwm/reports/stwm_delayed_router_mainline_seed42_report_v1.json",
+    "replacement_seed42_final_decision": "/home/chen034/workspace/stwm/reports/stwm_replacement_clean_matrix_seed42_final_decision_v1.json",
+    "seed42_gated_reference_blindbox": "/home/chen034/workspace/stwm/reports/stwm_seed42_objdiag_blindbox_readonly_v1.json",
+    "seed123_gated_reference_optional": "/home/chen034/workspace/stwm/reports/stwm_gated_challenge_seed123_final_decision_v1.json"
+  },
+  "run_set": {
+    "two_path_residual": "two_path_residual_seed42_challenge_v1",
+    "delayed_residual_router": "delayed_residual_router_seed42_challenge_v1",
+    "delayed_only": "delayed_only_seed42_challenge_v1",
+    "current_full_nowarm": "full_v4_2_seed42_fixed_nowarm_lambda1_rerun_v2",
+    "alpha050_replacement": "full_v4_2_seed42_objbias_alpha050_replacement_v1",
+    "wo_object_bias_seed42": "wo_object_bias_v4_2_seed42_control_v1",
+    "gated_seed42_reference": "full_v4_2_seed42_objbias_gated_objdiag_v1",
+    "gated_seed123_reference": "full_v4_2_seed123_objbias_gated_replacement_challenge_v1"
+  },
+  "metrics_snapshot": {
+    "two_path_residual": {
+      "query_localization_error": 0.005061522543278662,
+      "query_top1_acc": 0.9567430025445293,
+      "future_trajectory_l1": 0.005183082604757095,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null
+    },
+    "delayed_residual_router": {
+      "query_localization_error": 0.005391578827498827,
+      "query_top1_acc": 0.9567430025445293,
+      "future_trajectory_l1": 0.00534080308281435,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null
+    },
+    "delayed_only": {
+      "query_localization_error": 0.005995111573136793,
+      "query_top1_acc": 0.9338422391857506,
+      "future_trajectory_l1": 0.005896113955110084,
+      "future_mask_iou": null,
+      "identity_consistency": null,
+      "identity_switch_rate": null
+    },
+    "current_full_nowarm": {
+      "query_localization_error": 0.0066951184934028836,
+      "query_top1_acc": 0.926208651399491,
+      "future_trajectory_l1": 0.006538258073969955,
+      "future_mask_iou": 0.1604957929660223,
+      "identity_consistency": 0.9990458015267175,
+      "identity_switch_rate": 0.0
+    },
+    "alpha050_replacement": {
+      "query_localization_error": 0.005061522543278662,
+      "query_top1_acc": 0.9567430025445293,
+      "future_trajectory_l1": 0.005183082604757095,
+      "future_mask_iou": 0.16049538122634638,
+      "identity_consistency": 0.9990458015267175,
+      "identity_switch_rate": 0.0
+    },
+    "wo_object_bias_seed42": {
+      "query_localization_error": 0.0022589355403837053,
+      "query_top1_acc": 0.9796437659033079,
+      "future_trajectory_l1": 0.0024298117105059952,
+      "future_mask_iou": 0.16049471405638766,
+      "identity_consistency": 0.9990458015267175,
+      "identity_switch_rate": 0.0
+    },
+    "gated_seed42_reference": {
+      "query_localization_error": 0.004738058183939403,
+      "query_top1_acc": 0.9363867684478372,
+      "future_trajectory_l1": 0.004591513989118826
+    },
+    "gated_seed123_reference": {
+      "query_localization_error": 0.008337827849630788,
+      "query_top1_acc": 0.8982188295165394,
+      "future_trajectory_l1": 0.008263798046658057,
+      "future_mask_iou": 0.16048144346295068,
+      "identity_consistency": 0.9990458015267175,
+      "identity_switch_rate": 0.0
+    }
+  },
+  "official_comparisons": {
+    "two_vs_delayed_only": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.005995111573136793,
+        -0.9338422391857506,
+        0.005896113955110084
+      ],
+      "lhs_beats_rhs_official": true,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": -0.000933589029858131,
+      "delta_query_top1_acc": 0.022900763358778664,
+      "delta_future_trajectory_l1": -0.0007130313503529882
+    },
+    "two_vs_delayed_residual_router": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.005391578827498827,
+        -0.9567430025445293,
+        0.00534080308281435
+      ],
+      "lhs_beats_rhs_official": true,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": -0.00033005628422016434,
+      "delta_query_top1_acc": 0.0,
+      "delta_future_trajectory_l1": -0.00015772047805725446
+    },
+    "two_vs_current_full_nowarm": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.0066951184934028836,
+        -0.926208651399491,
+        0.006538258073969955
+      ],
+      "lhs_beats_rhs_official": true,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": -0.0016335959501242213,
+      "delta_query_top1_acc": 0.03053435114503822,
+      "delta_future_trajectory_l1": -0.0013551754692128597
+    },
+    "two_vs_alpha050_replacement": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "lhs_beats_rhs_official": false,
+      "lhs_ties_rhs_official": true,
+      "delta_query_localization_error": 0.0,
+      "delta_query_top1_acc": 0.0,
+      "delta_future_trajectory_l1": 0.0
+    },
+    "two_vs_wo_object_bias_seed42": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.0022589355403837053,
+        -0.9796437659033079,
+        0.0024298117105059952
+      ],
+      "lhs_beats_rhs_official": false,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": 0.002802587002894957,
+      "delta_query_top1_acc": -0.022900763358778664,
+      "delta_future_trajectory_l1": 0.0027532708942511
+    },
+    "two_vs_gated_seed42_reference": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.004738058183939403,
+        -0.9363867684478372,
+        0.004591513989118826
+      ],
+      "lhs_beats_rhs_official": false,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": 0.0003234643593392596,
+      "delta_query_top1_acc": 0.020356234096692072,
+      "delta_future_trajectory_l1": 0.0005915686156382693
+    },
+    "alpha050_vs_wo_object_bias_seed42": {
+      "lhs_official_key": [
+        0.005061522543278662,
+        -0.9567430025445293,
+        0.005183082604757095
+      ],
+      "rhs_official_key": [
+        0.0022589355403837053,
+        -0.9796437659033079,
+        0.0024298117105059952
+      ],
+      "lhs_beats_rhs_official": false,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": 0.002802587002894957,
+      "delta_query_top1_acc": -0.022900763358778664,
+      "delta_future_trajectory_l1": 0.0027532708942511
+    },
+    "gated_seed42_reference_vs_its_ref": {
+      "lhs_official_key": [
+        0.004738058183939403,
+        -0.9363867684478372,
+        0.004591513989118826
+      ],
+      "rhs_official_key": [
+        0.004831898000100794,
+        -0.9694656488549618,
+        0.0049663477555941075
+      ],
+      "lhs_beats_rhs_official": true,
+      "lhs_ties_rhs_official": false,
+      "delta_query_localization_error": -9.383981616139115e-05,
+      "delta_query_top1_acc": -0.03307888040712459,
+      "delta_future_trajectory_l1": -0.00037483376647528144
+    }
+  },
+  "required_answers": {
+    "two_path_wins_current_full_nowarm_official": true,
+    "two_path_wins_alpha050_official": false,
+    "two_path_ties_alpha050_official": true,
+    "seed42_gated_reference_available": true,
+    "two_path_wins_seed42_gated_reference_official": false,
+    "two_path_wins_wo_object_bias_official": false,
+    "if_not_win_wo_is_gap_closer_than_alpha": false,
+    "if_not_win_wo_is_gap_closer_than_seed42_gated_reference": false,
+    "seed42_gated_reference_scope_note": "reference_only_objdiag_seed42_not_same_matrix"
+  },
+  "gap_to_wo_object_bias": {
+    "two_path": {
+      "query_localization_error_delta": 0.002802587002894957,
+      "query_top1_acc_delta": -0.022900763358778664,
+      "future_trajectory_l1_delta": 0.0027532708942511
+    },
+    "alpha050": {
+      "query_localization_error_delta": 0.002802587002894957,
+      "query_top1_acc_delta": -0.022900763358778664,
+      "future_trajectory_l1_delta": 0.0027532708942511
+    },
+    "seed42_gated_reference": {
+      "query_localization_error_delta": -9.383981616139115e-05,
+      "query_top1_acc_delta": -0.03307888040712459,
+      "future_trajectory_l1_delta": -0.00037483376647528144
+    }
+  },
+  "promotion_verdict": {
+    "verdict_code": "B",
+    "verdict_text": "two_path_residual 是当前最强新主线，但仍未足够 promotion；下一步只做最小 two_path_residual seed123 challenge",
+    "recommendation": "only_minimal_two_path_residual_seed123_challenge"
+  },
+  "five_line_summary": {
+    "line1": "two_path_residual is complete winner inside delayed-only/delayed+residual 3-run matrix",
+    "line2": "two_path_residual beats current full_nowarm and ties alpha050 (not strict win)",
+    "line3": "two_path_residual does not beat wo_object_bias on seed42 official rule",
+    "line4": "full seed123 replication not justified yet; minimal seed123 two_path challenge is justified",
+    "line5": "unique mainline recommendation: two_path_residual as new candidate line under strict non-promotion gate"
+  }
+}
