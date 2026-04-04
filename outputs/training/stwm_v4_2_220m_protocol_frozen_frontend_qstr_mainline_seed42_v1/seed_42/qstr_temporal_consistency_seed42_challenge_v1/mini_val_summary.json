@@ -1,0 +1,244 @@
+{
+  "run_name": "qstr_temporal_consistency_seed42_challenge_v1",
+  "mode": "train",
+  "steps": 2000,
+  "model_preset": "prototype_220m_v4_2",
+  "model_parameters": 207543382,
+  "rough_parameter_budget": 201469952,
+  "ablation": {
+    "disable_semantics": false,
+    "disable_identity_memory": false,
+    "neutralize_object_bias": true,
+    "object_bias_alpha": 1.0,
+    "object_bias_delay_steps": 0,
+    "object_bias_gated": false,
+    "object_bias_gate_threshold": 0.5,
+    "use_teacher_priors": true,
+    "enable_reconnect_loss": false,
+    "qstr_enable": true,
+    "qstr_residual_scale": 0.2,
+    "qstr_neutral_path_weight": 1.0,
+    "qstr_route_temperature": 0.25,
+    "qstr_temporal_consistency_weight": 0.1
+  },
+  "loss_weights": {
+    "lambda_traj": 1.0,
+    "lambda_vis": 0.25,
+    "lambda_sem_target": 0.5,
+    "lambda_reid": 0.25,
+    "lambda_query": 0.25,
+    "lambda_reconnect": 0.1,
+    "qstr_temporal_consistency_weight": 0.1,
+    "semantic_warmup": false,
+    "semantic_warmup_start_ratio": 0.1,
+    "semantic_warmup_end_ratio": 0.3
+  },
+  "average_losses": {
+    "total": 1.8814443275630475,
+    "trajectory": 0.00041178502828489625,
+    "trajectory_l1": 0.012926366270236031,
+    "visibility": 0.0002553204512182532,
+    "semantic": 0.9419954071100801,
+    "qstr_temporal_consistency": 0.00014539317774358272,
+    "lambda_sem_effective": 0.5,
+    "reid": 2.529793991088867,
+    "query": 3.110031885767821,
+    "query_localization_error": 0.01288157660048455,
+    "query_traj_gap": -4.478966975148069e-05
+  },
+  "diagnostics": {
+    "assignment_entropy": 0.9146996980682015,
+    "token_usage_entropy": 0.9928961898628622,
+    "objectness_mean": 0.10522172975016292,
+    "memory_gate_mean": 0.9443628540039063,
+    "bg_fg_attention_ratio": 0.0,
+    "qstr_route_mean": 0.9820138080548495,
+    "reappearance_event_ratio": 0.0,
+    "reconnect_success_rate": 0.0,
+    "reconnect_min_error": 0.0,
+    "gpu_peak_memory_gb": 3.8840533497333527,
+    "data_wait_ratio": 0.22467437511497385
+  },
+  "risk_flags": {
+    "tokenizer_collapse_risk": false,
+    "background_bias_risk": false,
+    "memory_inactive_risk": false,
+    "semantic_decorative_risk": false,
+    "identity_decorative_risk": true
+  },
+  "budget": {
+    "sample_count": 3814,
+    "steps_per_epoch": 239,
+    "target_epochs": 0.0,
+    "steps_for_target_epochs": 0,
+    "min_optimizer_steps": 0,
+    "max_optimizer_steps": 0,
+    "requested_steps": 2000,
+    "resolved_optimizer_steps": 2000,
+    "micro_batch_per_gpu": 2,
+    "grad_accum": 8,
+    "effective_batch": 16
+  },
+  "precision": {
+    "bf16": true,
+    "activation_checkpointing": true,
+    "device": "cuda"
+  },
+  "dataloader": {
+    "num_workers": 12,
+    "prefetch_factor": 2,
+    "persistent_workers": true,
+    "pin_memory": true
+  },
+  "data": {
+    "data_mode": "frontend_cache",
+    "frontend_cache_dir": "/home/chen034/workspace/stwm/data/cache/frontend_cache_protocol_v2_full_v1",
+    "frontend_cache_index": "/home/chen034/workspace/stwm/data/cache/frontend_cache_protocol_v2_full_v1/index.json",
+    "frontend_cache_max_shards_in_memory": 8
+  },
+  "runtime": {
+    "step_time_p50_s": 4.091434745001607,
+    "step_time_p95_s": 4.371380676946137,
+    "data_time_p50_s": 0.9164954888692591,
+    "data_wait_ratio_p50": 0.2243001840960121,
+    "data_wait_ratio_p95": 0.2556771275955616,
+    "gpu_peak_memory_gb_max": 3.884256362915039,
+    "samples_processed": 32000
+  },
+  "checkpoint_policy": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints",
+    "retention": "latest_every_500+best",
+    "checkpoint_interval": 500,
+    "milestone_interval": 0,
+    "latest": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+    "best": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best.pt",
+    "official_best_protocol_main": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main.pt",
+    "official_best_selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+    "min_free_disk_gb": 50.0,
+    "estimated_checkpoint_each_gb": 2.569478042423725,
+    "estimated_max_retained_gb": 5.13895608484745
+  },
+  "protocol_best_policy": {
+    "protocol_eval_interval": 500,
+    "protocol_eval_manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_main_v1.json",
+    "protocol_eval_dataset": "all",
+    "protocol_diagnostics_manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_eventful_v1.json",
+    "protocol_diagnostics_dataset": "all",
+    "protocol_version": "v2_4_detached_frozen",
+    "official_best_checkpoint_name": "best_protocol_main.pt",
+    "official_best_selection_name": "best_protocol_main_selection.json",
+    "records": [
+      {
+        "step": 500,
+        "kind": "official_main",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_main_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_main_step_000500.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main.pt",
+        "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+        "action": "updated",
+        "improved": true
+      },
+      {
+        "step": 500,
+        "kind": "diagnostic_eventful",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_eventful_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_eventful_step_000500.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best_unchanged": true
+      },
+      {
+        "step": 1000,
+        "kind": "official_main",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_main_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_main_step_001000.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main.pt",
+        "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+        "action": "kept_existing",
+        "improved": false
+      },
+      {
+        "step": 1000,
+        "kind": "diagnostic_eventful",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_eventful_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_eventful_step_001000.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best_unchanged": true
+      },
+      {
+        "step": 1500,
+        "kind": "official_main",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_main_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_main_step_001500.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main.pt",
+        "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+        "action": "updated",
+        "improved": true
+      },
+      {
+        "step": 1500,
+        "kind": "diagnostic_eventful",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_eventful_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_eventful_step_001500.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best_unchanged": true
+      },
+      {
+        "step": 2000,
+        "kind": "official_main",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_main_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_main_step_002000.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main.pt",
+        "selection_sidecar": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/best_protocol_main_selection.json",
+        "action": "kept_existing",
+        "improved": false
+      },
+      {
+        "step": 2000,
+        "kind": "diagnostic_eventful",
+        "status": "ok",
+        "manifest": "/home/chen034/workspace/stwm/manifests/protocol_v2/protocol_val_eventful_v1.json",
+        "eval_summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/protocol_eval/protocol_val_eventful_step_002000.json",
+        "candidate_checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt",
+        "official_best_unchanged": true
+      }
+    ]
+  },
+  "gradient_audit": {
+    "enabled": false,
+    "interval": 0,
+    "secondary_every_audit_cycles": 5,
+    "output": "",
+    "primary_anchor": "seq_backbone.output_features",
+    "query_path_anchor": "token_time_attention",
+    "secondary_anchor": "seq_backbone.layers.7.norm2.bias",
+    "average_audit_time_ms": 0.0,
+    "average_audit_memory_delta_mb": 0.0,
+    "rows": 0
+  },
+  "paths": {
+    "train_log": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/train_log.jsonl",
+    "summary": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/mini_val_summary.json",
+    "checkpoint": "/home/chen034/workspace/stwm/outputs/training/stwm_v4_2_220m_protocol_frozen_frontend_qstr_mainline_seed42_v1/seed_42/qstr_temporal_consistency_seed42_challenge_v1/checkpoints/latest.pt"
+  },
+  "resume": {
+    "requested_resume_checkpoint": "",
+    "auto_resume": true,
+    "resolved_resume_checkpoint": "",
+    "start_step": 0,
+    "best_step": 2000,
+    "best_total_loss": 1.7534911558032036,
+    "eval_only": false,
+    "log_name": "train_log.jsonl"
+  }
+}
