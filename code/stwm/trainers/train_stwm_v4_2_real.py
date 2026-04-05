@@ -37,6 +37,7 @@ from torch.utils.data import DataLoader, Dataset
 from stwm.datasets.stwm_dataset import STWMDataset
 from stwm.models.stwm_v4_2 import STWMV42, estimate_v4_2_parameter_budget, load_model_config_v4_2
 from stwm.modules.semantic_adapter import SemanticAdapter
+from stwm.modules.semantic_adapter_teacher_v2 import SemanticAdapterTeacherV2
 from stwm.modules.trace_adapter import TraceAdapter
 
 
@@ -205,6 +206,19 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--qtsa-association-temperature", type=float, default=0.25)
     parser.add_argument("--qtsa-temporal-consistency-weight", type=float, default=0.0)
 
+    parser.add_argument("--semantic-adapter-mode", choices=("proxy", "teacher_v2"), default="proxy")
+    parser.add_argument("--semteacher-strict", action="store_true")
+    parser.add_argument("--semteacher-capability-report", default="")
+    parser.add_argument("--semteacher-use-teacher-targets", action="store_true")
+    parser.add_argument("--semteacher-require-cache-fields", action="store_true")
+    parser.add_argument("--semteacher-distill-enable", action="store_true")
+    parser.add_argument("--semteacher-distill-weight", type=float, default=0.15)
+    parser.add_argument("--semteacher-association-temperature", type=float, default=0.25)
+    parser.add_argument("--semteacher-confidence-rerank-enable", action="store_true")
+    parser.add_argument("--semteacher-confidence-threshold", type=float, default=0.55)
+    parser.add_argument("--semteacher-rerank-topk", type=int, default=3)
+    parser.add_argument("--semteacher-hard-manifest", default="")
+
     parser.add_argument("--semantic-warmup", action="store_true")
     parser.add_argument("--semantic-warmup-start-ratio", type=float, default=0.10)
     parser.add_argument("--semantic-warmup-end-ratio", type=float, default=0.30)
@@ -276,10 +290,13 @@ def _build_features_for_sample(
     sample: Any,
     *,
     trace_adapter: TraceAdapter,
-    semantic_adapter: SemanticAdapter,
+    semantic_adapter: Any,
     device: torch.device,
     disable_semantics: bool,
     use_teacher_priors: bool,
+    semteacher_use_teacher_targets: bool = False,
+    semteacher_require_cache_fields: bool = False,
+    semteacher_capability_report: str = "",
     data_mode: str = "raw",
     frontend_cache_reader: _FrontendCacheReader | None = None,
 ) -> dict[str, torch.Tensor | str | int]:
@@ -292,15 +309,65 @@ def _build_features_for_sample(
 
         trace_features = torch.as_tensor(cached["trace_features"], dtype=torch.float32, device=device)
         semantic_features = torch.as_tensor(cached["semantic_features"], dtype=torch.float32, device=device)
+        semantic_features_teacher_raw = cached.get("semantic_features_teacher")
+        semantic_features_teacher = (
+            torch.as_tensor(semantic_features_teacher_raw, dtype=torch.float32, device=device)
+            if semantic_features_teacher_raw is not None
+            else semantic_features
+        )
         target_trajectory = torch.as_tensor(cached["target_trajectory"], dtype=torch.float32, device=device)
         target_visibility = torch.as_tensor(cached["target_visibility"], dtype=torch.float32, device=device)
         target_semantic_probs = torch.as_tensor(cached["target_semantic_probs"], dtype=torch.float32, device=device)
+        target_semantic_probs_teacher_raw = cached.get("target_semantic_probs_teacher")
+        target_semantic_probs_teacher = (
+            torch.as_tensor(target_semantic_probs_teacher_raw, dtype=torch.float32, device=device)
+            if target_semantic_probs_teacher_raw is not None
+            else target_semantic_probs
+        )
         mask_ratio_t = torch.as_tensor(cached["mask_ratios"], dtype=torch.float32, device=device)
+
+        cache_metadata = cached.get("metadata") if isinstance(cached.get("metadata"), dict) else {}
+        semantic_teacher_backend = str(
+            cache_metadata.get("semantic_teacher_backend", cache_metadata.get("teacher_backend", ""))
+        ).strip()
+        cache_version = str(cached.get("cache_version", cache_metadata.get("cache_version", ""))).strip()
+        manifest_hash = str(cached.get("manifest_hash", cache_metadata.get("manifest_hash", ""))).strip()
+        frontend_hash = str(cached.get("frontend_hash", cache_metadata.get("frontend_hash", ""))).strip()
+
+        teacher_fields_present = (
+            semantic_features_teacher_raw is not None
+            and target_semantic_probs_teacher_raw is not None
+            and bool(cache_version)
+            and bool(manifest_hash)
+            and bool(frontend_hash)
+        )
+        if semteacher_require_cache_fields and not teacher_fields_present:
+            gap = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "clip_id": str(sample.clip_id),
+                "reason": "frontend_cache_missing_semteacher_fields",
+                "required_fields": [
+                    "semantic_features_teacher",
+                    "target_semantic_probs_teacher",
+                    "cache_version",
+                    "manifest_hash",
+                    "frontend_hash",
+                ],
+                "present_fields": sorted([str(k) for k in cached.keys()]),
+                "metadata_fields": sorted([str(k) for k in cache_metadata.keys()]),
+            }
+            if semteacher_capability_report:
+                p = Path(semteacher_capability_report)
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps(gap, indent=2))
+            raise RuntimeError(f"clip {sample.clip_id} cache lacks required semteacher fields")
 
         if trace_features.ndim != 2:
             raise ValueError(f"cached trace_features must be [T,D], got {tuple(trace_features.shape)}")
         if semantic_features.ndim != 2:
             raise ValueError(f"cached semantic_features must be [T,D], got {tuple(semantic_features.shape)}")
+        if semantic_features_teacher.ndim != 2:
+            raise ValueError(f"cached semantic_features_teacher must be [T,D], got {tuple(semantic_features_teacher.shape)}")
         if target_trajectory.ndim != 2 or target_trajectory.shape[-1] != 2:
             raise ValueError(f"cached target_trajectory must be [T,2], got {tuple(target_trajectory.shape)}")
         if target_visibility.ndim == 1:
@@ -311,6 +378,11 @@ def _build_features_for_sample(
             raise ValueError(
                 f"cached target_semantic_probs must be [T,C], got {tuple(target_semantic_probs.shape)}"
             )
+        if target_semantic_probs_teacher.ndim != 2:
+            raise ValueError(
+                "cached target_semantic_probs_teacher must be [T,C], "
+                f"got {tuple(target_semantic_probs_teacher.shape)}"
+            )
         if mask_ratio_t.ndim != 1:
             mask_ratio_t = mask_ratio_t.reshape(-1)
 
@@ -318,9 +390,11 @@ def _build_features_for_sample(
             min(
                 trace_features.shape[0],
                 semantic_features.shape[0],
+                semantic_features_teacher.shape[0],
                 target_trajectory.shape[0],
                 target_visibility.shape[0],
                 target_semantic_probs.shape[0],
+                target_semantic_probs_teacher.shape[0],
                 mask_ratio_t.shape[0],
             )
         )
@@ -329,10 +403,16 @@ def _build_features_for_sample(
 
         trace_features = trace_features[:seq_len]
         semantic_features = semantic_features[:seq_len]
+        semantic_features_teacher = semantic_features_teacher[:seq_len]
         target_trajectory = target_trajectory[:seq_len]
         target_visibility = target_visibility[:seq_len]
         target_semantic_probs = target_semantic_probs[:seq_len]
+        target_semantic_probs_teacher = target_semantic_probs_teacher[:seq_len]
         mask_ratio_t = mask_ratio_t[:seq_len]
+
+        if semteacher_use_teacher_targets:
+            semantic_features = semantic_features_teacher
+            target_semantic_probs = target_semantic_probs_teacher
 
         if disable_semantics:
             semantic_features = torch.zeros_like(semantic_features)
@@ -364,13 +444,21 @@ def _build_features_for_sample(
             "target_trajectory": target_trajectory.unsqueeze(0),
             "target_visibility": target_visibility.unsqueeze(0),
             "target_semantic_probs": target_semantic_probs.unsqueeze(0),
+            "target_semantic_probs_teacher": target_semantic_probs_teacher.unsqueeze(0),
+            "semantic_teacher_backend": semantic_teacher_backend,
+            "cache_version": cache_version,
+            "manifest_hash": manifest_hash,
+            "frontend_hash": frontend_hash,
+            "teacher_fields_present": int(bool(teacher_fields_present)),
         }
 
     trace_summary = trace_adapter.encode(sample.frame_paths, metadata=sample.metadata, clip_id=sample.clip_id)
+    metadata_for_sem = dict(sample.metadata) if isinstance(sample.metadata, dict) else {}
+    metadata_for_sem["frame_paths"] = [str(x) for x in sample.frame_paths]
     semantic_summary = semantic_adapter.encode(
         sample.text_labels,
         len(sample.frame_paths),
-        metadata=sample.metadata,
+        metadata=metadata_for_sem,
         clip_id=sample.clip_id,
     )
 
@@ -386,6 +474,11 @@ def _build_features_for_sample(
     sem_text = semantic_summary.text_embeddings[:seq_len].mean(dim=1).to(device=device, dtype=torch.float32)
     sem_scores = semantic_summary.class_scores[:seq_len].mean(dim=1).to(device=device, dtype=torch.float32)
     semantic_features = torch.cat([sem_text, sem_scores], dim=-1)
+    semantic_features_teacher = semantic_features.clone()
+    target_semantic_probs_teacher = sem_scores.clone()
+    if semteacher_use_teacher_targets:
+        semantic_features = semantic_features_teacher
+        sem_scores = target_semantic_probs_teacher
     if disable_semantics:
         semantic_features = torch.zeros_like(semantic_features)
 
@@ -432,6 +525,12 @@ def _build_features_for_sample(
         "target_trajectory": centers.unsqueeze(0),
         "target_visibility": visibility.unsqueeze(0),
         "target_semantic_probs": sem_scores.unsqueeze(0),
+        "target_semantic_probs_teacher": target_semantic_probs_teacher.unsqueeze(0),
+        "semantic_teacher_backend": str(semantic_summary.metadata.get("teacher_backend", "")),
+        "cache_version": str(semantic_summary.metadata.get("cache_version", "")),
+        "manifest_hash": str(semantic_summary.metadata.get("manifest_hash", "")),
+        "frontend_hash": str(semantic_summary.metadata.get("frontend_hash", "")),
+        "teacher_fields_present": 1,
     }
 
 
@@ -688,7 +787,17 @@ def main() -> None:
             return next(data_iter)
 
     trace_adapter = TraceAdapter()
-    semantic_adapter = SemanticAdapter()
+    semteacher_capability_report = str(args.semteacher_capability_report).strip()
+    if not semteacher_capability_report:
+        semteacher_capability_report = str(output_dir / "semteacher_capability_gap.json")
+
+    if str(args.semantic_adapter_mode).strip().lower() == "teacher_v2":
+        semantic_adapter = SemanticAdapterTeacherV2(
+            strict_teacher=bool(args.semteacher_strict),
+            capability_report_path=semteacher_capability_report,
+        )
+    else:
+        semantic_adapter = SemanticAdapter()
 
     warmup = _build_features_for_sample(
         samples[0],
@@ -697,6 +806,9 @@ def main() -> None:
         device=device,
         disable_semantics=bool(args.disable_semantics),
         use_teacher_priors=bool(args.use_teacher_priors),
+        semteacher_use_teacher_targets=bool(args.semteacher_use_teacher_targets),
+        semteacher_require_cache_fields=bool(args.semteacher_require_cache_fields),
+        semteacher_capability_report=str(semteacher_capability_report),
         data_mode=data_mode,
         frontend_cache_reader=frontend_cache_reader,
     )
@@ -812,6 +924,10 @@ def main() -> None:
     if protocol_diag_manifest:
         p = Path(protocol_diag_manifest)
         protocol_diag_manifest = str(p if p.is_absolute() else (repo_root / p))
+    semteacher_hard_manifest = str(args.semteacher_hard_manifest).strip()
+    if semteacher_hard_manifest:
+        p = Path(semteacher_hard_manifest)
+        semteacher_hard_manifest = str(p if p.is_absolute() else (repo_root / p))
     protocol_best_checkpoint_path = checkpoint_dir / str(args.protocol_best_checkpoint_name)
     protocol_best_sidecar_path = checkpoint_dir / str(args.protocol_best_selection_name)
     protocol_eval_dir = checkpoint_dir / "protocol_eval"
@@ -886,40 +1002,52 @@ def main() -> None:
     ) -> Path:
         eval_json = protocol_eval_dir / f"{run_name_prefix}_step_{step:06d}.json"
         run_name = f"{run_name_prefix}_step_{step:06d}"
-        subprocess.run(
-            [
-                sys.executable,
-                str(evaluator_script),
-                "--data-root",
-                str(args.data_root),
-                "--manifest",
-                str(manifest_path),
-                "--dataset",
-                str(dataset_name),
-                "--max-clips",
-                str(int(max_clips)),
-                "--obs-steps",
-                str(int(args.protocol_eval_obs_steps)),
-                "--pred-steps",
-                str(int(args.protocol_eval_pred_steps)),
-                "--seed",
-                str(int(args.protocol_eval_seed)),
-                "--checkpoint",
-                str(latest_checkpoint_path),
-                "--model-preset",
-                str(args.model_preset),
-                "--preset-file",
-                str(args.preset_file),
-                "--protocol-version",
-                str(args.protocol_version),
-                "--run-name",
-                run_name,
-                "--output",
-                str(eval_json),
-            ],
-            check=True,
-            env=env,
-        )
+        eval_cmd = [
+            sys.executable,
+            str(evaluator_script),
+            "--data-root",
+            str(args.data_root),
+            "--manifest",
+            str(manifest_path),
+            "--dataset",
+            str(dataset_name),
+            "--max-clips",
+            str(int(max_clips)),
+            "--obs-steps",
+            str(int(args.protocol_eval_obs_steps)),
+            "--pred-steps",
+            str(int(args.protocol_eval_pred_steps)),
+            "--seed",
+            str(int(args.protocol_eval_seed)),
+            "--checkpoint",
+            str(latest_checkpoint_path),
+            "--model-preset",
+            str(args.model_preset),
+            "--preset-file",
+            str(args.preset_file),
+            "--protocol-version",
+            str(args.protocol_version),
+            "--run-name",
+            run_name,
+            "--output",
+            str(eval_json),
+            "--semantic-adapter-mode",
+            str(args.semantic_adapter_mode),
+            "--semteacher-confidence-threshold",
+            str(float(args.semteacher_confidence_threshold)),
+            "--semteacher-rerank-topk",
+            str(int(args.semteacher_rerank_topk)),
+        ]
+        if bool(args.semteacher_strict):
+            eval_cmd.append("--semteacher-strict")
+        if bool(args.semteacher_confidence_rerank_enable):
+            eval_cmd.append("--semteacher-confidence-rerank-enable")
+        if semteacher_hard_manifest:
+            eval_cmd.extend(["--semteacher-hard-manifest", str(semteacher_hard_manifest)])
+        if str(semteacher_capability_report).strip():
+            eval_cmd.extend(["--semteacher-capability-report", str(semteacher_capability_report)])
+
+        subprocess.run(eval_cmd, check=True, env=env)
         return eval_json
 
     def maybe_run_protocol_eval(step: int) -> None:
@@ -1112,6 +1240,9 @@ def main() -> None:
                         device=device,
                         disable_semantics=bool(args.disable_semantics),
                         use_teacher_priors=bool(args.use_teacher_priors),
+                        semteacher_use_teacher_targets=bool(args.semteacher_use_teacher_targets),
+                        semteacher_require_cache_fields=bool(args.semteacher_require_cache_fields),
+                        semteacher_capability_report=str(semteacher_capability_report),
                         data_mode=data_mode,
                         frontend_cache_reader=frontend_cache_reader,
                     )
@@ -1284,6 +1415,37 @@ def main() -> None:
                                         frame_sem_probs_qtsa[:, :-1, :],
                                     )
 
+                        semteacher_distill_loss = _safe_zero(device)
+                        semteacher_route_mean = 0.0
+                        if bool(args.semteacher_distill_enable):
+                            sem_probs = F.softmax(outputs["semantic_logits"], dim=-1)
+                            assoc_temp = max(1e-3, float(args.semteacher_association_temperature))
+                            query_token_weights_teacher = F.softmax(gather / assoc_temp, dim=-1)
+                            semteacher_route_mean = float(
+                                query_token_weights_teacher.max(dim=-1).values.mean().detach().float().cpu()
+                            )
+
+                            query_sem_readout_teacher = torch.einsum("bn,bnc->bc", query_token_weights_teacher, sem_probs)
+                            teacher_semantic_at_query = torch.gather(
+                                batch["target_semantic_probs_teacher"],
+                                dim=1,
+                                index=q_idx.view(-1, 1, 1).expand(
+                                    batch["target_semantic_probs_teacher"].shape[0],
+                                    1,
+                                    batch["target_semantic_probs_teacher"].shape[-1],
+                                ),
+                            ).squeeze(1)
+                            teacher_semantic_at_query = teacher_semantic_at_query / teacher_semantic_at_query.sum(
+                                dim=-1,
+                                keepdim=True,
+                            ).clamp(min=1e-6)
+
+                            semteacher_distill_loss = F.kl_div(
+                                torch.log(query_sem_readout_teacher.clamp(min=1e-6)),
+                                teacher_semantic_at_query,
+                                reduction="batchmean",
+                            )
+
                         query_token_index = int(torch.argmax(outputs["query_token_logits"][0]).item())
                         query_frame_scores = token_attn[0, query_token_index]
                         query_frame_idx = int(torch.argmax(query_frame_scores).item())
@@ -1329,6 +1491,7 @@ def main() -> None:
                             + float(args.qstr_temporal_consistency_weight) * temporal_semantic_consistency_loss
                             + float(args.qtsa_readout_weight) * qtsa_readout_alignment_loss
                             + float(args.qtsa_temporal_consistency_weight) * qtsa_temporal_consistency_loss
+                            + float(args.semteacher_distill_weight) * semteacher_distill_loss
                         )
 
                     if do_grad_audit and gradient_audit_row is None:
@@ -1431,6 +1594,8 @@ def main() -> None:
                         "trajectory_l1": float(trajectory_l1),
                         "visibility_loss": float(vis_loss.detach().float().cpu()),
                         "semantic_loss": float(sem_loss.detach().float().cpu()),
+                        "semteacher_distill_loss": float(semteacher_distill_loss.detach().float().cpu()),
+                        "semteacher_distill_weight": float(args.semteacher_distill_weight),
                         "qtsa_readout_alignment_loss": float(qtsa_readout_alignment_loss.detach().float().cpu()),
                         "qtsa_temporal_consistency_loss": float(qtsa_temporal_consistency_loss.detach().float().cpu()),
                         "qstr_temporal_consistency_loss": float(temporal_semantic_consistency_loss.detach().float().cpu()),
@@ -1464,6 +1629,8 @@ def main() -> None:
                         "qstr_route_mean": float(qstr_route_mean),
                         "qtsa_enabled": float(bool(args.qtsa_enable)),
                         "qtsa_route_mean": float(qtsa_route_mean),
+                        "semteacher_distill_enabled": float(bool(args.semteacher_distill_enable)),
+                        "semteacher_route_mean": float(semteacher_route_mean),
                     }
                     for key, value in row_values.items():
                         metric_sum[key] = metric_sum.get(key, 0.0) + float(value)
@@ -1586,6 +1753,17 @@ def main() -> None:
             "qtsa_readout_weight": float(args.qtsa_readout_weight),
             "qtsa_association_temperature": float(args.qtsa_association_temperature),
             "qtsa_temporal_consistency_weight": float(args.qtsa_temporal_consistency_weight),
+            "semantic_adapter_mode": str(args.semantic_adapter_mode),
+            "semteacher_strict": bool(args.semteacher_strict),
+            "semteacher_use_teacher_targets": bool(args.semteacher_use_teacher_targets),
+            "semteacher_require_cache_fields": bool(args.semteacher_require_cache_fields),
+            "semteacher_distill_enable": bool(args.semteacher_distill_enable),
+            "semteacher_distill_weight": float(args.semteacher_distill_weight),
+            "semteacher_association_temperature": float(args.semteacher_association_temperature),
+            "semteacher_confidence_rerank_enable": bool(args.semteacher_confidence_rerank_enable),
+            "semteacher_confidence_threshold": float(args.semteacher_confidence_threshold),
+            "semteacher_rerank_topk": int(args.semteacher_rerank_topk),
+            "semteacher_hard_manifest": str(semteacher_hard_manifest),
         },
         "loss_weights": {
             "lambda_traj": float(args.lambda_traj),
@@ -1597,6 +1775,7 @@ def main() -> None:
             "qstr_temporal_consistency_weight": float(args.qstr_temporal_consistency_weight),
             "qtsa_readout_weight": float(args.qtsa_readout_weight),
             "qtsa_temporal_consistency_weight": float(args.qtsa_temporal_consistency_weight),
+            "semteacher_distill_weight": float(args.semteacher_distill_weight),
             "semantic_warmup": bool(args.semantic_warmup),
             "semantic_warmup_start_ratio": float(args.semantic_warmup_start_ratio),
             "semantic_warmup_end_ratio": float(args.semantic_warmup_end_ratio),
@@ -1607,6 +1786,7 @@ def main() -> None:
             "trajectory_l1": _avg("trajectory_l1"),
             "visibility": _avg("visibility_loss"),
             "semantic": _avg("semantic_loss"),
+            "semteacher_distill": _avg("semteacher_distill_loss"),
             "qtsa_readout_alignment": _avg("qtsa_readout_alignment_loss"),
             "qtsa_temporal_consistency": _avg("qtsa_temporal_consistency_loss"),
             "qstr_temporal_consistency": _avg("qstr_temporal_consistency_loss"),
@@ -1624,6 +1804,7 @@ def main() -> None:
             "bg_fg_attention_ratio": _avg("bg_fg_attention_ratio"),
             "qstr_route_mean": _avg("qstr_route_mean"),
             "qtsa_route_mean": _avg("qtsa_route_mean"),
+            "semteacher_route_mean": _avg("semteacher_route_mean"),
             "reappearance_event_ratio": _avg("has_reappearance_event"),
             "reconnect_success_rate": _avg("reconnect_success"),
             "reconnect_min_error": _avg("reconnect_min_error"),
@@ -1666,6 +1847,7 @@ def main() -> None:
             "frontend_cache_dir": str(resolved_frontend_cache_dir),
             "frontend_cache_index": str(resolved_frontend_cache_index),
             "frontend_cache_max_shards_in_memory": int(args.frontend_cache_max_shards_in_memory),
+            "semteacher_capability_report": str(semteacher_capability_report),
         },
         "runtime": {
             "step_time_p50_s": _pct(step_times, 50.0),
@@ -1698,6 +1880,10 @@ def main() -> None:
             "protocol_version": str(args.protocol_version),
             "official_best_checkpoint_name": str(args.protocol_best_checkpoint_name),
             "official_best_selection_name": str(args.protocol_best_selection_name),
+            "semteacher_confidence_rerank_enable": bool(args.semteacher_confidence_rerank_enable),
+            "semteacher_confidence_threshold": float(args.semteacher_confidence_threshold),
+            "semteacher_rerank_topk": int(args.semteacher_rerank_topk),
+            "semteacher_hard_manifest": str(semteacher_hard_manifest),
             "records": protocol_eval_rows,
         },
         "gradient_audit": {

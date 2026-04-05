@@ -14,6 +14,7 @@ from stwm.datasets.stwm_dataset import STWMDataset
 from stwm.models.stwm_1b import STWM1B, STWMConfig, load_model_config
 from stwm.models.stwm_v4_2 import STWMV42, STWMV42Config, load_model_config_v4_2
 from stwm.modules.semantic_adapter import SemanticAdapter
+from stwm.modules.semantic_adapter_teacher_v2 import SemanticAdapterTeacherV2
 from stwm.modules.tokenizer import SemanticTrajectoryTokenizer
 from stwm.modules.trace_adapter import TraceAdapter
 from stwm.utils.week2_protocol import AblationConfig, ablation_from_args, build_tokens_for_sample
@@ -82,6 +83,13 @@ def build_parser() -> ArgumentParser:
     parser.add_argument("--query-min-plausible-same-class", type=int, default=2)
     parser.add_argument("--occlusion-reconnect-distance", type=float, default=0.18)
     parser.add_argument("--occlusion-reconnect-target-overlap-min", type=float, default=0.01)
+    parser.add_argument("--semantic-adapter-mode", choices=("proxy", "teacher_v2"), default="proxy")
+    parser.add_argument("--semteacher-strict", action="store_true")
+    parser.add_argument("--semteacher-capability-report", default="")
+    parser.add_argument("--semteacher-confidence-rerank-enable", action="store_true")
+    parser.add_argument("--semteacher-confidence-threshold", type=float, default=0.55)
+    parser.add_argument("--semteacher-rerank-topk", type=int, default=3)
+    parser.add_argument("--semteacher-hard-manifest", default="")
     return parser
 
 
@@ -174,15 +182,17 @@ def _build_v4_2_features_for_sample(
     sample: Any,
     *,
     trace_adapter: TraceAdapter,
-    semantic_adapter: SemanticAdapter,
+    semantic_adapter: Any,
     device: torch.device,
     ablation: AblationConfig,
 ) -> dict[str, Any]:
     trace_summary = trace_adapter.encode(sample.frame_paths, metadata=sample.metadata, clip_id=sample.clip_id)
+    metadata_for_sem = dict(sample.metadata) if isinstance(sample.metadata, dict) else {}
+    metadata_for_sem["frame_paths"] = [str(x) for x in sample.frame_paths]
     semantic_summary = semantic_adapter.encode(
         sample.text_labels,
         len(sample.frame_paths),
-        metadata=sample.metadata,
+        metadata=metadata_for_sem,
         clip_id=sample.clip_id,
     )
 
@@ -201,6 +211,7 @@ def _build_v4_2_features_for_sample(
     sem_text = semantic_summary.text_embeddings[:seq_len].mean(dim=1).to(device=device, dtype=torch.float32)
     sem_scores = semantic_summary.class_scores[:seq_len].mean(dim=1).to(device=device, dtype=torch.float32)
     semantic_features = torch.cat([sem_text, sem_scores], dim=-1)
+    teacher_semantic_conf = sem_scores.max(dim=-1).values
     if bool(ablation.disable_semantics):
         semantic_features = torch.zeros_like(semantic_features)
 
@@ -237,6 +248,8 @@ def _build_v4_2_features_for_sample(
         "prior_features": prior_features.unsqueeze(0),
         "teacher_objectness": teacher_objectness.unsqueeze(0),
         "seq_len": seq_len,
+        "teacher_semantic_conf": teacher_semantic_conf,
+        "semantic_teacher_backend": str(semantic_summary.metadata.get("teacher_backend", "")),
     }
 
 
@@ -294,6 +307,27 @@ def _choose_query_label(labels: list[str]) -> str:
 def _query_seed(label: str, clip_id: str) -> int:
     token = f"{label}|{clip_id}"
     return sum(ord(ch) for ch in token) % 10_000_019
+
+
+def _load_manifest_clip_ids(path: str) -> set[str]:
+    p = Path(str(path).strip())
+    if not p.exists():
+        return set()
+    payload = json.loads(p.read_text())
+    clip_ids: set[str] = set()
+    if isinstance(payload, list):
+        for item in payload:
+            if isinstance(item, dict) and str(item.get("clip_id", "")).strip():
+                clip_ids.add(str(item.get("clip_id", "")).strip())
+            elif isinstance(item, str) and item.strip():
+                clip_ids.add(item.strip())
+    elif isinstance(payload, dict):
+        arr = payload.get("selected_clip_ids")
+        if isinstance(arr, list):
+            for item in arr:
+                if str(item).strip():
+                    clip_ids.add(str(item).strip())
+    return clip_ids
 
 
 def _build_query_candidates(
@@ -475,10 +509,15 @@ def evaluate_model(
     query_min_plausible_same_class: int = 2,
     occlusion_reconnect_distance: float = 0.18,
     occlusion_reconnect_target_overlap_min: float = 0.01,
+    semteacher_confidence_rerank_enable: bool = False,
+    semteacher_confidence_threshold: float = 0.55,
+    semteacher_rerank_topk: int = 3,
+    semteacher_hard_clip_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     model.eval()
     requested_protocol_version = str(protocol_version)
     protocol_version = _canonical_protocol_version(requested_protocol_version)
+    hard_clip_ids = set(semteacher_hard_clip_ids or set())
 
     per_clip: list[dict[str, Any]] = []
     case_paths: list[str] = []
@@ -707,8 +746,15 @@ def evaluate_model(
             query_hit_rate = 0.0
             query_same_class_candidates = 0
             query_total_candidates = 0
+            query_rerank_applied = False
+            query_rerank_reason = ""
+            query_selected_confidence = 0.0
             if use_v2_family:
                 semantic_energy = frame_semantic_energy[start:end]
+                frame_teacher_conf = None
+                query_frame_scores = torch.zeros(0, dtype=torch.float32)
+                if model_family == "stwm_v4_2" and isinstance(feature_result.get("teacher_semantic_conf"), torch.Tensor):
+                    frame_teacher_conf = feature_result["teacher_semantic_conf"][start:end].detach().cpu()
                 if token_time_attention is not None and query_token_logits is not None and token_time_attention.numel() > 0:
                     query_token_index = int(torch.argmax(query_token_logits).item())
                     query_frame_scores = token_time_attention[query_token_index, start:end]
@@ -720,6 +766,31 @@ def evaluate_model(
                     query_local_idx = int(torch.argmax(semantic_energy).item())
                 else:
                     query_local_idx = 0
+
+                if frame_teacher_conf is not None and query_frame_scores.numel() > 0 and bool(semteacher_confidence_rerank_enable):
+                    hard_case = str(sample.clip_id) in hard_clip_ids
+                    base_idx = int(np.clip(query_local_idx, 0, max(0, frame_teacher_conf.shape[0] - 1)))
+                    base_conf = float(frame_teacher_conf[base_idx].item()) if frame_teacher_conf.numel() > 0 else 0.0
+                    query_selected_confidence = base_conf
+                    confidence_gate = base_conf < float(semteacher_confidence_threshold)
+                    if confidence_gate or hard_case:
+                        k = max(1, min(int(semteacher_rerank_topk), int(query_frame_scores.shape[0])))
+                        topk_scores, topk_idx = torch.topk(query_frame_scores, k=k)
+                        topk_conf = torch.gather(frame_teacher_conf, dim=0, index=topk_idx)
+
+                        qn = (topk_scores - topk_scores.min()) / (topk_scores.max() - topk_scores.min() + 1e-6)
+                        cn = (topk_conf - topk_conf.min()) / (topk_conf.max() - topk_conf.min() + 1e-6)
+                        rerank_scores = 0.65 * qn + 0.35 * cn
+                        best_slot = int(torch.argmax(rerank_scores).item())
+                        rerank_idx = int(topk_idx[best_slot].item())
+                        if rerank_idx != int(query_local_idx):
+                            query_rerank_applied = True
+                            query_rerank_reason = "hard_case_and_low_conf" if (confidence_gate and hard_case) else (
+                                "low_confidence" if confidence_gate else "hard_case"
+                            )
+                            query_local_idx = rerank_idx
+                            query_selected_confidence = float(frame_teacher_conf[query_local_idx].item())
+
                 query_local_idx = int(np.clip(query_local_idx, 0, max(0, end - start - 1)))
                 q_err = float(frame_errors[query_local_idx].item()) if len(frame_errors) > 0 else trajectory_error
 
@@ -783,6 +854,9 @@ def evaluate_model(
                 "query_hit_rate": float(query_hit_rate),
                 "query_same_class_candidates": int(query_same_class_candidates),
                 "query_total_candidates": int(query_total_candidates),
+                "query_rerank_applied": bool(query_rerank_applied),
+                "query_rerank_reason": str(query_rerank_reason),
+                "query_selected_confidence": float(query_selected_confidence),
             }
 
             case_file = ""
@@ -808,6 +882,9 @@ def evaluate_model(
                     "query_hit_rate": float(query_hit_rate),
                     "query_same_class_candidates": int(query_same_class_candidates),
                     "query_total_candidates": int(query_total_candidates),
+                    "query_rerank_applied": bool(query_rerank_applied),
+                    "query_rerank_reason": str(query_rerank_reason),
+                    "query_selected_confidence": float(query_selected_confidence),
                     "identity_target_overlap_mean": float(np.mean(identity_target_overlap_values)) if identity_target_overlap_values else 0.0,
                     "identity_other_overlap_mean": float(np.mean(identity_other_overlap_values)) if identity_other_overlap_values else 0.0,
                     "case_file": case_file,
@@ -845,6 +922,10 @@ def evaluate_model(
             "query_min_plausible_same_class": int(query_min_plausible_same_class),
             "occlusion_reconnect_distance": float(occlusion_reconnect_distance),
             "occlusion_reconnect_target_overlap_min": float(occlusion_reconnect_target_overlap_min),
+            "semteacher_confidence_rerank_enable": bool(semteacher_confidence_rerank_enable),
+            "semteacher_confidence_threshold": float(semteacher_confidence_threshold),
+            "semteacher_rerank_topk": int(semteacher_rerank_topk),
+            "semteacher_hard_clip_count": int(len(hard_clip_ids)),
             "metrics": [
                 "future_mask_iou",
                 "future_trajectory_l1",
@@ -871,6 +952,8 @@ def evaluate_model(
             "query_localization_error": mean_metric("query_localization_error"),
             "query_top1_acc": mean_metric("query_top1_acc"),
             "query_hit_rate": mean_metric("query_hit_rate"),
+            "query_rerank_rate": mean_metric("query_rerank_applied"),
+            "query_selected_confidence": mean_metric("query_selected_confidence"),
         },
         "per_clip": per_clip,
         "case_files": case_paths,
@@ -897,8 +980,19 @@ def main() -> None:
         raise RuntimeError("No eligible samples found for mini-val protocol")
 
     trace_adapter = TraceAdapter()
-    semantic_adapter = SemanticAdapter()
+    semteacher_capability_report = str(args.semteacher_capability_report).strip()
+    if not semteacher_capability_report:
+        semteacher_capability_report = str(Path(args.output).with_suffix("")) + "_semteacher_capability_gap.json"
+    if str(args.semantic_adapter_mode).strip().lower() == "teacher_v2":
+        semantic_adapter = SemanticAdapterTeacherV2(
+            strict_teacher=bool(args.semteacher_strict),
+            capability_report_path=semteacher_capability_report,
+        )
+    else:
+        semantic_adapter = SemanticAdapter()
     tokenizer = SemanticTrajectoryTokenizer()
+
+    semteacher_hard_clip_ids = _load_manifest_clip_ids(str(args.semteacher_hard_manifest)) if str(args.semteacher_hard_manifest).strip() else set()
 
     model_family = "stwm_1b"
 
@@ -996,6 +1090,10 @@ def main() -> None:
         query_min_plausible_same_class=int(args.query_min_plausible_same_class),
         occlusion_reconnect_distance=float(args.occlusion_reconnect_distance),
         occlusion_reconnect_target_overlap_min=float(args.occlusion_reconnect_target_overlap_min),
+        semteacher_confidence_rerank_enable=bool(args.semteacher_confidence_rerank_enable),
+        semteacher_confidence_threshold=float(args.semteacher_confidence_threshold),
+        semteacher_rerank_topk=int(args.semteacher_rerank_topk),
+        semteacher_hard_clip_ids=semteacher_hard_clip_ids,
     )
     if model_family == "stwm_v4_2":
         summary["model_config"] = {
@@ -1017,6 +1115,14 @@ def main() -> None:
             "num_heads": int(model.config.num_heads),
             "semantic_dim": int(model.config.semantic_dim),
         }
+
+    summary["semantic_adapter"] = {
+        "mode": str(args.semantic_adapter_mode),
+        "semteacher_strict": bool(args.semteacher_strict),
+        "semteacher_capability_report": str(semteacher_capability_report),
+        "semteacher_hard_manifest": str(args.semteacher_hard_manifest),
+        "semteacher_hard_clip_count": int(len(semteacher_hard_clip_ids)),
+    }
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
