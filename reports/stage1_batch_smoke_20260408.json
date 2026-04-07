@@ -1,0 +1,226 @@
+{
+  "generated_at_utc": "2026-04-07T17:10:08.439456Z",
+  "dataset_len": 36,
+  "batches_collected": 2,
+  "passed": true,
+  "batches": [
+    {
+      "batch_index": 0,
+      "fields": {
+        "dataset": {
+          "type": "list",
+          "len": 2,
+          "item_type": "str"
+        },
+        "split": {
+          "type": "list",
+          "len": 2,
+          "item_type": "str"
+        },
+        "clip_id": {
+          "type": "list",
+          "len": 2,
+          "item_type": "str"
+        },
+        "obs_frames": {
+          "type": "list",
+          "len": 2,
+          "item_type": "list"
+        },
+        "fut_frames": {
+          "type": "list",
+          "len": 2,
+          "item_type": "list"
+        },
+        "obs_valid": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8
+          ],
+          "dtype": "torch.bool"
+        },
+        "fut_valid": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8
+          ],
+          "dtype": "torch.bool"
+        },
+        "obs_tracks_2d": {
+          "type": "list",
+          "len": 2,
+          "item_type": "Tensor"
+        },
+        "fut_tracks_2d": {
+          "type": "list",
+          "len": 2,
+          "item_type": "Tensor"
+        },
+        "obs_tracks_3d": {
+          "type": "list",
+          "len": 2,
+          "item_type": "NoneType"
+        },
+        "fut_tracks_3d": {
+          "type": "list",
+          "len": 2,
+          "item_type": "NoneType"
+        },
+        "visibility": {
+          "type": "list",
+          "len": 2,
+          "item_type": "Tensor"
+        },
+        "intrinsics": {
+          "type": "list",
+          "len": 2,
+          "item_type": "NoneType"
+        },
+        "extrinsics": {
+          "type": "list",
+          "len": 2,
+          "item_type": "NoneType"
+        },
+        "point_ids": {
+          "type": "list",
+          "len": 2,
+          "item_type": "Tensor"
+        },
+        "meta": {
+          "type": "list",
+          "len": 2,
+          "item_type": "dict"
+        },
+        "batch_size": {
+          "type": "int"
+        }
+      }
+    },
+    {
+      "batch_index": 1,
+      "fields": {
+        "dataset": {
+          "type": "list",
+          "len": 2,
+          "item_type": "str"
+        },
+        "split": {
+          "type": "list",
+          "len": 2,
+          "item_type": "str"
+        },
+        "clip_id": {
+          "type": "list",
+          "len": 2,
+          "item_type": "str"
+        },
+        "obs_frames": {
+          "type": "list",
+          "len": 2,
+          "item_type": "list"
+        },
+        "fut_frames": {
+          "type": "list",
+          "len": 2,
+          "item_type": "list"
+        },
+        "obs_valid": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8
+          ],
+          "dtype": "torch.bool"
+        },
+        "fut_valid": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8
+          ],
+          "dtype": "torch.bool"
+        },
+        "obs_tracks_2d": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8,
+            48,
+            2
+          ],
+          "dtype": "torch.float32"
+        },
+        "fut_tracks_2d": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8,
+            48,
+            2
+          ],
+          "dtype": "torch.float32"
+        },
+        "obs_tracks_3d": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8,
+            48,
+            3
+          ],
+          "dtype": "torch.float32"
+        },
+        "fut_tracks_3d": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            8,
+            48,
+            3
+          ],
+          "dtype": "torch.float32"
+        },
+        "visibility": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            16,
+            48
+          ],
+          "dtype": "torch.bool"
+        },
+        "intrinsics": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32"
+        },
+        "extrinsics": {
+          "type": "list",
+          "len": 2,
+          "item_type": "NoneType"
+        },
+        "point_ids": {
+          "type": "Tensor",
+          "shape": [
+            2,
+            48
+          ],
+          "dtype": "torch.int64"
+        },
+        "meta": {
+          "type": "list",
+          "len": 2,
+          "item_type": "dict"
+        },
+        "batch_size": {
+          "type": "int"
+        }
+      }
+    }
+  ]
+}

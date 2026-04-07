@@ -1,0 +1,1273 @@
+{
+  "generated_at_utc": "2026-04-07T17:10:01.347908Z",
+  "required_keys": [
+    "dataset",
+    "split",
+    "clip_id",
+    "obs_frames",
+    "fut_frames",
+    "obs_valid",
+    "fut_valid",
+    "obs_tracks_2d",
+    "fut_tracks_2d",
+    "obs_tracks_3d",
+    "fut_tracks_3d",
+    "visibility",
+    "intrinsics",
+    "extrinsics",
+    "point_ids",
+    "meta"
+  ],
+  "datasets": {
+    "pointodyssey": {
+      "sampled": 3,
+      "dataset_len": 12,
+      "passed": true,
+      "samples": [
+        {
+          "index": 0,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "pointodyssey"
+            },
+            "split": {
+              "type": "str",
+              "repr": "train_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "pointodyssey_train_dancingroom_3rd_00000"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                32,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                32,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "None"
+            },
+            "fut_tracks_3d": {
+              "type": "None"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                32
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "None"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                32
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "fut_len",
+                "modalities",
+                "obs_len",
+                "sequence_name",
+                "track_source"
+              ]
+            }
+          }
+        },
+        {
+          "index": 1,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "pointodyssey"
+            },
+            "split": {
+              "type": "str",
+              "repr": "train_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "pointodyssey_train_scene_j716_ego1_00000"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                32,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                32,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "None"
+            },
+            "fut_tracks_3d": {
+              "type": "None"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                32
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "None"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                32
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "fut_len",
+                "modalities",
+                "obs_len",
+                "sequence_name",
+                "track_source"
+              ]
+            }
+          }
+        },
+        {
+          "index": 2,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "pointodyssey"
+            },
+            "split": {
+              "type": "str",
+              "repr": "train_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "pointodyssey_train_scene_j716_ego2_00000"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                32,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                32,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "None"
+            },
+            "fut_tracks_3d": {
+              "type": "None"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                32
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "None"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                32
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "fut_len",
+                "modalities",
+                "obs_len",
+                "sequence_name",
+                "track_source"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "kubric": {
+      "sampled": 3,
+      "dataset_len": 24,
+      "passed": true,
+      "samples": [
+        {
+          "index": 0,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "kubric"
+            },
+            "split": {
+              "type": "str",
+              "repr": "train_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "kubric_train_0000_movi_e-train"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                48
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "Tensor",
+              "shape": [
+                4
+              ],
+              "dtype": "torch.float32"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                48
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "fut_len",
+                "obs_len",
+                "subset",
+                "tfrecord_path",
+                "track_source"
+              ]
+            }
+          }
+        },
+        {
+          "index": 1,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "kubric"
+            },
+            "split": {
+              "type": "str",
+              "repr": "train_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "kubric_train_0001_movi_e-train"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                48
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "Tensor",
+              "shape": [
+                4
+              ],
+              "dtype": "torch.float32"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                48
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "fut_len",
+                "obs_len",
+                "subset",
+                "tfrecord_path",
+                "track_source"
+              ]
+            }
+          }
+        },
+        {
+          "index": 2,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "kubric"
+            },
+            "split": {
+              "type": "str",
+              "repr": "train_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "kubric_train_0002_movi_e-train"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                48,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                48
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "Tensor",
+              "shape": [
+                4
+              ],
+              "dtype": "torch.float32"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                48
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "fut_len",
+                "obs_len",
+                "subset",
+                "tfrecord_path",
+                "track_source"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "tapvid": {
+      "sampled": 3,
+      "dataset_len": 6,
+      "passed": true,
+      "samples": [
+        {
+          "index": 0,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "tapvid"
+            },
+            "split": {
+              "type": "str",
+              "repr": "eval_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "tapvid_davis_parkour"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                25,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                25,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "None"
+            },
+            "fut_tracks_3d": {
+              "type": "None"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                25
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "None"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                25
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "cache_npz",
+                "frame_count",
+                "point_count",
+                "track_source",
+                "variant"
+              ]
+            }
+          }
+        },
+        {
+          "index": 1,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "tapvid"
+            },
+            "split": {
+              "type": "str",
+              "repr": "eval_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "tapvid_davis_loading"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                25,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                25,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "None"
+            },
+            "fut_tracks_3d": {
+              "type": "None"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                25
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "None"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                25
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "cache_npz",
+                "frame_count",
+                "point_count",
+                "track_source",
+                "variant"
+              ]
+            }
+          }
+        },
+        {
+          "index": 2,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "tapvid"
+            },
+            "split": {
+              "type": "str",
+              "repr": "eval_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "tapvid_davis_blackswan"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                5,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_2d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                5,
+                2
+              ],
+              "dtype": "torch.float32"
+            },
+            "obs_tracks_3d": {
+              "type": "None"
+            },
+            "fut_tracks_3d": {
+              "type": "None"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                5
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "None"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                5
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "cache_npz",
+                "frame_count",
+                "point_count",
+                "track_source",
+                "variant"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "tapvid3d": {
+      "sampled": 3,
+      "dataset_len": 12,
+      "passed": true,
+      "samples": [
+        {
+          "index": 0,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "tapvid3d"
+            },
+            "split": {
+              "type": "str",
+              "repr": "eval_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "tapvid3d_pstudio_basketball_13"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "None"
+            },
+            "fut_tracks_2d": {
+              "type": "None"
+            },
+            "obs_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                121,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                121,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                121
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "Tensor",
+              "shape": [
+                4
+              ],
+              "dtype": "torch.float32"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                121
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "missing_fields",
+                "npz_path",
+                "source",
+                "track_source"
+              ]
+            }
+          }
+        },
+        {
+          "index": 1,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "tapvid3d"
+            },
+            "split": {
+              "type": "str",
+              "repr": "eval_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "tapvid3d_pstudio_basketball_14"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "None"
+            },
+            "fut_tracks_2d": {
+              "type": "None"
+            },
+            "obs_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                98,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                98,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                98
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "Tensor",
+              "shape": [
+                4
+              ],
+              "dtype": "torch.float32"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                98
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "missing_fields",
+                "npz_path",
+                "source",
+                "track_source"
+              ]
+            }
+          }
+        },
+        {
+          "index": 2,
+          "missing_keys": [],
+          "fields": {
+            "dataset": {
+              "type": "str",
+              "repr": "tapvid3d"
+            },
+            "split": {
+              "type": "str",
+              "repr": "eval_mini"
+            },
+            "clip_id": {
+              "type": "str",
+              "repr": "tapvid3d_pstudio_basketball_20"
+            },
+            "obs_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "fut_frames": {
+              "type": "list",
+              "len": 8,
+              "item_type": "str"
+            },
+            "obs_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "fut_valid": {
+              "type": "Tensor",
+              "shape": [
+                8
+              ],
+              "dtype": "torch.bool"
+            },
+            "obs_tracks_2d": {
+              "type": "None"
+            },
+            "fut_tracks_2d": {
+              "type": "None"
+            },
+            "obs_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                222,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "fut_tracks_3d": {
+              "type": "Tensor",
+              "shape": [
+                8,
+                222,
+                3
+              ],
+              "dtype": "torch.float32"
+            },
+            "visibility": {
+              "type": "Tensor",
+              "shape": [
+                16,
+                222
+              ],
+              "dtype": "torch.bool"
+            },
+            "intrinsics": {
+              "type": "Tensor",
+              "shape": [
+                4
+              ],
+              "dtype": "torch.float32"
+            },
+            "extrinsics": {
+              "type": "None"
+            },
+            "point_ids": {
+              "type": "Tensor",
+              "shape": [
+                222
+              ],
+              "dtype": "torch.int64"
+            },
+            "meta": {
+              "type": "dict",
+              "keys": [
+                "missing_fields",
+                "npz_path",
+                "source",
+                "track_source"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "all_passed": true
+}

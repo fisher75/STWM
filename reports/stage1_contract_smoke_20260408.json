@@ -1,0 +1,97 @@
+{
+  "generated_at_utc": "2026-04-07T17:09:55.626545+00:00",
+  "all_passed": true,
+  "blocking_failures": [],
+  "checks": [
+    {
+      "dataset_name": "pointodyssey",
+      "root_exists": true,
+      "subset_checks": {
+        "train": true,
+        "val": true,
+        "test": true
+      },
+      "required_modalities": [
+        "rgbs",
+        "depths",
+        "masks",
+        "normals"
+      ],
+      "modality_check_passed": true,
+      "modality_notes": [],
+      "non_blocking_for_stage1": false,
+      "passed": true
+    },
+    {
+      "dataset_name": "kubric",
+      "root_exists": true,
+      "subset_checks": {
+        "tfds/movi_e": true
+      },
+      "required_modalities": [
+        "movi_e tfrecord shards",
+        "dataset_info.json",
+        "tfds smoke pass"
+      ],
+      "modality_check_passed": true,
+      "modality_notes": [],
+      "non_blocking_for_stage1": false,
+      "passed": true
+    },
+    {
+      "dataset_name": "tapvid",
+      "root_exists": true,
+      "subset_checks": {
+        "davis/tapvid_davis/tapvid_davis.pkl": true,
+        "rgb_stacking/tapvid_rgb_stacking/tapvid_rgb_stacking.pkl": true,
+        "kinetics_labels/tapvid_kinetics/tapvid_kinetics.csv": true,
+        "tapnet_repo/tapnet/tapvid/evaluation_datasets.py": true
+      },
+      "required_modalities": [
+        "2d_points",
+        "occluded"
+      ],
+      "modality_check_passed": true,
+      "modality_notes": [],
+      "non_blocking_for_stage1": false,
+      "passed": true
+    },
+    {
+      "dataset_name": "tapvid3d",
+      "root_exists": true,
+      "subset_checks": {
+        "minival_dataset": true
+      },
+      "required_modalities": [
+        "tracks_XYZ",
+        "visibility",
+        "queries_xyt",
+        "fx_fy_cx_cy"
+      ],
+      "modality_check_passed": true,
+      "modality_notes": [],
+      "non_blocking_for_stage1": true,
+      "passed": true
+    },
+    {
+      "dataset_name": "dynamic_replica_data",
+      "root_exists": true,
+      "subset_checks": {},
+      "required_modalities": [],
+      "modality_check_passed": true,
+      "modality_notes": [],
+      "non_blocking_for_stage1": true,
+      "passed": true
+    },
+    {
+      "dataset_name": "dynamic_stereo",
+      "root_exists": true,
+      "subset_checks": {},
+      "required_modalities": [],
+      "modality_check_passed": true,
+      "modality_notes": [],
+      "non_blocking_for_stage1": true,
+      "passed": true
+    }
+  ]
+}
