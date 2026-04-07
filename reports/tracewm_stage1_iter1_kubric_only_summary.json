@@ -1,0 +1,283 @@
+{
+  "generated_at_utc": "2026-04-07T17:56:34.871707+00:00",
+  "task": "trace_only_future_trace_state_generation",
+  "iteration_round": "stage1_iter1",
+  "run_name": "tracewm_stage1_iter1_kubric_only",
+  "dataset_choice": "kubric_only",
+  "train_split": "train_iter1_kubric",
+  "val_split": "val_iter1_kubric",
+  "train_datasets": [
+    "kubric"
+  ],
+  "teacher_forced_supported": true,
+  "free_rollout_supported": true,
+  "device": "cuda",
+  "seed": 20260408,
+  "epochs": 6,
+  "steps_per_epoch": 80,
+  "total_steps": 480,
+  "batch_size": 4,
+  "model": {
+    "state_dim": 5,
+    "hidden_dim": 128
+  },
+  "loss_family": {
+    "teacher_forced_loss": "mse",
+    "free_rollout_loss": "mse",
+    "total_loss": "teacher_forced + 0.5 * free_rollout",
+    "free_loss_weight": 0.5
+  },
+  "dataset_mix_info": {
+    "train": {
+      "kubric": 72
+    },
+    "val": {
+      "kubric": 8
+    }
+  },
+  "train_samples": 72,
+  "val_samples": 8,
+  "epoch_history": [
+    {
+      "epoch": 0,
+      "global_step": 80,
+      "train_teacher_forced_loss": 0.0199611691267819,
+      "train_free_rollout_loss": 0.022612438311216464,
+      "train_total_loss": 0.03126738838609526,
+      "steps_this_epoch": 80,
+      "val_teacher_forced_loss": 3.658039713627659e-05,
+      "val_free_rollout_loss": 3.52886418113485e-05,
+      "val_total_loss": 5.422471804195084e-05,
+      "val_batches": 2,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.006592350061206768,
+        "free_rollout_mse": 0.015372843171159426,
+        "teacher_forced_endpoint_l2": 0.12094375304877758,
+        "free_rollout_endpoint_l2": 0.20768368989229202,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 189.04664912757775,
+        "free_rollout_mse": 191.53535652090795,
+        "teacher_forced_endpoint_l2": 12.633808857450882,
+        "free_rollout_endpoint_l2": 12.85825114697218,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      }
+    },
+    {
+      "epoch": 1,
+      "global_step": 160,
+      "train_teacher_forced_loss": 1.174008064310783e-05,
+      "train_free_rollout_loss": 1.1674661325855596e-05,
+      "train_total_loss": 1.7577411429670065e-05,
+      "steps_this_epoch": 80,
+      "val_teacher_forced_loss": 2.4030539407249307e-06,
+      "val_free_rollout_loss": 2.3431582576449728e-06,
+      "val_total_loss": 3.5746329558605794e-06,
+      "val_batches": 2,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.006485142386130367,
+        "free_rollout_mse": 0.015052954200655222,
+        "teacher_forced_endpoint_l2": 0.12088790722191334,
+        "free_rollout_endpoint_l2": 0.2080163980523745,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 189.1630592631797,
+        "free_rollout_mse": 191.61585768770115,
+        "teacher_forced_endpoint_l2": 12.634334904452166,
+        "free_rollout_endpoint_l2": 12.854044612497091,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      }
+    },
+    {
+      "epoch": 2,
+      "global_step": 240,
+      "train_teacher_forced_loss": 1.5080065622896655e-06,
+      "train_free_rollout_loss": 1.4934621759721267e-06,
+      "train_total_loss": 2.254737655960071e-06,
+      "steps_this_epoch": 80,
+      "val_teacher_forced_loss": 1.1174469136676635e-06,
+      "val_free_rollout_loss": 1.118127443078265e-06,
+      "val_total_loss": 1.6765106920502149e-06,
+      "val_batches": 2,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.006478947141052534,
+        "free_rollout_mse": 0.015031815816958746,
+        "teacher_forced_endpoint_l2": 0.1210017167031765,
+        "free_rollout_endpoint_l2": 0.20822450146079063,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 189.17668070457876,
+        "free_rollout_mse": 191.61311308279014,
+        "teacher_forced_endpoint_l2": 12.632530884196361,
+        "free_rollout_endpoint_l2": 12.851670959343513,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      }
+    },
+    {
+      "epoch": 3,
+      "global_step": 320,
+      "train_teacher_forced_loss": 9.986507173209701e-07,
+      "train_free_rollout_loss": 1.0028457118949063e-06,
+      "train_total_loss": 1.5000735743342374e-06,
+      "steps_this_epoch": 80,
+      "val_teacher_forced_loss": 9.0860942236759e-07,
+      "val_free_rollout_loss": 9.153908990811033e-07,
+      "val_total_loss": 1.366304900329851e-06,
+      "val_batches": 2,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.006478458545946826,
+        "free_rollout_mse": 0.015026124815146128,
+        "teacher_forced_endpoint_l2": 0.12101635957757632,
+        "free_rollout_endpoint_l2": 0.20801977068185806,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 189.1826980235055,
+        "free_rollout_mse": 191.60947533557191,
+        "teacher_forced_endpoint_l2": 12.631974330792824,
+        "free_rollout_endpoint_l2": 12.851112059007088,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      }
+    },
+    {
+      "epoch": 4,
+      "global_step": 400,
+      "train_teacher_forced_loss": 8.472486655364264e-07,
+      "train_free_rollout_loss": 8.550889667446882e-07,
+      "train_total_loss": 1.2747931549483838e-06,
+      "steps_this_epoch": 80,
+      "val_teacher_forced_loss": 7.893195288488641e-07,
+      "val_free_rollout_loss": 7.977200198183709e-07,
+      "val_total_loss": 1.188179567179759e-06,
+      "val_batches": 2,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.006478235455385099,
+        "free_rollout_mse": 0.015022002432184914,
+        "teacher_forced_endpoint_l2": 0.12100740646322568,
+        "free_rollout_endpoint_l2": 0.20787325873970985,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 189.1888768384233,
+        "free_rollout_mse": 191.6057010232471,
+        "teacher_forced_endpoint_l2": 12.631645376483599,
+        "free_rollout_endpoint_l2": 12.850671876221895,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      }
+    },
+    {
+      "epoch": 5,
+      "global_step": 480,
+      "train_teacher_forced_loss": 7.380455315342261e-07,
+      "train_free_rollout_loss": 7.463898974435779e-07,
+      "train_total_loss": 1.1112404749269445e-06,
+      "steps_this_epoch": 80,
+      "val_teacher_forced_loss": 6.872451194794849e-07,
+      "val_free_rollout_loss": 6.953343358873099e-07,
+      "val_total_loss": 1.0349123158448492e-06,
+      "val_batches": 2,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.006477947211048256,
+        "free_rollout_mse": 0.015017652690100173,
+        "teacher_forced_endpoint_l2": 0.12098988269766171,
+        "free_rollout_endpoint_l2": 0.20775259286165237,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 189.19599211759245,
+        "free_rollout_mse": 191.60228461803248,
+        "teacher_forced_endpoint_l2": 12.631385600815216,
+        "free_rollout_endpoint_l2": 12.850230688850084,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      }
+    }
+  ],
+  "final_metrics": {
+    "epoch": 5,
+    "global_step": 480,
+    "train_teacher_forced_loss": 7.380455315342261e-07,
+    "train_free_rollout_loss": 7.463898974435779e-07,
+    "train_total_loss": 1.1112404749269445e-06,
+    "steps_this_epoch": 80,
+    "val_teacher_forced_loss": 6.872451194794849e-07,
+    "val_free_rollout_loss": 6.953343358873099e-07,
+    "val_total_loss": 1.0349123158448492e-06,
+    "val_batches": 2,
+    "tapvid": {
+      "samples": 6,
+      "teacher_forced_mse": 0.006477947211048256,
+      "free_rollout_mse": 0.015017652690100173,
+      "teacher_forced_endpoint_l2": 0.12098988269766171,
+      "free_rollout_endpoint_l2": 0.20775259286165237,
+      "main_eval_ready": true
+    },
+    "tapvid3d": {
+      "samples": 12,
+      "teacher_forced_mse": 189.19599211759245,
+      "free_rollout_mse": 191.60228461803248,
+      "teacher_forced_endpoint_l2": 12.631385600815216,
+      "free_rollout_endpoint_l2": 12.850230688850084,
+      "limited_eval_ready": true,
+      "full_eval_ready": false
+    }
+  },
+  "best_val_total_loss": 1.0349123158448492e-06,
+  "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/checkpoints",
+  "checkpoint_best": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/checkpoints/best.pt",
+  "checkpoint_latest": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/checkpoints/latest.pt",
+  "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_iter1_kubric_only_summary.json",
+  "splits_path": "/home/chen034/workspace/data/_manifests/stage1_iter1_splits_20260408.json",
+  "qualitative": [
+    {
+      "name": "pointodyssey_train",
+      "ok": true,
+      "note": "2d_overlay_done",
+      "output": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/qualitative/pointodyssey_train.png"
+    },
+    {
+      "name": "pointodyssey_val",
+      "ok": true,
+      "note": "2d_overlay_done",
+      "output": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/qualitative/pointodyssey_val.png"
+    },
+    {
+      "name": "kubric_train",
+      "ok": true,
+      "note": "2d_overlay_done",
+      "output": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/qualitative/kubric_train.png"
+    },
+    {
+      "name": "kubric_val",
+      "ok": true,
+      "note": "2d_overlay_done",
+      "output": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/qualitative/kubric_val.png"
+    },
+    {
+      "name": "tapvid_eval",
+      "ok": true,
+      "note": "2d_overlay_done",
+      "output": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_iter1_kubric_only/qualitative/tapvid_eval.png"
+    }
+  ]
+}
