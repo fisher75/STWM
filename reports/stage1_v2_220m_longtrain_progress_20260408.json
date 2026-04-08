@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-08T13:37:01.870517+00:00",
+  "generated_at_utc": "2026-04-08T13:38:21.931217+00:00",
   "run_name": "stage1_v2_longtrain_220m_mainline",
   "objective": "Stage1-v2 220M mainline long-train with recoverable checkpoint infrastructure",
   "device": "cuda",
@@ -27,9 +27,9 @@
   "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
   "training_budget": {
     "optimizer_steps_target": 5000,
-    "optimizer_steps_current": 4000,
+    "optimizer_steps_current": 5000,
     "effective_batch": 2,
-    "epochs": 62,
+    "epochs": 78,
     "eval_interval": 1000,
     "save_every_n_steps": 1000,
     "eval_steps": 16
@@ -49,24 +49,25 @@
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0001000.pt",
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0002000.pt",
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0003000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0004000.pt"
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0004000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0005000.pt"
     ]
   },
   "best_metric_so_far": {
-    "global_step": 4000,
-    "epoch": 62,
+    "global_step": 5000,
+    "epoch": 78,
     "metrics": {
-      "teacher_forced_coord_loss": 0.06744160733393163,
-      "free_rollout_coord_mean_l2": 0.21808528008181577,
-      "free_rollout_endpoint_l2": 0.21396245715630902,
-      "tapvid_endpoint_l2": 0.29206732252369755,
-      "tapvid3d_limited_endpoint_l2": 3.5798924302542083
+      "teacher_forced_coord_loss": 0.06487464058328662,
+      "free_rollout_coord_mean_l2": 0.21624684283742016,
+      "free_rollout_endpoint_l2": 0.2102444279531349,
+      "tapvid_endpoint_l2": 0.32869825985120693,
+      "tapvid3d_limited_endpoint_l2": 3.6004261662883144
     },
     "rank_key": [
-      0.21396245715630902,
-      0.21808528008181577,
-      0.29206732252369755,
-      3.5798924302542083
+      0.2102444279531349,
+      0.21624684283742016,
+      0.32869825985120693,
+      3.6004261662883144
     ]
   },
   "eval_history": [
@@ -136,6 +137,23 @@
         0.21808528008181577,
         0.29206732252369755,
         3.5798924302542083
+      ]
+    },
+    {
+      "global_step": 5000,
+      "epoch": 78,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.06487464058328662,
+        "free_rollout_coord_mean_l2": 0.21624684283742016,
+        "free_rollout_endpoint_l2": 0.2102444279531349,
+        "tapvid_endpoint_l2": 0.32869825985120693,
+        "tapvid3d_limited_endpoint_l2": 3.6004261662883144
+      },
+      "rank_key": [
+        0.2102444279531349,
+        0.21624684283742016,
+        0.32869825985120693,
+        3.6004261662883144
       ]
     }
   ]

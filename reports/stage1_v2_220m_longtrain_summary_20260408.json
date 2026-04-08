@@ -1,0 +1,179 @@
+{
+  "generated_at_utc": "2026-04-08T13:38:21.931181+00:00",
+  "ablation_tag": "stage1_v2_longtrain_220m_mainline",
+  "run_name": "stage1_v2_longtrain_220m_mainline",
+  "device": "cuda",
+  "args": {
+    "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+    "recommended_runtime_json": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    "use_recommended_runtime": true,
+    "stage1_minisplit_path": "/home/chen034/workspace/data/_manifests/stage1_minisplits_20260408.json",
+    "data_root": "/home/chen034/workspace/data",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ],
+    "train_split": "train",
+    "val_split": "val",
+    "obs_len": 8,
+    "fut_len": 8,
+    "max_tokens": 64,
+    "max_samples_per_dataset": 128,
+    "max_samples_per_dataset_val": 64,
+    "model_preset": "prototype_220m",
+    "lr": 0.0001,
+    "weight_decay": 0.0,
+    "batch_size": 2,
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "epochs": 1,
+    "steps_per_epoch": 20,
+    "train_steps": 5000,
+    "eval_interval": 1000,
+    "eval_steps": 16,
+    "save_every_n_steps": 1000,
+    "clip_grad_norm": 1.0,
+    "coord_weight": 1.2,
+    "visibility_weight": 0.8,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": false,
+    "enable_velocity": false,
+    "enable_endpoint": false,
+    "eval_max_tapvid_samples": 6,
+    "eval_max_tapvid3d_samples": 12,
+    "output_dir": "/home/chen034/workspace/stwm/outputs/training/stage1_v2_longtrain_220m_mainline_20260408",
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408",
+    "resume_from": "",
+    "auto_resume_latest": false,
+    "summary_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_summary_20260408.json",
+    "progress_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_progress_20260408.json",
+    "final_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_final_20260408.json",
+    "results_md": "/home/chen034/workspace/stwm/docs/STAGE1_V2_220M_LONGTRAIN_RESULTS_20260408.md",
+    "perf_step_timing_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_step_timing_20260408.json",
+    "run_name": "stage1_v2_longtrain_220m_mainline",
+    "ablation_tag": "stage1_v2_longtrain_220m_mainline",
+    "run_metadata_note": "formal long-train single-run under frozen Stage1-v2 scope",
+    "seed": 20260408
+  },
+  "model": {
+    "preset": "prototype_220m",
+    "config": {
+      "state_dim": 8,
+      "d_model": 1152,
+      "num_layers": 13,
+      "num_heads": 16,
+      "ff_mult": 4,
+      "dropout": 0.1,
+      "max_time": 64,
+      "max_tokens": 256,
+      "use_endpoint_head": true
+    },
+    "parameter_count": 207615754,
+    "estimated_parameter_count": 207613450,
+    "target_220m_range_pass": true
+  },
+  "dataset": {
+    "train_size": 127,
+    "val_size": 31,
+    "train_split": "train",
+    "val_split": "val",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ]
+  },
+  "loss_config": {
+    "coord_weight": 1.2,
+    "visibility_weight": 0.8,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": false,
+    "enable_velocity": false,
+    "enable_endpoint": false
+  },
+  "final_metrics": {
+    "total_loss": 0.3374358919411898,
+    "coord_loss": 0.15501744404891507,
+    "visibility_loss": 0.18926868588342333,
+    "residual_loss": 0.3961228954002261,
+    "velocity_loss": 0.2604075003713369,
+    "endpoint_loss": 0.0
+  },
+  "timing_stats": {
+    "batch_wait_time": {
+      "mean": 0.00102898078430444,
+      "median": 9.374547516927123e-05,
+      "p95": 0.001438003371004016
+    },
+    "h2d_time": {
+      "mean": 0.00018499618561472743,
+      "median": 8.994498057290912e-05,
+      "p95": 0.0007800123421475293
+    },
+    "forward_time": {
+      "mean": 0.020984692626213657,
+      "median": 0.0239467914798297,
+      "p95": 0.03651913280482404
+    },
+    "backward_time": {
+      "mean": 0.03260438069992233,
+      "median": 0.0282796670217067,
+      "p95": 0.05478242694516666
+    },
+    "optimizer_time": {
+      "mean": 0.004990270048682578,
+      "median": 0.004012587014585733,
+      "p95": 0.007841817056760191
+    },
+    "step_time": {
+      "mean": 0.05902200771849603,
+      "median": 0.059289769968017936,
+      "p95": 0.09268302216078156
+    },
+    "samples_per_sec": {
+      "mean": 42.38381406101356,
+      "median": 33.36365586662666,
+      "p95": 81.00221698746769
+    }
+  },
+  "best_metric_so_far": {
+    "global_step": 5000,
+    "epoch": 78,
+    "metrics": {
+      "teacher_forced_coord_loss": 0.06487464058328662,
+      "free_rollout_coord_mean_l2": 0.21624684283742016,
+      "free_rollout_endpoint_l2": 0.2102444279531349,
+      "tapvid_endpoint_l2": 0.32869825985120693,
+      "tapvid3d_limited_endpoint_l2": 3.6004261662883144
+    },
+    "rank_key": [
+      0.2102444279531349,
+      0.21624684283742016,
+      0.32869825985120693,
+      3.6004261662883144
+    ]
+  },
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/latest.pt",
+    "step_checkpoints": [
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0001000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0002000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0003000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0004000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0005000.pt"
+    ]
+  },
+  "p1_shape_contract": {
+    "state_shape": "[B,T,K,D]",
+    "state_dim": 8
+  }
+}
