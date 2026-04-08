@@ -1,0 +1,142 @@
+{
+  "generated_at_utc": "2026-04-08T13:37:01.870517+00:00",
+  "run_name": "stage1_v2_longtrain_220m_mainline",
+  "objective": "Stage1-v2 220M mainline long-train with recoverable checkpoint infrastructure",
+  "device": "cuda",
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": 6,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0
+  },
+  "run_metadata": {
+    "run_name": "stage1_v2_longtrain_220m_mainline",
+    "ablation_tag": "stage1_v2_longtrain_220m_mainline",
+    "run_metadata_note": "formal long-train single-run under frozen Stage1-v2 scope",
+    "cuda_visible_devices": "3",
+    "gpu_selection_metadata": "selected_gpu=3;need_mib=49152;reason=recommended_gpu_insufficient_free_mib=822_need_mib=49152;fallback_gpu_ok=3;free_mib=182624",
+    "started_at_utc": "2026-04-08T13:32:05.173534+00:00",
+    "resumed_from": ""
+  },
+  "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "training_budget": {
+    "optimizer_steps_target": 5000,
+    "optimizer_steps_current": 4000,
+    "effective_batch": 2,
+    "epochs": 62,
+    "eval_interval": 1000,
+    "save_every_n_steps": 1000,
+    "eval_steps": 16
+  },
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "quaternary": "tapvid3d_limited_eval.free_rollout_endpoint_l2",
+    "total_loss_usage": "reference_only"
+  },
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/latest.pt",
+    "step_checkpoints": [
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0001000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0002000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0003000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0004000.pt"
+    ]
+  },
+  "best_metric_so_far": {
+    "global_step": 4000,
+    "epoch": 62,
+    "metrics": {
+      "teacher_forced_coord_loss": 0.06744160733393163,
+      "free_rollout_coord_mean_l2": 0.21808528008181577,
+      "free_rollout_endpoint_l2": 0.21396245715630902,
+      "tapvid_endpoint_l2": 0.29206732252369755,
+      "tapvid3d_limited_endpoint_l2": 3.5798924302542083
+    },
+    "rank_key": [
+      0.21396245715630902,
+      0.21808528008181577,
+      0.29206732252369755,
+      3.5798924302542083
+    ]
+  },
+  "eval_history": [
+    {
+      "global_step": 1000,
+      "epoch": 15,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.08294451448338977,
+        "free_rollout_coord_mean_l2": 0.2511277556487635,
+        "free_rollout_endpoint_l2": 0.24626977259454239,
+        "tapvid_endpoint_l2": 0.37096829932668934,
+        "tapvid3d_limited_endpoint_l2": 3.6179693488664526
+      },
+      "rank_key": [
+        0.24626977259454239,
+        0.2511277556487635,
+        0.37096829932668934,
+        3.6179693488664526
+      ]
+    },
+    {
+      "global_step": 2000,
+      "epoch": 31,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.09803442182284226,
+        "free_rollout_coord_mean_l2": 0.2794703882053213,
+        "free_rollout_endpoint_l2": 0.278382905859389,
+        "tapvid_endpoint_l2": 0.2839325023734051,
+        "tapvid3d_limited_endpoint_l2": 3.5656718695035545
+      },
+      "rank_key": [
+        0.278382905859389,
+        0.2794703882053213,
+        0.2839325023734051,
+        3.5656718695035545
+      ]
+    },
+    {
+      "global_step": 3000,
+      "epoch": 46,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.08055062748180315,
+        "free_rollout_coord_mean_l2": 0.24802771868835904,
+        "free_rollout_endpoint_l2": 0.24172535157878616,
+        "tapvid_endpoint_l2": 0.39246908063473906,
+        "tapvid3d_limited_endpoint_l2": 3.6328852048484226
+      },
+      "rank_key": [
+        0.24172535157878616,
+        0.24802771868835904,
+        0.39246908063473906,
+        3.6328852048484226
+      ]
+    },
+    {
+      "global_step": 4000,
+      "epoch": 62,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.06744160733393163,
+        "free_rollout_coord_mean_l2": 0.21808528008181577,
+        "free_rollout_endpoint_l2": 0.21396245715630902,
+        "tapvid_endpoint_l2": 0.29206732252369755,
+        "tapvid3d_limited_endpoint_l2": 3.5798924302542083
+      },
+      "rank_key": [
+        0.21396245715630902,
+        0.21808528008181577,
+        0.29206732252369755,
+        3.5798924302542083
+      ]
+    }
+  ]
+}
