@@ -27,6 +27,10 @@ def parse_args() -> Any:
         "--index-json",
         default=str(DATA_ROOT / "_manifests" / f"stage1_v2_pointodyssey_cache_index_{DATE_TAG}.json"),
     )
+    parser.add_argument(
+        "--skipped-manifest-json",
+        default=str(DATA_ROOT / "_manifests" / f"stage1_v2_pointodyssey_skipped_{DATE_TAG}.json"),
+    )
     parser.add_argument("--obs-len", type=int, default=8)
     parser.add_argument("--fut-len", type=int, default=8)
     parser.add_argument("--stride", type=int, default=8)
@@ -35,7 +39,7 @@ def parse_args() -> Any:
     parser.add_argument("--min-valid-frames", type=int, default=12)
     parser.add_argument("--max-anno-bytes", type=int, default=900000000)
     parser.add_argument("--max-scenes-per-split", type=int, default=0)
-    parser.add_argument("--splits", nargs="*", default=["train", "val", "test", "sample"])
+    parser.add_argument("--splits", nargs="*", default=["train", "val"])
     return parser.parse_args()
 
 
@@ -60,6 +64,16 @@ def _valid_or_empty(arr: np.ndarray, shape_tail: Tuple[int, ...]) -> np.ndarray:
     return arr.astype(np.float32, copy=False)
 
 
+def _skip_record(split: str, scene_dir: Path, anno_path: Path, anno_size_bytes: int, reason: str) -> Dict[str, Any]:
+    return {
+        "scene_id": scene_dir.name,
+        "split": split,
+        "anno_path": str(anno_path),
+        "anno_size_bytes": int(anno_size_bytes),
+        "skip_reason": reason,
+    }
+
+
 def _process_scene(
     split: str,
     scene_dir: Path,
@@ -70,37 +84,41 @@ def _process_scene(
     max_tracks: int,
     min_valid_frames: int,
     max_anno_bytes: int,
-) -> Tuple[List[Dict[str, Any]], str | None]:
+) -> Tuple[List[Dict[str, Any]], str | None, Dict[str, Any] | None]:
     anno_path = scene_dir / "anno.npz"
+    anno_size_bytes = 0
     if not anno_path.exists():
-        return [], "missing_anno"
+        return [], "missing_anno", _skip_record(split, scene_dir, anno_path, 0, "missing_anno")
+
+    try:
+        anno_size_bytes = int(anno_path.stat().st_size)
+    except Exception:
+        return [], "anno_stat_error", _skip_record(split, scene_dir, anno_path, -1, "anno_stat_error")
 
     if max_anno_bytes > 0:
-        try:
-            if int(anno_path.stat().st_size) > int(max_anno_bytes):
-                return [], "anno_too_large"
-        except Exception:
-            return [], "anno_stat_error"
+        if anno_size_bytes > int(max_anno_bytes):
+            return [], "anno_too_large", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "anno_too_large")
 
     try:
         payload = np.load(anno_path, allow_pickle=True)
     except Exception:
-        return [], "anno_load_error"
+        return [], "anno_load_error", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "anno_load_error")
 
     for key in REQUIRED_KEYS:
         if key not in payload.files:
-            return [], f"missing_key_{key}"
+            reason = f"missing_key_{key}"
+            return [], reason, _skip_record(split, scene_dir, anno_path, anno_size_bytes, reason)
 
     tracks_2d_raw = np.asarray(payload["trajs_2d"], dtype=np.float32)
     valids_raw = np.asarray(payload["valids"], dtype=bool)
     visibs_raw = np.asarray(payload["visibs"], dtype=bool)
 
     if tracks_2d_raw.ndim != 3 or tracks_2d_raw.shape[-1] != 2:
-        return [], "bad_trajs_2d_shape"
+        return [], "bad_trajs_2d_shape", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "bad_trajs_2d_shape")
 
     t_len, k_len, _ = tracks_2d_raw.shape
     if valids_raw.shape != (t_len, k_len) or visibs_raw.shape != (t_len, k_len):
-        return [], "bad_mask_shape"
+        return [], "bad_mask_shape", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "bad_mask_shape")
 
     tracks_3d_raw = np.asarray(payload["trajs_3d"])
     if tracks_3d_raw.ndim == 3 and tracks_3d_raw.shape == (t_len, k_len, 3):
@@ -126,12 +144,12 @@ def _process_scene(
     vis_counts = visibility.sum(axis=0)
     candidate = np.where(valid_counts >= int(min_valid_frames))[0]
     if candidate.size == 0:
-        return [], "no_valid_tracks"
+        return [], "no_valid_tracks", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "no_valid_tracks")
 
     order = np.argsort(-vis_counts[candidate])
     select = candidate[order][: max_tracks]
     if select.size == 0:
-        return [], "empty_track_selection"
+        return [], "empty_track_selection", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "empty_track_selection")
 
     starts = select_clip_starts(
         num_frames=t_len,
@@ -140,7 +158,7 @@ def _process_scene(
         max_clips=max(max_clips_per_scene, 1),
     )
     if not starts:
-        return [], "too_short_for_clip"
+        return [], "too_short_for_clip", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "too_short_for_clip")
 
     tracks_2d = np.where(valid[..., None], tracks_2d, 0.0)
     tracks_3d = np.where(valid[..., None], tracks_3d, 0.0)
@@ -205,8 +223,8 @@ def _process_scene(
         )
 
     if not entries:
-        return [], "no_written_clips"
-    return entries, None
+        return [], "no_written_clips", _skip_record(split, scene_dir, anno_path, anno_size_bytes, "no_written_clips")
+    return entries, None, None
 
 
 def _scene_dirs(source_root: Path, split: str, max_scenes_per_split: int) -> List[Path]:
@@ -217,7 +235,7 @@ def _scene_dirs(source_root: Path, split: str, max_scenes_per_split: int) -> Lis
     seq_dirs = [
         p
         for p in sorted(split_dir.iterdir(), key=lambda q: q.name)
-        if p.is_dir() and (p / "anno.npz").exists() and (p / "rgbs").is_dir()
+        if p.is_dir()
     ]
     if max_scenes_per_split > 0:
         seq_dirs = seq_dirs[:max_scenes_per_split]
@@ -231,17 +249,19 @@ def main() -> None:
     source_root = Path(args.source_root) if args.source_root else data_root / "pointodyssey"
     cache_root = Path(args.cache_root)
     index_json = Path(args.index_json)
+    skipped_manifest_json = Path(args.skipped_manifest_json)
 
     total_len = int(args.obs_len) + int(args.fut_len)
     all_entries: List[Dict[str, Any]] = []
     skipped = Counter()
+    skipped_records: List[Dict[str, Any]] = []
     split_scene_counts: Dict[str, int] = defaultdict(int)
     split_clip_counts: Dict[str, int] = defaultdict(int)
 
     for split in args.splits:
         for scene_dir in _scene_dirs(source_root, split, int(args.max_scenes_per_split)):
             split_scene_counts[split] += 1
-            entries, reason = _process_scene(
+            entries, reason, skip_info = _process_scene(
                 split=split,
                 scene_dir=scene_dir,
                 cache_root=cache_root,
@@ -254,6 +274,9 @@ def main() -> None:
             )
             if reason is not None:
                 skipped[reason] += 1
+                if skip_info is None:
+                    skip_info = _skip_record(split, scene_dir, scene_dir / "anno.npz", 0, reason)
+                skipped_records.append(skip_info)
                 continue
 
             all_entries.extend(entries)
@@ -265,6 +288,7 @@ def main() -> None:
         "source_root": str(source_root),
         "cache_root": str(cache_root),
         "index_path": str(index_json),
+        "skipped_manifest_path": str(skipped_manifest_json),
         "track_source": TRACK_SOURCE,
         "obs_len": int(args.obs_len),
         "fut_len": int(args.fut_len),
@@ -291,7 +315,19 @@ def main() -> None:
     index_json.parent.mkdir(parents=True, exist_ok=True)
     index_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    skipped_payload = {
+        "generated_at_utc": now_iso(),
+        "dataset": "pointodyssey",
+        "index_path": str(index_json),
+        "skipped_scene_count": int(len(skipped_records)),
+        "skipped_reasons": {k: int(v) for k, v in sorted(skipped.items())},
+        "records": skipped_records,
+    }
+    skipped_manifest_json.parent.mkdir(parents=True, exist_ok=True)
+    skipped_manifest_json.write_text(json.dumps(skipped_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
     print(f"[pointodyssey-cache] wrote index: {index_json}")
+    print(f"[pointodyssey-cache] wrote skipped_manifest: {skipped_manifest_json}")
     print(f"[pointodyssey-cache] total_clips={len(all_entries)} total_scenes={sum(split_scene_counts.values())}")
 
 

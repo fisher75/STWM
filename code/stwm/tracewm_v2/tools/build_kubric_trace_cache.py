@@ -29,6 +29,12 @@ def parse_args() -> Any:
         "--index-json",
         default=str(DATA_ROOT / "_manifests" / f"stage1_v2_kubric_cache_index_{DATE_TAG}.json"),
     )
+    parser.add_argument(
+        "--first-wave-mode",
+        default="panning_raw_first_wave",
+        choices=["panning_raw_first_wave"],
+        help="First-wave mode declaration. Only one mode is allowed in first-wave runs.",
+    )
     parser.add_argument("--obs-len", type=int, default=8)
     parser.add_argument("--fut-len", type=int, default=8)
     parser.add_argument("--stride", type=int, default=8)
@@ -243,6 +249,7 @@ def main() -> None:
     payload = {
         "generated_at_utc": now_iso(),
         "dataset": "kubric",
+        "first_wave_mode": str(args.first_wave_mode),
         "source_root": str(raw_root),
         "cache_root": str(cache_root),
         "index_path": str(index_json),
@@ -257,6 +264,7 @@ def main() -> None:
             "max_instances": int(args.max_instances),
             "min_valid_frames": int(args.min_valid_frames),
             "min_visible_pixels": float(args.min_visible_pixels),
+            "first_wave_mode": str(args.first_wave_mode),
         },
         "stats": {
             "scene_counts": {k: int(v) for k, v in sorted(split_scene_counts.items())},

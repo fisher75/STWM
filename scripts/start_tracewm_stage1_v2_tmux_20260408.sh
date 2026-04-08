@@ -14,9 +14,8 @@ if [[ ! -x "$RUN_SCRIPT" ]]; then
 fi
 
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-  echo "[stage1-v2-tmux] session_already_exists=$SESSION_NAME"
-  echo "[stage1-v2-tmux] attach_command=tmux attach -t $SESSION_NAME"
-  exit 0
+  tmux kill-session -t "$SESSION_NAME"
+  echo "[stage1-v2-tmux] killed_existing_session=$SESSION_NAME"
 fi
 
 tmux new-session -d -s "$SESSION_NAME" "bash $RUN_SCRIPT"

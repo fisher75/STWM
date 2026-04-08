@@ -1,6 +1,6 @@
 # TRACEWM Stage1 v2 Train Summary
 
-- generated_at_utc: 2026-04-08T06:29:14.065726+00:00
+- generated_at_utc: 2026-04-08T08:51:02.735406+00:00
 - ablation_tag: g4
 - dataset_size: 127
 - model_preset: debug_small

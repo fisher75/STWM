@@ -1,6 +1,6 @@
 # TRACEWM Stage1 v2 G1-G5 Ablation
 
-- generated_at_utc: 2026-04-08T06:29:25.354411+00:00
+- generated_at_utc: 2026-04-08T08:51:25.250972+00:00
 - selected_mainline: G1
 - selection_metric: min_total_loss
 

@@ -1,0 +1,29 @@
+{
+  "generated_at_utc": "2026-04-08T08:53:56.796814+00:00",
+  "ablation_type": "state",
+  "candidates": [
+    {
+      "lane": "G1",
+      "total_loss": 0.4164958732823531,
+      "note": "coord-only baseline on multi-token state"
+    },
+    {
+      "lane": "G2",
+      "total_loss": 0.5346540870765845,
+      "note": "G1 + visibility supervision"
+    },
+    {
+      "lane": "G3",
+      "total_loss": 0.9904607236385345,
+      "note": "G2 + residual supervision"
+    }
+  ],
+  "selected": {
+    "lane": "G1",
+    "total_loss": 0.4164958732823531,
+    "note": "coord-only baseline on multi-token state"
+  },
+  "evidence": {
+    "g1_g5_report": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g1_g5_20260408.json"
+  }
+}
