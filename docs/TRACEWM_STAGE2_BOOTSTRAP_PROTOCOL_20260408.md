@@ -2,43 +2,60 @@
 
 ## 1. Frozen Facts
 
-1. Stage1-v2 220M backbone has been frozen from the completed Stage1 round:
-   - `whether_stage1_backbone_is_now_fully_ready = true`
-   - `next_step_choice = freeze_stage1_and_prepare_stage2`
-2. Stage1 is no longer the main engineering target for this phase:
-   - do not continue 15000-step Stage1 long-train as the primary task,
-   - do not continue new Stage1 architecture search.
-3. Stage2 objective is to introduce semantics on top of a frozen Stage1 backbone.
-4. This round is bootstrap-only and explicitly excludes full Stage2 long-train.
+1. Stage1 220m backbone has been frozen and accepted before this round.
+2. Stage1 is not the focus of this round and must not be continued here.
+3. Latest Stage2 data audit status is fixed as:
+   - VSPW = complete
+   - VIPSeg = complete
+   - BURST = complete
+   - TAO = access_ready
+   - VISOR = manual_gate
+   - final_decision = STAGE2_CORE_READY_WITH_EXTENSION_GAPS
 
-## 2. Round Scope
+## 2. Stage2 Binding for This Round
 
-This Stage2 bootstrap round is limited to:
-- Stage2 data interface specification and contract mapping,
-- Stage2 semantic input/output definition,
-- Stage2 freeze/trainable module policy,
-- Stage2 runnable code skeleton and smoke validation.
+This Stage2 bootstrap round is only allowed to bind:
+- core datasets: VSPW + VIPSeg
+- optional extension: BURST
 
-## 3. Hard Exclusions
+TAO and VISOR are explicitly not part of current bootstrap train mainline.
 
-This round does not modify:
-- Stage1 backbone family,
-- Stage1 data contract framework,
-- WAN / MotionCrafter,
-- video reconstruction objectives.
+## 3. Explicit Prohibitions
 
-## 4. Stage2 Bootstrap Completion Conditions
+The following are forbidden in this round:
+- continue Stage1 training
+- modify Stage1 architecture/backbone
+- include TAO in Stage2 training mainline
+- include VISOR in Stage2 training mainline
+- Stage2 full longtrain
+- WAN / MotionCrafter
+- video reconstruction targets
 
-Bootstrap is considered complete only when:
-- Stage2 I/O spec and freeze policy are documented,
-- Stage2 bootstrap data contract is generated,
-- Stage2 trainer can load frozen Stage1 backbone,
-- semantic branch receives non-empty semantic inputs,
-- frozen/trainable boundary behaves as specified,
-- smoke report explicitly decides `bootstrap_ready` or `not_ready`.
+## 4. Round Objective
 
-## 5. Runtime Envelope
+This round is bootstrap-ready engineering only:
+- lock protocol/spec/freeze/semantic-source documents,
+- produce Stage2 bootstrap data contract,
+- verify frozen Stage1 loading + Stage2 semantic/fusion forward path,
+- run only small smoke training/evaluation,
+- output bootstrap-ready decision.
 
-- tmux session: `tracewm_stage2_bootstrap_20260408`
-- fixed log: `/home/chen034/workspace/stwm/logs/tracewm_stage2_bootstrap_20260408.log`
-- this round must not launch full Stage2 long-train.
+## 5. Bootstrap Completion Conditions
+
+Bootstrap is complete only when all conditions are satisfied:
+1. Stage2 I/O spec exists and is explicit.
+2. Stage2 freeze policy exists and is explicit.
+3. Stage2 semantic source spec exists and is explicit.
+4. Stage2 bootstrap data contract is generated and references current audit decision.
+5. Stage2 smoke report answers:
+   - frozen Stage1 backbone loadability
+   - semantic branch input acceptance
+   - semantic fusion forward correctness
+   - core dataset input readiness
+   - bootstrap_ready or not_ready
+
+## 6. Fixed Runtime Envelope
+
+- tmux session: tracewm_stage2_bootstrap_20260408
+- fixed log: /home/chen034/workspace/stwm/logs/tracewm_stage2_bootstrap_20260408.log
+- no full Stage2 longtrain in this round

@@ -1,18 +1,25 @@
 # TRACEWM Stage2 Freeze Policy (2026-04-08)
 
-## Frozen Modules
+## 1. Frozen Modules (Must Stay Frozen)
 
-1. Stage1 220M backbone (all backbone parameters frozen)
-2. Stage1 tokenizer / decoder path for this bootstrap round (no Stage1 structural edits)
+1. Stage1 220m backbone
+2. Stage1 tokenizer
+3. Stage1 core rollout backbone path
 
-## Trainable Modules
+These modules are frozen for the entire bootstrap round.
 
-1. Stage2 semantic encoder
-2. Stage2 semantic fusion / adapter block
-3. optional lightweight Stage2 readout head
+## 2. Trainable Modules (Only These)
 
-## Enforcement Notes
+1. semantic encoder
+2. semantic fusion or semantic adapter
+3. optional lightweight readout head
 
-- No ambiguous mixed-state policy is allowed.
-- Any parameter outside the explicit trainable set must remain frozen.
-- Smoke report must verify boundary behavior (frozen grads absent, trainable grads present).
+No other module is trainable in this round.
+
+## 3. Enforcement
+
+1. Any parameter outside the trainable module list must keep requires_grad=False.
+2. Bootstrap smoke must verify:
+	- Stage1 gradient leakage is absent
+	- semantic branch gradient is present
+3. Any accidental backbone unfreeze is treated as protocol violation.

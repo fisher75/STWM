@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-08T15:17:18.734488+00:00",
+  "generated_at_utc": "2026-04-08T16:33:54.997509+00:00",
   "run_name": "stage2_bootstrap_smoke_20260408",
   "runtime": {
     "source": "recommended_runtime_json",
@@ -10,6 +10,91 @@
     "prefetch_factor": 4,
     "single_gpu_only": true,
     "selected_gpu_id_runtime_json": 6
+  },
+  "stage2_contract_path": "/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+  "stage2_data_binding": {
+    "core": [
+      "VSPW",
+      "VIPSeg"
+    ],
+    "optional_extension": [
+      "BURST"
+    ],
+    "excluded": [
+      {
+        "dataset_name": "TAO",
+        "reason": "access_ready"
+      },
+      {
+        "dataset_name": "VISOR",
+        "reason": "manual_gate"
+      }
+    ]
+  },
+  "core_dataset_inputs": {
+    "ready": true,
+    "details": {
+      "VSPW": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 6,
+        "val_sample_count": 3,
+        "ready": true
+      },
+      "VIPSEG": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 6,
+        "val_sample_count": 3,
+        "ready": true
+      }
+    },
+    "train_summary": {
+      "VSPW": {
+        "sample_count": 6,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 6,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      },
+      "BURST": {
+        "sample_count": 6,
+        "split": "train",
+        "used_in_bootstrap_train": false,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/burst"
+      }
+    },
+    "val_summary": {
+      "VSPW": {
+        "sample_count": 3,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 3,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      },
+      "BURST": {
+        "sample_count": 3,
+        "split": "val",
+        "used_in_bootstrap_train": false,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/burst"
+      }
+    }
   },
   "stage1_backbone": {
     "load_success": true,
@@ -23,35 +108,37 @@
   },
   "semantic_branch": {
     "semantic_input_nonempty": true,
-    "semantic_forward_success": true,
+    "semantic_branch_accepts_inputs": true,
+    "fusion_forward_success": true,
     "semantic_feature_dim": 10,
-    "fusion_gate_mean": 0.4981521964073181
+    "fusion_gate_mean": 0.4990944266319275
   },
   "freeze_trainable_boundary": {
     "stage1_trainable_parameter_count": 0,
     "semantic_trainable_parameter_count": 3025154,
     "stage1_grad_detected_after_backward": false,
-    "semantic_grad_norm": 15.919465911182646,
+    "semantic_grad_norm": 11.650684375044397,
     "boundary_ok": true
   },
   "smoke_train": {
     "steps_requested": 4,
     "steps_completed": 4,
     "loss_history": [
-      2.0400784015655518,
-      0.8641137480735779,
-      0.4583948254585266,
-      0.1989535391330719
+      1.6736791133880615,
+      0.74994295835495,
+      0.26284581422805786,
+      0.03737817704677582
     ],
-    "last_loss": 0.1989535391330719
+    "last_loss": 0.03737817704677582
   },
   "smoke_eval": {
-    "val_loss": 0.14222174882888794
+    "val_loss": 0.05956391990184784
   },
   "answers": {
     "stage1_frozen_backbone_loadable": true,
     "semantic_branch_accepts_inputs": true,
-    "freeze_trainable_boundary_working": true,
+    "fusion_forward_working": true,
+    "core_datasets_provide_stage2_inputs": true,
     "stage2_bootstrap_ready": true
   },
   "bootstrap_ready": true,

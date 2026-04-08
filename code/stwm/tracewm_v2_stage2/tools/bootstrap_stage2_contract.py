@@ -7,20 +7,29 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 
-import numpy as np
-
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
 def parse_args() -> Any:
-    p = ArgumentParser(description="Build Stage2 bootstrap data contract from existing Stage1 resources")
-    p.add_argument("--stage1-contract-path", default="/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json")
-    p.add_argument("--report-json", default="/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json")
-    p.add_argument("--report-md", default="/home/chen034/workspace/stwm/docs/STAGE2_BOOTSTRAP_DATA_CONTRACT_20260408.md")
-    p.add_argument("--stage1-backbone-checkpoint", default="/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt")
-    p.add_argument("--max-samples-per-dataset", type=int, default=6)
+    p = ArgumentParser(description="Build Stage2 bootstrap contract from latest Stage2 dataset audit")
+    p.add_argument(
+        "--stage2-audit-json",
+        default="/home/chen034/workspace/data/_manifests/stage2_dataset_audit_20260408.json",
+    )
+    p.add_argument(
+        "--stage1-backbone-checkpoint",
+        default="/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    )
+    p.add_argument(
+        "--report-json",
+        default="/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+    )
+    p.add_argument(
+        "--report-md",
+        default="/home/chen034/workspace/stwm/docs/STAGE2_BOOTSTRAP_DATA_CONTRACT_20260408.md",
+    )
     return p.parse_args()
 
 
@@ -30,183 +39,237 @@ def _read_json(path: str | Path) -> Dict[str, Any]:
         raise FileNotFoundError(f"json not found: {p}")
     payload = json.loads(p.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
-        raise RuntimeError(f"json payload must be object: {p}")
+        raise RuntimeError(f"json payload must be dict: {p}")
     return payload
 
 
-def _mask_candidates(frame_path: Path) -> List[Path]:
-    stem = frame_path.stem
-    parent = frame_path.parent
-    return [
-        parent / f"mask_{stem.split('_')[-1]}.png",
-        parent / f"{stem.replace('rgb_', 'mask_')}.png",
-        parent / f"{stem.replace('rgba_', 'mask_')}.png",
-        parent.parent / "masks" / f"{stem}.png",
-        parent.parent / "masks" / f"mask_{stem}.png",
-    ]
+def _row_map(audit_payload: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    rows = audit_payload.get("rows", [])
+    out: Dict[str, Dict[str, Any]] = {}
+    if not isinstance(rows, list):
+        return out
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        name = str(row.get("dataset_name", "")).strip().upper()
+        if not name:
+            continue
+        out[name] = row
+    return out
 
 
-def _inspect_entry(cache_path: Path, source_ref: str) -> Dict[str, Any]:
-    payload = np.load(cache_path, allow_pickle=True)
-    keys = sorted(payload.files)
-    frame_paths = [str(x) for x in np.asarray(payload["frame_paths"]).tolist()] if "frame_paths" in payload.files else []
+def _dataset_record(name: str, role: str, row: Dict[str, Any]) -> Dict[str, Any]:
+    name_upper = str(name).strip().upper()
+    display_name = str(name).strip()
+    local_path = str(row.get("local_path", ""))
+    status = str(row.get("status", "unknown"))
 
-    has_region_inputs = bool(
-        "tracks_2d" in payload.files
-        and "valid" in payload.files
-        and len(frame_paths) > 0
-    )
-
-    mask_ready = False
-    if frame_paths:
-        fp = Path(frame_paths[0])
-        for cand in _mask_candidates(fp):
-            if cand.exists():
-                mask_ready = True
-                break
-
-    src = Path(source_ref)
-    if (not mask_ready) and src.exists() and src.suffix.lower() == ".json":
-        try:
-            obj = json.loads(src.read_text(encoding="utf-8"))
-        except Exception:
-            obj = {}
-        if isinstance(obj, dict):
-            for k in ["mask_paths", "segmentation_paths", "instance_mask_paths"]:
-                if isinstance(obj.get(k), list) and obj.get(k):
-                    mask_ready = True
-                    break
+    if name_upper == "VSPW":
+        split_mapping = {
+            "train": {
+                "split_file": f"{local_path}/train.txt",
+                "frame_root": f"{local_path}/data",
+                "frame_subdir": "origin",
+                "mask_root": f"{local_path}/data",
+                "mask_subdir": "mask",
+            },
+            "val": {
+                "split_file": f"{local_path}/val.txt",
+                "frame_root": f"{local_path}/data",
+                "frame_subdir": "origin",
+                "mask_root": f"{local_path}/data",
+                "mask_subdir": "mask",
+            },
+            "test": {
+                "split_file": f"{local_path}/test.txt",
+                "frame_root": f"{local_path}/data",
+                "frame_subdir": "origin",
+                "mask_root": f"{local_path}/data",
+                "mask_subdir": "mask",
+            },
+        }
+        annotation_source = "VSPW mask PNG under data/<clip_id>/mask (train/val), test may not ship dense masks"
+        used_train = True
+        used_eval = True
+    elif name_upper == "VIPSEG":
+        split_mapping = {
+            "train": {
+                "split_file": f"{local_path}/train.txt",
+                "frame_root": f"{local_path}/imgs",
+                "frame_subdir": "",
+                "mask_root": f"{local_path}/panomasks",
+                "mask_subdir": "",
+            },
+            "val": {
+                "split_file": f"{local_path}/val.txt",
+                "frame_root": f"{local_path}/imgs",
+                "frame_subdir": "",
+                "mask_root": f"{local_path}/panomasks",
+                "mask_subdir": "",
+            },
+            "test": {
+                "split_file": f"{local_path}/test.txt",
+                "frame_root": f"{local_path}/imgs",
+                "frame_subdir": "",
+                "mask_root": f"{local_path}/panomasks",
+                "mask_subdir": "",
+            },
+        }
+        annotation_source = "VIPSeg panomasks under panomasks/<clip_id> with split files train/val/test"
+        used_train = True
+        used_eval = True
+    elif name_upper == "BURST":
+        split_mapping = {
+            "train": {
+                "frames_root": f"{local_path}/images/train/frames/train",
+                "annotation_file": f"{local_path}/annotations/train/train.json",
+            },
+            "val": {
+                "frames_root": f"{local_path}/images/val/frames/val",
+                "annotation_file": f"{local_path}/annotations/val/all_classes.json",
+            },
+            "test": {
+                "frames_root": f"{local_path}/images/test/frames/test",
+                "annotation_file": f"{local_path}/annotations/test/all_classes.json",
+            },
+        }
+        annotation_source = "BURST annotation JSON (train/train.json, val/test all_classes.json)"
+        used_train = False
+        used_eval = True
+    else:
+        split_mapping = {}
+        annotation_source = ""
+        used_train = False
+        used_eval = False
 
     return {
-        "cache_path": str(cache_path),
-        "source_ref": str(source_ref),
-        "cache_keys": keys,
-        "frame_paths_available": bool(len(frame_paths) > 0),
-        "region_crop_ready": bool(has_region_inputs),
-        "mask_crop_ready": bool(mask_ready),
+        "dataset_name": display_name,
+        "role_in_stage2": role,
+        "status_from_audit": status,
+        "local_path": local_path,
+        "split_mapping": split_mapping,
+        "annotation_source": annotation_source,
+        "expected_semantic_fields": [
+            "semantic_frame_path",
+            "semantic_region_box_xyxy",
+            "semantic_embedding",
+            "semantic_source_mode",
+            "mask_crop_used",
+        ],
+        "used_in_bootstrap_train": bool(used_train),
+        "used_in_bootstrap_eval": bool(used_eval),
+        "not_in_current_bootstrap": False,
+        "reason": "",
     }
 
 
 def build_contract(args: Any) -> Dict[str, Any]:
-    stage1 = _read_json(args.stage1_contract_path)
-    datasets = stage1.get("datasets", []) if isinstance(stage1.get("datasets", []), list) else []
+    audit = _read_json(args.stage2_audit_json)
+    rows = _row_map(audit)
 
-    dataset_reports: List[Dict[str, Any]] = []
-    global_region_ready = True
-
-    for ds in datasets:
-        if not isinstance(ds, dict):
-            continue
-        if not bool(ds.get("enabled", False)):
-            continue
-
-        dataset_name = str(ds.get("dataset_name", ""))
-        index_path = Path(str(ds.get("index_path", "")))
-        if not index_path.exists():
-            dataset_reports.append(
-                {
-                    "dataset_name": dataset_name,
-                    "status": "missing_index",
-                    "index_path": str(index_path),
-                    "region_crop_ready": False,
-                    "mask_crop_ready": False,
-                    "inspected_samples": [],
-                }
-            )
-            global_region_ready = False
-            continue
-
-        index_payload = _read_json(index_path)
-        entries = index_payload.get("entries", []) if isinstance(index_payload.get("entries", []), list) else []
-
-        inspected = []
-        mask_ready_any = False
-        region_ready_all = True
-
-        for rec in entries[: max(int(args.max_samples_per_dataset), 1)]:
-            if not isinstance(rec, dict):
-                continue
-            cache_path = Path(str(rec.get("cache_path", "")))
-            source_ref = str(rec.get("source_ref", ""))
-            if not cache_path.exists():
-                region_ready_all = False
-                continue
-            info = _inspect_entry(cache_path=cache_path, source_ref=source_ref)
-            inspected.append(info)
-            mask_ready_any = bool(mask_ready_any or info["mask_crop_ready"])
-            region_ready_all = bool(region_ready_all and info["region_crop_ready"])
-
-        if not inspected:
-            region_ready_all = False
-
-        global_region_ready = bool(global_region_ready and region_ready_all)
-
-        dataset_reports.append(
-            {
-                "dataset_name": dataset_name,
-                "status": "ready_for_bootstrap" if region_ready_all else "insufficient_for_bootstrap",
-                "index_path": str(index_path),
-                "split_stats": ds.get("split_stats", {}),
-                "track_source": str(ds.get("track_source", "")),
-                "region_crop_ready": bool(region_ready_all),
-                "mask_crop_ready": bool(mask_ready_any),
-                "inspected_sample_count": int(len(inspected)),
-                "inspected_samples": inspected,
-            }
-        )
-
+    final_decision = str(audit.get("final_decision", "unknown"))
     stage1_ckpt = Path(str(args.stage1_backbone_checkpoint))
+
+    vspw = _dataset_record("VSPW", "Stage2 core data", rows.get("VSPW", {}))
+    vipseg = _dataset_record("VIPSeg", "Stage2 core data", rows.get("VIPSEG", {}))
+    burst = _dataset_record("BURST", "Stage2 open-world extension", rows.get("BURST", {}))
+
+    tao_status = str(rows.get("TAO", {}).get("status", "unknown"))
+    visor_status = str(rows.get("VISOR", {}).get("status", "unknown"))
+
+    excluded = [
+        {
+            "dataset_name": "TAO",
+            "role_in_stage2": "optional large-scale extension",
+            "status_from_audit": tao_status,
+            "not_in_current_bootstrap": True,
+            "reason": tao_status,
+        },
+        {
+            "dataset_name": "VISOR",
+            "role_in_stage2": "transfer / egocentric extension",
+            "status_from_audit": visor_status,
+            "not_in_current_bootstrap": True,
+            "reason": visor_status,
+        },
+    ]
+
+    core_ready = (
+        str(vspw.get("status_from_audit", "")) == "complete"
+        and str(vipseg.get("status_from_audit", "")) == "complete"
+    )
 
     return {
         "generated_at_utc": now_iso(),
-        "objective": "Stage2 bootstrap data interface mapping on top of frozen Stage1 resources",
-        "stage1_contract_path": str(args.stage1_contract_path),
+        "round": "stage2_bootstrap_20260408",
+        "objective": "Bootstrap-ready Stage2 with frozen Stage1 220m backbone and small smoke only",
+        "source_audit_json": str(args.stage2_audit_json),
         "stage1_backbone_checkpoint": {
             "path": str(stage1_ckpt),
             "exists": bool(stage1_ckpt.exists()),
+            "frozen_in_this_round": True,
         },
-        "semantic_source_definition": {
+        "audit_snapshot": {
+            "VSPW": str(rows.get("VSPW", {}).get("status", "unknown")),
+            "VIPSeg": str(rows.get("VIPSEG", {}).get("status", "unknown")),
+            "BURST": str(rows.get("BURST", {}).get("status", "unknown")),
+            "TAO": tao_status,
+            "VISOR": visor_status,
+            "final_decision": final_decision,
+        },
+        "stage2_bootstrap_binding": {
+            "core": ["VSPW", "VIPSeg"],
+            "optional_extension": ["BURST"],
+        },
+        "datasets": [vspw, vipseg, burst],
+        "excluded_datasets": excluded,
+        "semantic_source_policy": {
             "mainline": "object_region_or_mask_crop_visual_state",
             "disallow_fake_hash_label": True,
             "disallow_clip_teacher_as_mainline": True,
         },
-        "stage2_input_mapping": {
-            "frozen_stage1_trace_tokens": "from Stage1-v2 trace cache state tokens",
-            "semantic_tokens": "from frame-path visual region crops with optional mask crop when available",
-        },
-        "datasets": dataset_reports,
-        "bootstrap_interface_ready": bool(global_region_ready and stage1_ckpt.exists()),
+        "bootstrap_interface_ready": bool(core_ready and stage1_ckpt.exists()),
         "notes": [
-            "No new data expansion in this round.",
-            "Mask crop is used when mask resources are present; otherwise region crop fallback is used.",
+            "TAO and VISOR are explicitly marked not_in_current_bootstrap in this round.",
+            "BURST is optional extension and can be used as bootstrap eval extension.",
+            "No full Stage2 longtrain is allowed in this round.",
         ],
     }
 
 
 def write_markdown(path: Path, payload: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    lines = [
-        "# Stage2 Bootstrap Data Contract",
-        "",
-        f"- generated_at_utc: {payload.get('generated_at_utc', '')}",
-        f"- bootstrap_interface_ready: {payload.get('bootstrap_interface_ready', False)}",
-        f"- stage1_backbone_checkpoint_exists: {((payload.get('stage1_backbone_checkpoint', {}) if isinstance(payload.get('stage1_backbone_checkpoint', {}), dict) else {}).get('exists', False))}",
-        "",
-        "## Semantic Source",
-        "- mainline: object_region_or_mask_crop_visual_state",
-        "- fake hash label: disallowed",
-        "- CLIP teacher distillation as mainline: disallowed",
-        "",
-        "## Dataset Mapping",
-        "| dataset | region_crop_ready | mask_crop_ready | inspected_sample_count | status |",
-        "|---|---|---|---:|---|",
-    ]
-
-    for ds in payload.get("datasets", []) if isinstance(payload.get("datasets", []), list) else []:
+    lines: List[str] = []
+    lines.append("# Stage2 Bootstrap Data Contract")
+    lines.append("")
+    lines.append(f"- generated_at_utc: {payload.get('generated_at_utc', '')}")
+    lines.append(f"- bootstrap_interface_ready: {payload.get('bootstrap_interface_ready', False)}")
+    lines.append(f"- source_audit_json: {payload.get('source_audit_json', '')}")
+    lines.append("")
+    lines.append("## Binding")
+    binding = payload.get("stage2_bootstrap_binding", {})
+    lines.append(f"- core: {binding.get('core', [])}")
+    lines.append(f"- optional_extension: {binding.get('optional_extension', [])}")
+    lines.append("")
+    lines.append("## Included Datasets")
+    lines.append("| dataset | role | status_from_audit | used_in_bootstrap_train | used_in_bootstrap_eval | local_path |")
+    lines.append("|---|---|---|---|---|---|")
+    for ds in payload.get("datasets", []):
         if not isinstance(ds, dict):
             continue
         lines.append(
-            f"| {ds.get('dataset_name', '')} | {bool(ds.get('region_crop_ready', False))} | {bool(ds.get('mask_crop_ready', False))} | {int(ds.get('inspected_sample_count', 0))} | {ds.get('status', '')} |"
+            f"| {ds.get('dataset_name', '')} | {ds.get('role_in_stage2', '')} | {ds.get('status_from_audit', '')} | "
+            f"{bool(ds.get('used_in_bootstrap_train', False))} | {bool(ds.get('used_in_bootstrap_eval', False))} | {ds.get('local_path', '')} |"
+        )
+    lines.append("")
+    lines.append("## Excluded Datasets")
+    lines.append("| dataset | not_in_current_bootstrap | reason |")
+    lines.append("|---|---|---|")
+    for ds in payload.get("excluded_datasets", []):
+        if not isinstance(ds, dict):
+            continue
+        lines.append(
+            f"| {ds.get('dataset_name', '')} | {bool(ds.get('not_in_current_bootstrap', False))} | {ds.get('reason', '')} |"
         )
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -216,11 +279,11 @@ def main() -> None:
     args = parse_args()
     payload = build_contract(args)
 
-    report_json = Path(args.report_json)
-    report_md = Path(args.report_md)
+    report_json = Path(str(args.report_json))
+    report_md = Path(str(args.report_md))
     report_json.parent.mkdir(parents=True, exist_ok=True)
 
-    report_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    report_json.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
     write_markdown(report_md, payload)
 
     print(f"[stage2-contract] report_json={report_json}")

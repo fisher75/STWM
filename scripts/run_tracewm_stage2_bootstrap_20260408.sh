@@ -8,8 +8,9 @@ LOG_PATH="$WORK_ROOT/logs/tracewm_stage2_bootstrap_${DATE_TAG}.log"
 BOOTSTRAP_PROTOCOL_DOC="$WORK_ROOT/docs/TRACEWM_STAGE2_BOOTSTRAP_PROTOCOL_${DATE_TAG}.md"
 IO_SPEC_DOC="$WORK_ROOT/docs/TRACEWM_STAGE2_INPUT_OUTPUT_SPEC_${DATE_TAG}.md"
 FREEZE_POLICY_DOC="$WORK_ROOT/docs/TRACEWM_STAGE2_FREEZE_POLICY_${DATE_TAG}.md"
+SEMANTIC_SOURCE_DOC="$WORK_ROOT/docs/TRACEWM_STAGE2_SEMANTIC_SOURCE_SPEC_${DATE_TAG}.md"
 
-CONTRACT_PATH="/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_${DATE_TAG}.json"
+STAGE2_AUDIT_JSON="/home/chen034/workspace/data/_manifests/stage2_dataset_audit_${DATE_TAG}.json"
 RUNTIME_JSON="$WORK_ROOT/reports/stage1_v2_recommended_runtime_${DATE_TAG}.json"
 STAGE1_BEST_CKPT="$WORK_ROOT/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_${DATE_TAG}/best.pt"
 
@@ -36,7 +37,7 @@ exec > >(tee "$LOG_PATH") 2>&1
 echo "[stage2-bootstrap] start: $(date '+%Y-%m-%d %H:%M:%S %z')"
 echo "[stage2-bootstrap] python=$PYTHON_BIN"
 
-for f in "$BOOTSTRAP_PROTOCOL_DOC" "$IO_SPEC_DOC" "$FREEZE_POLICY_DOC" "$CONTRACT_PATH" "$RUNTIME_JSON" "$STAGE1_BEST_CKPT"; do
+for f in "$BOOTSTRAP_PROTOCOL_DOC" "$IO_SPEC_DOC" "$FREEZE_POLICY_DOC" "$SEMANTIC_SOURCE_DOC" "$STAGE2_AUDIT_JSON" "$RUNTIME_JSON" "$STAGE1_BEST_CKPT"; do
   if [[ ! -f "$f" ]]; then
     echo "[stage2-bootstrap] missing_required_file=$f"
     exit 2
@@ -168,28 +169,29 @@ trap cleanup EXIT INT TERM
 
 echo "[stage2-bootstrap] step=build_data_contract"
 "$PYTHON_BIN" "$WORK_ROOT/code/stwm/tracewm_v2_stage2/tools/bootstrap_stage2_contract.py" \
-  --stage1-contract-path "$CONTRACT_PATH" \
+  --stage2-audit-json "$STAGE2_AUDIT_JSON" \
   --stage1-backbone-checkpoint "$STAGE1_BEST_CKPT" \
   --report-json "$DATA_CONTRACT_JSON" \
   --report-md "$DATA_CONTRACT_MD"
 
 echo "[stage2-bootstrap] step=visualize_inputs"
 "$PYTHON_BIN" "$WORK_ROOT/code/stwm/tracewm_v2_stage2/tools/visualize_stage2_inputs.py" \
-  --contract-path "$CONTRACT_PATH" \
+  --stage2-contract-path "$DATA_CONTRACT_JSON" \
+  --split train \
   --output-image "$VIS_IMAGE" \
   --report-json "$VIS_REPORT_JSON"
 
 echo "[stage2-bootstrap] step=run_stage2_smoke"
 "$PYTHON_BIN" "$WORK_ROOT/code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2.py" \
-  --contract-path "$CONTRACT_PATH" \
+  --stage2-contract-path "$DATA_CONTRACT_JSON" \
   --recommended-runtime-json "$RUNTIME_JSON" \
   --use-recommended-runtime \
   --stage1-backbone-checkpoint "$STAGE1_BEST_CKPT" \
-  --dataset-names pointodyssey kubric \
+  --dataset-names vspw vipseg burst \
   --train-split train \
   --val-split val \
-  --max-samples-train 8 \
-  --max-samples-val 4 \
+  --max-samples-train 6 \
+  --max-samples-val 3 \
   --batch-size 2 \
   --smoke-steps 4 \
   --smoke-json "$SMOKE_JSON" \

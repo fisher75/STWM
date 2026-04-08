@@ -1,42 +1,36 @@
 # TRACEWM Stage2 Input/Output Spec (2026-04-08)
 
-## 1. Semantic Source Definition (Frozen)
+## 1. Stage2 Inputs (Locked)
 
-Stage2 semantics must come from visual semantic state extracted from object regions / mask-crop context.
-
-Mainline source policy:
-- primary: object-region visual features from tracked object regions,
-- optional: mask-crop visual features when mask resources are available,
-- disallowed as mainline: fake hash labels,
-- disallowed as mainline: CLIP teacher distillation as core training path.
-
-## 2. Stage2 Inputs
-
-Stage2 consumes:
-1. frozen Stage1 trace/state tokens,
-2. semantic tokens / semantic embeddings from object-region or mask-crop features.
+Stage2 input is fixed to two channels only:
+1. frozen Stage1 trace/state tokens
+2. semantic tokens or semantic embeddings
 
 Input tensor contract:
-- Stage1 tokens: `[B, T, K, D_state]` (from Stage1-v2 cache/state contract)
-- Semantic features: `[B, K, D_sem_raw]`
-- Encoded semantic tokens: `[B, K, D_sem]`
+- Stage1 tokens: [B, T, K, D_state]
+- Raw semantic features: [B, K, D_sem_raw]
+- Encoded semantic tokens: [B, K, D_sem]
 
-## 3. Stage2 Outputs
+The Stage1 token channel is provided to Stage2 with Stage1 backbone frozen.
 
-Stage2 outputs enhanced future rollout states while preserving compatibility with Stage1 evaluation protocol.
+## 2. Stage2 Outputs (Locked)
 
-Output contract:
-- enhanced future coord rollout: `[B, T_fut, K, 2]`
-- optional enhanced hidden state for diagnostics: `[B, T, K, H]`
+Stage2 output is fixed to:
+1. enhanced future trace/state rollout
+2. optional intermediate hidden diagnostics for audit
 
-Compatibility requirement:
-- Stage2 output must remain directly mappable to Stage1 evaluation metrics interface.
+Output tensor contract:
+- future rollout prediction: [B, T_fut, K, D_rollout]
+- optional fused hidden diagnostics: [B, T, K, H]
 
-## 4. Stage2 Training Strategy (Frozen)
+## 3. Compatibility Requirement
 
-- Stage1 backbone: frozen
-- Stage2 semantic branch: trainable
-- Stage2 semantic fusion/adapter: trainable
-- optional lightweight readout head: trainable
+Stage2 output must remain compatible with Stage1 evaluation protocol.
+No new incompatible evaluator path is introduced in this bootstrap round.
 
-This bootstrap round does not run full long-train; only smoke-level optimization is allowed.
+## 4. Non-Ambiguity Rule
+
+This document intentionally avoids mixed wording:
+- Stage1 channel is frozen input channel.
+- Stage2 semantic branch is trainable branch.
+- No hidden or implicit backbone unfreeze is allowed.

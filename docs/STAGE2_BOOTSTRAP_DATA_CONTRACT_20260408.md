@@ -1,16 +1,22 @@
 # Stage2 Bootstrap Data Contract
 
-- generated_at_utc: 2026-04-08T15:17:01.693313+00:00
+- generated_at_utc: 2026-04-08T16:33:10.260943+00:00
 - bootstrap_interface_ready: True
-- stage1_backbone_checkpoint_exists: True
+- source_audit_json: /home/chen034/workspace/data/_manifests/stage2_dataset_audit_20260408.json
 
-## Semantic Source
-- mainline: object_region_or_mask_crop_visual_state
-- fake hash label: disallowed
-- CLIP teacher distillation as mainline: disallowed
+## Binding
+- core: ['VSPW', 'VIPSeg']
+- optional_extension: ['BURST']
 
-## Dataset Mapping
-| dataset | region_crop_ready | mask_crop_ready | inspected_sample_count | status |
-|---|---|---|---:|---|
-| pointodyssey | True | False | 6 | ready_for_bootstrap |
-| kubric | True | True | 6 | ready_for_bootstrap |
+## Included Datasets
+| dataset | role | status_from_audit | used_in_bootstrap_train | used_in_bootstrap_eval | local_path |
+|---|---|---|---|---|---|
+| VSPW | Stage2 core data | complete | True | True | /home/chen034/workspace/stwm/data/external/vspw/VSPW |
+| VIPSeg | Stage2 core data | complete | True | True | /home/chen034/workspace/stwm/data/external/vipseg/VIPSeg |
+| BURST | Stage2 open-world extension | complete | False | True | /home/chen034/workspace/stwm/data/external/burst |
+
+## Excluded Datasets
+| dataset | not_in_current_bootstrap | reason |
+|---|---|---|
+| TAO | True | access_ready |
+| VISOR | True | manual_gate |

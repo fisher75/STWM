@@ -6,7 +6,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import json
-import os
 import random
 
 import numpy as np
@@ -39,9 +38,15 @@ def set_seed(seed: int) -> None:
 
 
 def parse_args() -> Any:
-    p = ArgumentParser(description="Stage2 bootstrap trainer (smoke only)")
-    p.add_argument("--contract-path", default="/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json")
-    p.add_argument("--recommended-runtime-json", default="/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json")
+    p = ArgumentParser(description="Stage2 bootstrap trainer (smoke only, no longtrain)")
+    p.add_argument(
+        "--stage2-contract-path",
+        default="/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+    )
+    p.add_argument(
+        "--recommended-runtime-json",
+        default="/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    )
     p.add_argument("--use-recommended-runtime", action="store_true")
 
     p.add_argument(
@@ -50,14 +55,14 @@ def parse_args() -> Any:
     )
     p.add_argument("--stage1-model-preset", default="prototype_220m")
 
-    p.add_argument("--dataset-names", nargs="*", default=["pointodyssey", "kubric"])
+    p.add_argument("--dataset-names", nargs="*", default=["vspw", "vipseg", "burst"])
     p.add_argument("--train-split", default="train")
     p.add_argument("--val-split", default="val")
     p.add_argument("--obs-len", type=int, default=8)
     p.add_argument("--fut-len", type=int, default=8)
     p.add_argument("--max-tokens", type=int, default=64)
-    p.add_argument("--max-samples-train", type=int, default=8)
-    p.add_argument("--max-samples-val", type=int, default=4)
+    p.add_argument("--max-samples-train", type=int, default=6)
+    p.add_argument("--max-samples-val", type=int, default=3)
     p.add_argument("--semantic-patch-radius", type=int, default=12)
 
     p.add_argument("--batch-size", type=int, default=2)
@@ -73,6 +78,20 @@ def parse_args() -> Any:
     p.add_argument("--results-md", default="/home/chen034/workspace/stwm/docs/STAGE2_BOOTSTRAP_RESULTS_20260408.md")
     p.add_argument("--seed", type=int, default=20260408)
     return p.parse_args()
+
+
+def _read_json(path: str | Path) -> Dict[str, Any]:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"json not found: {p}")
+    payload = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"json payload must be dict: {p}")
+    return payload
+
+
+def _norm_name(name: str) -> str:
+    return str(name).strip().upper()
 
 
 def _safe_load_checkpoint(path: str | Path, device: torch.device) -> Dict[str, Any]:
@@ -152,13 +171,15 @@ def _masked_coord_loss(pred_coord: torch.Tensor, target_coord: torch.Tensor, val
 
 def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
 
 
 def _write_md(path: Path, payload: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    ans = payload.get("answers", {}) if isinstance(payload.get("answers", {}), dict) else {}
-    boundary = payload.get("freeze_trainable_boundary", {}) if isinstance(payload.get("freeze_trainable_boundary", {}), dict) else {}
+    ans = payload.get("answers", {}) if isinstance(payload.get("answers"), dict) else {}
+    boundary = payload.get("freeze_trainable_boundary", {}) if isinstance(payload.get("freeze_trainable_boundary"), dict) else {}
+    core_inputs = payload.get("core_dataset_inputs", {}) if isinstance(payload.get("core_dataset_inputs"), dict) else {}
+
     lines = [
         "# Stage2 Bootstrap Smoke Results",
         "",
@@ -170,8 +191,13 @@ def _write_md(path: Path, payload: Dict[str, Any]) -> None:
         "## Required Answers",
         f"- stage1_frozen_backbone_loadable: {ans.get('stage1_frozen_backbone_loadable', False)}",
         f"- semantic_branch_accepts_inputs: {ans.get('semantic_branch_accepts_inputs', False)}",
-        f"- freeze_trainable_boundary_working: {ans.get('freeze_trainable_boundary_working', False)}",
+        f"- fusion_forward_working: {ans.get('fusion_forward_working', False)}",
+        f"- core_datasets_provide_stage2_inputs: {ans.get('core_datasets_provide_stage2_inputs', False)}",
         f"- stage2_bootstrap_ready: {ans.get('stage2_bootstrap_ready', False)}",
+        "",
+        "## Core Dataset Inputs",
+        f"- ready: {core_inputs.get('ready', False)}",
+        f"- details: {core_inputs.get('details', {})}",
         "",
         "## Freeze Boundary",
         f"- stage1_trainable_parameter_count: {boundary.get('stage1_trainable_parameter_count', 0)}",
@@ -180,6 +206,86 @@ def _write_md(path: Path, payload: Dict[str, Any]) -> None:
         f"- semantic_grad_norm: {boundary.get('semantic_grad_norm', 0.0)}",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _extract_binding(contract: Dict[str, Any]) -> Dict[str, Any]:
+    binding = contract.get("stage2_bootstrap_binding", {}) if isinstance(contract.get("stage2_bootstrap_binding"), dict) else {}
+    core = [str(x).strip() for x in binding.get("core", [])] if isinstance(binding.get("core", []), list) else []
+    optional = [str(x).strip() for x in binding.get("optional_extension", [])] if isinstance(binding.get("optional_extension", []), list) else []
+
+    if not core:
+        core = ["VSPW", "VIPSEG"]
+
+    usage: Dict[str, Dict[str, bool]] = {}
+    for ds in contract.get("datasets", []) if isinstance(contract.get("datasets", []), list) else []:
+        if not isinstance(ds, dict):
+            continue
+        name = _norm_name(str(ds.get("dataset_name", "")))
+        if not name:
+            continue
+        usage[name] = {
+            "train": bool(ds.get("used_in_bootstrap_train", False)),
+            "eval": bool(ds.get("used_in_bootstrap_eval", False)),
+        }
+
+    excluded = [
+        {
+            "dataset_name": str(x.get("dataset_name", "")),
+            "reason": str(x.get("reason", "")),
+        }
+        for x in contract.get("excluded_datasets", [])
+        if isinstance(x, dict)
+    ]
+
+    return {
+        "core": core,
+        "optional_extension": optional,
+        "usage": usage,
+        "excluded": excluded,
+    }
+
+
+def _summary_count(summary: Dict[str, Dict[str, Any]], name: str) -> int:
+    target = _norm_name(name)
+    for key, meta in summary.items():
+        if _norm_name(str(key)) == target:
+            if isinstance(meta, dict):
+                return int(meta.get("sample_count", 0))
+            return 0
+    return 0
+
+
+def _core_dataset_ready(
+    train_summary: Dict[str, Dict[str, Any]],
+    val_summary: Dict[str, Dict[str, Any]],
+    core_names: List[str],
+    usage: Dict[str, Dict[str, bool]],
+) -> Tuple[bool, Dict[str, Any]]:
+    details: Dict[str, Any] = {}
+    ready = True
+
+    for name in core_names:
+        key = _norm_name(name)
+        use_train = bool(usage.get(key, {}).get("train", True))
+        use_eval = bool(usage.get(key, {}).get("eval", True))
+
+        train_count = _summary_count(train_summary, key)
+        val_count = _summary_count(val_summary, key)
+
+        train_ok = (train_count > 0) if use_train else True
+        val_ok = (val_count > 0) if use_eval else True
+        item_ready = bool(train_ok and val_ok)
+        ready = bool(ready and item_ready)
+
+        details[key] = {
+            "train_required": use_train,
+            "eval_required": use_eval,
+            "train_sample_count": int(train_count),
+            "val_sample_count": int(val_count),
+            "ready": item_ready,
+        }
+
+    return ready, details
 
 
 def main() -> None:
@@ -209,10 +315,14 @@ def main() -> None:
             "selected_gpu_id_runtime_json": int(rt.selected_gpu_id),
         }
 
+    stage2_contract = _read_json(args.stage2_contract_path)
+    binding_info = _extract_binding(stage2_contract)
+    core_names = [str(x) for x in binding_info.get("core", [])]
+
     train_cfg = Stage2SemanticDatasetConfig(
         dataset_names=[str(x) for x in args.dataset_names],
         split=str(args.train_split),
-        contract_path=str(args.contract_path),
+        contract_path=str(args.stage2_contract_path),
         obs_len=int(args.obs_len),
         fut_len=int(args.fut_len),
         max_tokens=int(args.max_tokens),
@@ -222,7 +332,7 @@ def main() -> None:
     val_cfg = Stage2SemanticDatasetConfig(
         dataset_names=[str(x) for x in args.dataset_names],
         split=str(args.val_split),
-        contract_path=str(args.contract_path),
+        contract_path=str(args.stage2_contract_path),
         obs_len=int(args.obs_len),
         fut_len=int(args.fut_len),
         max_tokens=int(args.max_tokens),
@@ -232,6 +342,15 @@ def main() -> None:
 
     train_ds = Stage2SemanticDataset(train_cfg)
     val_ds = Stage2SemanticDataset(val_cfg)
+    train_summary = dict(train_ds.dataset_summary)
+    val_summary = dict(val_ds.dataset_summary)
+
+    core_input_ready, core_input_details = _core_dataset_ready(
+        train_summary=train_summary,
+        val_summary=val_summary,
+        core_names=core_names,
+        usage=binding_info.get("usage", {}),
+    )
 
     num_workers = int(runtime_meta.get("num_workers", 0))
     pin_memory = bool(runtime_meta.get("pin_memory", False))
@@ -292,27 +411,23 @@ def main() -> None:
     ).to(device)
     readout_head = torch.nn.Linear(fusion_hidden_dim, 2).to(device)
 
-    trainable_modules = {
-        "semantic_encoder": semantic_encoder,
-        "semantic_fusion": semantic_fusion,
-        "readout_head": readout_head,
-    }
     trainable_params: List[torch.nn.Parameter] = []
-    for module in trainable_modules.values():
+    for module in [semantic_encoder, semantic_fusion, readout_head]:
         trainable_params.extend([p for p in module.parameters() if p.requires_grad])
 
     optimizer = torch.optim.AdamW(trainable_params, lr=float(args.lr), weight_decay=float(args.weight_decay))
 
     smoke_losses: List[float] = []
     semantic_input_nonempty = False
-    semantic_forward_success = False
+    semantic_branch_accepts_inputs = False
+    fusion_forward_success = False
     stage1_grad_detected = False
     semantic_grad_norm = 0.0
     gate_mean = 0.0
 
     if stage1_loaded and stage1_model is not None:
         train_iter = iter(train_loader)
-        for _step in range(max(int(args.smoke_steps), 1)):
+        for _ in range(max(int(args.smoke_steps), 1)):
             try:
                 raw_batch = next(train_iter)
             except StopIteration:
@@ -332,8 +447,8 @@ def main() -> None:
 
             semantic_encoded = semantic_encoder(batch["semantic_features"])
             fused_hidden, aux = semantic_fusion(hidden, semantic_encoded, token_mask=token_mask)
+            fusion_forward_success = True
             gate_mean = float(aux.get("gate_mean", 0.0))
-            semantic_forward_success = True
 
             pred_coord = readout_head(fused_hidden[:, int(args.obs_len) :])
             target_coord = batch["fut_state"][..., 0:2]
@@ -360,6 +475,8 @@ def main() -> None:
             optimizer.step()
             smoke_losses.append(float(loss.detach().cpu().item()))
 
+        semantic_branch_accepts_inputs = bool(semantic_input_nonempty and fusion_forward_success)
+
     eval_loss = None
     if stage1_loaded and stage1_model is not None:
         try:
@@ -378,13 +495,31 @@ def main() -> None:
             eval_loss = None
 
     boundary_ok = bool((not stage1_grad_detected) and semantic_grad_norm > 0.0)
-    bootstrap_ready = bool(stage1_loaded and semantic_input_nonempty and semantic_forward_success and boundary_ok)
+    bootstrap_ready = bool(
+        stage1_loaded
+        and semantic_branch_accepts_inputs
+        and fusion_forward_success
+        and boundary_ok
+        and core_input_ready
+    )
     next_step_choice = "start_stage2_small_train" if bootstrap_ready else "refine_stage2_bootstrap"
 
     payload = {
         "generated_at_utc": now_iso(),
         "run_name": str(args.run_name),
         "runtime": runtime_meta,
+        "stage2_contract_path": str(args.stage2_contract_path),
+        "stage2_data_binding": {
+            "core": core_names,
+            "optional_extension": binding_info.get("optional_extension", []),
+            "excluded": binding_info.get("excluded", []),
+        },
+        "core_dataset_inputs": {
+            "ready": bool(core_input_ready),
+            "details": core_input_details,
+            "train_summary": train_summary,
+            "val_summary": val_summary,
+        },
         "stage1_backbone": {
             "load_success": bool(stage1_loaded),
             "load_error": str(stage1_error),
@@ -392,7 +527,8 @@ def main() -> None:
         },
         "semantic_branch": {
             "semantic_input_nonempty": bool(semantic_input_nonempty),
-            "semantic_forward_success": bool(semantic_forward_success),
+            "semantic_branch_accepts_inputs": bool(semantic_branch_accepts_inputs),
+            "fusion_forward_success": bool(fusion_forward_success),
             "semantic_feature_dim": 10,
             "fusion_gate_mean": float(gate_mean),
         },
@@ -414,8 +550,9 @@ def main() -> None:
         },
         "answers": {
             "stage1_frozen_backbone_loadable": bool(stage1_loaded),
-            "semantic_branch_accepts_inputs": bool(semantic_input_nonempty and semantic_forward_success),
-            "freeze_trainable_boundary_working": bool(boundary_ok),
+            "semantic_branch_accepts_inputs": bool(semantic_branch_accepts_inputs),
+            "fusion_forward_working": bool(fusion_forward_success),
+            "core_datasets_provide_stage2_inputs": bool(core_input_ready),
             "stage2_bootstrap_ready": bool(bootstrap_ready),
         },
         "bootstrap_ready": bool(bootstrap_ready),
