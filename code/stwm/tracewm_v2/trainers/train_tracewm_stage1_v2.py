@@ -116,6 +116,19 @@ def _safe_float(x: Any, default: float = 0.0) -> float:
         return float(default)
 
 
+def _safe_json_dict(raw: str) -> Dict[str, Any]:
+    text = str(raw).strip()
+    if not text:
+        return {}
+    try:
+        payload = json.loads(text)
+    except Exception:
+        return {}
+    if not isinstance(payload, dict):
+        return {}
+    return payload
+
+
 def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool = False) -> Dict[str, torch.Tensor]:
     return {
         "obs_state": batch["obs_state"].to(device, non_blocking=non_blocking),
@@ -470,12 +483,25 @@ def main() -> None:
     best_checkpoint_path = checkpoint_dir / "best.pt"
     latest_checkpoint_path = checkpoint_dir / "latest.pt"
 
+    gpu_selection_metadata_raw = str(os.environ.get("TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA", ""))
+    gpu_selection_metadata_json_raw = str(os.environ.get("TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA_JSON", ""))
+    gpu_selection = _safe_json_dict(gpu_selection_metadata_json_raw)
+    if not gpu_selection and gpu_selection_metadata_raw.startswith("{"):
+        gpu_selection = _safe_json_dict(gpu_selection_metadata_raw)
+
     run_metadata = {
         "run_name": str(args.run_name),
         "ablation_tag": str(args.ablation_tag),
         "run_metadata_note": str(args.run_metadata_note),
         "cuda_visible_devices": str(os.environ.get("CUDA_VISIBLE_DEVICES", "")),
-        "gpu_selection_metadata": str(os.environ.get("TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA", "")),
+        "gpu_selection_metadata": gpu_selection_metadata_raw,
+        "gpu_selection": gpu_selection,
+        "selected_gpu_id": gpu_selection.get("selected_gpu_id"),
+        "avg_gpu_util": gpu_selection.get("avg_gpu_util"),
+        "avg_mem_util": gpu_selection.get("avg_mem_util"),
+        "free_mem_gb": gpu_selection.get("free_mem_gb"),
+        "lease_id": gpu_selection.get("lease_id"),
+        "fallback_reason": gpu_selection.get("fallback_reason", ""),
         "started_at_utc": now_iso(),
     }
 

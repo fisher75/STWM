@@ -4,8 +4,8 @@ set -euo pipefail
 WORK_ROOT="/home/chen034/workspace/stwm"
 DATE_TAG="20260408"
 
-LOG_PATH="$WORK_ROOT/logs/tracewm_stage1_v2_220m_longtrain_${DATE_TAG}.log"
-PROTOCOL_DOC="$WORK_ROOT/docs/TRACEWM_STAGE1_V2_220M_LONGTRAIN_PROTOCOL_${DATE_TAG}.md"
+LOG_PATH="$WORK_ROOT/logs/tracewm_stage1_v2_220m_longtrain_continue_${DATE_TAG}.log"
+PROTOCOL_DOC="$WORK_ROOT/docs/TRACEWM_STAGE1_V2_220M_LONGTRAIN_CONTINUATION_PROTOCOL_${DATE_TAG}.md"
 CONTRACT_PATH="/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_${DATE_TAG}.json"
 RUNTIME_JSON="$WORK_ROOT/reports/stage1_v2_recommended_runtime_${DATE_TAG}.json"
 MINISPLIT_PATH="/home/chen034/workspace/data/_manifests/stage1_minisplits_${DATE_TAG}.json"
@@ -15,9 +15,12 @@ CHECKPOINT_DIR="$WORK_ROOT/outputs/checkpoints/stage1_v2_longtrain_220m_mainline
 OUTPUT_DIR="$WORK_ROOT/outputs/training/stage1_v2_longtrain_220m_mainline_${DATE_TAG}"
 PROGRESS_JSON="$WORK_ROOT/reports/stage1_v2_220m_longtrain_progress_${DATE_TAG}.json"
 FINAL_JSON="$WORK_ROOT/reports/stage1_v2_220m_longtrain_final_${DATE_TAG}.json"
+CONFIRM_10000_JSON="$WORK_ROOT/reports/stage1_v2_220m_longtrain_10000_confirmation_${DATE_TAG}.json"
 RESULTS_MD="$WORK_ROOT/docs/STAGE1_V2_220M_LONGTRAIN_RESULTS_${DATE_TAG}.md"
 SUMMARY_JSON="$WORK_ROOT/reports/stage1_v2_220m_longtrain_summary_${DATE_TAG}.json"
 PERF_JSON="$WORK_ROOT/reports/stage1_v2_220m_longtrain_step_timing_${DATE_TAG}.json"
+GPU_SELECT_JSON="$WORK_ROOT/reports/stage1_v2_220m_longtrain_continue_gpu_selection_${DATE_TAG}.json"
+GPU_LEASE_PATH="$WORK_ROOT/reports/stage1_v2_gpu_lease_${DATE_TAG}.json"
 
 if [[ -x "/home/chen034/miniconda3/envs/stwm/bin/python" ]]; then
   PYTHON_BIN="/home/chen034/miniconda3/envs/stwm/bin/python"
@@ -30,7 +33,7 @@ export PYTHONPATH="$WORK_ROOT/code:${PYTHONPATH:-}"
 
 exec > >(tee "$LOG_PATH") 2>&1
 
-echo "[stage1-v2-longtrain] start: $(date '+%Y-%m-%d %H:%M:%S %z')"
+echo "[stage1-v2-longtrain-continue] start: $(date '+%Y-%m-%d %H:%M:%S %z')"
 echo "[stage1-v2-longtrain] python=$PYTHON_BIN"
 
 if [[ ! -f "$PROTOCOL_DOC" ]]; then
@@ -49,6 +52,10 @@ if [[ ! -f "$FREEZE_CMP_JSON" ]]; then
   echo "[stage1-v2-longtrain] missing_freeze_comparison_json"
   exit 5
 fi
+if [[ ! -f "$CHECKPOINT_DIR/latest.pt" ]]; then
+  echo "[stage1-v2-longtrain] missing_latest_checkpoint=$CHECKPOINT_DIR/latest.pt"
+  exit 8
+fi
 
 FREEZE_DECISION=$(
   "$PYTHON_BIN" - <<PY
@@ -63,85 +70,142 @@ if [[ "$FREEZE_DECISION" != "freeze_220m_as_stage1_backbone" ]]; then
   exit 6
 fi
 
+echo "[stage1-v2-longtrain] step=select_gpu_with_selector_and_lease"
 GPU_DECISION=$(
   "$PYTHON_BIN" - <<PY
 import json
-import subprocess
+from pathlib import Path
 
-p = json.load(open('$RUNTIME_JSON', 'r', encoding='utf-8'))
-policy = p.get('selected_gpu_policy', {}) if isinstance(p.get('selected_gpu_policy', {}), dict) else {}
-selected = int(policy.get('selected_gpu_id', -1))
-required_gb = float(p.get('required_mem_gb', 40.0) or 40.0)
-safety_gb = float(p.get('safety_margin_gb', 8.0) or 8.0)
-need_mib = int((required_gb + safety_gb) * 1024.0)
+from stwm.infra.gpu_lease import acquire_lease
+from stwm.infra.gpu_selector import select_single_gpu
 
-rows = []
-try:
-    out = subprocess.check_output(
-        ['nvidia-smi', '--query-gpu=index,memory.free', '--format=csv,noheader,nounits'],
-        text=True,
-    )
-    for line in out.strip().splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        parts = [x.strip() for x in line.split(',')]
-        if len(parts) < 2:
-            continue
-        rows.append((int(parts[0]), int(float(parts[1]))))
-except Exception:
-    rows = []
+runtime = json.load(open('$RUNTIME_JSON', 'r', encoding='utf-8'))
+required_mem_gb = float(runtime.get('required_mem_gb', 40.0) or 40.0)
+safety_margin_gb = float(runtime.get('safety_margin_gb', 8.0) or 8.0)
+policy = runtime.get('selected_gpu_policy', {}) if isinstance(runtime.get('selected_gpu_policy', {}), dict) else {}
+recommended_gpu_id = int(policy.get('selected_gpu_id', -1))
 
-chosen = -1
-reason = 'recommended_gpu_missing'
+payload = select_single_gpu(
+    required_mem_gb=required_mem_gb,
+    safety_margin_gb=safety_margin_gb,
+    sample_count=12,
+    interval_sec=2.0,
+    lease_path='$GPU_LEASE_PATH',
+)
 
-if selected >= 0:
-    selected_free = -1
-    for idx, free_mib in rows:
-        if idx == selected:
-            selected_free = free_mib
-            break
-    if selected_free >= need_mib:
-        chosen = selected
-        reason = f'recommended_gpu_ok_free_mib={selected_free}'
+selected_gpu_id = int(payload.get('selected_gpu_id', -1))
+if selected_gpu_id < 0:
+    result = {
+        'selected_gpu_id': -1,
+        'avg_gpu_util': None,
+        'avg_mem_util': None,
+        'free_mem_gb': None,
+        'lease_id': '',
+        'fallback_reason': 'no_candidate_after_selector_filter',
+        'required_mem_gb': required_mem_gb,
+        'safety_margin_gb': safety_margin_gb,
+        'recommended_gpu_id': recommended_gpu_id,
+        'selector_payload': payload,
+    }
+    Path('$GPU_SELECT_JSON').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+    print(-1)
+    print('')
+    raise SystemExit(23)
+
+selected_row = None
+recommended_row = None
+for row in payload.get('gpus', []) if isinstance(payload.get('gpus', []), list) else []:
+    if int(row.get('gpu_id', -1)) == selected_gpu_id:
+        selected_row = row
+    if int(row.get('gpu_id', -1)) == recommended_gpu_id:
+        recommended_row = row
+
+fallback_reason = ''
+if selected_gpu_id != recommended_gpu_id:
+    if recommended_gpu_id < 0:
+        fallback_reason = 'recommended_gpu_missing'
+    elif isinstance(recommended_row, dict):
+        fallback_reason = str(recommended_row.get('selected_reason', 'recommended_gpu_not_selected'))
     else:
-        reason = f'recommended_gpu_insufficient_free_mib={selected_free}_need_mib={need_mib}'
+        fallback_reason = 'recommended_gpu_not_observed'
 
-if chosen < 0 and rows:
-    feasible = [(idx, free_mib) for idx, free_mib in rows if free_mib >= need_mib]
-    if feasible:
-        best_idx, best_free = max(feasible, key=lambda x: x[1])
-        chosen = int(best_idx)
-        reason = reason + f';fallback_gpu_ok={best_idx};free_mib={best_free}'
-    else:
-        best_idx, best_free = max(rows, key=lambda x: x[1])
-        chosen = int(best_idx)
-        reason = reason + f';fallback_gpu_best_effort={best_idx};free_mib={best_free}'
+lease = acquire_lease(
+    gpu_id=selected_gpu_id,
+    owner='tracewm_stage1_v2_220m_longtrain_continue_20260408',
+    ttl_seconds=10 * 3600,
+    lease_path='$GPU_LEASE_PATH',
+)
 
-print(chosen)
-print(need_mib)
-print(reason)
+result = {
+    'selected_gpu_id': selected_gpu_id,
+    'avg_gpu_util': float((selected_row or {}).get('avg_gpu_util', 0.0)),
+    'avg_mem_util': float((selected_row or {}).get('avg_mem_util', 0.0)),
+    'free_mem_gb': float((selected_row or {}).get('free_mem_gb', 0.0)),
+    'lease_id': str(lease.get('lease_id', '')),
+    'fallback_reason': str(fallback_reason),
+    'required_mem_gb': required_mem_gb,
+    'safety_margin_gb': safety_margin_gb,
+    'recommended_gpu_id': recommended_gpu_id,
+    'selected_reason': str((selected_row or {}).get('selected_reason', '')),
+    'lease': lease,
+    'selector_payload': payload,
+}
+
+Path('$GPU_SELECT_JSON').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+
+print(int(result['selected_gpu_id']))
+print(str(result['lease_id']))
 PY
 )
 
 mapfile -t GPU_INFO <<<"$GPU_DECISION"
 SELECTED_GPU="${GPU_INFO[0]:--1}"
-NEED_MIB="${GPU_INFO[1]:-0}"
-GPU_REASON="${GPU_INFO[2]:-unknown}"
+LEASE_ID="${GPU_INFO[1]:-}"
 
-if [[ "$SELECTED_GPU" -ge 0 ]]; then
-  export CUDA_VISIBLE_DEVICES="$SELECTED_GPU"
-  export TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA="selected_gpu=${SELECTED_GPU};need_mib=${NEED_MIB};reason=${GPU_REASON}"
-  echo "[stage1-v2-longtrain] selected_gpu=$SELECTED_GPU need_mib=$NEED_MIB reason=$GPU_REASON"
-else
-  echo "[stage1-v2-longtrain] gpu_selection_failed need_mib=$NEED_MIB reason=$GPU_REASON"
+if [[ "$SELECTED_GPU" -lt 0 ]]; then
+  echo "[stage1-v2-longtrain] gpu_selection_failed"
   exit 7
 fi
 
+GPU_METADATA_STR=$(
+  "$PYTHON_BIN" - <<PY
+import json
+p = json.load(open('$GPU_SELECT_JSON', 'r', encoding='utf-8'))
+fields = ['selected_gpu_id', 'avg_gpu_util', 'avg_mem_util', 'free_mem_gb', 'lease_id', 'fallback_reason']
+print(';'.join(f"{k}={p.get(k, '')}" for k in fields))
+PY
+)
+GPU_METADATA_JSON=$(
+  "$PYTHON_BIN" - <<PY
+import json
+p = json.load(open('$GPU_SELECT_JSON', 'r', encoding='utf-8'))
+print(json.dumps(p, ensure_ascii=False))
+PY
+)
+
+export CUDA_VISIBLE_DEVICES="$SELECTED_GPU"
+export TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA="$GPU_METADATA_STR"
+export TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA_JSON="$GPU_METADATA_JSON"
+
+echo "[stage1-v2-longtrain] selected_gpu=$SELECTED_GPU lease_id=$LEASE_ID"
+echo "[stage1-v2-longtrain] gpu_metadata=$GPU_METADATA_STR"
+
+cleanup() {
+  local rc=$?
+  if [[ -n "$LEASE_ID" ]]; then
+    "$PYTHON_BIN" - <<PY >/dev/null 2>&1 || true
+from stwm.infra.gpu_lease import release_lease
+release_lease(lease_id='$LEASE_ID', lease_path='$GPU_LEASE_PATH')
+PY
+  fi
+  exit $rc
+}
+trap cleanup EXIT INT TERM
+
 "$PYTHON_BIN" "$WORK_ROOT/code/stwm/tracewm_v2/trainers/train_tracewm_stage1_v2.py" \
-  --run-name stage1_v2_longtrain_220m_mainline \
-  --ablation-tag stage1_v2_longtrain_220m_mainline \
-  --run-metadata-note "formal long-train single-run under frozen Stage1-v2 scope" \
+  --run-name stage1_v2_longtrain_220m_mainline_continue_10000 \
+  --ablation-tag stage1_v2_longtrain_220m_mainline_continue_10000 \
+  --run-metadata-note "continuation from latest.pt to 10000 under frozen Stage1-v2 scope" \
   --contract-path "$CONTRACT_PATH" \
   --recommended-runtime-json "$RUNTIME_JSON" \
   --use-recommended-runtime \
@@ -164,7 +228,8 @@ fi
   --velocity-weight 0.25 \
   --endpoint-weight 0.1 \
   --enable-visibility \
-  --train-steps 5000 \
+  --resume-from "$CHECKPOINT_DIR/latest.pt" \
+  --train-steps 10000 \
   --eval-interval 1000 \
   --eval-steps 16 \
   --save-every-n-steps 1000 \
@@ -173,7 +238,93 @@ fi
   --max-tokens 64 \
   --seed 20260408
 
-echo "[stage1-v2-longtrain] done: $(date '+%Y-%m-%d %H:%M:%S %z')"
+"$PYTHON_BIN" - <<PY
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+BASE_PRIMARY_5000 = 0.2102444279531349
+final_path = Path('$FINAL_JSON')
+progress_path = Path('$PROGRESS_JSON')
+confirm_path = Path('$CONFIRM_10000_JSON')
+checkpoint_dir = Path('$CHECKPOINT_DIR')
+
+final_payload = json.loads(final_path.read_text(encoding='utf-8'))
+progress_payload = json.loads(progress_path.read_text(encoding='utf-8'))
+
+best_metrics = final_payload.get('best_metric_so_far', {}).get('metrics', {})
+best_primary = float(best_metrics.get('free_rollout_endpoint_l2', 1e9))
+steps_completed = int((final_payload.get('training_budget', {}) or {}).get('optimizer_steps_completed', 0))
+
+history = progress_payload.get('eval_history', []) if isinstance(progress_payload.get('eval_history', []), list) else []
+improving_after_5000 = False
+for item in history:
+    if not isinstance(item, dict):
+        continue
+    step = int(item.get('global_step', 0) or 0)
+    metrics = item.get('metrics', {}) if isinstance(item.get('metrics', {}), dict) else {}
+    primary = float(metrics.get('free_rollout_endpoint_l2', 1e9))
+    if step > 5000 and primary < BASE_PRIMARY_5000 - 1e-12:
+        improving_after_5000 = True
+        break
+if best_primary < BASE_PRIMARY_5000 - 1e-12:
+    improving_after_5000 = True
+
+required_steps = [
+    'step_0006000.pt',
+    'step_0007000.pt',
+    'step_0008000.pt',
+    'step_0009000.pt',
+    'step_0010000.pt',
+]
+required_present = {name: (checkpoint_dir / name).exists() for name in required_steps}
+required_all_present = all(required_present.values())
+
+whether_ready = bool(
+    steps_completed >= 10000
+    and required_all_present
+    and best_primary <= BASE_PRIMARY_5000 + 1e-12
+)
+
+if whether_ready:
+    next_step_choice = 'freeze_stage1_and_prepare_stage2'
+elif improving_after_5000:
+    next_step_choice = 'continue_to_15000_from_latest'
+else:
+    next_step_choice = 'do_one_targeted_stage1_fix'
+
+payload = {
+    'generated_at_utc': datetime.now(timezone.utc).isoformat(),
+    'run_name': 'stage1_v2_longtrain_220m_mainline_continue_10000',
+    'baseline_best_primary_metric_at_5000': BASE_PRIMARY_5000,
+    'best_primary_metric_at_10000': best_primary,
+    'whether_curve_still_improving_after_5000': bool(improving_after_5000),
+    'whether_stage1_backbone_is_now_fully_ready': bool(whether_ready),
+    'next_step_choice': next_step_choice,
+    'allowed_next_step_choice': [
+        'freeze_stage1_and_prepare_stage2',
+        'continue_to_15000_from_latest',
+        'do_one_targeted_stage1_fix',
+    ],
+    'training_budget': final_payload.get('training_budget', {}),
+    'selection_policy': final_payload.get('selection_policy', {}),
+    'checkpoint_dir': str(checkpoint_dir),
+    'required_checkpoint_presence_6000_to_10000': required_present,
+    'evidence': {
+        'progress_json': str(progress_path),
+        'final_json': str(final_path),
+    },
+}
+
+confirm_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+print(f"[stage1-v2-longtrain] confirmation_10000_json={confirm_path}")
+print(f"[stage1-v2-longtrain] best_primary_metric_at_10000={best_primary}")
+print(f"[stage1-v2-longtrain] whether_curve_still_improving_after_5000={improving_after_5000}")
+print(f"[stage1-v2-longtrain] next_step_choice={next_step_choice}")
+PY
+
+echo "[stage1-v2-longtrain-continue] done: $(date '+%Y-%m-%d %H:%M:%S %z')"
 echo "[stage1-v2-longtrain] progress_json=$PROGRESS_JSON"
 echo "[stage1-v2-longtrain] final_json=$FINAL_JSON"
+echo "[stage1-v2-longtrain] confirmation_10000_json=$CONFIRM_10000_JSON"
 echo "[stage1-v2-longtrain] checkpoint_dir=$CHECKPOINT_DIR"

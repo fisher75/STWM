@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-04-08T13:38:21.931141+00:00",
-  "run_name": "stage1_v2_longtrain_220m_mainline",
+  "generated_at_utc": "2026-04-08T14:35:17.179064+00:00",
+  "run_name": "stage1_v2_longtrain_220m_mainline_continue_10000",
   "objective": "formal Stage1-v2 220M long-train backbone run",
   "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
   "training_budget": {
-    "optimizer_steps_target": 5000,
-    "optimizer_steps_completed": 5000,
+    "optimizer_steps_target": 10000,
+    "optimizer_steps_completed": 10000,
     "effective_batch": 2,
-    "epochs": 78,
+    "epochs": 156,
     "eval_interval": 1000,
     "save_every_n_steps": 1000,
     "eval_steps": 16
@@ -32,16 +32,172 @@
     "safety_margin_gb": 8.0
   },
   "run_metadata": {
-    "run_name": "stage1_v2_longtrain_220m_mainline",
-    "ablation_tag": "stage1_v2_longtrain_220m_mainline",
-    "run_metadata_note": "formal long-train single-run under frozen Stage1-v2 scope",
-    "cuda_visible_devices": "3",
-    "gpu_selection_metadata": "selected_gpu=3;need_mib=49152;reason=recommended_gpu_insufficient_free_mib=822_need_mib=49152;fallback_gpu_ok=3;free_mib=182624",
-    "started_at_utc": "2026-04-08T13:32:05.173534+00:00",
-    "resumed_from": ""
+    "run_name": "stage1_v2_longtrain_220m_mainline_continue_10000",
+    "ablation_tag": "stage1_v2_longtrain_220m_mainline_continue_10000",
+    "run_metadata_note": "continuation from latest.pt to 10000 under frozen Stage1-v2 scope",
+    "cuda_visible_devices": "0",
+    "gpu_selection_metadata": "selected_gpu_id=0;avg_gpu_util=0.0;avg_mem_util=0.0;free_mem_gb=177.173828125;lease_id=d68e20ce-e90b-4c69-861a-db917bf137dd;fallback_reason=candidate_not_top_rank",
+    "gpu_selection": {
+      "selected_gpu_id": 0,
+      "avg_gpu_util": 0.0,
+      "avg_mem_util": 0.0,
+      "free_mem_gb": 177.173828125,
+      "lease_id": "d68e20ce-e90b-4c69-861a-db917bf137dd",
+      "fallback_reason": "candidate_not_top_rank",
+      "required_mem_gb": 40.0,
+      "safety_margin_gb": 8.0,
+      "recommended_gpu_id": 6,
+      "selected_reason": "best_rank_after_window_sampling",
+      "lease": {
+        "lease_id": "d68e20ce-e90b-4c69-861a-db917bf137dd",
+        "gpu_id": 0,
+        "owner": "tracewm_stage1_v2_220m_longtrain_continue_20260408",
+        "host": "DGXB200",
+        "pid": 2396244,
+        "acquired_at_utc": "2026-04-08T14:28:41.994797+00:00",
+        "expires_at_utc": "2026-04-09T00:28:41.994797+00:00"
+      },
+      "selector_payload": {
+        "generated_at_utc": "2026-04-08T14:28:41.994745+00:00",
+        "required_mem_gb": 40.0,
+        "safety_margin_gb": 8.0,
+        "sample_count": 12,
+        "sample_interval_sec": 2.0,
+        "selected_gpu_id": 0,
+        "candidate_ranking": [
+          0,
+          3,
+          5,
+          6,
+          7
+        ],
+        "gpus": [
+          {
+            "gpu_id": 0,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 0.0,
+            "avg_mem_util": 0.0,
+            "free_mem_gb": 177.173828125,
+            "active_compute_process_count": 1,
+            "sample_count": 12,
+            "selected": true,
+            "selected_reason": "best_rank_after_window_sampling",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 1,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 99.0,
+            "avg_mem_util": 16.416666666666668,
+            "free_mem_gb": 38.2705078125,
+            "active_compute_process_count": 2,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "filtered_insufficient_free_mem",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 2,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 98.16666666666667,
+            "avg_mem_util": 22.0,
+            "free_mem_gb": 10.6630859375,
+            "active_compute_process_count": 2,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "filtered_insufficient_free_mem",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 3,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 20.416666666666668,
+            "avg_mem_util": 0.4166666666666667,
+            "free_mem_gb": 176.77734375,
+            "active_compute_process_count": 1,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "candidate_not_top_rank",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 4,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 97.0,
+            "avg_mem_util": 14.416666666666666,
+            "free_mem_gb": 33.2197265625,
+            "active_compute_process_count": 4,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "filtered_insufficient_free_mem",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 5,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 94.08333333333333,
+            "avg_mem_util": 26.416666666666668,
+            "free_mem_gb": 87.4140625,
+            "active_compute_process_count": 1,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "candidate_not_top_rank",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 6,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 96.41666666666667,
+            "avg_mem_util": 25.0,
+            "free_mem_gb": 74.537109375,
+            "active_compute_process_count": 1,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "candidate_not_top_rank",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          },
+          {
+            "gpu_id": 7,
+            "name": "NVIDIA B200",
+            "avg_gpu_util": 97.58333333333333,
+            "avg_mem_util": 29.166666666666668,
+            "free_mem_gb": 74.5703125,
+            "active_compute_process_count": 1,
+            "sample_count": 12,
+            "selected": false,
+            "selected_reason": "candidate_not_top_rank",
+            "required_mem_gb": 40.0,
+            "safety_margin_gb": 8.0,
+            "leased": false
+          }
+        ]
+      }
+    },
+    "selected_gpu_id": 0,
+    "avg_gpu_util": 0.0,
+    "avg_mem_util": 0.0,
+    "free_mem_gb": 177.173828125,
+    "lease_id": "d68e20ce-e90b-4c69-861a-db917bf137dd",
+    "fallback_reason": "candidate_not_top_rank",
+    "started_at_utc": "2026-04-08T14:28:46.757067+00:00",
+    "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/latest.pt"
   },
   "resume": {
-    "resume_from": "",
+    "resume_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/latest.pt",
     "auto_resume_latest": false
   },
   "model": {
@@ -79,11 +235,11 @@
     ]
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 0.06487464058328662,
-    "free_rollout_coord_mean_l2": 0.21624684283742016,
-    "free_rollout_endpoint_l2": 0.2102444279531349,
-    "tapvid_endpoint_l2": 0.32869825985120693,
-    "tapvid3d_limited_endpoint_l2": 3.6004261662883144
+    "teacher_forced_coord_loss": 0.06546484739140122,
+    "free_rollout_coord_mean_l2": 0.21790521621340034,
+    "free_rollout_endpoint_l2": 0.21302784793506438,
+    "tapvid_endpoint_l2": 0.31977739437766695,
+    "tapvid3d_limited_endpoint_l2": 3.5956770271383305
   },
   "checkpoint_inventory": {
     "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408",
@@ -94,7 +250,12 @@
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0002000.pt",
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0003000.pt",
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0004000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0005000.pt"
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0005000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0006000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0007000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0008000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0009000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0010000.pt"
     ]
   },
   "allowed_next_step_choice": [
@@ -102,5 +263,5 @@
     "freeze_stage1_and_prepare_stage2",
     "do_one_targeted_stage1_fix"
   ],
-  "next_step_choice": "continue_to_10000_from_latest"
+  "next_step_choice": "freeze_stage1_and_prepare_stage2"
 }

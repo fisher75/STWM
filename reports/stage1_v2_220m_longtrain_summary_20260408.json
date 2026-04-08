@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-08T13:38:21.931181+00:00",
-  "ablation_tag": "stage1_v2_longtrain_220m_mainline",
-  "run_name": "stage1_v2_longtrain_220m_mainline",
+  "generated_at_utc": "2026-04-08T14:35:17.179119+00:00",
+  "ablation_tag": "stage1_v2_longtrain_220m_mainline_continue_10000",
+  "run_name": "stage1_v2_longtrain_220m_mainline_continue_10000",
   "device": "cuda",
   "args": {
     "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
@@ -30,7 +30,7 @@
     "prefetch_factor": 4,
     "epochs": 1,
     "steps_per_epoch": 20,
-    "train_steps": 5000,
+    "train_steps": 10000,
     "eval_interval": 1000,
     "eval_steps": 16,
     "save_every_n_steps": 1000,
@@ -48,16 +48,16 @@
     "eval_max_tapvid3d_samples": 12,
     "output_dir": "/home/chen034/workspace/stwm/outputs/training/stage1_v2_longtrain_220m_mainline_20260408",
     "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408",
-    "resume_from": "",
+    "resume_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/latest.pt",
     "auto_resume_latest": false,
     "summary_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_summary_20260408.json",
     "progress_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_progress_20260408.json",
     "final_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_final_20260408.json",
     "results_md": "/home/chen034/workspace/stwm/docs/STAGE1_V2_220M_LONGTRAIN_RESULTS_20260408.md",
     "perf_step_timing_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_longtrain_step_timing_20260408.json",
-    "run_name": "stage1_v2_longtrain_220m_mainline",
-    "ablation_tag": "stage1_v2_longtrain_220m_mainline",
-    "run_metadata_note": "formal long-train single-run under frozen Stage1-v2 scope",
+    "run_name": "stage1_v2_longtrain_220m_mainline_continue_10000",
+    "ablation_tag": "stage1_v2_longtrain_220m_mainline_continue_10000",
+    "run_metadata_note": "continuation from latest.pt to 10000 under frozen Stage1-v2 scope",
     "seed": 20260408
   },
   "model": {
@@ -99,48 +99,48 @@
     "enable_endpoint": false
   },
   "final_metrics": {
-    "total_loss": 0.3374358919411898,
-    "coord_loss": 0.15501744404891507,
-    "visibility_loss": 0.18926868588342333,
-    "residual_loss": 0.3961228954002261,
-    "velocity_loss": 0.2604075003713369,
+    "total_loss": 0.3000475270990282,
+    "coord_loss": 0.1242337469547987,
+    "visibility_loss": 0.18870877811331302,
+    "residual_loss": 0.5406898385465145,
+    "velocity_loss": 0.5306408502578736,
     "endpoint_loss": 0.0
   },
   "timing_stats": {
     "batch_wait_time": {
-      "mean": 0.00102898078430444,
-      "median": 9.374547516927123e-05,
-      "p95": 0.001438003371004016
+      "mean": 0.0009629367147572338,
+      "median": 9.023048914968967e-05,
+      "p95": 0.0013325933075975626
     },
     "h2d_time": {
-      "mean": 0.00018499618561472743,
-      "median": 8.994498057290912e-05,
-      "p95": 0.0007800123421475293
+      "mean": 0.00018466322124004365,
+      "median": 8.614291436970234e-05,
+      "p95": 0.0007434774655848741
     },
     "forward_time": {
-      "mean": 0.020984692626213657,
-      "median": 0.0239467914798297,
-      "p95": 0.03651913280482404
+      "mean": 0.02036992782666348,
+      "median": 0.024018111056648195,
+      "p95": 0.03786227728705855
     },
     "backward_time": {
-      "mean": 0.03260438069992233,
-      "median": 0.0282796670217067,
-      "p95": 0.05478242694516666
+      "mean": 0.03290565615433734,
+      "median": 0.029678694088943303,
+      "p95": 0.05494781605666504
     },
     "optimizer_time": {
-      "mean": 0.004990270048682578,
-      "median": 0.004012587014585733,
-      "p95": 0.007841817056760191
+      "mean": 0.010802994365524501,
+      "median": 0.008762858458794653,
+      "p95": 0.01693803099333309
     },
     "step_time": {
-      "mean": 0.05902200771849603,
-      "median": 0.059289769968017936,
-      "p95": 0.09268302216078156
+      "mean": 0.06453130157238338,
+      "median": 0.0685877715004608,
+      "p95": 0.10210364717058838
     },
     "samples_per_sec": {
-      "mean": 42.38381406101356,
-      "median": 33.36365586662666,
-      "p95": 81.00221698746769
+      "mean": 38.404272855351905,
+      "median": 28.87611930331957,
+      "p95": 69.37229768847615
     }
   },
   "best_metric_so_far": {
@@ -169,7 +169,12 @@
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0002000.pt",
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0003000.pt",
       "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0004000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0005000.pt"
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0005000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0006000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0007000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0008000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0009000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/step_0010000.pt"
     ]
   },
   "p1_shape_contract": {
