@@ -1,0 +1,99 @@
+{
+  "generated_at_utc": "2026-04-08T06:29:14.065726+00:00",
+  "ablation_tag": "g4",
+  "device": "cuda",
+  "args": {
+    "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ],
+    "train_split": "train",
+    "obs_len": 8,
+    "fut_len": 8,
+    "max_tokens": 64,
+    "max_samples_per_dataset": 128,
+    "model_preset": "debug_small",
+    "lr": 0.0001,
+    "weight_decay": 0.0,
+    "batch_size": 2,
+    "num_workers": 0,
+    "epochs": 1,
+    "steps_per_epoch": 12,
+    "clip_grad_norm": 1.0,
+    "coord_weight": 1.0,
+    "visibility_weight": 0.5,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": true,
+    "enable_velocity": true,
+    "enable_endpoint": false,
+    "output_dir": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_v2_ablations_20260408/g4",
+    "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g4_summary_20260408.json",
+    "results_md": "/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_G4_20260408.md",
+    "ablation_tag": "g4",
+    "seed": 20260411
+  },
+  "model": {
+    "preset": "debug_small",
+    "config": {
+      "state_dim": 8,
+      "d_model": 256,
+      "num_layers": 4,
+      "num_heads": 8,
+      "ff_mult": 4,
+      "dropout": 0.1,
+      "max_time": 64,
+      "max_tokens": 128,
+      "use_endpoint_head": true
+    },
+    "parameter_count": 3213578,
+    "estimated_parameter_count": 3213066,
+    "target_220m_range_pass": false
+  },
+  "dataset": {
+    "size": 127,
+    "split": "train",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ]
+  },
+  "loss_config": {
+    "coord_weight": 1.0,
+    "visibility_weight": 0.5,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": true,
+    "enable_velocity": true,
+    "enable_endpoint": false
+  },
+  "history": [
+    {
+      "total_loss": 0.8445584326982498,
+      "coord_loss": 0.3702167148391406,
+      "visibility_loss": 0.39276957511901855,
+      "residual_loss": 0.5667533005277315,
+      "velocity_loss": 0.545074445505937,
+      "endpoint_loss": 0.0,
+      "epoch": 1.0
+    }
+  ],
+  "final_metrics": {
+    "total_loss": 0.8445584326982498,
+    "coord_loss": 0.3702167148391406,
+    "visibility_loss": 0.39276957511901855,
+    "residual_loss": 0.5667533005277315,
+    "velocity_loss": 0.545074445505937,
+    "endpoint_loss": 0.0,
+    "epoch": 1.0
+  },
+  "p1_shape_contract": {
+    "state_shape": "[B,T,K,D]",
+    "state_dim": 8
+  }
+}

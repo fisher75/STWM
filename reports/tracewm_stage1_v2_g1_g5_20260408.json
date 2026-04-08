@@ -1,0 +1,101 @@
+{
+  "generated_at_utc": "2026-04-08T06:29:25.354411+00:00",
+  "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "runs": [
+    {
+      "name": "G1",
+      "note": "coord-only baseline on multi-token state",
+      "return_code": 0,
+      "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g1_summary_20260408.json",
+      "results_md": "/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_G1_20260408.md",
+      "final_metrics": {
+        "total_loss": 0.4164958832164605,
+        "coord_loss": 0.4164958832164605,
+        "visibility_loss": 0.6403141419092814,
+        "residual_loss": 0.9550817310810089,
+        "velocity_loss": 1.0868695576985676,
+        "endpoint_loss": 0.0,
+        "epoch": 1.0
+      },
+      "parameter_count": 3213578,
+      "estimated_parameter_count": 3213066
+    },
+    {
+      "name": "G2",
+      "note": "G1 + visibility supervision",
+      "return_code": 0,
+      "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g2_summary_20260408.json",
+      "results_md": "/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_G2_20260408.md",
+      "final_metrics": {
+        "total_loss": 0.5346541007359823,
+        "coord_loss": 0.35547009731332463,
+        "visibility_loss": 0.3583679950485627,
+        "residual_loss": 0.8447653551896414,
+        "velocity_loss": 0.8054727911949158,
+        "endpoint_loss": 0.0,
+        "epoch": 1.0
+      },
+      "parameter_count": 3213578,
+      "estimated_parameter_count": 3213066
+    },
+    {
+      "name": "G3",
+      "note": "G2 + residual supervision",
+      "return_code": 0,
+      "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g3_summary_20260408.json",
+      "results_md": "/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_G3_20260408.md",
+      "final_metrics": {
+        "total_loss": 0.9904607385396957,
+        "coord_loss": 0.5564173124730587,
+        "visibility_loss": 0.4360376112163067,
+        "residual_loss": 0.8640984644492468,
+        "velocity_loss": 0.865280012289683,
+        "endpoint_loss": 0.0,
+        "epoch": 1.0
+      },
+      "parameter_count": 3213578,
+      "estimated_parameter_count": 3213066
+    },
+    {
+      "name": "G4",
+      "note": "G3 + velocity supervision",
+      "return_code": 0,
+      "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g4_summary_20260408.json",
+      "results_md": "/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_G4_20260408.md",
+      "final_metrics": {
+        "total_loss": 0.8445584326982498,
+        "coord_loss": 0.3702167148391406,
+        "visibility_loss": 0.39276957511901855,
+        "residual_loss": 0.5667533005277315,
+        "velocity_loss": 0.545074445505937,
+        "endpoint_loss": 0.0,
+        "epoch": 1.0
+      },
+      "parameter_count": 3213578,
+      "estimated_parameter_count": 3213066
+    },
+    {
+      "name": "G5",
+      "note": "G4 + endpoint supervision",
+      "return_code": 0,
+      "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g5_summary_20260408.json",
+      "results_md": "/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_G5_20260408.md",
+      "final_metrics": {
+        "total_loss": 0.9559107422828674,
+        "coord_loss": 0.4061577022075653,
+        "visibility_loss": 0.4007832920178771,
+        "residual_loss": 0.6917955602208773,
+        "velocity_loss": 0.5798492853840193,
+        "endpoint_loss": 0.3145017536977927,
+        "epoch": 1.0
+      },
+      "parameter_count": 3213578,
+      "estimated_parameter_count": 3213066
+    }
+  ],
+  "mainline_recommendation": {
+    "selected": "G1",
+    "selection_metric": "min_total_loss",
+    "selected_total_loss": 0.4164958832164605
+  }
+}
