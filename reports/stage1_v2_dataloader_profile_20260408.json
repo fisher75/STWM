@@ -1,6 +1,17 @@
 {
-  "generated_at_utc": "2026-04-08T09:32:40.676184+00:00",
+  "generated_at_utc": "2026-04-08T09:55:09.213238+00:00",
   "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "metric_reliability": {
+    "batches_per_sec": "reliable_for_all_num_workers",
+    "dataset_init_time_sec": "reliable_for_all_num_workers",
+    "mean_getitem_time_sec": "reliable_only_when_num_workers_eq_0",
+    "mean_collate_time_sec": "reliable_only_when_num_workers_eq_0"
+  },
+  "reliability_notes": [
+    "end_to_end loader throughput is measured in main process and available for all num_workers",
+    "worker-side getitem/collate timing is only reliable when num_workers=0",
+    "for num_workers>0, worker-side timing is marked unavailable instead of 0.0"
+  ],
   "rows": [
     {
       "config": {
@@ -10,10 +21,12 @@
         "prefetch_factor": null
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0009675179608166218,
-      "mean_getitem_time_sec": 0.0008097829180769622,
-      "mean_collate_time_sec": 0.00010209930062826191,
-      "batches_per_sec": 584.9845467221578,
+      "worker_side_timing_reliable": true,
+      "worker_side_timing_status": "available_main_process_single_worker",
+      "dataset_init_time_sec": 0.0013289040653035045,
+      "mean_getitem_time_sec": 0.0019022745379645909,
+      "mean_collate_time_sec": 0.0002684781893289515,
+      "batches_per_sec": 232.17162416426103,
       "measured_batches": 30
     },
     {
@@ -24,10 +37,12 @@
         "prefetch_factor": null
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0005836309865117073,
-      "mean_getitem_time_sec": 0.001921567420608231,
-      "mean_collate_time_sec": 0.00015017157753131218,
-      "batches_per_sec": 250.61628200445713,
+      "worker_side_timing_reliable": true,
+      "worker_side_timing_status": "available_main_process_single_worker",
+      "dataset_init_time_sec": 0.0008936399826779962,
+      "mean_getitem_time_sec": 0.001475612651224115,
+      "mean_collate_time_sec": 0.00011169780045747758,
+      "batches_per_sec": 552.9870537942563,
       "measured_batches": 30
     },
     {
@@ -38,10 +53,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0009703150717541575,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 643.3979789274996,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0007535989861935377,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 609.2496282118628,
       "measured_batches": 30
     },
     {
@@ -52,10 +69,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0012548950035125017,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 617.0132648590406,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.001145050977356732,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 438.38129293801603,
       "measured_batches": 30
     },
     {
@@ -66,10 +85,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0009111270774155855,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 881.3223876294883,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0015317469369620085,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 675.1357040564827,
       "measured_batches": 30
     },
     {
@@ -80,10 +101,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.001225068001076579,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 726.0557350152162,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.001031999010592699,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 609.4503316854036,
       "measured_batches": 30
     },
     {
@@ -94,10 +117,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0016596040222793818,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 369.50148533272113,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0020032470347359776,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 88.95138782411429,
       "measured_batches": 30
     },
     {
@@ -108,10 +133,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0010823369957506657,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 445.8339135994424,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.004545451025478542,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 97.34684736508143,
       "measured_batches": 30
     },
     {
@@ -122,10 +149,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0010308760683983564,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 705.6823715014294,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0036230729892849922,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 389.06834126981926,
       "measured_batches": 30
     },
     {
@@ -136,10 +165,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0013447459787130356,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 623.3516242670202,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.001821097917854786,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 771.8251894463397,
       "measured_batches": 30
     },
     {
@@ -150,10 +181,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.001323182019405067,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 658.7825173832607,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.001287042978219688,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 354.611496671524,
       "measured_batches": 30
     },
     {
@@ -164,10 +197,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0020891119493171573,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 631.383111687385,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0009878450073301792,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 109.80260607080581,
       "measured_batches": 30
     },
     {
@@ -178,10 +213,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0010522849624976516,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 1043.7996778356824,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0031186279375106096,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 150.99528468311107,
       "measured_batches": 30
     },
     {
@@ -192,10 +229,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0008775409078225493,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 735.8635838676366,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0023724109632894397,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 263.2777599402417,
       "measured_batches": 30
     },
     {
@@ -206,10 +245,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0009217329788953066,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 595.3352385746166,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0013514249585568905,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 114.29496279608983,
       "measured_batches": 30
     },
     {
@@ -220,10 +261,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0010941450018435717,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 562.3895891689199,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.000984805985353887,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 601.2507098317972,
       "measured_batches": 30
     },
     {
@@ -234,10 +277,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0011258169542998075,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 954.8538114352784,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0009897749405354261,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 708.7326089286516,
       "measured_batches": 30
     },
     {
@@ -248,10 +293,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0022284940350800753,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 1400.8782674484087,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0021121370373293757,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 516.6224649245859,
       "measured_batches": 30
     },
     {
@@ -262,10 +309,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0012694629840552807,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 355.4284940490376,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0024686440592631698,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 130.7738792822203,
       "measured_batches": 30
     },
     {
@@ -276,10 +325,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0011605719337239861,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 432.70539661098894,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.003761493950150907,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 83.67162746709008,
       "measured_batches": 30
     },
     {
@@ -290,10 +341,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0012398390099406242,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 672.9260909775898,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0031723639694973826,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 734.7430946075727,
       "measured_batches": 30
     },
     {
@@ -304,10 +357,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.002301590982824564,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 624.0684345724457,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0031520280754193664,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 589.8861074391165,
       "measured_batches": 30
     },
     {
@@ -318,10 +373,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.000983907957561314,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 416.57891327050993,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.0010433739516884089,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 355.512725432791,
       "measured_batches": 30
     },
     {
@@ -332,10 +389,12 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.0022461230400949717,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 280.1907439597453,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.001033490989357233,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 211.6891190330129,
       "measured_batches": 30
     },
     {
@@ -346,10 +405,12 @@
         "prefetch_factor": 2
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.004591641016304493,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 723.4321533365118,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.003681443980894983,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 127.1288871074287,
       "measured_batches": 30
     },
     {
@@ -360,18 +421,20 @@
         "prefetch_factor": 4
       },
       "status": "pass",
-      "dataset_init_time_sec": 0.002924749976955354,
-      "mean_getitem_time_sec": 0.0,
-      "mean_collate_time_sec": 0.0,
-      "batches_per_sec": 436.72941564281365,
+      "worker_side_timing_reliable": false,
+      "worker_side_timing_status": "unavailable_multiprocess_workers",
+      "dataset_init_time_sec": 0.00537377898581326,
+      "mean_getitem_time_sec": null,
+      "mean_collate_time_sec": null,
+      "batches_per_sec": 183.0427232214128,
       "measured_batches": 30
     }
   ],
   "best_config": {
-    "num_workers": 8,
+    "num_workers": 4,
     "pin_memory": true,
     "persistent_workers": true,
     "prefetch_factor": 4
   },
-  "best_batches_per_sec": 1400.8782674484087
+  "best_batches_per_sec": 771.8251894463397
 }

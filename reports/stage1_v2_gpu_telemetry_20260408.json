@@ -1,23 +1,23 @@
 {
-  "generated_at_utc": "2026-04-08T09:32:57.059071+00:00",
-  "tag": "tracewm_stage1_v2_perf_20260408",
+  "generated_at_utc": "2026-04-08T09:55:41.009029+00:00",
+  "tag": "tracewm_stage1_v2_perf_hardening_20260408",
   "interval_sec": 2.0,
-  "sample_count": 6,
+  "sample_count": 8,
   "samples": [
     {
       "backend": "nvidia-smi",
-      "timestamp_utc": "2026-04-08T09:32:42.479849+00:00",
+      "timestamp_utc": "2026-04-08T09:55:16.847172+00:00",
       "gpus": [
         {
           "gpu_id": 0,
           "name": "NVIDIA B200",
           "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 56.1064453125,
-          "free_mem_gb": 122.24609375,
-          "gpu_util": 95.0,
-          "mem_util": 16.0,
-          "power_draw_w": 442.6,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 80.0,
+          "mem_util": 8.0,
+          "power_draw_w": 360.41,
           "active_compute_process_count": 4
         },
         {
@@ -25,11 +25,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 96.75,
-          "free_mem_gb": 81.6015625,
-          "gpu_util": 95.0,
-          "mem_util": 23.0,
-          "power_draw_w": 511.08,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 93.0,
+          "mem_util": 15.0,
+          "power_draw_w": 386.87,
           "active_compute_process_count": 3
         },
         {
@@ -37,11 +37,521 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 105.7314453125,
-          "free_mem_gb": 72.62109375,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 94.0,
+          "mem_util": 14.0,
+          "power_draw_w": 405.12,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 3,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 108.9345703125,
+          "free_mem_gb": 69.41796875,
+          "gpu_util": 35.0,
+          "mem_util": 17.0,
+          "power_draw_w": 529.61,
+          "active_compute_process_count": 1
+        },
+        {
+          "gpu_id": 4,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
+          "gpu_util": 90.0,
+          "mem_util": 3.0,
+          "power_draw_w": 369.55,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 5,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 93.0,
+          "mem_util": 15.0,
+          "power_draw_w": 469.0,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 6,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 33.6015625,
+          "free_mem_gb": 144.75,
+          "gpu_util": 8.0,
+          "mem_util": 0.0,
+          "power_draw_w": 187.27,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 7,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 63.091796875,
+          "free_mem_gb": 115.259765625,
+          "gpu_util": 100.0,
+          "mem_util": 11.0,
+          "power_draw_w": 600.78,
+          "active_compute_process_count": 2
+        }
+      ]
+    },
+    {
+      "backend": "nvidia-smi",
+      "timestamp_utc": "2026-04-08T09:55:21.004491+00:00",
+      "gpus": [
+        {
+          "gpu_id": 0,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 84.0,
+          "mem_util": 10.0,
+          "power_draw_w": 371.21,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 1,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 93.0,
+          "mem_util": 14.0,
+          "power_draw_w": 377.3,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 2,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 97.0,
+          "mem_util": 28.0,
+          "power_draw_w": 518.5,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 3,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 108.9345703125,
+          "free_mem_gb": 69.41796875,
+          "gpu_util": 57.0,
+          "mem_util": 27.0,
+          "power_draw_w": 561.24,
+          "active_compute_process_count": 1
+        },
+        {
+          "gpu_id": 4,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
+          "gpu_util": 33.0,
+          "mem_util": 1.0,
+          "power_draw_w": 352.97,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 5,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 94.0,
+          "mem_util": 14.0,
+          "power_draw_w": 388.65,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 6,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 33.6015625,
+          "free_mem_gb": 144.75,
+          "gpu_util": 6.0,
+          "mem_util": 0.0,
+          "power_draw_w": 187.24,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 7,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 63.09375,
+          "free_mem_gb": 115.2578125,
+          "gpu_util": 100.0,
+          "mem_util": 7.0,
+          "power_draw_w": 583.07,
+          "active_compute_process_count": 2
+        }
+      ]
+    },
+    {
+      "backend": "nvidia-smi",
+      "timestamp_utc": "2026-04-08T09:55:24.176402+00:00",
+      "gpus": [
+        {
+          "gpu_id": 0,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 89.0,
+          "mem_util": 12.0,
+          "power_draw_w": 342.21,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 1,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 94.0,
+          "mem_util": 13.0,
+          "power_draw_w": 400.73,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 2,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 94.0,
+          "mem_util": 16.0,
+          "power_draw_w": 495.23,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 3,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 108.9345703125,
+          "free_mem_gb": 69.41796875,
+          "gpu_util": 47.0,
+          "mem_util": 20.0,
+          "power_draw_w": 544.33,
+          "active_compute_process_count": 1
+        },
+        {
+          "gpu_id": 4,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
+          "gpu_util": 41.0,
+          "mem_util": 1.0,
+          "power_draw_w": 334.85,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 5,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
           "gpu_util": 95.0,
+          "mem_util": 11.0,
+          "power_draw_w": 466.21,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 6,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 35.068359375,
+          "free_mem_gb": 143.283203125,
+          "gpu_util": 6.0,
+          "mem_util": 0.0,
+          "power_draw_w": 187.44,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 7,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 51.298828125,
+          "free_mem_gb": 127.052734375,
+          "gpu_util": 1.0,
+          "mem_util": 0.0,
+          "power_draw_w": 204.33,
+          "active_compute_process_count": 2
+        }
+      ]
+    },
+    {
+      "backend": "nvidia-smi",
+      "timestamp_utc": "2026-04-08T09:55:27.123660+00:00",
+      "gpus": [
+        {
+          "gpu_id": 0,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 94.0,
+          "mem_util": 13.0,
+          "power_draw_w": 476.15,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 1,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 95.0,
+          "mem_util": 25.0,
+          "power_draw_w": 514.96,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 2,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 94.0,
+          "mem_util": 14.0,
+          "power_draw_w": 402.36,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 3,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 108.9345703125,
+          "free_mem_gb": 69.41796875,
+          "gpu_util": 88.0,
+          "mem_util": 32.0,
+          "power_draw_w": 525.0,
+          "active_compute_process_count": 1
+        },
+        {
+          "gpu_id": 4,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
+          "gpu_util": 99.0,
+          "mem_util": 3.0,
+          "power_draw_w": 404.67,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 5,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 95.0,
+          "mem_util": 21.0,
+          "power_draw_w": 470.55,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 6,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 84.4765625,
+          "free_mem_gb": 93.875,
+          "gpu_util": 99.0,
+          "mem_util": 10.0,
+          "power_draw_w": 333.65,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 7,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 63.1015625,
+          "free_mem_gb": 115.25,
+          "gpu_util": 100.0,
+          "mem_util": 12.0,
+          "power_draw_w": 694.91,
+          "active_compute_process_count": 2
+        }
+      ]
+    },
+    {
+      "backend": "nvidia-smi",
+      "timestamp_utc": "2026-04-08T09:55:29.668195+00:00",
+      "gpus": [
+        {
+          "gpu_id": 0,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 94.0,
+          "mem_util": 15.0,
+          "power_draw_w": 375.05,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 1,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 94.0,
+          "mem_util": 14.0,
+          "power_draw_w": 378.11,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 2,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 93.0,
+          "mem_util": 13.0,
+          "power_draw_w": 379.27,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 3,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 108.9345703125,
+          "free_mem_gb": 69.41796875,
+          "gpu_util": 36.0,
+          "mem_util": 15.0,
+          "power_draw_w": 559.68,
+          "active_compute_process_count": 1
+        },
+        {
+          "gpu_id": 4,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
+          "gpu_util": 98.0,
+          "mem_util": 7.0,
+          "power_draw_w": 427.36,
+          "active_compute_process_count": 2
+        },
+        {
+          "gpu_id": 5,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 93.0,
+          "mem_util": 13.0,
+          "power_draw_w": 374.59,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 6,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 89.93359375,
+          "free_mem_gb": 88.41796875,
+          "gpu_util": 98.0,
+          "mem_util": 8.0,
+          "power_draw_w": 363.29,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 7,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 63.1015625,
+          "free_mem_gb": 115.25,
+          "gpu_util": 100.0,
+          "mem_util": 12.0,
+          "power_draw_w": 444.45,
+          "active_compute_process_count": 2
+        }
+      ]
+    },
+    {
+      "backend": "nvidia-smi",
+      "timestamp_utc": "2026-04-08T09:55:32.890896+00:00",
+      "gpus": [
+        {
+          "gpu_id": 0,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 94.0,
+          "mem_util": 15.0,
+          "power_draw_w": 380.78,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 1,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 95.0,
+          "mem_util": 23.0,
+          "power_draw_w": 425.32,
+          "active_compute_process_count": 3
+        },
+        {
+          "gpu_id": 2,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 96.0,
           "mem_util": 22.0,
-          "power_draw_w": 507.03,
+          "power_draw_w": 558.19,
           "active_compute_process_count": 4
         },
         {
@@ -52,8 +562,8 @@
           "memory_used_gb": 108.9345703125,
           "free_mem_gb": 69.41796875,
           "gpu_util": 94.0,
-          "mem_util": 22.0,
-          "power_draw_w": 652.34,
+          "mem_util": 28.0,
+          "power_draw_w": 569.85,
           "active_compute_process_count": 1
         },
         {
@@ -61,125 +571,23 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 45.3583984375,
-          "free_mem_gb": 132.994140625,
-          "gpu_util": 90.0,
-          "mem_util": 4.0,
-          "power_draw_w": 431.01,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 5,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 89.90234375,
-          "free_mem_gb": 88.44921875,
-          "gpu_util": 91.0,
-          "mem_util": 17.0,
-          "power_draw_w": 372.24,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 6,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 33.6015625,
-          "free_mem_gb": 144.75,
-          "gpu_util": 19.0,
-          "mem_util": 0.0,
-          "power_draw_w": 194.56,
-          "active_compute_process_count": 2
-        },
-        {
-          "gpu_id": 7,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 114.521484375,
-          "free_mem_gb": 63.830078125,
-          "gpu_util": 100.0,
-          "mem_util": 10.0,
-          "power_draw_w": 522.94,
-          "active_compute_process_count": 2
-        }
-      ]
-    },
-    {
-      "backend": "nvidia-smi",
-      "timestamp_utc": "2026-04-08T09:32:44.888009+00:00",
-      "gpus": [
-        {
-          "gpu_id": 0,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 56.1064453125,
-          "free_mem_gb": 122.24609375,
-          "gpu_util": 95.0,
-          "mem_util": 16.0,
-          "power_draw_w": 542.94,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 1,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 96.75,
-          "free_mem_gb": 81.6015625,
-          "gpu_util": 93.0,
-          "mem_util": 17.0,
-          "power_draw_w": 424.73,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 2,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 105.7314453125,
-          "free_mem_gb": 72.62109375,
-          "gpu_util": 92.0,
-          "mem_util": 17.0,
-          "power_draw_w": 400.59,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 3,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 108.9345703125,
-          "free_mem_gb": 69.41796875,
-          "gpu_util": 96.0,
-          "mem_util": 26.0,
-          "power_draw_w": 672.07,
-          "active_compute_process_count": 1
-        },
-        {
-          "gpu_id": 4,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 45.3583984375,
-          "free_mem_gb": 132.994140625,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
           "gpu_util": 98.0,
           "mem_util": 4.0,
-          "power_draw_w": 422.53,
-          "active_compute_process_count": 3
+          "power_draw_w": 424.92,
+          "active_compute_process_count": 2
         },
         {
           "gpu_id": 5,
           "name": "NVIDIA B200",
           "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 89.90234375,
-          "free_mem_gb": 88.44921875,
-          "gpu_util": 91.0,
-          "mem_util": 17.0,
-          "power_draw_w": 382.93,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 94.0,
+          "mem_util": 21.0,
+          "power_draw_w": 404.08,
           "active_compute_process_count": 3
         },
         {
@@ -187,113 +595,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 34.220703125,
-          "free_mem_gb": 144.130859375,
-          "gpu_util": 20.0,
-          "mem_util": 0.0,
-          "power_draw_w": 195.18,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 7,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 104.26171875,
-          "free_mem_gb": 74.08984375,
-          "gpu_util": 100.0,
-          "mem_util": 11.0,
-          "power_draw_w": 491.79,
-          "active_compute_process_count": 2
-        }
-      ]
-    },
-    {
-      "backend": "nvidia-smi",
-      "timestamp_utc": "2026-04-08T09:32:47.316415+00:00",
-      "gpus": [
-        {
-          "gpu_id": 0,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 60.0205078125,
-          "free_mem_gb": 118.33203125,
-          "gpu_util": 95.0,
-          "mem_util": 16.0,
-          "power_draw_w": 448.74,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 1,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 96.75,
-          "free_mem_gb": 81.6015625,
-          "gpu_util": 93.0,
-          "mem_util": 16.0,
-          "power_draw_w": 413.84,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 2,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 105.7314453125,
-          "free_mem_gb": 72.62109375,
-          "gpu_util": 92.0,
-          "mem_util": 17.0,
-          "power_draw_w": 400.74,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 3,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 108.9345703125,
-          "free_mem_gb": 69.41796875,
+          "memory_used_gb": 89.93359375,
+          "free_mem_gb": 88.41796875,
           "gpu_util": 99.0,
-          "mem_util": 37.0,
-          "power_draw_w": 642.04,
-          "active_compute_process_count": 1
-        },
-        {
-          "gpu_id": 4,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 45.3583984375,
-          "free_mem_gb": 132.994140625,
-          "gpu_util": 98.0,
-          "mem_util": 3.0,
-          "power_draw_w": 448.07,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 5,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 89.90234375,
-          "free_mem_gb": 88.44921875,
-          "gpu_util": 91.0,
-          "mem_util": 13.0,
-          "power_draw_w": 386.54,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 6,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 33.6015625,
-          "free_mem_gb": 144.75,
-          "gpu_util": 15.0,
-          "mem_util": 0.0,
-          "power_draw_w": 197.45,
+          "mem_util": 10.0,
+          "power_draw_w": 364.77,
           "active_compute_process_count": 2
         },
         {
@@ -301,143 +607,41 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 114.515625,
-          "free_mem_gb": 63.8359375,
+          "memory_used_gb": 63.1015625,
+          "free_mem_gb": 115.25,
           "gpu_util": 100.0,
-          "mem_util": 13.0,
-          "power_draw_w": 524.63,
+          "mem_util": 8.0,
+          "power_draw_w": 693.59,
           "active_compute_process_count": 2
         }
       ]
     },
     {
       "backend": "nvidia-smi",
-      "timestamp_utc": "2026-04-08T09:32:49.862426+00:00",
+      "timestamp_utc": "2026-04-08T09:55:36.133353+00:00",
       "gpus": [
         {
           "gpu_id": 0,
           "name": "NVIDIA B200",
           "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 60.0205078125,
-          "free_mem_gb": 118.33203125,
-          "gpu_util": 95.0,
-          "mem_util": 16.0,
-          "power_draw_w": 447.06,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 1,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 96.75,
-          "free_mem_gb": 81.6015625,
-          "gpu_util": 91.0,
-          "mem_util": 13.0,
-          "power_draw_w": 407.84,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 2,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 105.7314453125,
-          "free_mem_gb": 72.62109375,
-          "gpu_util": 92.0,
-          "mem_util": 17.0,
-          "power_draw_w": 426.48,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 3,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 108.9345703125,
-          "free_mem_gb": 69.41796875,
-          "gpu_util": 100.0,
-          "mem_util": 13.0,
-          "power_draw_w": 663.89,
-          "active_compute_process_count": 1
-        },
-        {
-          "gpu_id": 4,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 45.3583984375,
-          "free_mem_gb": 132.994140625,
-          "gpu_util": 98.0,
-          "mem_util": 3.0,
-          "power_draw_w": 422.89,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 5,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 89.90234375,
-          "free_mem_gb": 88.44921875,
-          "gpu_util": 91.0,
-          "mem_util": 17.0,
-          "power_draw_w": 375.48,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 6,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 34.4609375,
-          "free_mem_gb": 143.890625,
-          "gpu_util": 22.0,
-          "mem_util": 0.0,
-          "power_draw_w": 194.79,
-          "active_compute_process_count": 3
-        },
-        {
-          "gpu_id": 7,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 114.515625,
-          "free_mem_gb": 63.8359375,
-          "gpu_util": 100.0,
-          "mem_util": 11.0,
-          "power_draw_w": 521.13,
-          "active_compute_process_count": 2
-        }
-      ]
-    },
-    {
-      "backend": "nvidia-smi",
-      "timestamp_utc": "2026-04-08T09:32:52.429344+00:00",
-      "gpus": [
-        {
-          "gpu_id": 0,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 60.0263671875,
-          "free_mem_gb": 118.326171875,
-          "gpu_util": 95.0,
-          "mem_util": 16.0,
-          "power_draw_w": 450.88,
-          "active_compute_process_count": 4
-        },
-        {
-          "gpu_id": 1,
-          "name": "NVIDIA B200",
-          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
-          "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 96.75,
-          "free_mem_gb": 81.6015625,
-          "gpu_util": 95.0,
+          "memory_used_gb": 50.9326171875,
+          "free_mem_gb": 127.419921875,
+          "gpu_util": 97.0,
           "mem_util": 23.0,
-          "power_draw_w": 503.1,
+          "power_draw_w": 480.17,
+          "active_compute_process_count": 4
+        },
+        {
+          "gpu_id": 1,
+          "name": "NVIDIA B200",
+          "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+          "memory_total_gb": 179.0615234375,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 93.0,
+          "mem_util": 16.0,
+          "power_draw_w": 401.88,
           "active_compute_process_count": 3
         },
         {
@@ -445,11 +649,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 105.7314453125,
-          "free_mem_gb": 72.62109375,
-          "gpu_util": 92.0,
-          "mem_util": 17.0,
-          "power_draw_w": 405.07,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 95.0,
+          "mem_util": 22.0,
+          "power_draw_w": 455.51,
           "active_compute_process_count": 4
         },
         {
@@ -459,9 +663,9 @@
           "memory_total_gb": 179.0615234375,
           "memory_used_gb": 108.9345703125,
           "free_mem_gb": 69.41796875,
-          "gpu_util": 96.0,
-          "mem_util": 22.0,
-          "power_draw_w": 667.63,
+          "gpu_util": 97.0,
+          "mem_util": 41.0,
+          "power_draw_w": 619.01,
           "active_compute_process_count": 1
         },
         {
@@ -469,23 +673,23 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 45.3583984375,
-          "free_mem_gb": 132.994140625,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
           "gpu_util": 98.0,
           "mem_util": 3.0,
-          "power_draw_w": 424.56,
-          "active_compute_process_count": 3
+          "power_draw_w": 449.67,
+          "active_compute_process_count": 2
         },
         {
           "gpu_id": 5,
           "name": "NVIDIA B200",
           "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 89.90234375,
-          "free_mem_gb": 88.44921875,
-          "gpu_util": 91.0,
-          "mem_util": 16.0,
-          "power_draw_w": 383.16,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 94.0,
+          "mem_util": 14.0,
+          "power_draw_w": 460.59,
           "active_compute_process_count": 3
         },
         {
@@ -493,41 +697,41 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 41.951171875,
-          "free_mem_gb": 136.400390625,
-          "gpu_util": 92.0,
-          "mem_util": 9.0,
-          "power_draw_w": 362.66,
-          "active_compute_process_count": 3
+          "memory_used_gb": 36.767578125,
+          "free_mem_gb": 141.583984375,
+          "gpu_util": 21.0,
+          "mem_util": 0.0,
+          "power_draw_w": 225.0,
+          "active_compute_process_count": 2
         },
         {
           "gpu_id": 7,
           "name": "NVIDIA B200",
           "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 114.515625,
-          "free_mem_gb": 63.8359375,
+          "memory_used_gb": 63.091796875,
+          "free_mem_gb": 115.259765625,
           "gpu_util": 100.0,
           "mem_util": 12.0,
-          "power_draw_w": 523.39,
+          "power_draw_w": 686.26,
           "active_compute_process_count": 2
         }
       ]
     },
     {
       "backend": "nvidia-smi",
-      "timestamp_utc": "2026-04-08T09:32:55.056854+00:00",
+      "timestamp_utc": "2026-04-08T09:55:39.007154+00:00",
       "gpus": [
         {
           "gpu_id": 0,
           "name": "NVIDIA B200",
           "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 60.0205078125,
-          "free_mem_gb": 118.33203125,
-          "gpu_util": 95.0,
-          "mem_util": 17.0,
-          "power_draw_w": 450.82,
+          "memory_used_gb": 50.9365234375,
+          "free_mem_gb": 127.416015625,
+          "gpu_util": 91.0,
+          "mem_util": 10.0,
+          "power_draw_w": 374.19,
           "active_compute_process_count": 4
         },
         {
@@ -535,11 +739,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 96.75,
-          "free_mem_gb": 81.6015625,
-          "gpu_util": 93.0,
-          "mem_util": 14.0,
-          "power_draw_w": 416.48,
+          "memory_used_gb": 93.814453125,
+          "free_mem_gb": 84.537109375,
+          "gpu_util": 95.0,
+          "mem_util": 25.0,
+          "power_draw_w": 428.87,
           "active_compute_process_count": 3
         },
         {
@@ -547,11 +751,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 106.0576171875,
-          "free_mem_gb": 72.294921875,
-          "gpu_util": 95.0,
-          "mem_util": 16.0,
-          "power_draw_w": 517.37,
+          "memory_used_gb": 110.2861328125,
+          "free_mem_gb": 68.06640625,
+          "gpu_util": 94.0,
+          "mem_util": 15.0,
+          "power_draw_w": 415.76,
           "active_compute_process_count": 4
         },
         {
@@ -561,9 +765,9 @@
           "memory_total_gb": 179.0615234375,
           "memory_used_gb": 108.9345703125,
           "free_mem_gb": 69.41796875,
-          "gpu_util": 99.0,
-          "mem_util": 33.0,
-          "power_draw_w": 658.73,
+          "gpu_util": 91.0,
+          "mem_util": 15.0,
+          "power_draw_w": 563.57,
           "active_compute_process_count": 1
         },
         {
@@ -571,23 +775,23 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 45.3583984375,
-          "free_mem_gb": 132.994140625,
+          "memory_used_gb": 41.5,
+          "free_mem_gb": 136.8515625,
           "gpu_util": 98.0,
           "mem_util": 3.0,
-          "power_draw_w": 437.45,
-          "active_compute_process_count": 3
+          "power_draw_w": 434.95,
+          "active_compute_process_count": 2
         },
         {
           "gpu_id": 5,
           "name": "NVIDIA B200",
           "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 89.90234375,
-          "free_mem_gb": 88.44921875,
-          "gpu_util": 91.0,
-          "mem_util": 13.0,
-          "power_draw_w": 401.29,
+          "memory_used_gb": 92.83984375,
+          "free_mem_gb": 85.51171875,
+          "gpu_util": 95.0,
+          "mem_util": 22.0,
+          "power_draw_w": 498.3,
           "active_compute_process_count": 3
         },
         {
@@ -595,11 +799,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 33.6015625,
-          "free_mem_gb": 144.75,
-          "gpu_util": 17.0,
+          "memory_used_gb": 36.767578125,
+          "free_mem_gb": 141.583984375,
+          "gpu_util": 8.0,
           "mem_util": 0.0,
-          "power_draw_w": 195.19,
+          "power_draw_w": 188.24,
           "active_compute_process_count": 2
         },
         {
@@ -607,11 +811,11 @@
           "name": "NVIDIA B200",
           "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
           "memory_total_gb": 179.0615234375,
-          "memory_used_gb": 67.962890625,
-          "free_mem_gb": 110.388671875,
+          "memory_used_gb": 63.09375,
+          "free_mem_gb": 115.2578125,
           "gpu_util": 100.0,
-          "mem_util": 11.0,
-          "power_draw_w": 568.76,
+          "mem_util": 12.0,
+          "power_draw_w": 684.57,
           "active_compute_process_count": 2
         }
       ]
@@ -620,67 +824,67 @@
   "summary": [
     {
       "gpu_id": 0,
-      "avg_gpu_util": 95.0,
-      "avg_mem_util": 16.166666666666668,
-      "avg_memory_used_gb": 58.716796875,
-      "avg_power_draw_w": 463.8400000000001,
-      "sample_count": 6
+      "avg_gpu_util": 90.375,
+      "avg_mem_util": 13.25,
+      "avg_memory_used_gb": 50.93310546875,
+      "avg_power_draw_w": 395.02125,
+      "sample_count": 8
     },
     {
       "gpu_id": 1,
-      "avg_gpu_util": 93.33333333333333,
-      "avg_mem_util": 17.666666666666668,
-      "avg_memory_used_gb": 96.75,
-      "avg_power_draw_w": 446.1783333333333,
-      "sample_count": 6
+      "avg_gpu_util": 94.0,
+      "avg_mem_util": 18.125,
+      "avg_memory_used_gb": 93.814453125,
+      "avg_power_draw_w": 414.25500000000005,
+      "sample_count": 8
     },
     {
       "gpu_id": 2,
-      "avg_gpu_util": 93.0,
-      "avg_mem_util": 17.666666666666668,
-      "avg_memory_used_gb": 105.78580729166667,
-      "avg_power_draw_w": 442.87999999999994,
-      "sample_count": 6
+      "avg_gpu_util": 94.625,
+      "avg_mem_util": 18.0,
+      "avg_memory_used_gb": 110.2861328125,
+      "avg_power_draw_w": 453.74250000000006,
+      "sample_count": 8
     },
     {
       "gpu_id": 3,
-      "avg_gpu_util": 97.33333333333333,
-      "avg_mem_util": 25.5,
+      "avg_gpu_util": 68.125,
+      "avg_mem_util": 24.375,
       "avg_memory_used_gb": 108.9345703125,
-      "avg_power_draw_w": 659.45,
-      "sample_count": 6
+      "avg_power_draw_w": 559.0362499999999,
+      "sample_count": 8
     },
     {
       "gpu_id": 4,
-      "avg_gpu_util": 96.66666666666667,
-      "avg_mem_util": 3.3333333333333335,
-      "avg_memory_used_gb": 45.3583984375,
-      "avg_power_draw_w": 431.085,
-      "sample_count": 6
+      "avg_gpu_util": 81.875,
+      "avg_mem_util": 3.125,
+      "avg_memory_used_gb": 41.5,
+      "avg_power_draw_w": 399.8675,
+      "sample_count": 8
     },
     {
       "gpu_id": 5,
-      "avg_gpu_util": 91.0,
-      "avg_mem_util": 15.5,
-      "avg_memory_used_gb": 89.90234375,
-      "avg_power_draw_w": 383.60666666666674,
-      "sample_count": 6
+      "avg_gpu_util": 94.125,
+      "avg_mem_util": 16.375,
+      "avg_memory_used_gb": 92.83984375,
+      "avg_power_draw_w": 441.49625000000003,
+      "sample_count": 8
     },
     {
       "gpu_id": 6,
-      "avg_gpu_util": 30.833333333333332,
-      "avg_mem_util": 1.5,
-      "avg_memory_used_gb": 35.239583333333336,
-      "avg_power_draw_w": 223.30500000000004,
-      "sample_count": 6
+      "avg_gpu_util": 43.125,
+      "avg_mem_util": 3.5,
+      "avg_memory_used_gb": 55.018798828125,
+      "avg_power_draw_w": 254.6125,
+      "sample_count": 8
     },
     {
       "gpu_id": 7,
-      "avg_gpu_util": 100.0,
-      "avg_mem_util": 11.333333333333334,
-      "avg_memory_used_gb": 105.048828125,
-      "avg_power_draw_w": 525.44,
-      "sample_count": 6
+      "avg_gpu_util": 87.625,
+      "avg_mem_util": 9.25,
+      "avg_memory_used_gb": 61.621826171875,
+      "avg_power_draw_w": 573.9949999999999,
+      "sample_count": 8
     }
   ]
 }

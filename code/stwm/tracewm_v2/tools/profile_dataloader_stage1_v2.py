@@ -4,12 +4,10 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import json
 import time
 
-import numpy as np
-import torch
 from torch.utils.data import DataLoader, Dataset
 
 from stwm.tracewm_v2.datasets.stage1_v2_unified import Stage1V2UnifiedDataset, stage1_v2_collate_fn
@@ -51,10 +49,20 @@ def parse_args() -> Any:
     return parser.parse_args()
 
 
-def _mean(values: List[float]) -> float:
+def _mean(values: List[float]) -> Optional[float]:
     if not values:
-        return 0.0
+        return None
     return float(sum(values) / float(len(values)))
+
+
+def _fmt_optional(raw: Any, digits: int = 6) -> str:
+    if raw is None:
+        return "unavailable"
+    try:
+        val = float(raw)
+    except Exception:
+        return "unavailable"
+    return f"{val:.{digits}f}"
 
 
 def _configs() -> List[Dict[str, Any]]:
@@ -135,12 +143,24 @@ def _run_one(cfg: Dict[str, Any], args: Any) -> Dict[str, Any]:
     elapsed = float(time.perf_counter() - measure_start) if measure_start > 0 else 0.0
     bps = float(measured / elapsed) if elapsed > 0 else 0.0
 
+    worker_timing_reliable = int(cfg["num_workers"]) == 0
+    if worker_timing_reliable:
+        mean_getitem_time_sec: Optional[float] = _mean(timed.getitem_times)
+        mean_collate_time_sec: Optional[float] = _mean(collate_times)
+        worker_timing_status = "available_main_process_single_worker"
+    else:
+        mean_getitem_time_sec = None
+        mean_collate_time_sec = None
+        worker_timing_status = "unavailable_multiprocess_workers"
+
     return {
         "config": cfg,
         "status": "pass",
+        "worker_side_timing_reliable": bool(worker_timing_reliable),
+        "worker_side_timing_status": worker_timing_status,
         "dataset_init_time_sec": init_time,
-        "mean_getitem_time_sec": _mean(timed.getitem_times),
-        "mean_collate_time_sec": _mean(collate_times),
+        "mean_getitem_time_sec": mean_getitem_time_sec,
+        "mean_collate_time_sec": mean_collate_time_sec,
         "batches_per_sec": float(bps),
         "measured_batches": int(measured),
     }
@@ -163,9 +183,11 @@ def main() -> None:
                     "config": cfg,
                     "status": "fail",
                     "error": str(exc),
+                    "worker_side_timing_reliable": False,
+                    "worker_side_timing_status": "unavailable_due_error",
                     "dataset_init_time_sec": 0.0,
-                    "mean_getitem_time_sec": 0.0,
-                    "mean_collate_time_sec": 0.0,
+                    "mean_getitem_time_sec": None,
+                    "mean_collate_time_sec": None,
                     "batches_per_sec": 0.0,
                     "measured_batches": 0,
                 }
@@ -177,6 +199,17 @@ def main() -> None:
     payload = {
         "generated_at_utc": now_iso(),
         "contract_path": str(args.contract_path),
+        "metric_reliability": {
+            "batches_per_sec": "reliable_for_all_num_workers",
+            "dataset_init_time_sec": "reliable_for_all_num_workers",
+            "mean_getitem_time_sec": "reliable_only_when_num_workers_eq_0",
+            "mean_collate_time_sec": "reliable_only_when_num_workers_eq_0",
+        },
+        "reliability_notes": [
+            "end_to_end loader throughput is measured in main process and available for all num_workers",
+            "worker-side getitem/collate timing is only reliable when num_workers=0",
+            "for num_workers>0, worker-side timing is marked unavailable instead of 0.0",
+        ],
         "rows": rows,
         "best_config": best.get("config", {}) if best else {},
         "best_batches_per_sec": float(best.get("batches_per_sec", 0.0)) if best else 0.0,
@@ -189,9 +222,12 @@ def main() -> None:
         f"- generated_at_utc: {payload['generated_at_utc']}",
         f"- best_batches_per_sec: {payload['best_batches_per_sec']:.4f}",
         f"- best_config: {json.dumps(payload['best_config'], ensure_ascii=True)}",
+        "- reliability: batches_per_sec and dataset_init_time_sec are reliable for all num_workers",
+        "- reliability: mean_getitem_time_sec and mean_collate_time_sec are only reliable when num_workers=0",
+        "- reliability: worker-side timing for num_workers>0 is explicitly marked unavailable",
         "",
-        "| workers | pin_memory | persistent_workers | prefetch_factor | status | dataset_init_sec | mean_getitem_sec | mean_collate_sec | batches_per_sec |",
-        "|---:|---|---|---:|---|---:|---:|---:|---:|",
+        "| workers | pin_memory | persistent_workers | prefetch_factor | status | worker_timing_status | dataset_init_sec | mean_getitem_sec | mean_collate_sec | batches_per_sec |",
+        "|---:|---|---|---:|---|---|---:|---|---|---:|",
     ]
 
     def _key(rec: Dict[str, Any]) -> tuple:
@@ -206,15 +242,16 @@ def main() -> None:
     for row in sorted(rows, key=_key):
         cfg = row.get("config", {})
         lines.append(
-            "| {w} | {pin} | {pw} | {pf} | {st} | {init:.4f} | {gi:.6f} | {co:.6f} | {bps:.4f} |".format(
+            "| {w} | {pin} | {pw} | {pf} | {st} | {wt} | {init:.4f} | {gi} | {co} | {bps:.4f} |".format(
                 w=int(cfg.get("num_workers", 0)),
                 pin=bool(cfg.get("pin_memory", False)),
                 pw=bool(cfg.get("persistent_workers", False)),
                 pf=int(cfg.get("prefetch_factor", 0) or 0),
                 st=str(row.get("status", "unknown")),
+                wt=str(row.get("worker_side_timing_status", "unavailable")),
                 init=float(row.get("dataset_init_time_sec", 0.0)),
-                gi=float(row.get("mean_getitem_time_sec", 0.0)),
-                co=float(row.get("mean_collate_time_sec", 0.0)),
+                gi=_fmt_optional(row.get("mean_getitem_time_sec", None), digits=6),
+                co=_fmt_optional(row.get("mean_collate_time_sec", None), digits=6),
                 bps=float(row.get("batches_per_sec", 0.0)),
             )
         )

@@ -36,6 +36,12 @@ PERF_STEP_TIMING_JSON="$WORK_ROOT/reports/stage1_v2_perf_step_timing_${DATE_TAG}
 PERF_SUMMARY_JSON="$WORK_ROOT/reports/stage1_v2_perf_summary_${DATE_TAG}.json"
 PERF_SUMMARY_MD="$WORK_ROOT/docs/TRACEWM_STAGE1_V2_PERF_RESULTS_${DATE_TAG}.md"
 
+# Runtime recommended defaults only. These are not scientific variables.
+RECOMMENDED_NUM_WORKERS="${RECOMMENDED_NUM_WORKERS:-8}"
+RECOMMENDED_PIN_MEMORY="${RECOMMENDED_PIN_MEMORY:-1}"
+RECOMMENDED_PERSISTENT_WORKERS="${RECOMMENDED_PERSISTENT_WORKERS:-1}"
+RECOMMENDED_PREFETCH_FACTOR="${RECOMMENDED_PREFETCH_FACTOR:-4}"
+
 if [[ -x "/home/chen034/miniconda3/envs/stwm/bin/python" ]]; then
   PYTHON_BIN="/home/chen034/miniconda3/envs/stwm/bin/python"
 else
@@ -156,15 +162,22 @@ eval "$(
   "$PYTHON_BIN" - <<PY
 import json
 p = json.load(open('$DATALOADER_JSON', 'r', encoding='utf-8'))
-cfg = p.get('best_config', {})
-print(f"DL_NUM_WORKERS={int(cfg.get('num_workers', 0))}")
-print(f"DL_PIN_MEMORY={1 if bool(cfg.get('pin_memory', False)) else 0}")
-print(f"DL_PERSISTENT_WORKERS={1 if bool(cfg.get('persistent_workers', False)) else 0}")
-print(f"DL_PREFETCH_FACTOR={int(cfg.get('prefetch_factor', 2) or 2)}")
+cfg = p.get('best_config', {}) if isinstance(p.get('best_config', {}), dict) else {}
+num_workers = int(cfg.get('num_workers', int('$RECOMMENDED_NUM_WORKERS')))
+pin_memory = 1 if bool(cfg.get('pin_memory', int('$RECOMMENDED_PIN_MEMORY') == 1)) else 0
+persistent_workers = 1 if bool(cfg.get('persistent_workers', int('$RECOMMENDED_PERSISTENT_WORKERS') == 1)) else 0
+prefetch_factor = int(cfg.get('prefetch_factor', int('$RECOMMENDED_PREFETCH_FACTOR')) or int('$RECOMMENDED_PREFETCH_FACTOR'))
+if num_workers <= 0:
+    persistent_workers = 0
+print(f"DL_NUM_WORKERS={num_workers}")
+print(f"DL_PIN_MEMORY={pin_memory}")
+print(f"DL_PERSISTENT_WORKERS={persistent_workers}")
+print(f"DL_PREFETCH_FACTOR={prefetch_factor}")
 PY
 )"
 
-echo "[stage1-v2-perf] dataloader_best workers=$DL_NUM_WORKERS pin_memory=$DL_PIN_MEMORY persistent_workers=$DL_PERSISTENT_WORKERS prefetch=$DL_PREFETCH_FACTOR"
+echo "[stage1-v2-perf] recommended_runtime workers=$RECOMMENDED_NUM_WORKERS pin_memory=$RECOMMENDED_PIN_MEMORY persistent_workers=$RECOMMENDED_PERSISTENT_WORKERS prefetch=$RECOMMENDED_PREFETCH_FACTOR"
+echo "[stage1-v2-perf] dataloader_best_or_fallback workers=$DL_NUM_WORKERS pin_memory=$DL_PIN_MEMORY persistent_workers=$DL_PERSISTENT_WORKERS prefetch=$DL_PREFETCH_FACTOR"
 
 DL_FLAGS=(--num-workers "$DL_NUM_WORKERS")
 if [[ "$DL_PIN_MEMORY" == "1" ]]; then
