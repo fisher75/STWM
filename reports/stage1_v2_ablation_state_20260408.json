@@ -1,29 +1,126 @@
 {
-  "generated_at_utc": "2026-04-08T08:53:56.796814+00:00",
-  "ablation_type": "state",
-  "candidates": [
+  "generated_at_utc": "2026-04-08T10:19:10.154465+00:00",
+  "group": "state",
+  "objective": "Is multi-token state beneficial vs legacy mean-5d under matched GRU backbone?",
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "total_loss_usage": "reference_only"
+  },
+  "runs": [
     {
-      "lane": "G1",
-      "total_loss": 0.4164958732823531,
-      "note": "coord-only baseline on multi-token state"
+      "run_name": "stage1_v2_state_legacy_mean5d_gru",
+      "group": "state",
+      "status": "ok",
+      "state_variant": "legacy_mean5d",
+      "backbone_variant": "stage1_v2_backbone_multitoken_gru",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "gru",
+        "preset": "gru_baseline",
+        "config": {
+          "state_mode": "legacy_mean5d",
+          "max_tokens": 64,
+          "state_dim": 8,
+          "hidden_dim": 384,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 1583872,
+        "estimated_parameter_count": 1583872,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.9729909896850586,
+        "coord_loss": 0.5493472442030907,
+        "visibility_loss": 0.6886360794305801,
+        "residual_loss": 0.25337635818868876,
+        "velocity_loss": 0.06392651563510299,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.490615318218867,
+        "free_rollout_coord_mean_l2": 0.675823966662089,
+        "free_rollout_endpoint_l2": 0.689999908208847,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "legacy mean-5d state with minimal GRU baseline"
     },
     {
-      "lane": "G2",
-      "total_loss": 0.5346540870765845,
-      "note": "G1 + visibility supervision"
-    },
-    {
-      "lane": "G3",
-      "total_loss": 0.9904607236385345,
-      "note": "G2 + residual supervision"
+      "run_name": "stage1_v2_state_multitoken_gru",
+      "group": "state",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_multitoken_gru",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "gru",
+        "preset": "gru_baseline",
+        "config": {
+          "state_mode": "multitoken",
+          "max_tokens": 64,
+          "state_dim": 8,
+          "hidden_dim": 384,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 2167936,
+        "estimated_parameter_count": 2167936,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 1.0663365125656128,
+        "coord_loss": 0.6067466847598553,
+        "visibility_loss": 0.6796081811189651,
+        "residual_loss": 0.3525192588567734,
+        "velocity_loss": 0.12662366311997175,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.4694883277018865,
+        "free_rollout_coord_mean_l2": 0.6602177023887634,
+        "free_rollout_endpoint_l2": 0.6788152853647867,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with matched GRU baseline"
     }
   ],
-  "selected": {
-    "lane": "G1",
-    "total_loss": 0.4164958732823531,
-    "note": "coord-only baseline on multi-token state"
-  },
-  "evidence": {
-    "g1_g5_report": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_g1_g5_20260408.json"
-  }
+  "best_variant": "stage1_v2_state_multitoken_gru"
 }

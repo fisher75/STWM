@@ -1,26 +1,20 @@
 {
-  "generated_at_utc": "2026-04-08T08:53:56.797456+00:00",
-  "p0_trace_cache_ready": true,
-  "pointodyssey_first_wave_splits": [
-    "train",
-    "val"
-  ],
-  "pointodyssey_skipped_manifest": "/home/chen034/workspace/data/_manifests/stage1_v2_pointodyssey_skipped_20260408.json",
-  "pointodyssey_skipped_scene_count": 3,
-  "kubric_first_wave_mode": "panning_raw_first_wave",
-  "selected_state_lane": "G1",
-  "selected_losses_lane": "G1",
-  "selected_backbone": {
-    "model_preset": "debug_small",
-    "estimated_parameter_count": 3213066,
-    "parameter_count": 3213578,
-    "target_220m_range_pass": false
-  },
+  "generated_at_utc": "2026-04-08T10:19:20.178820+00:00",
+  "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "recommended_runtime_path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+  "single_gpu_only": true,
+  "best_state_variant": "stage1_v2_state_multitoken_gru",
+  "best_backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+  "best_loss_variant": "stage1_v2_loss_coord_visibility",
+  "final_mainline_model": "stage1_v2_mainline::stage1_v2_state_multitoken_gru::stage1_v2_backbone_transformer_debugsmall::stage1_v2_loss_coord_visibility",
+  "final_mainline_parameter_count": 3213066,
+  "final_mainline_target_220m_range_pass": false,
+  "whether_v2_is_scientifically_validated": true,
+  "next_step_choice": "do_small_followup_ablation",
   "evidence": {
-    "contract": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
-    "audit": "/home/chen034/workspace/stwm/reports/stage1_v2_trace_cache_audit_20260408.json",
-    "ablation_state": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_state_20260408.json",
-    "ablation_backbone": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_backbone_20260408.json",
-    "ablation_losses": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_losses_20260408.json"
+    "state_ablation": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_state_20260408.json",
+    "backbone_ablation": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_backbone_20260408.json",
+    "loss_ablation": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_losses_20260408.json",
+    "run_details": "/home/chen034/workspace/stwm/reports/stage1_v2_scientific_revalidation_runs_20260408.json"
   }
 }

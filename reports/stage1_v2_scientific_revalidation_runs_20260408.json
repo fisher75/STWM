@@ -1,0 +1,532 @@
+{
+  "generated_at_utc": "2026-04-08T10:19:20.176915+00:00",
+  "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "runtime": {
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "selected_gpu_id": 6,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0,
+    "single_gpu_only": true
+  },
+  "runs": [
+    {
+      "run_name": "stage1_v2_state_legacy_mean5d_gru",
+      "group": "state",
+      "status": "ok",
+      "state_variant": "legacy_mean5d",
+      "backbone_variant": "stage1_v2_backbone_multitoken_gru",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "gru",
+        "preset": "gru_baseline",
+        "config": {
+          "state_mode": "legacy_mean5d",
+          "max_tokens": 64,
+          "state_dim": 8,
+          "hidden_dim": 384,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 1583872,
+        "estimated_parameter_count": 1583872,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.9729909896850586,
+        "coord_loss": 0.5493472442030907,
+        "visibility_loss": 0.6886360794305801,
+        "residual_loss": 0.25337635818868876,
+        "velocity_loss": 0.06392651563510299,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.490615318218867,
+        "free_rollout_coord_mean_l2": 0.675823966662089,
+        "free_rollout_endpoint_l2": 0.689999908208847,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "legacy mean-5d state with minimal GRU baseline"
+    },
+    {
+      "run_name": "stage1_v2_state_multitoken_gru",
+      "group": "state",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_multitoken_gru",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "gru",
+        "preset": "gru_baseline",
+        "config": {
+          "state_mode": "multitoken",
+          "max_tokens": 64,
+          "state_dim": 8,
+          "hidden_dim": 384,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 2167936,
+        "estimated_parameter_count": 2167936,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 1.0663365125656128,
+        "coord_loss": 0.6067466847598553,
+        "visibility_loss": 0.6796081811189651,
+        "residual_loss": 0.3525192588567734,
+        "velocity_loss": 0.12662366311997175,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.4694883277018865,
+        "free_rollout_coord_mean_l2": 0.6602177023887634,
+        "free_rollout_endpoint_l2": 0.6788152853647867,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with matched GRU baseline"
+    },
+    {
+      "run_name": "stage1_v2_backbone_multitoken_gru",
+      "group": "backbone",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_multitoken_gru",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "gru",
+        "preset": "gru_baseline",
+        "config": {
+          "state_mode": "multitoken",
+          "max_tokens": 64,
+          "state_dim": 8,
+          "hidden_dim": 384,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 2167936,
+        "estimated_parameter_count": 2167936,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.982168011367321,
+        "coord_loss": 0.5133711900562048,
+        "visibility_loss": 0.6888206601142883,
+        "residual_loss": 0.3822887260466814,
+        "velocity_loss": 0.11525748483836651,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.43638678391774494,
+        "free_rollout_coord_mean_l2": 0.6472856402397156,
+        "free_rollout_endpoint_l2": 0.6713165442148844,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with GRU backbone"
+    },
+    {
+      "run_name": "stage1_v2_backbone_transformer_debugsmall",
+      "group": "backbone",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 1.1289539337158203,
+        "coord_loss": 0.5312429815530777,
+        "visibility_loss": 0.3871301468461752,
+        "residual_loss": 0.771333321928978,
+        "velocity_loss": 0.8452500775456429,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.20821922024091086,
+        "free_rollout_coord_mean_l2": 0.4069776435693105,
+        "free_rollout_endpoint_l2": 0.3958713759978612,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with transformer debug_small"
+    },
+    {
+      "run_name": "stage1_v2_backbone_transformer_prototype220m",
+      "group": "backbone",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_prototype220m",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "transformer",
+        "preset": "prototype_220m",
+        "config": {
+          "state_dim": 8,
+          "d_model": 1152,
+          "num_layers": 13,
+          "num_heads": 16,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 256,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 207615754,
+        "estimated_parameter_count": 207613450,
+        "target_220m_range_pass": true
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 11.092827141284943,
+        "coord_loss": 10.398691123351455,
+        "visibility_loss": 0.5494796223938465,
+        "residual_loss": 1.0985799133777618,
+        "velocity_loss": 0.57900670170784,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 1.6283119320869446,
+        "free_rollout_coord_mean_l2": 1.269139011700948,
+        "free_rollout_endpoint_l2": 1.2744733691215515,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with transformer prototype_220m"
+    },
+    {
+      "run_name": "stage1_v2_loss_coord_only",
+      "group": "losses",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_only",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.3905461672693491,
+        "coord_loss": 0.3905461672693491,
+        "visibility_loss": 0.7933225929737091,
+        "residual_loss": 0.886862002313137,
+        "velocity_loss": 1.2611193358898163,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.19270702451467514,
+        "free_rollout_coord_mean_l2": 0.4185205002625783,
+        "free_rollout_endpoint_l2": 0.5304233282804489,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "coord-only loss"
+    },
+    {
+      "run_name": "stage1_v2_loss_coord_visibility",
+      "group": "losses",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.8983641155064106,
+        "coord_loss": 0.5615443494170904,
+        "visibility_loss": 0.6736395470798016,
+        "residual_loss": 0.9742351397871971,
+        "velocity_loss": 0.7741103768348694,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.1653329481681188,
+        "free_rollout_coord_mean_l2": 0.38141616185506183,
+        "free_rollout_endpoint_l2": 0.3972135931253433,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "coord + visibility"
+    },
+    {
+      "run_name": "stage1_v2_loss_coord_visibility_residual_velocity",
+      "group": "losses",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 1.127963863313198,
+        "coord_loss": 0.5198376178741455,
+        "visibility_loss": 0.4276402182877064,
+        "residual_loss": 0.8983800411224365,
+        "velocity_loss": 0.6788445636630058,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.74399533867836,
+        "free_rollout_coord_mean_l2": 0.8056887338558832,
+        "free_rollout_endpoint_l2": 0.7737820247809092,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "coord + visibility + residual + velocity"
+    },
+    {
+      "run_name": "stage1_v2_loss_coord_visibility_residual_velocity_endpoint",
+      "group": "losses",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility_residual_velocity_endpoint",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 1.0558874905109406,
+        "coord_loss": 0.38656032644212246,
+        "visibility_loss": 0.40123990923166275,
+        "residual_loss": 0.8834270909428596,
+        "velocity_loss": 0.7153721451759338,
+        "endpoint_loss": 0.6900736391544342
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.2867352565129598,
+        "free_rollout_coord_mean_l2": 0.4970433960358302,
+        "free_rollout_endpoint_l2": 0.47475364804267883,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "coord + visibility + residual + velocity + endpoint"
+    }
+  ]
+}

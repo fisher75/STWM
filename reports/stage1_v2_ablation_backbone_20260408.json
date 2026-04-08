@@ -1,14 +1,186 @@
 {
-  "generated_at_utc": "2026-04-08T08:53:56.797151+00:00",
-  "ablation_type": "backbone",
-  "first_wave_status": "single_backbone_declared_no_mixing",
-  "selected": {
-    "model_preset": "debug_small",
-    "estimated_parameter_count": 3213066,
-    "parameter_count": 3213578,
-    "target_220m_range_pass": false
+  "generated_at_utc": "2026-04-08T10:19:16.133041+00:00",
+  "group": "backbone",
+  "objective": "Under fixed multi-token state, compare GRU vs Transformer and debug_small vs prototype_220m.",
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "total_loss_usage": "reference_only"
   },
-  "evidence": {
-    "mainline_train_summary": "/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_train_summary_20260408.json"
-  }
+  "runs": [
+    {
+      "run_name": "stage1_v2_backbone_multitoken_gru",
+      "group": "backbone",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_multitoken_gru",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "gru",
+        "preset": "gru_baseline",
+        "config": {
+          "state_mode": "multitoken",
+          "max_tokens": 64,
+          "state_dim": 8,
+          "hidden_dim": 384,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 2167936,
+        "estimated_parameter_count": 2167936,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.982168011367321,
+        "coord_loss": 0.5133711900562048,
+        "visibility_loss": 0.6888206601142883,
+        "residual_loss": 0.3822887260466814,
+        "velocity_loss": 0.11525748483836651,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.43638678391774494,
+        "free_rollout_coord_mean_l2": 0.6472856402397156,
+        "free_rollout_endpoint_l2": 0.6713165442148844,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with GRU backbone"
+    },
+    {
+      "run_name": "stage1_v2_backbone_transformer_debugsmall",
+      "group": "backbone",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 1.1289539337158203,
+        "coord_loss": 0.5312429815530777,
+        "visibility_loss": 0.3871301468461752,
+        "residual_loss": 0.771333321928978,
+        "velocity_loss": 0.8452500775456429,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.20821922024091086,
+        "free_rollout_coord_mean_l2": 0.4069776435693105,
+        "free_rollout_endpoint_l2": 0.3958713759978612,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with transformer debug_small"
+    },
+    {
+      "run_name": "stage1_v2_backbone_transformer_prototype220m",
+      "group": "backbone",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_prototype220m",
+      "loss_variant": "coord_visibility_residual_velocity",
+      "model": {
+        "family": "transformer",
+        "preset": "prototype_220m",
+        "config": {
+          "state_dim": 8,
+          "d_model": 1152,
+          "num_layers": 13,
+          "num_heads": 16,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 256,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 207615754,
+        "estimated_parameter_count": 207613450,
+        "target_220m_range_pass": true
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 11.092827141284943,
+        "coord_loss": 10.398691123351455,
+        "visibility_loss": 0.5494796223938465,
+        "residual_loss": 1.0985799133777618,
+        "velocity_loss": 0.57900670170784,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 1.6283119320869446,
+        "free_rollout_coord_mean_l2": 1.269139011700948,
+        "free_rollout_endpoint_l2": 1.2744733691215515,
+        "tapvid_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        },
+        "tapvid3d_limited_eval": {
+          "supported": false,
+          "status": "unavailable",
+          "free_rollout_endpoint_l2": null
+        }
+      },
+      "train_steps": 8,
+      "notes": "multi-token state with transformer prototype_220m"
+    }
+  ],
+  "best_variant": "stage1_v2_backbone_transformer_debugsmall"
 }
