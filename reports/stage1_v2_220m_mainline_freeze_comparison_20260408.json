@@ -1,0 +1,47 @@
+{
+  "generated_at_utc": "2026-04-08T12:49:04.396402+00:00",
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "quaternary": "tapvid3d_limited_eval.free_rollout_endpoint_l2",
+    "total_loss_usage": "reference_only"
+  },
+  "freeze_220m_run": "stage1_v2_freeze_220m_mainline",
+  "freeze_debugsmall_ref_run": "stage1_v2_freeze_debugsmall_ref",
+  "winner_by_ranked_policy": "stage1_v2_freeze_220m_mainline",
+  "freeze_220m_mainline_metrics": {
+    "teacher_forced_coord_loss": 0.08584701179843705,
+    "free_rollout_coord_mean_l2": 0.2512546855317065,
+    "free_rollout_endpoint_l2": 0.24645936407017727,
+    "tapvid_endpoint_l2": 0.3018534971320111,
+    "tapvid3d_limited_endpoint_l2": 3.5723570469887025,
+    "parameter_count": 207613450
+  },
+  "freeze_debugsmall_ref_metrics": {
+    "teacher_forced_coord_loss": 0.03341911252752291,
+    "free_rollout_coord_mean_l2": 0.48444634645261436,
+    "free_rollout_endpoint_l2": 0.8190039866008919,
+    "tapvid_endpoint_l2": 0.8797236193781314,
+    "tapvid3d_limited_endpoint_l2": 3.5507805783261537,
+    "parameter_count": 3213066
+  },
+  "is_220m_mainline_still_better_than_debugsmall": true,
+  "final_stage1_backbone_decision": "freeze_220m_as_stage1_backbone",
+  "allowed_final_stage1_backbone_decision": [
+    "freeze_220m_as_stage1_backbone",
+    "keep_220m_as_candidate_but_not_frozen",
+    "revert_to_debugsmall"
+  ],
+  "blocking_reason_if_not_freeze": "",
+  "next_step_choice": "freeze_stage1_and_prepare_stage2",
+  "allowed_next_step_choice": [
+    "freeze_stage1_and_prepare_stage2",
+    "do_one_last_stage1_followup",
+    "revert_to_small_backbone"
+  ],
+  "gap_on_each_metric": {},
+  "evidence": {
+    "runs_summary": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_mainline_freeze_runs_20260408.json"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "generated_at_utc": "2026-04-08T12:49:04.395576+00:00",
+  "objective": "Stage1-v2 220M mainline freeze confirmation under longer controlled budget",
+  "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "recommended_runtime_path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+  "single_gpu_only": true,
+  "source_confirmation_comparison": "/home/chen034/workspace/stwm/reports/stage1_v2_mainline_confirmation_comparison_20260408.json",
+  "source_confirmation_runs": "/home/chen034/workspace/stwm/reports/stage1_v2_mainline_confirmation_runs_20260408.json",
+  "source_best_220m_run": "stage1_v2_confirm_220m_bestrecipe",
+  "source_best_small_run": "stage1_v2_confirm_debugsmall_mainline",
+  "training_budget": {
+    "optimizer_steps": 192,
+    "epochs": 1,
+    "eval_steps": 16
+  },
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "quaternary": "tapvid3d_limited_eval.free_rollout_endpoint_l2",
+    "total_loss_usage": "reference_only"
+  },
+  "runs": [
+    {
+      "run_name": "stage1_v2_freeze_220m_mainline",
+      "mode": "freeze_220m_mainline",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_prototype220m",
+      "loss_variant": "coord_visibility",
+      "model": {
+        "family": "transformer",
+        "preset": "prototype_220m",
+        "config": {
+          "state_dim": 8,
+          "d_model": 1152,
+          "num_layers": 13,
+          "num_heads": 16,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 256,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 207615754,
+        "estimated_parameter_count": 207613450,
+        "target_220m_range_pass": true
+      },
+      "train_config": {
+        "lr": 0.0001,
+        "weight_decay": 0.0,
+        "warmup_steps": 0,
+        "batch_size": 2,
+        "grad_accum_steps": 1,
+        "clip_grad_norm": 1.0,
+        "coord_weight": 1.2,
+        "visibility_weight": 0.8,
+        "residual_weight": 0.25,
+        "velocity_weight": 0.25,
+        "endpoint_weight": 0.1,
+        "enable_visibility": true,
+        "enable_residual": false,
+        "enable_velocity": false,
+        "enable_endpoint": false
+      },
+      "train_budget": {
+        "epochs": 1,
+        "optimizer_steps": 192,
+        "micro_steps": 192,
+        "eval_steps": 16,
+        "effective_batch": 2
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.9816880995058455,
+        "coord_loss": 0.6948486645705998,
+        "visibility_loss": 0.18483706379993237,
+        "residual_loss": 0.564708914142102,
+        "velocity_loss": 0.5450435793027282,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.08584701179843705,
+        "free_rollout_coord_mean_l2": 0.2512546855317065,
+        "free_rollout_endpoint_l2": 0.24645936407017727,
+        "tapvid_eval": {
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.11040751287870318,
+          "free_rollout_coord_mean_l2": 0.29747839360222267,
+          "free_rollout_endpoint_l2": 0.3018534971320111
+        },
+        "tapvid3d_limited_eval": {
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 34.37145289064569,
+          "free_rollout_coord_mean_l2": 3.3323033430667683,
+          "free_rollout_endpoint_l2": 3.5723570469887025
+        }
+      },
+      "notes": "freeze mainline 220m run reused from confirmation best recipe source=stage1_v2_confirm_220m_bestrecipe"
+    },
+    {
+      "run_name": "stage1_v2_freeze_debugsmall_ref",
+      "mode": "freeze_debugsmall_ref",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "train_config": {
+        "lr": 0.0001,
+        "weight_decay": 0.0,
+        "warmup_steps": 0,
+        "batch_size": 2,
+        "grad_accum_steps": 1,
+        "clip_grad_norm": 1.0,
+        "coord_weight": 1.0,
+        "visibility_weight": 0.5,
+        "residual_weight": 0.25,
+        "velocity_weight": 0.25,
+        "endpoint_weight": 0.1,
+        "enable_visibility": true,
+        "enable_residual": false,
+        "enable_velocity": false,
+        "enable_endpoint": false
+      },
+      "train_budget": {
+        "epochs": 1,
+        "optimizer_steps": 192,
+        "micro_steps": 192,
+        "eval_steps": 16,
+        "effective_batch": 2
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.1745850188502421,
+        "coord_loss": 0.09373723560323317,
+        "visibility_loss": 0.16169556480114503,
+        "residual_loss": 0.7805918057759603,
+        "velocity_loss": 0.8249957089622816,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.03341911252752291,
+        "free_rollout_coord_mean_l2": 0.48444634645261436,
+        "free_rollout_endpoint_l2": 0.8190039866008919,
+        "tapvid_eval": {
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.0325280170450577,
+          "free_rollout_coord_mean_l2": 0.5224636172951196,
+          "free_rollout_endpoint_l2": 0.8797236193781314
+        },
+        "tapvid3d_limited_eval": {
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 28.901078534214694,
+          "free_rollout_coord_mean_l2": 3.0491858833820897,
+          "free_rollout_endpoint_l2": 3.5507805783261537
+        }
+      },
+      "notes": "freeze debugsmall reference reused from confirmation best small recipe source=stage1_v2_confirm_debugsmall_mainline"
+    }
+  ]
+}
