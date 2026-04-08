@@ -1,0 +1,130 @@
+{
+  "generated_at_utc": "2026-04-08T03:42:18.268076+00:00",
+  "inputs": {
+    "point_summary": "/home/chen034/workspace/stwm/reports/tracewm_stage1_iter1_pointodyssey_only_summary.json",
+    "kubric_summary": "/home/chen034/workspace/stwm/reports/tracewm_stage1_iter1_kubric_only_summary.json",
+    "joint_summary": "/home/chen034/workspace/stwm/reports/tracewm_stage1_iter1_joint_po_kubric_summary.json",
+    "comparison": "/home/chen034/workspace/stwm/reports/tracewm_stage1_iter1_comparison_20260408.json",
+    "iter1_log": "/home/chen034/workspace/stwm/logs/tracewm_stage1_iter1_20260408.log"
+  },
+  "comparison_summary_loaded": {
+    "q1_winner": "pointodyssey_only",
+    "q2_joint_beats_best_single": false,
+    "next_step_choice": "stage1_model_fix_round"
+  },
+  "per_epoch_joint_vs_single": [
+    {
+      "epoch": 0,
+      "joint_val_total_loss": 0.004149417422013357,
+      "point_val_total_loss": 5.266331754683051e-06,
+      "kubric_val_total_loss": 5.422471804195084e-05,
+      "best_single_val_total_loss": 5.266331754683051e-06,
+      "joint_minus_best_single": 0.004144151090258674
+    },
+    {
+      "epoch": 1,
+      "joint_val_total_loss": 2.667362969077658e-05,
+      "point_val_total_loss": 4.1769186509554856e-07,
+      "kubric_val_total_loss": 3.5746329558605794e-06,
+      "best_single_val_total_loss": 4.1769186509554856e-07,
+      "joint_minus_best_single": 2.625593782568103e-05
+    },
+    {
+      "epoch": 2,
+      "joint_val_total_loss": 1.1835852319563855e-05,
+      "point_val_total_loss": 2.9685719482586137e-07,
+      "kubric_val_total_loss": 1.6765106920502149e-06,
+      "best_single_val_total_loss": 2.9685719482586137e-07,
+      "joint_minus_best_single": 1.1538995124737994e-05
+    },
+    {
+      "epoch": 3,
+      "joint_val_total_loss": 6.272258502804107e-06,
+      "point_val_total_loss": 2.4747421889514953e-07,
+      "kubric_val_total_loss": 1.366304900329851e-06,
+      "best_single_val_total_loss": 2.4747421889514953e-07,
+      "joint_minus_best_single": 6.024784283908957e-06
+    },
+    {
+      "epoch": 4,
+      "joint_val_total_loss": 3.2398519351772848e-06,
+      "point_val_total_loss": 2.088087427409846e-07,
+      "kubric_val_total_loss": 1.188179567179759e-06,
+      "best_single_val_total_loss": 2.088087427409846e-07,
+      "joint_minus_best_single": 3.0310431924363e-06
+    },
+    {
+      "epoch": 5,
+      "joint_val_total_loss": 1.7006695003374261e-06,
+      "point_val_total_loss": 1.775824998162534e-07,
+      "kubric_val_total_loss": 1.0349123158448492e-06,
+      "best_single_val_total_loss": 1.775824998162534e-07,
+      "joint_minus_best_single": 1.5230870005211727e-06
+    }
+  ],
+  "findings": {
+    "joint_early_or_late_issue": {
+      "joint_behind_epochs": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "early_avg_gap_vs_best_single": 0.0020852035140421776,
+      "late_avg_gap_vs_best_single": 2.2770650964787365e-06,
+      "conclusion": "joint_lags_early_and_persists"
+    },
+    "joint_point_subperformance_proxy": {
+      "proxy_metric": "tapvid_free_rollout_endpoint_l2 (lower_is_better)",
+      "joint": 0.2603261818488439,
+      "pointodyssey_only": 0.26446034014225006,
+      "kubric_only": 0.20775259286165237,
+      "conclusion": "joint_better_than_point_on_proxy"
+    },
+    "joint_kubric_subperformance_proxy": {
+      "proxy_metric_1": "tapvid_free_rollout_endpoint_l2 (lower_is_better)",
+      "proxy_metric_2": "tapvid3d_limited_free_rollout_endpoint_l2 (lower_is_better)",
+      "joint": {
+        "tapvid": 0.2603261818488439,
+        "tapvid3d_limited": 11.736500216027101
+      },
+      "kubric_only": {
+        "tapvid": 0.20775259286165237,
+        "tapvid3d_limited": 12.850230688850084
+      },
+      "pointodyssey_only": {
+        "tapvid": 0.26446034014225006,
+        "tapvid3d_limited": 13.606835623582205
+      },
+      "conclusion": "tradeoff_joint_improves_3d_proxy_but_degrades_tapvid_vs_kubric_single"
+    },
+    "loss_scale_imbalance_suspected": {
+      "joint_train_mix": {
+        "kubric": 72,
+        "pointodyssey": 24
+      },
+      "kubric_to_point_ratio": 3.0,
+      "suspected": true
+    },
+    "sampler_bias_suspected": {
+      "evidence": "iter1 used shuffled concatenated dataset with natural counts; no balancing sampler in iter1 run config",
+      "joint_train_mix": {
+        "kubric": 72,
+        "pointodyssey": 24
+      },
+      "suspected": true
+    },
+    "log_health": {
+      "error_line_count": 0,
+      "joint_line_count": 10,
+      "error_lines_head": []
+    }
+  },
+  "fix_hypotheses": [
+    "balanced_sampler to remove 3:1 source dominance in joint batches",
+    "loss_normalization to prevent high-frequency source from dominating total objective",
+    "source_conditioning to reduce cross-source transition interference in shared dynamics core"
+  ]
+}

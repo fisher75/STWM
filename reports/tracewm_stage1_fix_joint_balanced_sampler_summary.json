@@ -1,0 +1,386 @@
+{
+  "generated_at_utc": "2026-04-08T03:45:58.074691+00:00",
+  "task": "trace_only_future_trace_state_generation",
+  "round": "stage1_model_fix",
+  "run_name": "tracewm_stage1_fix_joint_balanced_sampler",
+  "fix_mode": "joint_balanced_sampler",
+  "fix_flags": {
+    "balanced_sampler": true,
+    "loss_normalized": false,
+    "source_conditioned": false
+  },
+  "train_datasets": [
+    "pointodyssey",
+    "kubric"
+  ],
+  "train_split": "train_iter1_joint",
+  "val_split": "val_iter1_joint",
+  "teacher_forced_supported": true,
+  "free_rollout_supported": true,
+  "device": "cuda",
+  "seed": 20260408,
+  "epochs": 6,
+  "steps_per_epoch": 80,
+  "total_steps": 480,
+  "batch_size": 4,
+  "model_info": {
+    "type": "base_trace_model"
+  },
+  "sampler_info": {
+    "mode": "weighted_balanced_sampler",
+    "source_counts": {
+      "kubric": 72,
+      "pointodyssey": 24
+    },
+    "num_samples": 96
+  },
+  "loss_family": {
+    "teacher_forced_loss": "mse",
+    "free_rollout_loss": "mse",
+    "total_loss": "teacher_forced + 0.5 * free_rollout",
+    "free_loss_weight": 0.5,
+    "loss_mode": "standard_global_mse"
+  },
+  "dataset_mix_info": {
+    "train": {
+      "kubric": 72,
+      "pointodyssey": 24
+    },
+    "val": {
+      "kubric": 8,
+      "pointodyssey": 6
+    }
+  },
+  "train_samples": 96,
+  "val_samples": 14,
+  "epoch_history": [
+    {
+      "epoch": 0,
+      "global_step": 80,
+      "train_teacher_forced_loss": 0.02330827845071326,
+      "train_free_rollout_loss": 0.02718118462980783,
+      "train_total_loss": 0.036898870625009295,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "val_teacher_forced_loss": 0.00030534535108017735,
+      "val_free_rollout_loss": 0.00042929279152303934,
+      "val_total_loss": 0.0005199917504796758,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.02014807309024036,
+        "free_rollout_mse": 0.027327515883371234,
+        "teacher_forced_endpoint_l2": 0.2201663280526797,
+        "free_rollout_endpoint_l2": 0.26963060349226,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 173.50359293764146,
+        "free_rollout_mse": 176.96795578106926,
+        "teacher_forced_endpoint_l2": 11.391502463569244,
+        "free_rollout_endpoint_l2": 11.725700565924248,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 0.0004248409532010555,
+          "val_free_rollout_loss": 0.00047825821093283594,
+          "val_total_loss": 0.0006639700732193887,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 0.0002336479810765013,
+          "val_free_rollout_loss": 0.00039991355151869357,
+          "val_total_loss": 0.0004336047568358481,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 1,
+      "global_step": 160,
+      "train_teacher_forced_loss": 9.959266617443063e-05,
+      "train_free_rollout_loss": 0.00015738166927121712,
+      "train_total_loss": 0.000178283502236809,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "val_teacher_forced_loss": 1.266724734705349e-05,
+      "val_free_rollout_loss": 1.1140049991809065e-05,
+      "val_total_loss": 1.8237272342958022e-05,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.020786249777302146,
+        "free_rollout_mse": 0.02860636403784156,
+        "teacher_forced_endpoint_l2": 0.2075600860019525,
+        "free_rollout_endpoint_l2": 0.25713631759087247,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 173.34214442580318,
+        "free_rollout_mse": 177.14498063006127,
+        "teacher_forced_endpoint_l2": 11.397105971972147,
+        "free_rollout_endpoint_l2": 11.754970517009497,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 1.1743058166757692e-05,
+          "val_free_rollout_loss": 1.0838936304935487e-05,
+          "val_total_loss": 1.716252609185176e-05,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 1.3221761037129909e-05,
+          "val_free_rollout_loss": 1.13207179310848e-05,
+          "val_total_loss": 1.8882119547924958e-05,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "global_step": 240,
+      "train_teacher_forced_loss": 7.334326940622304e-06,
+      "train_free_rollout_loss": 6.554563111649259e-06,
+      "train_total_loss": 1.0611608496446934e-05,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "val_teacher_forced_loss": 3.901243985637848e-06,
+      "val_free_rollout_loss": 3.5121275914207217e-06,
+      "val_total_loss": 5.6573078381916275e-06,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.02080235801016291,
+        "free_rollout_mse": 0.028658813408886392,
+        "teacher_forced_endpoint_l2": 0.21038134396076202,
+        "free_rollout_endpoint_l2": 0.2605578030149142,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 173.30198240155974,
+        "free_rollout_mse": 177.20820617947416,
+        "teacher_forced_endpoint_l2": 11.39871550972263,
+        "free_rollout_endpoint_l2": 11.764230036487183,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 5.8885268572339555e-06,
+          "val_free_rollout_loss": 5.262950026008184e-06,
+          "val_total_loss": 8.52000175655121e-06,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 2.708874262680183e-06,
+          "val_free_rollout_loss": 2.461634039718774e-06,
+          "val_total_loss": 3.939691396226408e-06,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 3,
+      "global_step": 320,
+      "train_teacher_forced_loss": 2.918023731979247e-06,
+      "train_free_rollout_loss": 2.6337329643411065e-06,
+      "train_total_loss": 4.2348902354660826e-06,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "val_teacher_forced_loss": 1.6526797708138474e-06,
+      "val_free_rollout_loss": 1.5149688863402844e-06,
+      "val_total_loss": 2.410164142929716e-06,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.020799139980226755,
+        "free_rollout_mse": 0.028669424975911777,
+        "teacher_forced_endpoint_l2": 0.21156937132279077,
+        "free_rollout_endpoint_l2": 0.26198146243890125,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 173.305210074177,
+        "free_rollout_mse": 177.23686282678196,
+        "teacher_forced_endpoint_l2": 11.399819372842709,
+        "free_rollout_endpoint_l2": 11.766836897780498,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 2.5375572931807255e-06,
+          "val_free_rollout_loss": 2.2737956442142604e-06,
+          "val_total_loss": 3.674455001601018e-06,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 1.1217532573937206e-06,
+          "val_free_rollout_loss": 1.0596728543532663e-06,
+          "val_total_loss": 1.6515896277269349e-06,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 4,
+      "global_step": 400,
+      "train_teacher_forced_loss": 1.2304617335701096e-06,
+      "train_free_rollout_loss": 1.133513340079162e-06,
+      "train_total_loss": 1.797218401122791e-06,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "val_teacher_forced_loss": 7.550096938757633e-07,
+      "val_free_rollout_loss": 7.111109283641781e-07,
+      "val_total_loss": 1.110565150952425e-06,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.020802307563523453,
+        "free_rollout_mse": 0.02868378278799355,
+        "teacher_forced_endpoint_l2": 0.21226236845056215,
+        "free_rollout_endpoint_l2": 0.2628163869182269,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 173.31082651306255,
+        "free_rollout_mse": 177.25640169655284,
+        "teacher_forced_endpoint_l2": 11.40072256202499,
+        "free_rollout_endpoint_l2": 11.768380886564652,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 9.938735274772625e-07,
+          "val_free_rollout_loss": 9.10462233605358e-07,
+          "val_total_loss": 1.4491046158582321e-06,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 6.116914050835476e-07,
+          "val_free_rollout_loss": 5.915001111134188e-07,
+          "val_total_loss": 9.07441460640257e-07,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "global_step": 480,
+      "train_teacher_forced_loss": 5.880409322145396e-07,
+      "train_free_rollout_loss": 5.571405882420777e-07,
+      "train_total_loss": 8.666112272237569e-07,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "val_teacher_forced_loss": 4.283667252025225e-07,
+      "val_free_rollout_loss": 4.1273568029964736e-07,
+      "val_total_loss": 6.347345760104872e-07,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.020800478213156264,
+        "free_rollout_mse": 0.028686884868269164,
+        "teacher_forced_endpoint_l2": 0.21263080090284348,
+        "free_rollout_endpoint_l2": 0.2632561797897021,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 173.3145981581571,
+        "free_rollout_mse": 177.26886945272176,
+        "teacher_forced_endpoint_l2": 11.40122844527165,
+        "free_rollout_endpoint_l2": 11.769156996160746,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 4.3543730043893447e-07,
+          "val_free_rollout_loss": 4.144561955854442e-07,
+          "val_total_loss": 6.426654124425113e-07,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 4.2412440848238475e-07,
+          "val_free_rollout_loss": 4.11703382496853e-07,
+          "val_total_loss": 6.29976113941666e-07,
+          "val_batches": 2
+        }
+      }
+    }
+  ],
+  "final_metrics": {
+    "epoch": 5,
+    "global_step": 480,
+    "train_teacher_forced_loss": 5.880409322145396e-07,
+    "train_free_rollout_loss": 5.571405882420777e-07,
+    "train_total_loss": 8.666112272237569e-07,
+    "steps_this_epoch": 80,
+    "train_loss_aux": {
+      "loss_mode": "standard_global_mse"
+    },
+    "val_teacher_forced_loss": 4.283667252025225e-07,
+    "val_free_rollout_loss": 4.1273568029964736e-07,
+    "val_total_loss": 6.347345760104872e-07,
+    "val_batches": 4,
+    "tapvid": {
+      "samples": 6,
+      "teacher_forced_mse": 0.020800478213156264,
+      "free_rollout_mse": 0.028686884868269164,
+      "teacher_forced_endpoint_l2": 0.21263080090284348,
+      "free_rollout_endpoint_l2": 0.2632561797897021,
+      "main_eval_ready": true
+    },
+    "tapvid3d": {
+      "samples": 12,
+      "teacher_forced_mse": 173.3145981581571,
+      "free_rollout_mse": 177.26886945272176,
+      "teacher_forced_endpoint_l2": 11.40122844527165,
+      "free_rollout_endpoint_l2": 11.769156996160746,
+      "limited_eval_ready": true,
+      "full_eval_ready": false
+    },
+    "val_source_breakdown": {
+      "pointodyssey_val": {
+        "val_teacher_forced_loss": 4.3543730043893447e-07,
+        "val_free_rollout_loss": 4.144561955854442e-07,
+        "val_total_loss": 6.426654124425113e-07,
+        "val_batches": 2
+      },
+      "kubric_val": {
+        "val_teacher_forced_loss": 4.2412440848238475e-07,
+        "val_free_rollout_loss": 4.11703382496853e-07,
+        "val_total_loss": 6.29976113941666e-07,
+        "val_batches": 2
+      }
+    }
+  },
+  "best_val_total_loss": 6.347345760104872e-07,
+  "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_fix_joint_balanced_sampler/checkpoints",
+  "checkpoint_best": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_fix_joint_balanced_sampler/checkpoints/best.pt",
+  "checkpoint_latest": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_fix_joint_balanced_sampler/checkpoints/latest.pt",
+  "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_fix_joint_balanced_sampler_summary.json",
+  "splits_path": "/home/chen034/workspace/data/_manifests/stage1_iter1_splits_20260408.json"
+}

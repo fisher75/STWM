@@ -1,0 +1,497 @@
+{
+  "generated_at_utc": "2026-04-08T03:59:49.708098+00:00",
+  "task": "trace_only_future_trace_state_generation",
+  "round": "stage1_model_fix_round2",
+  "run_name": "tracewm_stage1_fix2_point_warmup_then_joint_balanced_lossnorm",
+  "fix_mode": "point_warmup_then_joint_balanced_lossnorm",
+  "fix_flags": {
+    "balanced_sampler": true,
+    "loss_normalized": true,
+    "source_conditioned": false,
+    "has_warmup": true,
+    "warmup_source": "pointodyssey"
+  },
+  "train_datasets": [
+    "pointodyssey",
+    "kubric"
+  ],
+  "train_split": "train_iter1_joint",
+  "val_split": "val_iter1_joint",
+  "teacher_forced_supported": true,
+  "free_rollout_supported": true,
+  "device": "cuda",
+  "seed": 20260408,
+  "epochs": 6,
+  "warmup_epochs": 2,
+  "steps_per_epoch": 80,
+  "total_steps": 480,
+  "batch_size": 4,
+  "model_info": {
+    "type": "base_trace_model",
+    "state_dim": 5,
+    "hidden_dim": 128,
+    "source_conditioning": false
+  },
+  "sampler_info": {
+    "joint": {
+      "mode": "weighted_balanced_sampler",
+      "source_counts": {
+        "kubric": 72,
+        "pointodyssey": 24
+      },
+      "num_samples": 96
+    },
+    "warmup": {
+      "mode": "default_shuffle",
+      "source": "pointodyssey"
+    }
+  },
+  "loss_family": {
+    "teacher_forced_loss": "mse",
+    "free_rollout_loss": "mse",
+    "total_loss": "teacher_forced + 0.5 * free_rollout",
+    "free_loss_weight": 0.5,
+    "warmup_loss_mode": "standard_global_mse",
+    "joint_loss_mode": "dataset_normalized"
+  },
+  "dataset_mix_info": {
+    "joint_train": {
+      "kubric": 72,
+      "pointodyssey": 24
+    },
+    "joint_val": {
+      "kubric": 8,
+      "pointodyssey": 6
+    },
+    "point_warmup_train": {
+      "pointodyssey": 24
+    },
+    "kubric_warmup_train": {
+      "kubric": 72
+    }
+  },
+  "train_samples": 96,
+  "val_samples": 14,
+  "phase_schedule": [
+    {
+      "epoch": 0,
+      "phase": "warmup",
+      "phase_dataset": "pointodyssey",
+      "phase_loss_mode": "standard_global_mse"
+    },
+    {
+      "epoch": 1,
+      "phase": "warmup",
+      "phase_dataset": "pointodyssey",
+      "phase_loss_mode": "standard_global_mse"
+    },
+    {
+      "epoch": 2,
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized"
+    },
+    {
+      "epoch": 3,
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized"
+    },
+    {
+      "epoch": 4,
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized"
+    },
+    {
+      "epoch": 5,
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized"
+    }
+  ],
+  "epoch_history": [
+    {
+      "epoch": 0,
+      "global_step": 80,
+      "train_teacher_forced_loss": 0.008179272150550787,
+      "train_free_rollout_loss": 0.008668551037774818,
+      "train_total_loss": 0.012513547578720363,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "phase": "warmup",
+      "phase_dataset": "pointodyssey",
+      "phase_loss_mode": "standard_global_mse",
+      "val_teacher_forced_loss": 0.06111178490067459,
+      "val_free_rollout_loss": 0.057839145479817944,
+      "val_total_loss": 0.090031359037539,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.02128167248641451,
+        "free_rollout_mse": 0.029193498892709613,
+        "teacher_forced_endpoint_l2": 0.2127198651432991,
+        "free_rollout_endpoint_l2": 0.2623421723643939,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 204.75080783168474,
+        "free_rollout_mse": 202.97451784834266,
+        "teacher_forced_endpoint_l2": 13.779463678598404,
+        "free_rollout_endpoint_l2": 13.605978270371756,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 3.581446208045236e-06,
+          "val_free_rollout_loss": 3.3697713206493063e-06,
+          "val_total_loss": 5.266331754683051e-06,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 0.09777671098709106,
+          "val_free_rollout_loss": 0.09254061430692673,
+          "val_total_loss": 0.14404702186584473,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 1,
+      "global_step": 160,
+      "train_teacher_forced_loss": 1.3878830181113244e-06,
+      "train_free_rollout_loss": 1.3016729866421884e-06,
+      "train_total_loss": 2.038719507169162e-06,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "standard_global_mse"
+      },
+      "phase": "warmup",
+      "phase_dataset": "pointodyssey",
+      "phase_loss_mode": "standard_global_mse",
+      "val_teacher_forced_loss": 0.061301466243371294,
+      "val_free_rollout_loss": 0.057991822148252936,
+      "val_total_loss": 0.09029737498919133,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.021234920093168814,
+        "free_rollout_mse": 0.02917941954607765,
+        "teacher_forced_endpoint_l2": 0.21478296940525374,
+        "free_rollout_endpoint_l2": 0.2649700293938319,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 204.7731563722094,
+        "free_rollout_mse": 202.9858741251131,
+        "teacher_forced_endpoint_l2": 13.781059369444847,
+        "free_rollout_endpoint_l2": 13.606938153505325,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 2.8005999297420203e-07,
+          "val_free_rollout_loss": 2.7526374424269306e-07,
+          "val_total_loss": 4.1769186509554856e-07,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 0.09808217734098434,
+          "val_free_rollout_loss": 0.0927867516875267,
+          "val_total_loss": 0.1444755494594574,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "global_step": 240,
+      "train_teacher_forced_loss": 0.007795345050285718,
+      "train_free_rollout_loss": 0.009034117906727345,
+      "train_total_loss": 0.012312403868521216,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "dataset_normalized",
+        "dataset_group_counts": {
+          "kubric": 2,
+          "pointodyssey": 2
+        }
+      },
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized",
+      "val_teacher_forced_loss": 3.3825233913375996e-05,
+      "val_free_rollout_loss": 4.1605954720580485e-05,
+      "val_total_loss": 5.462821172841359e-05,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.02070704723397891,
+        "free_rollout_mse": 0.028803479857742786,
+        "teacher_forced_endpoint_l2": 0.2070432131489118,
+        "free_rollout_endpoint_l2": 0.2574896315733592,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 166.1992619832357,
+        "free_rollout_mse": 171.70609423991604,
+        "teacher_forced_endpoint_l2": 11.006873461107412,
+        "free_rollout_endpoint_l2": 11.453387240568796,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 3.946878314309288e-05,
+          "val_free_rollout_loss": 5.761898501077667e-05,
+          "val_total_loss": 6.827827382949181e-05,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 3.0439103284152225e-05,
+          "val_free_rollout_loss": 3.1998137274058536e-05,
+          "val_total_loss": 4.6438173740170896e-05,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 3,
+      "global_step": 320,
+      "train_teacher_forced_loss": 1.22140797401471e-05,
+      "train_free_rollout_loss": 1.3061311560136345e-05,
+      "train_total_loss": 1.8744735479003792e-05,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "dataset_normalized",
+        "dataset_group_counts": {
+          "kubric": 3,
+          "pointodyssey": 1
+        }
+      },
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized",
+      "val_teacher_forced_loss": 5.2392866223271994e-06,
+      "val_free_rollout_loss": 4.691785477461963e-06,
+      "val_total_loss": 7.585179446323309e-06,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.021087550713370245,
+        "free_rollout_mse": 0.0292285877900819,
+        "teacher_forced_endpoint_l2": 0.21080641696850458,
+        "free_rollout_endpoint_l2": 0.260769655307134,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 166.10576872209398,
+        "free_rollout_mse": 171.77476200352734,
+        "teacher_forced_endpoint_l2": 11.006941470007101,
+        "free_rollout_endpoint_l2": 11.468144003301859,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 9.25186395761557e-06,
+          "val_free_rollout_loss": 8.142726983351167e-06,
+          "val_total_loss": 1.3323227904038504e-05,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 2.8317401756794425e-06,
+          "val_free_rollout_loss": 2.62122057392844e-06,
+          "val_total_loss": 4.1423504626436625e-06,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 4,
+      "global_step": 400,
+      "train_teacher_forced_loss": 3.971132947810929e-06,
+      "train_free_rollout_loss": 3.537088647931341e-06,
+      "train_total_loss": 5.739677251881403e-06,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "dataset_normalized",
+        "dataset_group_counts": {
+          "kubric": 4
+        }
+      },
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized",
+      "val_teacher_forced_loss": 2.3472177872463362e-06,
+      "val_free_rollout_loss": 2.1015109155086975e-06,
+      "val_total_loss": 3.3979731597355567e-06,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.021092758358766634,
+        "free_rollout_mse": 0.0292403035176297,
+        "teacher_forced_endpoint_l2": 0.21225437273581824,
+        "free_rollout_endpoint_l2": 0.2624693711598714,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 166.12464927028245,
+        "free_rollout_mse": 171.81915144529194,
+        "teacher_forced_endpoint_l2": 11.005775317549706,
+        "free_rollout_endpoint_l2": 11.46935702736179,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 4.254162377037574e-06,
+          "val_free_rollout_loss": 3.703290076373378e-06,
+          "val_total_loss": 6.105807187850587e-06,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 1.2030510561089613e-06,
+          "val_free_rollout_loss": 1.140443487201992e-06,
+          "val_total_loss": 1.7732727428665385e-06,
+          "val_batches": 2
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "global_step": 480,
+      "train_teacher_forced_loss": 1.825635101226908e-06,
+      "train_free_rollout_loss": 1.6276157431605042e-06,
+      "train_total_loss": 2.6394429752940596e-06,
+      "steps_this_epoch": 80,
+      "train_loss_aux": {
+        "loss_mode": "dataset_normalized",
+        "dataset_group_counts": {
+          "kubric": 2,
+          "pointodyssey": 2
+        }
+      },
+      "phase": "joint",
+      "phase_dataset": "pointodyssey+kubric",
+      "phase_loss_mode": "dataset_normalized",
+      "val_teacher_forced_loss": 1.0988265728428814e-06,
+      "val_free_rollout_loss": 9.937619580568935e-07,
+      "val_total_loss": 1.5957075589767555e-06,
+      "val_batches": 4,
+      "tapvid": {
+        "samples": 6,
+        "teacher_forced_mse": 0.021100862184539437,
+        "free_rollout_mse": 0.029257051181048155,
+        "teacher_forced_endpoint_l2": 0.21326783175269762,
+        "free_rollout_endpoint_l2": 0.2636818140745163,
+        "main_eval_ready": true
+      },
+      "tapvid3d": {
+        "samples": 12,
+        "teacher_forced_mse": 166.1606030021018,
+        "free_rollout_mse": 171.86879240946533,
+        "teacher_forced_endpoint_l2": 11.006594321380058,
+        "free_rollout_endpoint_l2": 11.471092466264963,
+        "limited_eval_ready": true,
+        "full_eval_ready": false
+      },
+      "val_source_breakdown": {
+        "pointodyssey_val": {
+          "val_teacher_forced_loss": 1.8827676058208453e-06,
+          "val_free_rollout_loss": 1.6369506283808732e-06,
+          "val_total_loss": 2.701242920011282e-06,
+          "val_batches": 2
+        },
+        "kubric_val": {
+          "val_teacher_forced_loss": 6.284619189500518e-07,
+          "val_free_rollout_loss": 6.078487331251381e-07,
+          "val_total_loss": 9.323862855126208e-07,
+          "val_batches": 2
+        }
+      }
+    }
+  ],
+  "final_metrics": {
+    "epoch": 5,
+    "global_step": 480,
+    "train_teacher_forced_loss": 1.825635101226908e-06,
+    "train_free_rollout_loss": 1.6276157431605042e-06,
+    "train_total_loss": 2.6394429752940596e-06,
+    "steps_this_epoch": 80,
+    "train_loss_aux": {
+      "loss_mode": "dataset_normalized",
+      "dataset_group_counts": {
+        "kubric": 2,
+        "pointodyssey": 2
+      }
+    },
+    "phase": "joint",
+    "phase_dataset": "pointodyssey+kubric",
+    "phase_loss_mode": "dataset_normalized",
+    "val_teacher_forced_loss": 1.0988265728428814e-06,
+    "val_free_rollout_loss": 9.937619580568935e-07,
+    "val_total_loss": 1.5957075589767555e-06,
+    "val_batches": 4,
+    "tapvid": {
+      "samples": 6,
+      "teacher_forced_mse": 0.021100862184539437,
+      "free_rollout_mse": 0.029257051181048155,
+      "teacher_forced_endpoint_l2": 0.21326783175269762,
+      "free_rollout_endpoint_l2": 0.2636818140745163,
+      "main_eval_ready": true
+    },
+    "tapvid3d": {
+      "samples": 12,
+      "teacher_forced_mse": 166.1606030021018,
+      "free_rollout_mse": 171.86879240946533,
+      "teacher_forced_endpoint_l2": 11.006594321380058,
+      "free_rollout_endpoint_l2": 11.471092466264963,
+      "limited_eval_ready": true,
+      "full_eval_ready": false
+    },
+    "val_source_breakdown": {
+      "pointodyssey_val": {
+        "val_teacher_forced_loss": 1.8827676058208453e-06,
+        "val_free_rollout_loss": 1.6369506283808732e-06,
+        "val_total_loss": 2.701242920011282e-06,
+        "val_batches": 2
+      },
+      "kubric_val": {
+        "val_teacher_forced_loss": 6.284619189500518e-07,
+        "val_free_rollout_loss": 6.078487331251381e-07,
+        "val_total_loss": 9.323862855126208e-07,
+        "val_batches": 2
+      }
+    }
+  },
+  "best_val_total_loss": 1.5957075589767555e-06,
+  "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_fix2_point_warmup_then_joint_balanced_lossnorm/checkpoints",
+  "checkpoint_best": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_fix2_point_warmup_then_joint_balanced_lossnorm/checkpoints/best.pt",
+  "checkpoint_latest": "/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_fix2_point_warmup_then_joint_balanced_lossnorm/checkpoints/latest.pt",
+  "summary_json": "/home/chen034/workspace/stwm/reports/tracewm_stage1_fix2_point_warmup_then_joint_balanced_lossnorm_summary.json",
+  "splits_path": "/home/chen034/workspace/data/_manifests/stage1_iter1_splits_20260408.json",
+  "protocol_lock": {
+    "same_stage1_data_contract": true,
+    "same_eval_protocol": true,
+    "tapvid_main_eval": true,
+    "tapvid3d_limited_eval": true,
+    "forbidden": {
+      "stage2_semantics": false,
+      "wan": false,
+      "motioncrafter_vae": false,
+      "dynamic_replica": false,
+      "source_conditioning_new_variant": false,
+      "new_data": false
+    }
+  }
+}
