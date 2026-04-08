@@ -1,0 +1,95 @@
+{
+  "generated_at_utc": "2026-04-08T09:33:27.533344+00:00",
+  "primary_bottleneck": "gpu_bound",
+  "evidence": [
+    {
+      "field": "preflight_pass",
+      "value": true,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_preflight_20260408.json"
+    },
+    {
+      "field": "selected_gpu_id",
+      "value": 6,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_gpu_selection_audit_20260408.json"
+    },
+    {
+      "field": "debug_step_time_mean",
+      "value": 0.03270272992473717,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_perf_step_timing_debug_small_20260408.json"
+    },
+    {
+      "field": "debug_batch_wait_mean",
+      "value": 0.0006356241375518342,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_perf_step_timing_debug_small_20260408.json"
+    },
+    {
+      "field": "dataloader_best_batches_per_sec",
+      "value": 1400.8782674484087,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_dataloader_profile_20260408.json"
+    },
+    {
+      "field": "selected_gpu_avg_util",
+      "value": 30.833333333333332,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_gpu_telemetry_20260408.json"
+    },
+    {
+      "field": "selected_gpu_avg_mem_util",
+      "value": 1.5,
+      "source": "/home/chen034/workspace/stwm/reports/stage1_v2_gpu_telemetry_20260408.json"
+    }
+  ],
+  "top_5_actions": [
+    {
+      "rank": 1,
+      "action": "Use dataloader best_config from profile as default perf config",
+      "expected_gain": "high"
+    },
+    {
+      "rank": 2,
+      "action": "Keep pin_memory=True and non_blocking H2D copies in single-GPU runs",
+      "expected_gain": "high"
+    },
+    {
+      "rank": 3,
+      "action": "Pin single GPU by averaged window sampling and lease guard",
+      "expected_gain": "medium-high"
+    },
+    {
+      "rank": 4,
+      "action": "Tune num_workers and prefetch_factor jointly for stable batches/sec",
+      "expected_gain": "medium"
+    },
+    {
+      "rank": 5,
+      "action": "Use profiler traces to remove top-k expensive kernels or sync points",
+      "expected_gain": "medium"
+    }
+  ],
+  "recommended_gpu_policy": {
+    "mode": "single_gpu_only",
+    "selection_rule": [
+      "avg_gpu_util lowest",
+      "avg_mem_util lowest",
+      "active_compute_process_count lowest",
+      "free_mem highest"
+    ],
+    "window": {
+      "sample_count": 12,
+      "sample_interval_sec": 2.0
+    },
+    "memory_filter": {
+      "required_mem_gb": 40.0,
+      "safety_margin_gb": 8.0
+    },
+    "selected_gpu_id": 6
+  },
+  "paths": {
+    "preflight": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_preflight_20260408.json",
+    "gpu_selection": "/home/chen034/workspace/stwm/reports/stage1_v2_gpu_selection_audit_20260408.json",
+    "dataloader_profile": "/home/chen034/workspace/stwm/reports/stage1_v2_dataloader_profile_20260408.json",
+    "gpu_telemetry": "/home/chen034/workspace/stwm/reports/stage1_v2_gpu_telemetry_20260408.json",
+    "perf_step_timing": "/home/chen034/workspace/stwm/reports/stage1_v2_perf_step_timing_20260408.json",
+    "nsys_status": "/home/chen034/workspace/stwm/reports/stage1_v2_nsys_profile_20260408.json",
+    "nsys_status_value": "available"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "generated_at_utc": "2026-04-08T09:33:21.661178+00:00",
+  "ablation_tag": "stage1_v2_perf_nsys_debug_small",
+  "device": "cuda",
+  "args": {
+    "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ],
+    "train_split": "train",
+    "obs_len": 8,
+    "fut_len": 8,
+    "max_tokens": 64,
+    "max_samples_per_dataset": 64,
+    "model_preset": "debug_small",
+    "lr": 0.0001,
+    "weight_decay": 0.0,
+    "batch_size": 2,
+    "num_workers": 0,
+    "pin_memory": false,
+    "persistent_workers": false,
+    "prefetch_factor": 2,
+    "epochs": 1,
+    "steps_per_epoch": 10,
+    "clip_grad_norm": 1.0,
+    "coord_weight": 1.0,
+    "visibility_weight": 0.5,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": true,
+    "enable_velocity": true,
+    "enable_endpoint": false,
+    "output_dir": "/home/chen034/workspace/stwm/outputs/training/stage1_v2_perf_nsys_debug_small_20260408",
+    "summary_json": "/home/chen034/workspace/stwm/reports/stage1_v2_perf_nsys_debug_small_summary_20260408.json",
+    "results_md": "/home/chen034/workspace/stwm/docs/STAGE1_V2_PERF_NSYS_DEBUG_SMALL_20260408.md",
+    "perf_step_timing_json": "/home/chen034/workspace/stwm/reports/stage1_v2_perf_nsys_debug_small_timing_20260408.json",
+    "ablation_tag": "stage1_v2_perf_nsys_debug_small",
+    "seed": 20260408
+  },
+  "model": {
+    "preset": "debug_small",
+    "config": {
+      "state_dim": 8,
+      "d_model": 256,
+      "num_layers": 4,
+      "num_heads": 8,
+      "ff_mult": 4,
+      "dropout": 0.1,
+      "max_time": 64,
+      "max_tokens": 128,
+      "use_endpoint_head": true
+    },
+    "parameter_count": 3213578,
+    "estimated_parameter_count": 3213066,
+    "target_220m_range_pass": false
+  },
+  "dataset": {
+    "size": 88,
+    "split": "train",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ]
+  },
+  "loss_config": {
+    "coord_weight": 1.0,
+    "visibility_weight": 0.5,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": true,
+    "enable_velocity": true,
+    "enable_endpoint": false
+  },
+  "history": [
+    {
+      "total_loss": 1.039059680700302,
+      "coord_loss": 0.4403818905353546,
+      "visibility_loss": 0.4584961853921413,
+      "residual_loss": 0.7179866373538971,
+      "velocity_loss": 0.759732136130333,
+      "endpoint_loss": 0.0,
+      "epoch": 1.0
+    }
+  ],
+  "final_metrics": {
+    "total_loss": 1.039059680700302,
+    "coord_loss": 0.4403818905353546,
+    "visibility_loss": 0.4584961853921413,
+    "residual_loss": 0.7179866373538971,
+    "velocity_loss": 0.759732136130333,
+    "endpoint_loss": 0.0,
+    "epoch": 1.0
+  },
+  "timing_stats": {
+    "batch_wait_time": {
+      "mean": 0.002204341988544911,
+      "median": 0.0020990369957871735,
+      "p95": 0.0028488536074291904
+    },
+    "h2d_time": {
+      "mean": 0.012190320098306983,
+      "median": 0.011417695495765656,
+      "p95": 0.014840130915399638
+    },
+    "forward_time": {
+      "mean": 0.058768579992465673,
+      "median": 0.007376635039690882,
+      "p95": 0.29029710995382574
+    },
+    "backward_time": {
+      "mean": 0.0313913080142811,
+      "median": 0.009085490019060671,
+      "p95": 0.13651808082358885
+    },
+    "optimizer_time": {
+      "mean": 0.010369530995376408,
+      "median": 0.0030186920193955302,
+      "p95": 0.043519454851048
+    },
+    "step_time": {
+      "mean": 0.11657835602527485,
+      "median": 0.030243562010582536,
+      "p95": 0.5006787477526805
+    },
+    "samples_per_sec": {
+      "mean": 57.10187749421725,
+      "median": 66.12979294729493,
+      "p95": 69.5149161808469
+    }
+  },
+  "p1_shape_contract": {
+    "state_shape": "[B,T,K,D]",
+    "state_dim": 8
+  }
+}

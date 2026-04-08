@@ -1,0 +1,140 @@
+{
+  "generated_at_utc": "2026-04-08T09:31:52.816998+00:00",
+  "ablation_tag": "preflight_220m_bs2",
+  "device": "cuda",
+  "args": {
+    "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ],
+    "train_split": "train",
+    "obs_len": 8,
+    "fut_len": 8,
+    "max_tokens": 64,
+    "max_samples_per_dataset": 128,
+    "model_preset": "prototype_220m",
+    "lr": 0.0001,
+    "weight_decay": 0.0,
+    "batch_size": 2,
+    "num_workers": 4,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 2,
+    "epochs": 1,
+    "steps_per_epoch": 20,
+    "clip_grad_norm": 1.0,
+    "coord_weight": 1.0,
+    "visibility_weight": 0.5,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": true,
+    "enable_velocity": true,
+    "enable_endpoint": false,
+    "output_dir": "/home/chen034/workspace/stwm/outputs/training/stage1_v2_220m_preflight_bs2_20260408",
+    "summary_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_preflight_bs2_summary_20260408.json",
+    "results_md": "/home/chen034/workspace/stwm/docs/STAGE1_V2_220M_PREFLIGHT_BS2_20260408.md",
+    "perf_step_timing_json": "/home/chen034/workspace/stwm/reports/stage1_v2_220m_preflight_bs2_timing_20260408.json",
+    "ablation_tag": "preflight_220m_bs2",
+    "seed": 20260408
+  },
+  "model": {
+    "preset": "prototype_220m",
+    "config": {
+      "state_dim": 8,
+      "d_model": 1152,
+      "num_layers": 13,
+      "num_heads": 16,
+      "ff_mult": 4,
+      "dropout": 0.1,
+      "max_time": 64,
+      "max_tokens": 256,
+      "use_endpoint_head": true
+    },
+    "parameter_count": 207615754,
+    "estimated_parameter_count": 207613450,
+    "target_220m_range_pass": true
+  },
+  "dataset": {
+    "size": 127,
+    "split": "train",
+    "dataset_names": [
+      "pointodyssey",
+      "kubric"
+    ]
+  },
+  "loss_config": {
+    "coord_weight": 1.0,
+    "visibility_weight": 0.5,
+    "residual_weight": 0.25,
+    "velocity_weight": 0.25,
+    "endpoint_weight": 0.1,
+    "enable_visibility": true,
+    "enable_residual": true,
+    "enable_velocity": true,
+    "enable_endpoint": false
+  },
+  "history": [
+    {
+      "total_loss": 4.678576304018497,
+      "coord_loss": 4.279317395761609,
+      "visibility_loss": 0.24600623566657304,
+      "residual_loss": 0.5367646388709545,
+      "velocity_loss": 0.568258523195982,
+      "endpoint_loss": 0.0,
+      "epoch": 1.0
+    }
+  ],
+  "final_metrics": {
+    "total_loss": 4.678576304018497,
+    "coord_loss": 4.279317395761609,
+    "visibility_loss": 0.24600623566657304,
+    "residual_loss": 0.5367646388709545,
+    "velocity_loss": 0.568258523195982,
+    "endpoint_loss": 0.0,
+    "epoch": 1.0
+  },
+  "timing_stats": {
+    "batch_wait_time": {
+      "mean": 0.004765365354251117,
+      "median": 0.0004320605657994747,
+      "p95": 0.007731093658367225
+    },
+    "h2d_time": {
+      "mean": 0.001929758652113378,
+      "median": 0.0016726555186323822,
+      "p95": 0.0035608459205832338
+    },
+    "forward_time": {
+      "mean": 0.1320562839973718,
+      "median": 0.04333194252103567,
+      "p95": 0.24091168548329833
+    },
+    "backward_time": {
+      "mean": 0.11076499680057168,
+      "median": 0.05299223546171561,
+      "p95": 0.1963752969808414
+    },
+    "optimizer_time": {
+      "mean": 0.03164670135010965,
+      "median": 0.00996562303043902,
+      "p95": 0.034278865228407396
+    },
+    "step_time": {
+      "mean": 0.2826846893527545,
+      "median": 0.11049249902134761,
+      "p95": 0.46678894264623694
+    },
+    "samples_per_sec": {
+      "mean": 15.53699074800682,
+      "median": 18.100847858765995,
+      "p95": 25.976722100189335
+    }
+  },
+  "p1_shape_contract": {
+    "state_shape": "[B,T,K,D]",
+    "state_dim": 8
+  }
+}

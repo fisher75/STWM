@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 import random
+import time
 
 import numpy as np
 import torch
@@ -48,6 +49,9 @@ def parse_args() -> Any:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--batch-size", type=int, default=2)
     parser.add_argument("--num-workers", type=int, default=0)
+    parser.add_argument("--pin-memory", action="store_true")
+    parser.add_argument("--persistent-workers", action="store_true")
+    parser.add_argument("--prefetch-factor", type=int, default=2)
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--steps-per-epoch", type=int, default=20)
     parser.add_argument("--clip-grad-norm", type=float, default=1.0)
@@ -65,18 +69,19 @@ def parse_args() -> Any:
     parser.add_argument("--output-dir", default="/home/chen034/workspace/stwm/outputs/training/tracewm_stage1_v2")
     parser.add_argument("--summary-json", default="/home/chen034/workspace/stwm/reports/tracewm_stage1_v2_train_summary_20260408.json")
     parser.add_argument("--results-md", default="/home/chen034/workspace/stwm/docs/TRACEWM_STAGE1_V2_TRAIN_SUMMARY_20260408.md")
+    parser.add_argument("--perf-step-timing-json", default="/home/chen034/workspace/stwm/reports/stage1_v2_perf_step_timing_20260408.json")
     parser.add_argument("--ablation-tag", default="mainline")
     parser.add_argument("--seed", type=int, default=20260408)
     return parser.parse_args()
 
 
-def _to_device(batch: Dict[str, Any], device: torch.device) -> Dict[str, torch.Tensor]:
+def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool = False) -> Dict[str, torch.Tensor]:
     return {
-        "obs_state": batch["obs_state"].to(device),
-        "fut_state": batch["fut_state"].to(device),
-        "obs_valid": batch["obs_valid"].to(device),
-        "fut_valid": batch["fut_valid"].to(device),
-        "token_mask": batch["token_mask"].to(device),
+        "obs_state": batch["obs_state"].to(device, non_blocking=non_blocking),
+        "fut_state": batch["fut_state"].to(device, non_blocking=non_blocking),
+        "obs_valid": batch["obs_valid"].to(device, non_blocking=non_blocking),
+        "fut_valid": batch["fut_valid"].to(device, non_blocking=non_blocking),
+        "token_mask": batch["token_mask"].to(device, non_blocking=non_blocking),
     }
 
 
@@ -92,6 +97,22 @@ def _future_pred(pred: Dict[str, torch.Tensor], obs_len: int) -> Dict[str, torch
     return out
 
 
+def _timing_stats(records: List[Dict[str, float]], key: str) -> Dict[str, float]:
+    values = [float(x.get(key, 0.0)) for x in records]
+    if not values:
+        return {
+            "mean": 0.0,
+            "median": 0.0,
+            "p95": 0.0,
+        }
+    arr = np.asarray(values, dtype=np.float64)
+    return {
+        "mean": float(np.mean(arr)),
+        "median": float(np.median(arr)),
+        "p95": float(np.percentile(arr, 95.0)),
+    }
+
+
 def train_one_epoch(
     model: TraceCausalTransformer,
     loader: DataLoader,
@@ -101,7 +122,8 @@ def train_one_epoch(
     obs_len: int,
     clip_grad_norm: float,
     steps_per_epoch: int,
-) -> Dict[str, float]:
+    pin_memory: bool,
+) -> Dict[str, Any]:
     model.train()
 
     running = {
@@ -113,9 +135,26 @@ def train_one_epoch(
         "endpoint_loss": 0.0,
     }
     steps = 0
+    step_timing: List[Dict[str, float]] = []
 
-    for batch in loader:
-        data = _to_device(batch, device)
+    data_iter = iter(loader)
+    while steps < steps_per_epoch:
+        wait_start = time.perf_counter()
+        try:
+            batch = next(data_iter)
+        except StopIteration:
+            break
+        batch_wait_time = float(time.perf_counter() - wait_start)
+
+        step_start = time.perf_counter()
+
+        non_blocking = bool(pin_memory and device.type == "cuda")
+        h2d_start = time.perf_counter()
+        data = _to_device(batch, device, non_blocking=non_blocking)
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        h2d_time = float(time.perf_counter() - h2d_start)
+
         full_state = torch.cat([data["obs_state"], data["fut_state"]], dim=1)
         full_valid = torch.cat([data["obs_valid"], data["fut_valid"]], dim=1)
 
@@ -123,6 +162,7 @@ def train_one_epoch(
         shifted[:, 0] = full_state[:, 0]
         shifted[:, 1:] = full_state[:, :-1]
 
+        forward_start = time.perf_counter()
         pred = model(shifted, token_mask=data["token_mask"])
         losses = criterion(
             pred=_future_pred(pred, obs_len=obs_len),
@@ -130,23 +170,52 @@ def train_one_epoch(
             valid_mask=full_valid[:, obs_len:],
             token_mask=data["token_mask"],
         )
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        forward_time = float(time.perf_counter() - forward_start)
 
         total = losses["total_loss"]
+        backward_start = time.perf_counter()
         optimizer.zero_grad(set_to_none=True)
         total.backward()
         if clip_grad_norm > 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=float(clip_grad_norm))
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        backward_time = float(time.perf_counter() - backward_start)
+
+        optimizer_start = time.perf_counter()
         optimizer.step()
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        optimizer_time = float(time.perf_counter() - optimizer_start)
+
+        step_time = float(time.perf_counter() - step_start)
+        samples_per_sec = float(data["obs_state"].shape[0] / max(step_time, 1e-8))
 
         for k in running:
             running[k] += float(losses[k].detach().item())
 
+        step_timing.append(
+            {
+                "batch_wait_time": batch_wait_time,
+                "h2d_time": h2d_time,
+                "forward_time": forward_time,
+                "backward_time": backward_time,
+                "optimizer_time": optimizer_time,
+                "step_time": step_time,
+                "samples_per_sec": samples_per_sec,
+            }
+        )
+
         steps += 1
-        if steps >= steps_per_epoch:
-            break
 
     denom = float(max(steps, 1))
-    return {k: float(v / denom) for k, v in running.items()}
+    return {
+        "losses": {k: float(v / denom) for k, v in running.items()},
+        "step_timing": step_timing,
+        "steps": int(steps),
+    }
 
 
 def main() -> None:
@@ -156,10 +225,12 @@ def main() -> None:
     output_dir = Path(args.output_dir)
     summary_json = Path(args.summary_json)
     results_md = Path(args.results_md)
+    perf_step_timing_json = Path(args.perf_step_timing_json)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     summary_json.parent.mkdir(parents=True, exist_ok=True)
     results_md.parent.mkdir(parents=True, exist_ok=True)
+    perf_step_timing_json.parent.mkdir(parents=True, exist_ok=True)
 
     dataset = Stage1V2UnifiedDataset(
         dataset_names=[str(x) for x in args.dataset_names],
@@ -171,13 +242,19 @@ def main() -> None:
         max_samples_per_dataset=int(args.max_samples_per_dataset),
     )
 
-    loader = DataLoader(
-        dataset,
-        batch_size=int(args.batch_size),
-        shuffle=True,
-        num_workers=int(args.num_workers),
-        collate_fn=stage1_v2_collate_fn,
-    )
+    loader_kwargs: Dict[str, Any] = {
+        "dataset": dataset,
+        "batch_size": int(args.batch_size),
+        "shuffle": True,
+        "num_workers": int(args.num_workers),
+        "pin_memory": bool(args.pin_memory),
+        "collate_fn": stage1_v2_collate_fn,
+    }
+    if int(args.num_workers) > 0:
+        loader_kwargs["persistent_workers"] = bool(args.persistent_workers)
+        loader_kwargs["prefetch_factor"] = int(args.prefetch_factor)
+
+    loader = DataLoader(**loader_kwargs)
 
     cfg = build_tracewm_v2_config(str(args.model_preset))
     if cfg.state_dim != STATE_DIM:
@@ -206,8 +283,9 @@ def main() -> None:
     )
 
     history: List[Dict[str, float]] = []
+    all_step_timing: List[Dict[str, float]] = []
     for epoch in range(int(args.epochs)):
-        stats = train_one_epoch(
+        epoch_out = train_one_epoch(
             model=model,
             loader=loader,
             optimizer=optimizer,
@@ -216,9 +294,12 @@ def main() -> None:
             obs_len=int(args.obs_len),
             clip_grad_norm=float(args.clip_grad_norm),
             steps_per_epoch=int(args.steps_per_epoch),
+            pin_memory=bool(args.pin_memory),
         )
+        stats = dict(epoch_out["losses"])
         stats["epoch"] = float(epoch + 1)
         history.append(stats)
+        all_step_timing.extend(list(epoch_out["step_timing"]))
         print(
             f"[stage1-v2-train] epoch={epoch + 1} total={stats['total_loss']:.6f} "
             f"coord={stats['coord_loss']:.6f} vis={stats['visibility_loss']:.6f}"
@@ -227,6 +308,16 @@ def main() -> None:
     final_metrics = history[-1] if history else {}
     total_params = int(sum(p.numel() for p in model.parameters()))
     estimated_params = int(estimate_parameter_count(cfg))
+
+    timing_stats = {
+        "batch_wait_time": _timing_stats(all_step_timing, "batch_wait_time"),
+        "h2d_time": _timing_stats(all_step_timing, "h2d_time"),
+        "forward_time": _timing_stats(all_step_timing, "forward_time"),
+        "backward_time": _timing_stats(all_step_timing, "backward_time"),
+        "optimizer_time": _timing_stats(all_step_timing, "optimizer_time"),
+        "step_time": _timing_stats(all_step_timing, "step_time"),
+        "samples_per_sec": _timing_stats(all_step_timing, "samples_per_sec"),
+    }
 
     summary = {
         "generated_at_utc": now_iso(),
@@ -248,6 +339,7 @@ def main() -> None:
         "loss_config": loss_cfg.__dict__,
         "history": history,
         "final_metrics": final_metrics,
+        "timing_stats": timing_stats,
         "p1_shape_contract": {
             "state_shape": "[B,T,K,D]",
             "state_dim": STATE_DIM,
@@ -278,11 +370,23 @@ def main() -> None:
 
     results_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+    perf_payload = {
+        "generated_at_utc": now_iso(),
+        "ablation_tag": str(args.ablation_tag),
+        "model_preset": str(args.model_preset),
+        "device": str(device),
+        "num_steps": int(len(all_step_timing)),
+        "timing_stats": timing_stats,
+        "step_records": all_step_timing,
+    }
+    perf_step_timing_json.write_text(json.dumps(perf_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
     ckpt = output_dir / f"model_{args.ablation_tag}.pt"
     torch.save({"model": model.state_dict(), "config": cfg.__dict__}, ckpt)
 
     print(f"[stage1-v2-train] summary={summary_json}")
     print(f"[stage1-v2-train] results_md={results_md}")
+    print(f"[stage1-v2-train] perf_step_timing={perf_step_timing_json}")
     print(f"[stage1-v2-train] checkpoint={ckpt}")
 
 
