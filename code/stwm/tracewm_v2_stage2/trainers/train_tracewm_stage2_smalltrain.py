@@ -1,0 +1,960 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from argparse import ArgumentParser
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
+import json
+import os
+import random
+
+import numpy as np
+import torch
+from torch.utils.data import DataLoader
+
+from stwm.tracewm_v2.models.causal_trace_transformer import (
+    TraceCausalTransformer,
+    build_tracewm_v2_config,
+)
+from stwm.tracewm_v2.tools.run_stage1_v2_scientific_revalidation import _load_runtime_config
+from stwm.tracewm_v2_stage2.datasets.stage2_semantic_dataset import (
+    Stage2SemanticDataset,
+    Stage2SemanticDatasetConfig,
+    stage2_semantic_collate_fn,
+)
+from stwm.tracewm_v2_stage2.models.semantic_encoder import SemanticEncoder, SemanticEncoderConfig
+from stwm.tracewm_v2_stage2.models.semantic_fusion import SemanticFusion, SemanticFusionConfig
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def set_seed(seed: int) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+
+def parse_args() -> Any:
+    p = ArgumentParser(description="Stage2 small-train trainer on frozen Stage1 backbone")
+    p.add_argument(
+        "--stage2-contract-path",
+        default="/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+    )
+    p.add_argument(
+        "--recommended-runtime-json",
+        default="/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    )
+    p.add_argument("--use-recommended-runtime", action="store_true")
+
+    p.add_argument(
+        "--stage1-backbone-checkpoint",
+        default="/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    )
+    p.add_argument("--stage1-model-preset", default="prototype_220m")
+
+    p.add_argument("--dataset-names", nargs="*", default=["vspw", "vipseg"])
+    p.add_argument("--train-split", default="train")
+    p.add_argument("--val-split", default="val")
+    p.add_argument("--obs-len", type=int, default=8)
+    p.add_argument("--fut-len", type=int, default=8)
+    p.add_argument("--max-tokens", type=int, default=64)
+    p.add_argument("--max-samples-train", type=int, default=24)
+    p.add_argument("--max-samples-val", type=int, default=12)
+    p.add_argument("--semantic-patch-radius", type=int, default=12)
+
+    p.add_argument("--batch-size", type=int, default=2)
+    p.add_argument("--lr", type=float, default=1e-4)
+    p.add_argument("--weight-decay", type=float, default=0.0)
+    p.add_argument("--clip-grad-norm", type=float, default=1.0)
+
+    p.add_argument("--train-steps", type=int, default=240)
+    p.add_argument("--eval-interval", type=int, default=40)
+    p.add_argument("--eval-max-batches", type=int, default=6)
+    p.add_argument("--save-every-n-steps", type=int, default=1000)
+
+    p.add_argument("--semantic-hidden-dim", type=int, default=256)
+    p.add_argument("--semantic-embed-dim", type=int, default=256)
+
+    p.add_argument("--output-dir", required=True)
+    p.add_argument("--resume-from", default="")
+    p.add_argument("--auto-resume-latest", action="store_true")
+
+    p.add_argument("--run-name", required=True)
+    p.add_argument("--run-summary-json", required=True)
+    p.add_argument("--seed", type=int, default=20260408)
+    return p.parse_args()
+
+
+def _safe_json(path: str | Path) -> Dict[str, Any]:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"json not found: {p}")
+    payload = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"json payload must be dict: {p}")
+    return payload
+
+
+def _safe_load_checkpoint(path: str | Path, device: torch.device) -> Dict[str, Any]:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"checkpoint not found: {p}")
+    try:
+        payload = torch.load(p, map_location=device, weights_only=False)
+    except TypeError:
+        payload = torch.load(p, map_location=device)
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"unsupported checkpoint payload type: {type(payload)}")
+    return payload
+
+
+def _norm_name(name: str) -> str:
+    return str(name).strip().upper()
+
+
+def _extract_binding(contract: Dict[str, Any]) -> Dict[str, Any]:
+    binding = contract.get("stage2_bootstrap_binding", {}) if isinstance(contract.get("stage2_bootstrap_binding", {}), dict) else {}
+    core = [str(x).strip() for x in binding.get("core", [])] if isinstance(binding.get("core", []), list) else []
+    optional = [str(x).strip() for x in binding.get("optional_extension", [])] if isinstance(binding.get("optional_extension", []), list) else []
+    if not core:
+        core = ["VSPW", "VIPSeg"]
+
+    usage: Dict[str, Dict[str, bool]] = {}
+    for ds in contract.get("datasets", []) if isinstance(contract.get("datasets", []), list) else []:
+        if not isinstance(ds, dict):
+            continue
+        name = _norm_name(str(ds.get("dataset_name", "")))
+        if not name:
+            continue
+        usage[name] = {
+            "train": bool(ds.get("used_in_bootstrap_train", False)),
+            "eval": bool(ds.get("used_in_bootstrap_eval", False)),
+        }
+
+    excluded = [
+        {
+            "dataset_name": str(x.get("dataset_name", "")),
+            "reason": str(x.get("reason", "")),
+        }
+        for x in contract.get("excluded_datasets", [])
+        if isinstance(x, dict)
+    ]
+
+    return {
+        "core": core,
+        "optional_extension": optional,
+        "usage": usage,
+        "excluded": excluded,
+    }
+
+
+def _summary_count(summary: Dict[str, Dict[str, Any]], name: str) -> int:
+    target = _norm_name(name)
+    for key, meta in summary.items():
+        if _norm_name(str(key)) == target and isinstance(meta, dict):
+            return int(meta.get("sample_count", 0))
+    return 0
+
+
+def _core_dataset_ready(
+    train_summary: Dict[str, Dict[str, Any]],
+    val_summary: Dict[str, Dict[str, Any]],
+    core_names: List[str],
+    usage: Dict[str, Dict[str, bool]],
+) -> Tuple[bool, Dict[str, Any]]:
+    details: Dict[str, Any] = {}
+    ready = True
+    for name in core_names:
+        key = _norm_name(name)
+        use_train = bool(usage.get(key, {}).get("train", True))
+        use_eval = bool(usage.get(key, {}).get("eval", True))
+
+        train_count = _summary_count(train_summary, key)
+        val_count = _summary_count(val_summary, key)
+
+        train_ok = (train_count > 0) if use_train else True
+        val_ok = (val_count > 0) if use_eval else True
+        item_ready = bool(train_ok and val_ok)
+        ready = bool(ready and item_ready)
+
+        details[key] = {
+            "train_required": use_train,
+            "eval_required": use_eval,
+            "train_sample_count": int(train_count),
+            "val_sample_count": int(val_count),
+            "ready": bool(item_ready),
+        }
+    return bool(ready), details
+
+
+def _atomic_torch_save(payload: Dict[str, Any], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    torch.save(payload, tmp)
+    os.replace(tmp, path)
+
+
+def _write_json(path: Path, payload: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+
+def _load_frozen_stage1_backbone(args: Any, device: torch.device) -> Tuple[TraceCausalTransformer, Dict[str, Any]]:
+    ckpt = _safe_load_checkpoint(args.stage1_backbone_checkpoint, device=device)
+    cfg_payload = ckpt.get("config", {}) if isinstance(ckpt.get("config", {}), dict) else {}
+    preset = str(cfg_payload.get("model_preset", args.stage1_model_preset))
+    cfg = build_tracewm_v2_config(preset)
+
+    model = TraceCausalTransformer(cfg).to(device)
+    state_dict = ckpt.get("model_state_dict") if isinstance(ckpt.get("model_state_dict"), dict) else None
+    if state_dict is None:
+        state_dict = {k: v for k, v in ckpt.items() if isinstance(v, torch.Tensor)}
+
+    missing, unexpected = model.load_state_dict(state_dict, strict=False)
+    if unexpected:
+        raise RuntimeError(f"unexpected stage1 checkpoint keys: {unexpected[:8]}")
+    if len(missing) > 16:
+        raise RuntimeError(f"too many missing stage1 checkpoint keys: {len(missing)}")
+
+    for p in model.parameters():
+        p.requires_grad = False
+    model.eval()
+
+    meta = {
+        "checkpoint_path": str(args.stage1_backbone_checkpoint),
+        "model_preset": preset,
+        "missing_keys": list(missing),
+        "unexpected_keys": list(unexpected),
+        "parameter_count": int(sum(x.numel() for x in model.parameters())),
+        "trainable_parameter_count": int(sum(x.numel() for x in model.parameters() if x.requires_grad)),
+    }
+    return model, meta
+
+
+def _resolve_resume_path(resume_from: str, auto_resume_latest: bool, latest_path: Path) -> str:
+    direct = str(resume_from).strip()
+    if direct:
+        return str(Path(direct).expanduser())
+    if bool(auto_resume_latest) and latest_path.exists():
+        return str(latest_path)
+    return ""
+
+
+def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool) -> Dict[str, Any]:
+    out = dict(batch)
+    for k in [
+        "obs_state",
+        "fut_state",
+        "obs_valid",
+        "fut_valid",
+        "token_mask",
+        "semantic_features",
+        "semantic_mask",
+    ]:
+        out[k] = batch[k].to(device, non_blocking=non_blocking)
+    return out
+
+
+def _prepare_shifted(full_state: torch.Tensor) -> torch.Tensor:
+    shifted = torch.zeros_like(full_state)
+    shifted[:, 0] = full_state[:, 0]
+    shifted[:, 1:] = full_state[:, :-1]
+    return shifted
+
+
+def _masked_mse_coord(pred_coord: torch.Tensor, target_coord: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
+    sq = ((pred_coord - target_coord) ** 2).sum(dim=-1)
+    mask_f = valid_mask.float()
+    denom = mask_f.sum().clamp_min(1.0)
+    return (sq * mask_f).sum() / denom
+
+
+def _masked_mean_l2(pred_coord: torch.Tensor, target_coord: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
+    l2 = torch.sqrt(((pred_coord - target_coord) ** 2).sum(dim=-1).clamp_min(1e-12))
+    mask_f = valid_mask.float()
+    denom = mask_f.sum().clamp_min(1.0)
+    return (l2 * mask_f).sum() / denom
+
+
+def _masked_endpoint_l2(pred_coord: torch.Tensor, target_coord: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
+    l2 = torch.sqrt(((pred_coord[:, -1] - target_coord[:, -1]) ** 2).sum(dim=-1).clamp_min(1e-12))
+    mask_f = valid_mask[:, -1].float()
+    denom = mask_f.sum().clamp_min(1.0)
+    return (l2 * mask_f).sum() / denom
+
+
+def _teacher_forced_predict(
+    *,
+    stage1_model: TraceCausalTransformer,
+    semantic_encoder: SemanticEncoder,
+    semantic_fusion: SemanticFusion,
+    readout_head: torch.nn.Linear,
+    batch: Dict[str, Any],
+    obs_len: int,
+) -> Dict[str, Any]:
+    full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
+    shifted = _prepare_shifted(full_state)
+    token_mask = batch["token_mask"]
+
+    with torch.no_grad():
+        stage1_out = stage1_model(shifted, token_mask=token_mask)
+
+    sem_enc = semantic_encoder(batch["semantic_features"])
+    fused_hidden, aux = semantic_fusion(stage1_out["hidden"], sem_enc, token_mask=token_mask)
+    pred_coord = readout_head(fused_hidden[:, int(obs_len) :])
+
+    target_coord = batch["fut_state"][..., 0:2]
+    valid_mask = batch["fut_valid"] & token_mask[:, None, :]
+
+    return {
+        "pred_coord": pred_coord,
+        "target_coord": target_coord,
+        "valid_mask": valid_mask,
+        "gate_mean": float(aux.get("gate_mean", 0.0)),
+        "gate_std": float(aux.get("gate_std", 0.0)),
+        "semantic_input_nonempty": bool((batch["semantic_mask"] & token_mask).any().item()),
+    }
+
+
+def _free_rollout_predict(
+    *,
+    stage1_model: TraceCausalTransformer,
+    semantic_encoder: SemanticEncoder,
+    semantic_fusion: SemanticFusion,
+    readout_head: torch.nn.Linear,
+    batch: Dict[str, Any],
+    obs_len: int,
+    fut_len: int,
+) -> Dict[str, Any]:
+    token_mask = batch["token_mask"]
+    obs_state = batch["obs_state"]
+
+    bsz, _, k_len, d_state = obs_state.shape
+    total_len = int(obs_len) + int(fut_len)
+
+    state_seq = torch.zeros((bsz, total_len, k_len, d_state), device=obs_state.device, dtype=obs_state.dtype)
+    state_seq[:, : int(obs_len)] = obs_state
+
+    sem_enc = semantic_encoder(batch["semantic_features"])
+    gate_vals: List[float] = []
+
+    for step in range(int(fut_len)):
+        shifted = _prepare_shifted(state_seq)
+        with torch.no_grad():
+            stage1_out = stage1_model(shifted, token_mask=token_mask)
+
+        fused_hidden, aux = semantic_fusion(stage1_out["hidden"], sem_enc, token_mask=token_mask)
+        gate_vals.append(float(aux.get("gate_mean", 0.0)))
+
+        pred_coord_all = readout_head(fused_hidden)
+        time_idx = int(obs_len) + int(step)
+        pred_coord_t = pred_coord_all[:, time_idx : time_idx + 1]
+
+        pred_state_t = stage1_out["pred_state"][:, time_idx : time_idx + 1].detach().clone()
+        pred_state_t[..., 0:2] = pred_coord_t.detach()
+        state_seq[:, time_idx : time_idx + 1] = pred_state_t
+
+    pred_future = state_seq[:, int(obs_len) :, :, 0:2]
+    target_coord = batch["fut_state"][..., 0:2]
+    valid_mask = batch["fut_valid"] & token_mask[:, None, :]
+
+    return {
+        "pred_coord": pred_future,
+        "target_coord": target_coord,
+        "valid_mask": valid_mask,
+        "gate_mean": float(sum(gate_vals) / max(len(gate_vals), 1)),
+    }
+
+
+def _evaluate(
+    *,
+    stage1_model: TraceCausalTransformer,
+    semantic_encoder: SemanticEncoder,
+    semantic_fusion: SemanticFusion,
+    readout_head: torch.nn.Linear,
+    loader: DataLoader,
+    device: torch.device,
+    pin_memory: bool,
+    obs_len: int,
+    fut_len: int,
+    max_batches: int,
+) -> Dict[str, Any]:
+    semantic_encoder.eval()
+    semantic_fusion.eval()
+    readout_head.eval()
+
+    tf_sse = 0.0
+    tf_count = 0.0
+    free_l2_sum = 0.0
+    free_l2_count = 0.0
+    free_endpoint_sum = 0.0
+    free_endpoint_count = 0.0
+    total_loss_ref_sum = 0.0
+    batch_count = 0
+    gate_vals: List[float] = []
+    nonempty_count = 0
+
+    with torch.no_grad():
+        for bi, raw_batch in enumerate(loader):
+            if int(max_batches) > 0 and bi >= int(max_batches):
+                break
+            batch = _to_device(raw_batch, device=device, non_blocking=bool(pin_memory and device.type == "cuda"))
+
+            tf_out = _teacher_forced_predict(
+                stage1_model=stage1_model,
+                semantic_encoder=semantic_encoder,
+                semantic_fusion=semantic_fusion,
+                readout_head=readout_head,
+                batch=batch,
+                obs_len=int(obs_len),
+            )
+            fr_out = _free_rollout_predict(
+                stage1_model=stage1_model,
+                semantic_encoder=semantic_encoder,
+                semantic_fusion=semantic_fusion,
+                readout_head=readout_head,
+                batch=batch,
+                obs_len=int(obs_len),
+                fut_len=int(fut_len),
+            )
+
+            tf_sq = ((tf_out["pred_coord"] - tf_out["target_coord"]) ** 2).sum(dim=-1)
+            tf_mask = tf_out["valid_mask"].float()
+            tf_sse += float((tf_sq * tf_mask).sum().item())
+            tf_count += float(tf_mask.sum().item())
+
+            free_l2 = torch.sqrt(((fr_out["pred_coord"] - fr_out["target_coord"]) ** 2).sum(dim=-1).clamp_min(1e-12))
+            free_mask = fr_out["valid_mask"].float()
+            free_l2_sum += float((free_l2 * free_mask).sum().item())
+            free_l2_count += float(free_mask.sum().item())
+
+            endpoint_l2 = torch.sqrt(
+                ((fr_out["pred_coord"][:, -1] - fr_out["target_coord"][:, -1]) ** 2).sum(dim=-1).clamp_min(1e-12)
+            )
+            endpoint_mask = fr_out["valid_mask"][:, -1].float()
+            free_endpoint_sum += float((endpoint_l2 * endpoint_mask).sum().item())
+            free_endpoint_count += float(endpoint_mask.sum().item())
+
+            total_loss_ref_sum += float(_masked_mse_coord(tf_out["pred_coord"], tf_out["target_coord"], tf_out["valid_mask"]).item())
+            gate_vals.append(float(tf_out["gate_mean"]))
+            nonempty_count += 1 if bool(tf_out["semantic_input_nonempty"]) else 0
+            batch_count += 1
+
+    teacher_forced_coord_loss = float(tf_sse / max(tf_count, 1.0))
+    free_rollout_coord_mean_l2 = float(free_l2_sum / max(free_l2_count, 1.0))
+    free_rollout_endpoint_l2 = float(free_endpoint_sum / max(free_endpoint_count, 1.0))
+    total_loss_reference = float(total_loss_ref_sum / max(batch_count, 1))
+
+    return {
+        "teacher_forced_coord_loss": teacher_forced_coord_loss,
+        "free_rollout_coord_mean_l2": free_rollout_coord_mean_l2,
+        "free_rollout_endpoint_l2": free_rollout_endpoint_l2,
+        "total_loss_reference": total_loss_reference,
+        "tapvid_style_eval": {
+            "compatible": False,
+            "status": "not_supported_in_current_stage2_trainer",
+        },
+        "tapvid3d_limited_eval": {
+            "compatible": False,
+            "status": "not_supported_in_current_stage2_trainer",
+        },
+        "semantic_branch_metrics": {
+            "eval_gate_mean": float(sum(gate_vals) / max(len(gate_vals), 1)),
+            "semantic_input_nonempty_ratio": float(nonempty_count / max(batch_count, 1)),
+            "eval_batches": int(batch_count),
+        },
+    }
+
+
+def _available_tertiary_metric(metrics: Dict[str, Any]) -> float:
+    tap = metrics.get("tapvid_style_eval", {}) if isinstance(metrics.get("tapvid_style_eval", {}), dict) else {}
+    tap3d = metrics.get("tapvid3d_limited_eval", {}) if isinstance(metrics.get("tapvid3d_limited_eval", {}), dict) else {}
+
+    if bool(tap.get("compatible", False)):
+        try:
+            return float(tap.get("free_rollout_endpoint_l2", 1e9))
+        except Exception:
+            return 1e9
+    if bool(tap3d.get("compatible", False)):
+        try:
+            return float(tap3d.get("free_rollout_endpoint_l2", 1e9))
+        except Exception:
+            return 1e9
+    try:
+        return float(metrics.get("teacher_forced_coord_loss", 1e9))
+    except Exception:
+        return 1e9
+
+
+def _rank_key(metrics: Dict[str, Any]) -> Tuple[float, float, float]:
+    return (
+        float(metrics.get("free_rollout_endpoint_l2", 1e9)),
+        float(metrics.get("free_rollout_coord_mean_l2", 1e9)),
+        float(_available_tertiary_metric(metrics)),
+    )
+
+
+def _checkpoint_payload(
+    *,
+    args: Any,
+    global_step: int,
+    best_metric_so_far: Dict[str, Any] | None,
+    eval_history: List[Dict[str, Any]],
+    semantic_encoder: SemanticEncoder,
+    semantic_fusion: SemanticFusion,
+    readout_head: torch.nn.Linear,
+    optimizer: torch.optim.Optimizer,
+    run_metadata: Dict[str, Any],
+) -> Dict[str, Any]:
+    return {
+        "run_name": str(args.run_name),
+        "global_step": int(global_step),
+        "best_metric_so_far": best_metric_so_far if isinstance(best_metric_so_far, dict) else None,
+        "eval_history": eval_history,
+        "semantic_encoder_state_dict": semantic_encoder.state_dict(),
+        "semantic_fusion_state_dict": semantic_fusion.state_dict(),
+        "readout_head_state_dict": readout_head.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(),
+        "args": vars(args),
+        "run_metadata": run_metadata,
+    }
+
+
+def main() -> None:
+    args = parse_args()
+    set_seed(int(args.seed))
+
+    if int(args.train_steps) <= 0:
+        raise ValueError("train_steps must be > 0")
+    if int(args.save_every_n_steps) <= 0:
+        raise ValueError("save_every_n_steps must be > 0")
+
+    output_dir = Path(str(args.output_dir))
+    output_dir.mkdir(parents=True, exist_ok=True)
+    run_summary_json = Path(str(args.run_summary_json))
+    run_summary_json.parent.mkdir(parents=True, exist_ok=True)
+
+    best_ckpt = output_dir / "best.pt"
+    latest_ckpt = output_dir / "latest.pt"
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    runtime_meta: Dict[str, Any] = {
+        "source": "manual",
+        "num_workers": 0,
+        "pin_memory": False,
+        "persistent_workers": False,
+        "prefetch_factor": 2,
+        "single_gpu_only": True,
+    }
+    if bool(args.use_recommended_runtime):
+        rt = _load_runtime_config(args.recommended_runtime_json)
+        runtime_meta = {
+            "source": "recommended_runtime_json",
+            "path": str(args.recommended_runtime_json),
+            "num_workers": int(rt.num_workers),
+            "pin_memory": bool(rt.pin_memory),
+            "persistent_workers": bool(rt.persistent_workers),
+            "prefetch_factor": int(rt.prefetch_factor),
+            "single_gpu_only": bool(rt.single_gpu_only),
+            "selected_gpu_id_runtime_json": int(rt.selected_gpu_id),
+            "required_mem_gb": float(rt.required_mem_gb),
+            "safety_margin_gb": float(rt.safety_margin_gb),
+        }
+
+    stage2_contract = _safe_json(args.stage2_contract_path)
+    binding = _extract_binding(stage2_contract)
+    core_names = [str(x) for x in binding.get("core", [])]
+
+    train_cfg = Stage2SemanticDatasetConfig(
+        dataset_names=[str(x) for x in args.dataset_names],
+        split=str(args.train_split),
+        contract_path=str(args.stage2_contract_path),
+        obs_len=int(args.obs_len),
+        fut_len=int(args.fut_len),
+        max_tokens=int(args.max_tokens),
+        max_samples_per_dataset=int(args.max_samples_train),
+        semantic_patch_radius=int(args.semantic_patch_radius),
+    )
+    val_cfg = Stage2SemanticDatasetConfig(
+        dataset_names=[str(x) for x in args.dataset_names],
+        split=str(args.val_split),
+        contract_path=str(args.stage2_contract_path),
+        obs_len=int(args.obs_len),
+        fut_len=int(args.fut_len),
+        max_tokens=int(args.max_tokens),
+        max_samples_per_dataset=int(args.max_samples_val),
+        semantic_patch_radius=int(args.semantic_patch_radius),
+    )
+
+    train_ds = Stage2SemanticDataset(train_cfg)
+    val_ds = Stage2SemanticDataset(val_cfg)
+    train_summary = dict(train_ds.dataset_summary)
+    val_summary = dict(val_ds.dataset_summary)
+    core_ready, core_details = _core_dataset_ready(
+        train_summary=train_summary,
+        val_summary=val_summary,
+        core_names=core_names,
+        usage=binding.get("usage", {}),
+    )
+
+    num_workers = int(runtime_meta.get("num_workers", 0))
+    pin_memory = bool(runtime_meta.get("pin_memory", False))
+    persistent_workers = bool(runtime_meta.get("persistent_workers", False))
+    prefetch_factor = int(runtime_meta.get("prefetch_factor", 2))
+
+    train_loader_kwargs: Dict[str, Any] = {
+        "dataset": train_ds,
+        "batch_size": int(args.batch_size),
+        "shuffle": True,
+        "num_workers": int(num_workers),
+        "pin_memory": bool(pin_memory),
+        "collate_fn": stage2_semantic_collate_fn,
+    }
+    if num_workers > 0:
+        train_loader_kwargs["persistent_workers"] = bool(persistent_workers)
+        train_loader_kwargs["prefetch_factor"] = int(prefetch_factor)
+    train_loader = DataLoader(**train_loader_kwargs)
+    val_loader = DataLoader(
+        val_ds,
+        batch_size=max(1, int(args.batch_size)),
+        shuffle=False,
+        num_workers=0,
+        pin_memory=bool(pin_memory),
+        collate_fn=stage2_semantic_collate_fn,
+    )
+
+    stage1_model, stage1_meta = _load_frozen_stage1_backbone(args=args, device=device)
+
+    semantic_encoder = SemanticEncoder(
+        SemanticEncoderConfig(
+            input_dim=10,
+            hidden_dim=int(args.semantic_hidden_dim),
+            output_dim=int(args.semantic_embed_dim),
+            dropout=0.1,
+        )
+    ).to(device)
+    fusion_hidden_dim = int(stage1_model.config.d_model)
+    semantic_fusion = SemanticFusion(
+        SemanticFusionConfig(
+            hidden_dim=fusion_hidden_dim,
+            semantic_dim=int(args.semantic_embed_dim),
+            dropout=0.1,
+        )
+    ).to(device)
+    readout_head = torch.nn.Linear(fusion_hidden_dim, 2).to(device)
+
+    trainable_params: List[torch.nn.Parameter] = []
+    for module in [semantic_encoder, semantic_fusion, readout_head]:
+        trainable_params.extend([p for p in module.parameters() if p.requires_grad])
+
+    optimizer = torch.optim.AdamW(trainable_params, lr=float(args.lr), weight_decay=float(args.weight_decay))
+
+    gpu_selection = {}
+    try:
+        gpu_selection = json.loads(str(os.environ.get("TRACEWM_STAGE1_V2_GPU_SELECTION_METADATA_JSON", "")) or "{}")
+        if not isinstance(gpu_selection, dict):
+            gpu_selection = {}
+    except Exception:
+        gpu_selection = {}
+
+    run_metadata: Dict[str, Any] = {
+        "run_name": str(args.run_name),
+        "started_at_utc": now_iso(),
+        "cuda_visible_devices": str(os.environ.get("CUDA_VISIBLE_DEVICES", "")),
+        "gpu_selection": gpu_selection,
+    }
+
+    resolved_resume = _resolve_resume_path(
+        resume_from=str(args.resume_from),
+        auto_resume_latest=bool(args.auto_resume_latest),
+        latest_path=latest_ckpt,
+    )
+
+    global_step = 0
+    best_metric_so_far: Dict[str, Any] | None = None
+    eval_history: List[Dict[str, Any]] = []
+    if resolved_resume:
+        payload = _safe_load_checkpoint(resolved_resume, device=device)
+        semantic_encoder.load_state_dict(payload.get("semantic_encoder_state_dict", {}))
+        semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}))
+        readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
+        if isinstance(payload.get("optimizer_state_dict", None), dict):
+            optimizer.load_state_dict(payload["optimizer_state_dict"])
+        global_step = int(payload.get("global_step", 0) or 0)
+        if isinstance(payload.get("best_metric_so_far", None), dict):
+            best_metric_so_far = payload.get("best_metric_so_far")
+        if isinstance(payload.get("eval_history", None), list):
+            eval_history = [x for x in payload.get("eval_history", []) if isinstance(x, dict)]
+        run_metadata["resumed_from"] = str(resolved_resume)
+    else:
+        run_metadata["resumed_from"] = ""
+
+    semantic_encoder.train()
+    semantic_fusion.train()
+    readout_head.train()
+
+    train_iter = iter(train_loader)
+    step_checkpoints: List[str] = sorted(str(p) for p in output_dir.glob("step_*.pt"))
+    stage1_grad_detected_any = False
+    semantic_grad_norm_latest = 0.0
+    teacher_loss_history: List[float] = []
+    gate_history: List[float] = []
+    semantic_nonempty_count = 0
+    optimizer_steps_this_run = 0
+
+    target_steps = int(args.train_steps)
+    eval_interval = int(args.eval_interval)
+    save_every = int(args.save_every_n_steps)
+
+    def _save_latest_and_optional_step(step_now: int, save_step: bool) -> None:
+        payload = _checkpoint_payload(
+            args=args,
+            global_step=int(step_now),
+            best_metric_so_far=best_metric_so_far,
+            eval_history=eval_history,
+            semantic_encoder=semantic_encoder,
+            semantic_fusion=semantic_fusion,
+            readout_head=readout_head,
+            optimizer=optimizer,
+            run_metadata=run_metadata,
+        )
+        _atomic_torch_save(payload, latest_ckpt)
+        if save_step:
+            step_path = output_dir / f"step_{int(step_now):07d}.pt"
+            _atomic_torch_save(payload, step_path)
+            sp = str(step_path)
+            if sp not in step_checkpoints:
+                step_checkpoints.append(sp)
+
+    while global_step < target_steps:
+        try:
+            raw_batch = next(train_iter)
+        except StopIteration:
+            train_iter = iter(train_loader)
+            raw_batch = next(train_iter)
+
+        batch = _to_device(raw_batch, device=device, non_blocking=bool(pin_memory and device.type == "cuda"))
+        tf_out = _teacher_forced_predict(
+            stage1_model=stage1_model,
+            semantic_encoder=semantic_encoder,
+            semantic_fusion=semantic_fusion,
+            readout_head=readout_head,
+            batch=batch,
+            obs_len=int(args.obs_len),
+        )
+
+        teacher_loss = _masked_mse_coord(tf_out["pred_coord"], tf_out["target_coord"], tf_out["valid_mask"])
+
+        optimizer.zero_grad(set_to_none=True)
+        teacher_loss.backward()
+
+        if float(args.clip_grad_norm) > 0.0:
+            torch.nn.utils.clip_grad_norm_(trainable_params, max_norm=float(args.clip_grad_norm))
+
+        stage1_grad_detected = False
+        for p in stage1_model.parameters():
+            if p.grad is not None and float(p.grad.detach().abs().sum().item()) > 0.0:
+                stage1_grad_detected = True
+                break
+        stage1_grad_detected_any = bool(stage1_grad_detected_any or stage1_grad_detected)
+
+        semantic_grad_sq = 0.0
+        for p in trainable_params:
+            if p.grad is None:
+                continue
+            g = p.grad.detach()
+            semantic_grad_sq += float((g * g).sum().item())
+        semantic_grad_norm_latest = float(np.sqrt(max(semantic_grad_sq, 0.0)))
+
+        optimizer.step()
+
+        global_step += 1
+        optimizer_steps_this_run += 1
+
+        teacher_loss_history.append(float(teacher_loss.detach().cpu().item()))
+        gate_history.append(float(tf_out["gate_mean"]))
+        semantic_nonempty_count += 1 if bool(tf_out["semantic_input_nonempty"]) else 0
+
+        should_eval = bool(eval_interval > 0 and global_step % eval_interval == 0)
+        if global_step == target_steps:
+            should_eval = True
+
+        if should_eval:
+            metrics = _evaluate(
+                stage1_model=stage1_model,
+                semantic_encoder=semantic_encoder,
+                semantic_fusion=semantic_fusion,
+                readout_head=readout_head,
+                loader=val_loader,
+                device=device,
+                pin_memory=bool(pin_memory),
+                obs_len=int(args.obs_len),
+                fut_len=int(args.fut_len),
+                max_batches=int(args.eval_max_batches),
+            )
+            rk = _rank_key(metrics)
+            event = {
+                "global_step": int(global_step),
+                "metrics": metrics,
+                "rank_key": [float(rk[0]), float(rk[1]), float(rk[2])],
+            }
+            eval_history.append(event)
+
+            if best_metric_so_far is None or tuple(event["rank_key"]) < tuple(best_metric_so_far.get("rank_key", [1e9, 1e9, 1e9])):
+                best_metric_so_far = {
+                    "global_step": int(global_step),
+                    "metrics": metrics,
+                    "rank_key": [float(rk[0]), float(rk[1]), float(rk[2])],
+                }
+                best_payload = _checkpoint_payload(
+                    args=args,
+                    global_step=int(global_step),
+                    best_metric_so_far=best_metric_so_far,
+                    eval_history=eval_history,
+                    semantic_encoder=semantic_encoder,
+                    semantic_fusion=semantic_fusion,
+                    readout_head=readout_head,
+                    optimizer=optimizer,
+                    run_metadata=run_metadata,
+                )
+                _atomic_torch_save(best_payload, best_ckpt)
+
+        should_save_step = bool(global_step % save_every == 0)
+        should_save_latest = bool(should_save_step or global_step == target_steps)
+        if should_save_latest:
+            _save_latest_and_optional_step(step_now=int(global_step), save_step=bool(should_save_step))
+
+    if best_metric_so_far is None:
+        metrics = _evaluate(
+            stage1_model=stage1_model,
+            semantic_encoder=semantic_encoder,
+            semantic_fusion=semantic_fusion,
+            readout_head=readout_head,
+            loader=val_loader,
+            device=device,
+            pin_memory=bool(pin_memory),
+            obs_len=int(args.obs_len),
+            fut_len=int(args.fut_len),
+            max_batches=int(args.eval_max_batches),
+        )
+        rk = _rank_key(metrics)
+        best_metric_so_far = {
+            "global_step": int(global_step),
+            "metrics": metrics,
+            "rank_key": [float(rk[0]), float(rk[1]), float(rk[2])],
+        }
+
+    if not best_ckpt.exists():
+        best_payload = _checkpoint_payload(
+            args=args,
+            global_step=int(global_step),
+            best_metric_so_far=best_metric_so_far,
+            eval_history=eval_history,
+            semantic_encoder=semantic_encoder,
+            semantic_fusion=semantic_fusion,
+            readout_head=readout_head,
+            optimizer=optimizer,
+            run_metadata=run_metadata,
+        )
+        _atomic_torch_save(best_payload, best_ckpt)
+    if not latest_ckpt.exists():
+        _save_latest_and_optional_step(step_now=int(global_step), save_step=False)
+
+    final_metrics = dict(best_metric_so_far.get("metrics", {})) if isinstance(best_metric_so_far, dict) else {}
+    frozen_count = int(stage1_meta.get("parameter_count", 0))
+    trainable_count = int(sum(p.numel() for p in trainable_params))
+    stage1_trainable_count = int(stage1_meta.get("trainable_parameter_count", 0))
+
+    boundary_ok = bool(stage1_trainable_count == 0 and (not stage1_grad_detected_any))
+    run_stable = bool(
+        np.isfinite(float(final_metrics.get("teacher_forced_coord_loss", np.inf)))
+        and np.isfinite(float(final_metrics.get("free_rollout_coord_mean_l2", np.inf)))
+        and np.isfinite(float(final_metrics.get("free_rollout_endpoint_l2", np.inf)))
+    )
+
+    payload = {
+        "generated_at_utc": now_iso(),
+        "run_name": str(args.run_name),
+        "objective": "Stage2 small-train run on frozen Stage1 220m backbone",
+        "stage2_contract_path": str(args.stage2_contract_path),
+        "stage2_data_binding": {
+            "core": core_names,
+            "optional_extension": binding.get("optional_extension", []),
+            "excluded": binding.get("excluded", []),
+            "run_datasets": [str(x) for x in args.dataset_names],
+        },
+        "runtime": runtime_meta,
+        "run_metadata": run_metadata,
+        "training_budget": {
+            "train_steps_target": int(target_steps),
+            "train_steps_completed": int(global_step),
+            "optimizer_steps_this_invocation": int(optimizer_steps_this_run),
+            "batch_size": int(args.batch_size),
+            "eval_interval": int(eval_interval),
+            "eval_max_batches": int(args.eval_max_batches),
+            "save_every_n_steps": int(save_every),
+        },
+        "dataset_summary": {
+            "train": train_summary,
+            "val": val_summary,
+        },
+        "core_dataset_inputs": {
+            "ready": bool(core_ready),
+            "details": core_details,
+        },
+        "stage1_backbone": {
+            "load_success": True,
+            **stage1_meta,
+        },
+        "parameter_count_frozen": int(frozen_count),
+        "parameter_count_trainable": int(trainable_count),
+        "freeze_trainable_boundary": {
+            "stage1_trainable_parameter_count": int(stage1_trainable_count),
+            "semantic_trainable_parameter_count": int(trainable_count),
+            "stage1_grad_detected_after_backward": bool(stage1_grad_detected_any),
+            "semantic_grad_norm_latest": float(semantic_grad_norm_latest),
+            "boundary_ok": bool(boundary_ok),
+        },
+        "semantic_branch_metrics": {
+            "train_gate_mean": float(sum(gate_history) / max(len(gate_history), 1)),
+            "train_semantic_input_nonempty_ratio": float(semantic_nonempty_count / max(len(gate_history), 1)),
+            "semantic_feature_dim": 10,
+        },
+        "selection_policy": {
+            "primary": "free_rollout_endpoint_l2",
+            "secondary": "free_rollout_coord_mean_l2",
+            "tertiary": "available_eval_metric",
+            "total_loss_usage": "reference_only",
+        },
+        "final_metrics": final_metrics,
+        "best_metric_so_far": best_metric_so_far,
+        "eval_history": eval_history,
+        "checkpoint_inventory": {
+            "checkpoint_dir": str(output_dir),
+            "best": str(best_ckpt),
+            "latest": str(latest_ckpt),
+            "step_checkpoints": sorted(step_checkpoints),
+            "resume_from": str(resolved_resume),
+            "auto_resume_latest": bool(args.auto_resume_latest),
+        },
+        "run_stable": bool(run_stable),
+    }
+
+    _write_json(run_summary_json, payload)
+
+    print(f"[stage2-smalltrain] run_name={args.run_name}")
+    print(f"[stage2-smalltrain] run_summary_json={run_summary_json}")
+    print(f"[stage2-smalltrain] checkpoint_dir={output_dir}")
+    print(f"[stage2-smalltrain] best_checkpoint={best_ckpt}")
+    print(f"[stage2-smalltrain] latest_checkpoint={latest_ckpt}")
+    print(f"[stage2-smalltrain] free_rollout_endpoint_l2={float(final_metrics.get('free_rollout_endpoint_l2', 1e9)):.6f}")
+    print(f"[stage2-smalltrain] boundary_ok={bool(boundary_ok)}")
+
+
+if __name__ == "__main__":
+    main()
