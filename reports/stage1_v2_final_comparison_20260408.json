@@ -1,20 +1,51 @@
 {
-  "generated_at_utc": "2026-04-08T10:19:20.178820+00:00",
+  "generated_at_utc": "2026-04-08T11:02:55.148252+00:00",
   "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
   "recommended_runtime_path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
   "single_gpu_only": true,
   "best_state_variant": "stage1_v2_state_multitoken_gru",
   "best_backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
   "best_loss_variant": "stage1_v2_loss_coord_visibility",
-  "final_mainline_model": "stage1_v2_mainline::stage1_v2_state_multitoken_gru::stage1_v2_backbone_transformer_debugsmall::stage1_v2_loss_coord_visibility",
+  "final_mainline_model": "stage1_v2_mainline::multitoken::stage1_v2_backbone_transformer_debugsmall::coord_visibility",
   "final_mainline_parameter_count": 3213066,
   "final_mainline_target_220m_range_pass": false,
+  "final_mainline_summary_path": "/home/chen034/workspace/stwm/reports/stage1_v2_mainline_replay_20260408.json",
+  "validation_status": "scientifically_validated",
+  "validation_gaps": [],
+  "why_not_fully_validated": "",
   "whether_v2_is_scientifically_validated": true,
-  "next_step_choice": "do_small_followup_ablation",
+  "best_small_model": "stage1_v2_backbone_transformer_debugsmall",
+  "best_220m_model": "stage1_v2_backbone_transformer_prototype220m",
+  "current_best_small_model": "stage1_v2_backbone_transformer_debugsmall",
+  "current_best_220m_model": "stage1_v2_backbone_transformer_prototype220m",
+  "whether_220m_scientifically_competitive": false,
+  "what_blocks_220m_competitiveness": "220m primary endpoint l2 is not yet competitive vs best small model (gap=0.878601, required<=0.005000)",
+  "should_promote_220m_now": false,
+  "next_step_choice": "run_220m_competitiveness_gap_closure",
+  "winner_analysis": {
+    "state": {
+      "has_winner": true,
+      "clear_winner": true,
+      "winner": "stage1_v2_state_multitoken_gru",
+      "primary_margin_vs_runner_up": 0.011184622844060299,
+      "min_required_margin": 0.005,
+      "runner_up": "stage1_v2_state_legacy_mean5d_gru"
+    },
+    "backbone": {
+      "has_winner": true,
+      "clear_winner": true,
+      "winner": "stage1_v2_backbone_transformer_debugsmall",
+      "primary_margin_vs_runner_up": 0.2754451433817545,
+      "min_required_margin": 0.005,
+      "runner_up": "stage1_v2_backbone_multitoken_gru"
+    },
+    "loss_selection_uses_external_metrics": true
+  },
   "evidence": {
     "state_ablation": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_state_20260408.json",
     "backbone_ablation": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_backbone_20260408.json",
     "loss_ablation": "/home/chen034/workspace/stwm/reports/stage1_v2_ablation_losses_20260408.json",
+    "mainline_replay": "/home/chen034/workspace/stwm/reports/stage1_v2_mainline_replay_20260408.json",
     "run_details": "/home/chen034/workspace/stwm/reports/stage1_v2_scientific_revalidation_runs_20260408.json"
   }
 }

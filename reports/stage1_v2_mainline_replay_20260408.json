@@ -1,0 +1,81 @@
+{
+  "generated_at_utc": "2026-04-08T11:02:55.143759+00:00",
+  "objective": "Replay a real candidate mainline configuration selected from ablation winners.",
+  "candidate_combo": {
+    "state_variant": "multitoken",
+    "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+    "loss_variant": "coord_visibility"
+  },
+  "replay_status": "ok",
+  "replay_run": {
+    "run_name": "stage1_v2_mainline_replay",
+    "group": "mainline_replay",
+    "status": "ok",
+    "state_variant": "multitoken",
+    "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+    "loss_variant": "coord_visibility",
+    "model": {
+      "family": "transformer",
+      "preset": "debug_small",
+      "config": {
+        "state_dim": 8,
+        "d_model": 256,
+        "num_layers": 4,
+        "num_heads": 8,
+        "ff_mult": 4,
+        "dropout": 0.1,
+        "max_time": 64,
+        "max_tokens": 128,
+        "use_endpoint_head": true
+      },
+      "parameter_count": 3213578,
+      "estimated_parameter_count": 3213066,
+      "target_220m_range_pass": false
+    },
+    "runtime": {
+      "num_workers": 8,
+      "pin_memory": true,
+      "persistent_workers": true,
+      "prefetch_factor": 4,
+      "single_gpu_only": true
+    },
+    "train_final_metrics": {
+      "total_loss": 0.4933343480030696,
+      "coord_loss": 0.3033531842132409,
+      "visibility_loss": 0.37996233192582923,
+      "residual_loss": 0.9580398549636205,
+      "velocity_loss": 0.7897021273771921,
+      "endpoint_loss": 0.0
+    },
+    "evaluation": {
+      "teacher_forced_coord_loss": 0.15742910653352737,
+      "free_rollout_coord_mean_l2": 0.38316408172249794,
+      "free_rollout_endpoint_l2": 0.40736108645796776,
+      "tapvid_eval": {
+        "supported": true,
+        "status": "available_and_run",
+        "status_reason": "tapvid evaluator path available and executed",
+        "records_declared": 6,
+        "records_with_existing_files": 6,
+        "samples_evaluated": 6,
+        "teacher_forced_coord_loss": 0.18951736036243222,
+        "free_rollout_coord_mean_l2": 0.4437205689965998,
+        "free_rollout_endpoint_l2": 0.44550756371539574
+      },
+      "tapvid3d_limited_eval": {
+        "supported": true,
+        "status": "available_and_run",
+        "status_reason": "tapvid3d limited evaluator path available and executed",
+        "records_declared": 12,
+        "records_with_existing_files": 12,
+        "samples_evaluated": 12,
+        "teacher_forced_coord_loss": 36.695049395688365,
+        "free_rollout_coord_mean_l2": 3.567268081926403,
+        "free_rollout_endpoint_l2": 3.7634934661208943
+      }
+    },
+    "train_steps": 12,
+    "notes": "true replay of candidate mainline combo chosen from ablation winners"
+  },
+  "summary_file": "/home/chen034/workspace/stwm/reports/stage1_v2_mainline_replay_20260408.json"
+}

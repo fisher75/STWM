@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-04-08T10:19:16.133041+00:00",
+  "generated_at_utc": "2026-04-08T11:02:48.538937+00:00",
   "group": "backbone",
   "objective": "Under fixed multi-token state, compare GRU vs Transformer and debug_small vs prototype_220m.",
   "selection_policy": {
     "primary": "free_rollout_endpoint_l2",
     "secondary": "free_rollout_coord_mean_l2",
-    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2_or_tapvid3d_limited_eval.free_rollout_endpoint_l2",
     "total_loss_usage": "reference_only"
   },
   "runs": [
@@ -52,14 +52,26 @@
         "free_rollout_coord_mean_l2": 0.6472856402397156,
         "free_rollout_endpoint_l2": 0.6713165442148844,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.3355946001110295,
+          "free_rollout_coord_mean_l2": 0.5470044897600373,
+          "free_rollout_endpoint_l2": 0.5635741399682086
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 35.33227646032997,
+          "free_rollout_coord_mean_l2": 3.3501363165193747,
+          "free_rollout_endpoint_l2": 3.57558806737264
         }
       },
       "train_steps": 8,
@@ -98,26 +110,38 @@
         "single_gpu_only": true
       },
       "train_final_metrics": {
-        "total_loss": 1.1289539337158203,
-        "coord_loss": 0.5312429815530777,
+        "total_loss": 1.1289539113640785,
+        "coord_loss": 0.5312429647892714,
         "visibility_loss": 0.3871301468461752,
-        "residual_loss": 0.771333321928978,
-        "velocity_loss": 0.8452500775456429,
+        "residual_loss": 0.7713333368301392,
+        "velocity_loss": 0.8452500700950623,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 0.20821922024091086,
-        "free_rollout_coord_mean_l2": 0.4069776435693105,
-        "free_rollout_endpoint_l2": 0.3958713759978612,
+        "teacher_forced_coord_loss": 0.20821923265854517,
+        "free_rollout_coord_mean_l2": 0.40697768330574036,
+        "free_rollout_endpoint_l2": 0.3958714008331299,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.18974849095844654,
+          "free_rollout_coord_mean_l2": 0.36939914303281474,
+          "free_rollout_endpoint_l2": 0.34669969289199165
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 36.794254616210765,
+          "free_rollout_coord_mean_l2": 3.488476962898385,
+          "free_rollout_endpoint_l2": 3.759420717916181
         }
       },
       "train_steps": 8,
@@ -156,31 +180,51 @@
         "single_gpu_only": true
       },
       "train_final_metrics": {
-        "total_loss": 11.092827141284943,
-        "coord_loss": 10.398691123351455,
-        "visibility_loss": 0.5494796223938465,
-        "residual_loss": 1.0985799133777618,
-        "velocity_loss": 0.57900670170784,
+        "total_loss": 11.092827379703522,
+        "coord_loss": 10.398691389709711,
+        "visibility_loss": 0.5494795981794596,
+        "residual_loss": 1.0985799357295036,
+        "velocity_loss": 0.5790067128837109,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 1.6283119320869446,
-        "free_rollout_coord_mean_l2": 1.269139011700948,
-        "free_rollout_endpoint_l2": 1.2744733691215515,
+        "teacher_forced_coord_loss": 1.628308931986491,
+        "free_rollout_coord_mean_l2": 1.2691377997398376,
+        "free_rollout_endpoint_l2": 1.274472137292226,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 1.427131280473212,
+          "free_rollout_coord_mean_l2": 1.1809801436411382,
+          "free_rollout_endpoint_l2": 1.1702808877696163
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 33.41507866044527,
+          "free_rollout_coord_mean_l2": 3.4963617205261954,
+          "free_rollout_endpoint_l2": 3.8061194368588027
         }
       },
       "train_steps": 8,
       "notes": "multi-token state with transformer prototype_220m"
     }
   ],
-  "best_variant": "stage1_v2_backbone_transformer_debugsmall"
+  "best_variant": "stage1_v2_backbone_transformer_debugsmall",
+  "winner_analysis": {
+    "has_winner": true,
+    "clear_winner": true,
+    "winner": "stage1_v2_backbone_transformer_debugsmall",
+    "primary_margin_vs_runner_up": 0.2754451433817545,
+    "min_required_margin": 0.005,
+    "runner_up": "stage1_v2_backbone_multitoken_gru"
+  }
 }

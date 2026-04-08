@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-04-08T10:19:10.154465+00:00",
+  "generated_at_utc": "2026-04-08T11:02:33.904242+00:00",
   "group": "state",
   "objective": "Is multi-token state beneficial vs legacy mean-5d under matched GRU backbone?",
   "selection_policy": {
     "primary": "free_rollout_endpoint_l2",
     "secondary": "free_rollout_coord_mean_l2",
-    "tertiary": "tapvid_eval.free_rollout_endpoint_l2",
+    "tertiary": "tapvid_eval.free_rollout_endpoint_l2_or_tapvid3d_limited_eval.free_rollout_endpoint_l2",
     "total_loss_usage": "reference_only"
   },
   "runs": [
@@ -52,14 +52,26 @@
         "free_rollout_coord_mean_l2": 0.675823966662089,
         "free_rollout_endpoint_l2": 0.689999908208847,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.40725597389514323,
+          "free_rollout_coord_mean_l2": 0.5905384705445477,
+          "free_rollout_endpoint_l2": 0.5940700945646866
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 35.062638355695,
+          "free_rollout_coord_mean_l2": 3.341846178429678,
+          "free_rollout_endpoint_l2": 3.5756473131077264
         }
       },
       "train_steps": 8,
@@ -108,19 +120,39 @@
         "free_rollout_coord_mean_l2": 0.6602177023887634,
         "free_rollout_endpoint_l2": 0.6788152853647867,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.3728103588179512,
+          "free_rollout_coord_mean_l2": 0.5745552158058618,
+          "free_rollout_endpoint_l2": 0.5905209168143895
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 35.24304633836916,
+          "free_rollout_coord_mean_l2": 3.3445429828043607,
+          "free_rollout_endpoint_l2": 3.5729112804576917
         }
       },
       "train_steps": 8,
       "notes": "multi-token state with matched GRU baseline"
     }
   ],
-  "best_variant": "stage1_v2_state_multitoken_gru"
+  "best_variant": "stage1_v2_state_multitoken_gru",
+  "winner_analysis": {
+    "has_winner": true,
+    "clear_winner": true,
+    "winner": "stage1_v2_state_multitoken_gru",
+    "primary_margin_vs_runner_up": 0.011184622844060299,
+    "min_required_margin": 0.005,
+    "runner_up": "stage1_v2_state_legacy_mean5d_gru"
+  }
 }

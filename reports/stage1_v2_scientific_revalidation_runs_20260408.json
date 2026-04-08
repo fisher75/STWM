@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-08T10:19:20.176915+00:00",
+  "generated_at_utc": "2026-04-08T11:02:55.145628+00:00",
   "contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
   "runtime": {
     "num_workers": 8,
@@ -55,14 +55,26 @@
         "free_rollout_coord_mean_l2": 0.675823966662089,
         "free_rollout_endpoint_l2": 0.689999908208847,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.40725597389514323,
+          "free_rollout_coord_mean_l2": 0.5905384705445477,
+          "free_rollout_endpoint_l2": 0.5940700945646866
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 35.062638355695,
+          "free_rollout_coord_mean_l2": 3.341846178429678,
+          "free_rollout_endpoint_l2": 3.5756473131077264
         }
       },
       "train_steps": 8,
@@ -111,14 +123,26 @@
         "free_rollout_coord_mean_l2": 0.6602177023887634,
         "free_rollout_endpoint_l2": 0.6788152853647867,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.3728103588179512,
+          "free_rollout_coord_mean_l2": 0.5745552158058618,
+          "free_rollout_endpoint_l2": 0.5905209168143895
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 35.24304633836916,
+          "free_rollout_coord_mean_l2": 3.3445429828043607,
+          "free_rollout_endpoint_l2": 3.5729112804576917
         }
       },
       "train_steps": 8,
@@ -167,14 +191,26 @@
         "free_rollout_coord_mean_l2": 0.6472856402397156,
         "free_rollout_endpoint_l2": 0.6713165442148844,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.3355946001110295,
+          "free_rollout_coord_mean_l2": 0.5470044897600373,
+          "free_rollout_endpoint_l2": 0.5635741399682086
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 35.33227646032997,
+          "free_rollout_coord_mean_l2": 3.3501363165193747,
+          "free_rollout_endpoint_l2": 3.57558806737264
         }
       },
       "train_steps": 8,
@@ -213,26 +249,38 @@
         "single_gpu_only": true
       },
       "train_final_metrics": {
-        "total_loss": 1.1289539337158203,
-        "coord_loss": 0.5312429815530777,
+        "total_loss": 1.1289539113640785,
+        "coord_loss": 0.5312429647892714,
         "visibility_loss": 0.3871301468461752,
-        "residual_loss": 0.771333321928978,
-        "velocity_loss": 0.8452500775456429,
+        "residual_loss": 0.7713333368301392,
+        "velocity_loss": 0.8452500700950623,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 0.20821922024091086,
-        "free_rollout_coord_mean_l2": 0.4069776435693105,
-        "free_rollout_endpoint_l2": 0.3958713759978612,
+        "teacher_forced_coord_loss": 0.20821923265854517,
+        "free_rollout_coord_mean_l2": 0.40697768330574036,
+        "free_rollout_endpoint_l2": 0.3958714008331299,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.18974849095844654,
+          "free_rollout_coord_mean_l2": 0.36939914303281474,
+          "free_rollout_endpoint_l2": 0.34669969289199165
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 36.794254616210765,
+          "free_rollout_coord_mean_l2": 3.488476962898385,
+          "free_rollout_endpoint_l2": 3.759420717916181
         }
       },
       "train_steps": 8,
@@ -271,26 +319,38 @@
         "single_gpu_only": true
       },
       "train_final_metrics": {
-        "total_loss": 11.092827141284943,
-        "coord_loss": 10.398691123351455,
-        "visibility_loss": 0.5494796223938465,
-        "residual_loss": 1.0985799133777618,
-        "velocity_loss": 0.57900670170784,
+        "total_loss": 11.092827379703522,
+        "coord_loss": 10.398691389709711,
+        "visibility_loss": 0.5494795981794596,
+        "residual_loss": 1.0985799357295036,
+        "velocity_loss": 0.5790067128837109,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 1.6283119320869446,
-        "free_rollout_coord_mean_l2": 1.269139011700948,
-        "free_rollout_endpoint_l2": 1.2744733691215515,
+        "teacher_forced_coord_loss": 1.628308931986491,
+        "free_rollout_coord_mean_l2": 1.2691377997398376,
+        "free_rollout_endpoint_l2": 1.274472137292226,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 1.427131280473212,
+          "free_rollout_coord_mean_l2": 1.1809801436411382,
+          "free_rollout_endpoint_l2": 1.1702808877696163
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 33.41507866044527,
+          "free_rollout_coord_mean_l2": 3.4963617205261954,
+          "free_rollout_endpoint_l2": 3.8061194368588027
         }
       },
       "train_steps": 8,
@@ -329,26 +389,38 @@
         "single_gpu_only": true
       },
       "train_final_metrics": {
-        "total_loss": 0.3905461672693491,
-        "coord_loss": 0.3905461672693491,
+        "total_loss": 0.3905461747199297,
+        "coord_loss": 0.3905461747199297,
         "visibility_loss": 0.7933225929737091,
         "residual_loss": 0.886862002313137,
-        "velocity_loss": 1.2611193358898163,
+        "velocity_loss": 1.2611193507909775,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 0.19270702451467514,
-        "free_rollout_coord_mean_l2": 0.4185205002625783,
-        "free_rollout_endpoint_l2": 0.5304233282804489,
+        "teacher_forced_coord_loss": 0.19270702948172888,
+        "free_rollout_coord_mean_l2": 0.41852052013079327,
+        "free_rollout_endpoint_l2": 0.5304233431816101,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.28162997038812526,
+          "free_rollout_coord_mean_l2": 0.5930250847203462,
+          "free_rollout_endpoint_l2": 0.7758746188619863
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 34.9498123150084,
+          "free_rollout_coord_mean_l2": 3.371204880760391,
+          "free_rollout_endpoint_l2": 3.688625838166924
         }
       },
       "train_steps": 8,
@@ -387,26 +459,38 @@
         "single_gpu_only": true
       },
       "train_final_metrics": {
-        "total_loss": 0.8983641155064106,
-        "coord_loss": 0.5615443494170904,
+        "total_loss": 0.8983640931546688,
+        "coord_loss": 0.5615443307906389,
         "visibility_loss": 0.6736395470798016,
-        "residual_loss": 0.9742351397871971,
+        "residual_loss": 0.9742351472377777,
         "velocity_loss": 0.7741103768348694,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 0.1653329481681188,
+        "teacher_forced_coord_loss": 0.16533294568459192,
         "free_rollout_coord_mean_l2": 0.38141616185506183,
-        "free_rollout_endpoint_l2": 0.3972135931253433,
+        "free_rollout_endpoint_l2": 0.39721357822418213,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.1877115463542047,
+          "free_rollout_coord_mean_l2": 0.4347656503520898,
+          "free_rollout_endpoint_l2": 0.5123176242994225
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 34.68363124356345,
+          "free_rollout_coord_mean_l2": 3.3893450535419403,
+          "free_rollout_endpoint_l2": 3.670153976768576
         }
       },
       "train_steps": 8,
@@ -447,24 +531,36 @@
       "train_final_metrics": {
         "total_loss": 1.127963863313198,
         "coord_loss": 0.5198376178741455,
-        "visibility_loss": 0.4276402182877064,
-        "residual_loss": 0.8983800411224365,
+        "visibility_loss": 0.4276402108371258,
+        "residual_loss": 0.8983800634741783,
         "velocity_loss": 0.6788445636630058,
         "endpoint_loss": 0.0
       },
       "evaluation": {
-        "teacher_forced_coord_loss": 0.74399533867836,
-        "free_rollout_coord_mean_l2": 0.8056887338558832,
-        "free_rollout_endpoint_l2": 0.7737820247809092,
+        "teacher_forced_coord_loss": 0.7439953337113062,
+        "free_rollout_coord_mean_l2": 0.805688738822937,
+        "free_rollout_endpoint_l2": 0.7737820645173391,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.39483417182201413,
+          "free_rollout_coord_mean_l2": 0.6137558411214953,
+          "free_rollout_endpoint_l2": 0.5880816003550654
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 30.468991753323728,
+          "free_rollout_coord_mean_l2": 3.1564528182183142,
+          "free_rollout_endpoint_l2": 3.4256423468230874
         }
       },
       "train_steps": 8,
@@ -513,20 +609,102 @@
       "evaluation": {
         "teacher_forced_coord_loss": 0.2867352565129598,
         "free_rollout_coord_mean_l2": 0.4970433960358302,
-        "free_rollout_endpoint_l2": 0.47475364804267883,
+        "free_rollout_endpoint_l2": 0.47475365300973255,
         "tapvid_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.30461781443341374,
+          "free_rollout_coord_mean_l2": 0.5391484257588134,
+          "free_rollout_endpoint_l2": 0.5371766442837922
         },
         "tapvid3d_limited_eval": {
-          "supported": false,
-          "status": "unavailable",
-          "free_rollout_endpoint_l2": null
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 32.62006765234582,
+          "free_rollout_coord_mean_l2": 3.3107744392396365,
+          "free_rollout_endpoint_l2": 3.5593654007040043
         }
       },
       "train_steps": 8,
       "notes": "coord + visibility + residual + velocity + endpoint"
+    },
+    {
+      "run_name": "stage1_v2_mainline_replay",
+      "group": "mainline_replay",
+      "status": "ok",
+      "state_variant": "multitoken",
+      "backbone_variant": "stage1_v2_backbone_transformer_debugsmall",
+      "loss_variant": "coord_visibility",
+      "model": {
+        "family": "transformer",
+        "preset": "debug_small",
+        "config": {
+          "state_dim": 8,
+          "d_model": 256,
+          "num_layers": 4,
+          "num_heads": 8,
+          "ff_mult": 4,
+          "dropout": 0.1,
+          "max_time": 64,
+          "max_tokens": 128,
+          "use_endpoint_head": true
+        },
+        "parameter_count": 3213578,
+        "estimated_parameter_count": 3213066,
+        "target_220m_range_pass": false
+      },
+      "runtime": {
+        "num_workers": 8,
+        "pin_memory": true,
+        "persistent_workers": true,
+        "prefetch_factor": 4,
+        "single_gpu_only": true
+      },
+      "train_final_metrics": {
+        "total_loss": 0.4933343480030696,
+        "coord_loss": 0.3033531842132409,
+        "visibility_loss": 0.37996233192582923,
+        "residual_loss": 0.9580398549636205,
+        "velocity_loss": 0.7897021273771921,
+        "endpoint_loss": 0.0
+      },
+      "evaluation": {
+        "teacher_forced_coord_loss": 0.15742910653352737,
+        "free_rollout_coord_mean_l2": 0.38316408172249794,
+        "free_rollout_endpoint_l2": 0.40736108645796776,
+        "tapvid_eval": {
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid evaluator path available and executed",
+          "records_declared": 6,
+          "records_with_existing_files": 6,
+          "samples_evaluated": 6,
+          "teacher_forced_coord_loss": 0.18951736036243222,
+          "free_rollout_coord_mean_l2": 0.4437205689965998,
+          "free_rollout_endpoint_l2": 0.44550756371539574
+        },
+        "tapvid3d_limited_eval": {
+          "supported": true,
+          "status": "available_and_run",
+          "status_reason": "tapvid3d limited evaluator path available and executed",
+          "records_declared": 12,
+          "records_with_existing_files": 12,
+          "samples_evaluated": 12,
+          "teacher_forced_coord_loss": 36.695049395688365,
+          "free_rollout_coord_mean_l2": 3.567268081926403,
+          "free_rollout_endpoint_l2": 3.7634934661208943
+        }
+      },
+      "train_steps": 12,
+      "notes": "true replay of candidate mainline combo chosen from ablation winners"
     }
   ]
 }
