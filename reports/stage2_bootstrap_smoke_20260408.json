@@ -1,0 +1,63 @@
+{
+  "generated_at_utc": "2026-04-08T15:17:18.734488+00:00",
+  "run_name": "stage2_bootstrap_smoke_20260408",
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": 6
+  },
+  "stage1_backbone": {
+    "load_success": true,
+    "load_error": "",
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "model_preset": "prototype_220m",
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "parameter_count": 207615754,
+    "trainable_parameter_count": 0
+  },
+  "semantic_branch": {
+    "semantic_input_nonempty": true,
+    "semantic_forward_success": true,
+    "semantic_feature_dim": 10,
+    "fusion_gate_mean": 0.4981521964073181
+  },
+  "freeze_trainable_boundary": {
+    "stage1_trainable_parameter_count": 0,
+    "semantic_trainable_parameter_count": 3025154,
+    "stage1_grad_detected_after_backward": false,
+    "semantic_grad_norm": 15.919465911182646,
+    "boundary_ok": true
+  },
+  "smoke_train": {
+    "steps_requested": 4,
+    "steps_completed": 4,
+    "loss_history": [
+      2.0400784015655518,
+      0.8641137480735779,
+      0.4583948254585266,
+      0.1989535391330719
+    ],
+    "last_loss": 0.1989535391330719
+  },
+  "smoke_eval": {
+    "val_loss": 0.14222174882888794
+  },
+  "answers": {
+    "stage1_frozen_backbone_loadable": true,
+    "semantic_branch_accepts_inputs": true,
+    "freeze_trainable_boundary_working": true,
+    "stage2_bootstrap_ready": true
+  },
+  "bootstrap_ready": true,
+  "allowed_next_step_choice": [
+    "start_stage2_small_train",
+    "refine_stage2_bootstrap"
+  ],
+  "next_step_choice": "start_stage2_small_train"
+}

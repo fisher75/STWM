@@ -1,0 +1,320 @@
+{
+  "generated_at_utc": "2026-04-08T15:17:01.693313+00:00",
+  "objective": "Stage2 bootstrap data interface mapping on top of frozen Stage1 resources",
+  "stage1_contract_path": "/home/chen034/workspace/data/_manifests/stage1_v2_trace_cache_contract_20260408.json",
+  "stage1_backbone_checkpoint": {
+    "path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "exists": true
+  },
+  "semantic_source_definition": {
+    "mainline": "object_region_or_mask_crop_visual_state",
+    "disallow_fake_hash_label": true,
+    "disallow_clip_teacher_as_mainline": true
+  },
+  "stage2_input_mapping": {
+    "frozen_stage1_trace_tokens": "from Stage1-v2 trace cache state tokens",
+    "semantic_tokens": "from frame-path visual region crops with optional mask crop when available"
+  },
+  "datasets": [
+    {
+      "dataset_name": "pointodyssey",
+      "status": "ready_for_bootstrap",
+      "index_path": "/home/chen034/workspace/data/_manifests/stage1_v2_pointodyssey_cache_index_20260408.json",
+      "split_stats": {
+        "train": 24,
+        "val": 18
+      },
+      "track_source": "pointodyssey_anno_real_trajs",
+      "region_crop_ready": true,
+      "mask_crop_ready": false,
+      "inspected_sample_count": 6,
+      "inspected_samples": [
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/pointodyssey/train/ani/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/pointodyssey/train/ani/anno.npz",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": false
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/pointodyssey/train/ani/clip_01824.npz",
+          "source_ref": "/home/chen034/workspace/data/pointodyssey/train/ani/anno.npz",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": false
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/pointodyssey/train/ani11_new_/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/pointodyssey/train/ani11_new_/anno.npz",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": false
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/pointodyssey/train/ani11_new_/clip_01512.npz",
+          "source_ref": "/home/chen034/workspace/data/pointodyssey/train/ani11_new_/anno.npz",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": false
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/pointodyssey/train/ani11_new_f/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/pointodyssey/train/ani11_new_f/anno.npz",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": false
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/pointodyssey/train/ani11_new_f/clip_01992.npz",
+          "source_ref": "/home/chen034/workspace/data/pointodyssey/train/ani11_new_f/anno.npz",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": false
+        }
+      ]
+    },
+    {
+      "dataset_name": "kubric",
+      "status": "ready_for_bootstrap",
+      "index_path": "/home/chen034/workspace/data/_manifests/stage1_v2_kubric_cache_index_20260408.json",
+      "split_stats": {
+        "test": 12,
+        "train": 103,
+        "val": 13
+      },
+      "track_source": "kubric_metadata_instance_tracks_real",
+      "region_crop_ready": true,
+      "mask_crop_ready": true,
+      "inspected_sample_count": 6,
+      "inspected_samples": [
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/kubric/train/scene_000001/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/kubric/panning_movi_e_full_20260407/raw/scene_000001/metadata.json",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": true
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/kubric/train/scene_000002/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/kubric/panning_movi_e_full_20260407/raw/scene_000002/metadata.json",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": true
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/kubric/train/scene_000003/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/kubric/panning_movi_e_full_20260407/raw/scene_000003/metadata.json",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": true
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/kubric/train/scene_000004/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/kubric/panning_movi_e_full_20260407/raw/scene_000004/metadata.json",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": true
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/kubric/train/scene_000005/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/kubric/panning_movi_e_full_20260407/raw/scene_000005/metadata.json",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": true
+        },
+        {
+          "cache_path": "/home/chen034/workspace/data/_cache/tracewm_stage1_v2/kubric/train/scene_000006/clip_00000.npz",
+          "source_ref": "/home/chen034/workspace/data/kubric/panning_movi_e_full_20260407/raw/scene_000006/metadata.json",
+          "cache_keys": [
+            "clip_id",
+            "dataset",
+            "extrinsics",
+            "frame_paths",
+            "intrinsics",
+            "point_ids",
+            "source_ref",
+            "split",
+            "track_source",
+            "tracks_2d",
+            "tracks_3d",
+            "valid",
+            "visibility"
+          ],
+          "frame_paths_available": true,
+          "region_crop_ready": true,
+          "mask_crop_ready": true
+        }
+      ]
+    }
+  ],
+  "bootstrap_interface_ready": true,
+  "notes": [
+    "No new data expansion in this round.",
+    "Mask crop is used when mask resources are present; otherwise region crop fallback is used."
+  ]
+}
