@@ -12,8 +12,10 @@
 ## Completion Status
 - tap_style_eval_status: partially_bridged
 - tap_style_proxy_bridge_connected: True
+- official_evaluator_invoked: True
 - official_tapvid_evaluator_connected: True
-- tap3d_style_eval_status: partially_bridged
+- official_task_faithfully_instantiated: False
+- tap3d_style_eval_status: not_yet_implemented
 - external_eval_readiness: training_ready_but_eval_gap_remains
 - next_step_choice: do_one_targeted_external_eval_fix
 
@@ -31,7 +33,7 @@
 - current evaluation binding remains VSPW+VIPSeg core-only rather than the official TAP-Vid dataset family
 
 ## TAP3D Remaining Gaps
-- tap3d_status: partially_bridged
+- tap3d_status: not_yet_implemented
 - current frozen stage2 external eval binding is fixed to VSPW+VIPSeg, which does not provide TAPVid-3D aligned XYZ ground truth for the checkpoint under test
 - current stage2 dataset/bridge path does not export intrinsics, extrinsics, projection, or lifting utilities needed to convert 2D rollout states into camera-consistent 3D trajectories
 - current evaluator-side completion round does not yet include a verified adapter that emits official TAPVid-3D prediction files with tracks_XYZ and visibility for the frozen stage2 checkpoint
@@ -46,5 +48,5 @@
 1. current mainline checkpoint is still `best.pt`: True
 2. TAP-style is currently: `partially_bridged`
 3. official TAP evaluator connected: True
-4. TAP3D-style progressed to: `partially_bridged`
+4. TAP3D-style progressed to: `not_yet_implemented`
 5. project readiness is: `training_ready_but_eval_gap_remains`

@@ -103,6 +103,8 @@ def export_proxy_payload_to_tapvid(
         "query_time_index": int(query_time_index),
         "pred_occlusion_mode": str(pred_occlusion_mode),
         "predicted_visibility_is_model_output": False,
+        "benchmark_native_full_tap_episode": False,
+        "query_time_matches_official_task": False,
         "adapter_limitations": [
             "stage2 current rollout exports future-only 2D tracks rather than full official TAP-Vid benchmark episodes",
             "query point is anchored to the first predicted frame because the frozen stage2 bridge does not export benchmark-native TAP query times",

@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 import json
+import os
 import subprocess
 
 import numpy as np
@@ -50,6 +51,13 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _env_or_default(env_name: str, default: str) -> str:
+    val = str(os.environ.get(env_name, "")).strip()
+    if val:
+        return val
+    return str(default)
+
+
 @dataclass
 class _Stage1LoadArgs:
     stage1_backbone_checkpoint: str
@@ -60,68 +68,68 @@ def parse_args() -> Any:
     p = ArgumentParser(description="Stage2 external evaluation completion round for the frozen core mainline")
     p.add_argument(
         "--core-mainline-final-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_core_mainline_train_final_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_CORE_MAINLINE_FINAL_JSON", "/home/chen034/workspace/stwm/reports/stage2_core_mainline_train_final_20260408.json"),
     )
     p.add_argument(
         "--core-mainline-raw-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_core_mainline_train_raw_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_CORE_MAINLINE_RAW_JSON", "/home/chen034/workspace/stwm/reports/stage2_core_mainline_train_raw_20260408.json"),
     )
     p.add_argument(
         "--stage2-contract-path",
-        default="/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_CONTRACT_JSON", "/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json"),
     )
     p.add_argument(
         "--checkpoint-under-test",
-        default="/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
+        default=_env_or_default("TRACEWM_STAGE2_MAINLINE_BEST_CKPT", "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt"),
     )
     p.add_argument(
         "--secondary-checkpoint",
-        default="/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/latest.pt",
+        default=_env_or_default("TRACEWM_STAGE2_MAINLINE_LATEST_CKPT", "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/latest.pt"),
     )
     p.add_argument(
         "--completion-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_JSON", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_20260408.json"),
     )
     p.add_argument(
         "--results-md",
-        default="/home/chen034/workspace/stwm/docs/STAGE2_EXTERNAL_EVAL_COMPLETION_RESULTS_20260408.md",
+        default=_env_or_default("TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_MD", "/home/chen034/workspace/stwm/docs/STAGE2_EXTERNAL_EVAL_COMPLETION_RESULTS_20260408.md"),
     )
     p.add_argument(
         "--tap-style-proxy-payload-npz",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_proxy_payload_20260408.npz",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_PROXY_PAYLOAD", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_proxy_payload_20260408.npz"),
     )
     p.add_argument(
         "--tap-style-secondary-proxy-payload-npz",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_proxy_payload_latest_20260408.npz",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_PROXY_PAYLOAD_LATEST", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_proxy_payload_latest_20260408.npz"),
     )
     p.add_argument(
         "--tap-style-official-payload-npz",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_official_payload_20260408.npz",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_OFFICIAL_PAYLOAD", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_official_payload_20260408.npz"),
     )
     p.add_argument(
         "--tap-style-secondary-official-payload-npz",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_official_payload_latest_20260408.npz",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_OFFICIAL_PAYLOAD_LATEST", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_official_payload_latest_20260408.npz"),
     )
     p.add_argument(
         "--tap-style-export-report-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_export_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_EXPORT_JSON", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_export_20260408.json"),
     )
     p.add_argument(
         "--tap-style-secondary-export-report-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_export_latest_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_EXPORT_JSON_LATEST", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_export_latest_20260408.json"),
     )
     p.add_argument(
         "--tap-style-official-eval-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_eval_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_EVAL_JSON", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_eval_20260408.json"),
     )
     p.add_argument(
         "--tap-style-secondary-official-eval-json",
-        default="/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_eval_latest_20260408.json",
+        default=_env_or_default("TRACEWM_STAGE2_TAP_EVAL_JSON_LATEST", "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_eval_latest_20260408.json"),
     )
-    p.add_argument("--tapnet-python", default=DEFAULT_TAPNET_PYTHON)
+    p.add_argument("--tapnet-python", default=_env_or_default("TRACEWM_TAPNET_PYTHON", DEFAULT_TAPNET_PYTHON))
     p.add_argument("--tap-query-mode", default="first")
     p.add_argument("--tap-raster-resolution", type=int, default=256)
-    p.add_argument("--tap3d-dataset-root", default="/home/chen034/workspace/data/tapvid3d/minival_dataset")
+    p.add_argument("--tap3d-dataset-root", default=_env_or_default("TRACEWM_TAPVID3D_DATASET_ROOT", "/home/chen034/workspace/data/tapvid3d/minival_dataset"))
     p.add_argument("--max-eval-batches", type=int, default=8)
     return p.parse_args()
 
@@ -463,13 +471,32 @@ def _evaluate_checkpoint(
     exact_missing_components: List[str] = []
     proxy_connected = True
     official_connected = bool(official_eval.get("official_tapvid_evaluator_connected", False))
+    official_evaluator_invoked = bool(official_eval.get("official_evaluator_invoked", False))
+    official_payload_export = official_payload_export if isinstance(official_payload_export, dict) else {}
+    benchmark_native_full_tap_episode = bool(official_payload_export.get("benchmark_native_full_tap_episode", False))
+    query_time_matches_official_task = bool(official_payload_export.get("query_time_matches_official_task", False))
+    pred_visibility_from_model_output = bool(official_payload_export.get("predicted_visibility_is_model_output", False))
+    dataset_binding_is_official_tap_dataset_family = False
+    official_task_faithfully_instantiated = bool(
+        benchmark_native_full_tap_episode
+        and query_time_matches_official_task
+        and pred_visibility_from_model_output
+        and dataset_binding_is_official_tap_dataset_family
+    )
 
-    if not official_connected:
-        exact_blocking_reasons.append(str(official_eval.get("exact_blocking_reason", "official TAP-Vid evaluator could not be invoked")))
-        exact_missing_components.append(str(official_eval.get("exact_missing_component", "working official tapvid runtime hook")))
+    if official_evaluator_invoked and official_task_faithfully_instantiated:
+        tap_style_status = "fully_implemented_and_run"
+    elif official_evaluator_invoked or official_connected:
+        tap_style_status = "partially_bridged"
+    elif proxy_connected:
         tap_style_status = "proxy_only"
     else:
-        tap_style_status = "partially_bridged"
+        tap_style_status = "not_yet_implemented"
+
+    if not official_evaluator_invoked:
+        exact_blocking_reasons.append(str(official_eval.get("exact_blocking_reason", "official TAP-Vid evaluator could not be invoked")))
+        exact_missing_components.append(str(official_eval.get("exact_missing_component", "working official tapvid runtime hook")))
+    if official_evaluator_invoked and not official_task_faithfully_instantiated:
         exact_blocking_reasons.extend(
             [
                 "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
@@ -491,7 +518,13 @@ def _evaluate_checkpoint(
     tap_style_eval = {
         "status": tap_style_status,
         "proxy_bridge_connected": bool(proxy_connected),
+        "official_evaluator_invoked": bool(official_evaluator_invoked),
         "official_tapvid_evaluator_connected": bool(official_connected),
+        "official_task_faithfully_instantiated": bool(official_task_faithfully_instantiated),
+        "benchmark_native_full_tap_episode": bool(benchmark_native_full_tap_episode),
+        "query_time_matches_official_task": bool(query_time_matches_official_task),
+        "pred_visibility_from_model_output": bool(pred_visibility_from_model_output),
+        "dataset_binding_is_official_tap_dataset_family": bool(dataset_binding_is_official_tap_dataset_family),
         "bridge_protocol": "stage2_tap_style_completion_v1",
         "proxy_payload": proxy_payload,
         "official_payload_export": official_payload_export,
@@ -568,6 +601,9 @@ def _build_tap3d_completion(
     runtime_probe = _probe_official_tapvid3d_runtime(str(tapnet_python))
     dataset_probe = _scan_tapvid3d_dataset(str(tap3d_dataset_root))
 
+    aligned_3d_gt_for_current_binding = False
+    camera_geometry_or_lifting_available = False
+    verified_exporter_to_tracks_xyz_visibility = False
     missing_components = [
         "tap3d_aligned_ground_truth_for_current_core_only_vspw_vipseg_eval_binding",
         "camera_geometry_projection_or_2d_to_3d_lifting_path_for_stage2_bridge",
@@ -579,7 +615,7 @@ def _build_tap3d_completion(
         "current evaluator-side completion round does not yet include a verified adapter that emits official TAPVid-3D prediction files with tracks_XYZ and visibility for the frozen stage2 checkpoint",
     ]
 
-    if bool(runtime_probe.get("official_tapvid3d_metric_importable", False)) or bool(dataset_probe.get("total_npz_files", 0) > 0):
+    if aligned_3d_gt_for_current_binding and camera_geometry_or_lifting_available and verified_exporter_to_tracks_xyz_visibility:
         status = "partially_bridged"
     else:
         status = "not_yet_implemented"
@@ -592,6 +628,9 @@ def _build_tap3d_completion(
         "official_tapvid3d_evaluator_connected": False,
         "runtime_probe": runtime_probe,
         "reference_dataset_probe": dataset_probe,
+        "aligned_3d_gt_for_current_binding": bool(aligned_3d_gt_for_current_binding),
+        "camera_geometry_projection_or_lifting_path_available": bool(camera_geometry_or_lifting_available),
+        "verified_exporter_to_tracks_xyz_visibility": bool(verified_exporter_to_tracks_xyz_visibility),
         "current_stage2_checkpoint_payload_has_3d_tracks": False,
         "current_stage2_checkpoint_payload_has_camera_geometry": False,
         "exact_blocking_reason": exact_blocking_reasons[0],
@@ -654,7 +693,9 @@ def _write_md(path: str | Path, payload: Dict[str, Any]) -> None:
         "## Completion Status",
         f"- tap_style_eval_status: {payload.get('tap_style_eval_status', '')}",
         f"- tap_style_proxy_bridge_connected: {bool(payload.get('tap_style_proxy_bridge_connected', False))}",
+        f"- official_evaluator_invoked: {bool(payload.get('official_evaluator_invoked', False))}",
         f"- official_tapvid_evaluator_connected: {bool(payload.get('official_tapvid_evaluator_connected', False))}",
+        f"- official_task_faithfully_instantiated: {bool(payload.get('official_task_faithfully_instantiated', False))}",
         f"- tap3d_style_eval_status: {payload.get('tap3d_style_eval_status', '')}",
         f"- external_eval_readiness: {payload.get('external_eval_readiness', '')}",
         f"- next_step_choice: {payload.get('next_step_choice', '')}",
@@ -771,7 +812,9 @@ def main() -> None:
     tap_style_eval = primary.get("tap_style_eval", {}) if isinstance(primary.get("tap_style_eval", {}), dict) else {}
     tap_style_eval_status = str(tap_style_eval.get("status", "not_yet_implemented"))
     tap_style_proxy_bridge_connected = bool(tap_style_eval.get("proxy_bridge_connected", False))
+    official_evaluator_invoked = bool(tap_style_eval.get("official_evaluator_invoked", False))
     official_tapvid_evaluator_connected = bool(tap_style_eval.get("official_tapvid_evaluator_connected", False))
+    official_task_faithfully_instantiated = bool(tap_style_eval.get("official_task_faithfully_instantiated", False))
 
     tap3d_completion = _build_tap3d_completion(
         tapnet_python=str(args.tapnet_python),
@@ -794,7 +837,7 @@ def main() -> None:
     if tap_style_eval_status == "fully_implemented_and_run" and tap3d_style_eval_status == "fully_implemented_and_run":
         external_eval_readiness = "paper_eval_ready"
         next_step_choice = "finalize_stage2_mainline_and_prepare_paper_results"
-    elif tap_style_proxy_bridge_connected or official_tapvid_evaluator_connected:
+    elif tap_style_proxy_bridge_connected or official_evaluator_invoked or official_tapvid_evaluator_connected:
         external_eval_readiness = "training_ready_but_eval_gap_remains"
         next_step_choice = "do_one_targeted_external_eval_fix"
     else:
@@ -817,7 +860,9 @@ def main() -> None:
         "frozen_boundary_kept_correct": bool(final_payload.get("frozen_boundary_kept_correct", False)),
         "tap_style_eval_status": tap_style_eval_status,
         "tap_style_proxy_bridge_connected": tap_style_proxy_bridge_connected,
+        "official_evaluator_invoked": official_evaluator_invoked,
         "official_tapvid_evaluator_connected": official_tapvid_evaluator_connected,
+        "official_task_faithfully_instantiated": official_task_faithfully_instantiated,
         "tap3d_style_eval_status": tap3d_style_eval_status,
         "tap3d_missing_components": tap3d_completion.get("missing_component_list", []),
         "external_eval_readiness": external_eval_readiness,
@@ -836,7 +881,9 @@ def main() -> None:
     print(f"[stage2-external-eval-completion] results_md={args.results_md}")
     print(f"[stage2-external-eval-completion] current_stage2_mainline_checkpoint={completion_payload['current_stage2_mainline_checkpoint']}")
     print(f"[stage2-external-eval-completion] tap_style_eval_status={completion_payload['tap_style_eval_status']}")
+    print(f"[stage2-external-eval-completion] official_evaluator_invoked={completion_payload['official_evaluator_invoked']}")
     print(f"[stage2-external-eval-completion] official_tapvid_evaluator_connected={completion_payload['official_tapvid_evaluator_connected']}")
+    print(f"[stage2-external-eval-completion] official_task_faithfully_instantiated={completion_payload['official_task_faithfully_instantiated']}")
     print(f"[stage2-external-eval-completion] tap3d_style_eval_status={completion_payload['tap3d_style_eval_status']}")
     print(f"[stage2-external-eval-completion] external_eval_readiness={completion_payload['external_eval_readiness']}")
     print(f"[stage2-external-eval-completion] next_step_choice={completion_payload['next_step_choice']}")
