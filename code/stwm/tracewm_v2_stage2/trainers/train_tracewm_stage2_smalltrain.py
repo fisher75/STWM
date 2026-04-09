@@ -493,19 +493,6 @@ def _evaluate(
 
 
 def _available_tertiary_metric(metrics: Dict[str, Any]) -> float:
-    tap = metrics.get("tapvid_style_eval", {}) if isinstance(metrics.get("tapvid_style_eval", {}), dict) else {}
-    tap3d = metrics.get("tapvid3d_limited_eval", {}) if isinstance(metrics.get("tapvid3d_limited_eval", {}), dict) else {}
-
-    if bool(tap.get("compatible", False)):
-        try:
-            return float(tap.get("free_rollout_endpoint_l2", 1e9))
-        except Exception:
-            return 1e9
-    if bool(tap3d.get("compatible", False)):
-        try:
-            return float(tap3d.get("free_rollout_endpoint_l2", 1e9))
-        except Exception:
-            return 1e9
     try:
         return float(metrics.get("teacher_forced_coord_loss", 1e9))
     except Exception:
@@ -518,6 +505,24 @@ def _rank_key(metrics: Dict[str, Any]) -> Tuple[float, float, float]:
         float(metrics.get("free_rollout_coord_mean_l2", 1e9)),
         float(_available_tertiary_metric(metrics)),
     )
+
+
+def _metric_triplet(metrics: Dict[str, Any]) -> Dict[str, float]:
+    return {
+        "teacher_forced_coord_loss": float(metrics.get("teacher_forced_coord_loss", 1e9)),
+        "free_rollout_coord_mean_l2": float(metrics.get("free_rollout_coord_mean_l2", 1e9)),
+        "free_rollout_endpoint_l2": float(metrics.get("free_rollout_endpoint_l2", 1e9)),
+        "total_loss_reference": float(metrics.get("total_loss_reference", 1e9)),
+    }
+
+
+def _split_counts_used(summary: Dict[str, Dict[str, Any]]) -> Dict[str, int]:
+    out: Dict[str, int] = {}
+    for name, meta in summary.items():
+        if not isinstance(meta, dict):
+            continue
+        out[str(name)] = int(meta.get("sample_count", 0) or 0)
+    return out
 
 
 def _checkpoint_payload(
@@ -899,9 +904,20 @@ def main() -> None:
         _save_latest_and_optional_step(step_now=int(global_step), save_step=False)
 
     final_metrics = dict(best_metric_so_far.get("metrics", {})) if isinstance(best_metric_so_far, dict) else {}
+    final_metric_triplet = _metric_triplet(final_metrics)
     frozen_count = int(stage1_meta.get("parameter_count", 0))
     trainable_count = int(sum(p.numel() for p in trainable_params))
     stage1_trainable_count = int(stage1_meta.get("trainable_parameter_count", 0))
+
+    best_checkpoint_metric = _metric_triplet(
+        (best_metric_so_far.get("metrics", {}) if isinstance(best_metric_so_far, dict) and isinstance(best_metric_so_far.get("metrics", {}), dict) else final_metrics)
+    )
+    latest_event = eval_history[-1] if eval_history and isinstance(eval_history[-1], dict) else {}
+    latest_metrics = latest_event.get("metrics", {}) if isinstance(latest_event.get("metrics", {}), dict) else final_metrics
+    latest_checkpoint_metric = _metric_triplet(latest_metrics)
+
+    train_split_counts_used = _split_counts_used(train_summary)
+    val_split_counts_used = _split_counts_used(val_summary)
 
     boundary_ok = bool(stage1_trainable_count == 0 and (not stage1_grad_detected_any))
     run_stable = bool(
@@ -966,9 +982,35 @@ def main() -> None:
         "selection_policy": {
             "primary": "free_rollout_endpoint_l2",
             "secondary": "free_rollout_coord_mean_l2",
-            "tertiary": "available_eval_metric",
+            "tertiary": "teacher_forced_coord_loss",
             "total_loss_usage": "reference_only",
         },
+        "comparison_sorting": {
+            "primary": "free_rollout_endpoint_l2",
+            "secondary": "free_rollout_coord_mean_l2",
+            "tertiary": "teacher_forced_coord_loss",
+            "total_loss_usage": "reference_only",
+        },
+        "teacher_forced_coord_loss": float(final_metric_triplet["teacher_forced_coord_loss"]),
+        "free_rollout_coord_mean_l2": float(final_metric_triplet["free_rollout_coord_mean_l2"]),
+        "free_rollout_endpoint_l2": float(final_metric_triplet["free_rollout_endpoint_l2"]),
+        "best_checkpoint_metric": {
+            "global_step": int((best_metric_so_far or {}).get("global_step", -1)),
+            "metrics": best_checkpoint_metric,
+            "rank_key": _rank_key(best_checkpoint_metric),
+        },
+        "latest_checkpoint_metric": {
+            "global_step": int(latest_event.get("global_step", -1) or -1),
+            "metrics": latest_checkpoint_metric,
+            "rank_key": _rank_key(latest_checkpoint_metric),
+        },
+        "train_split_counts_used": train_split_counts_used,
+        "val_split_counts_used": val_split_counts_used,
+        "train_split_total_count_used": int(sum(train_split_counts_used.values())),
+        "val_split_total_count_used": int(sum(val_split_counts_used.values())),
+        "frozen_parameter_count": int(frozen_count),
+        "trainable_parameter_count": int(trainable_count),
+        "boundary_ok": bool(boundary_ok),
         "final_metrics": final_metrics,
         "best_metric_so_far": best_metric_so_far,
         "eval_history": eval_history,
