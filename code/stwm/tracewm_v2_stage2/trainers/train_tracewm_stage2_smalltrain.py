@@ -78,6 +78,9 @@ def parse_args() -> Any:
 
     p.add_argument("--semantic-hidden-dim", type=int, default=256)
     p.add_argument("--semantic-embed-dim", type=int, default=256)
+    p.add_argument("--semantic-source-mainline", default="crop_visual_encoder")
+    p.add_argument("--legacy-semantic-source", default="hand_crafted_stats")
+    p.add_argument("--semantic-crop-size", type=int, default=64)
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -254,6 +257,10 @@ def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool) 
         "token_mask",
         "semantic_features",
         "semantic_mask",
+        "semantic_rgb_crop",
+        "semantic_mask_crop",
+        "semantic_crop_valid",
+        "semantic_mask_crop_valid",
     ]:
         out[k] = batch[k].to(device, non_blocking=non_blocking)
     return out
@@ -295,6 +302,7 @@ def _teacher_forced_predict(
     readout_head: torch.nn.Linear,
     batch: Dict[str, Any],
     obs_len: int,
+    semantic_source_mainline: str,
 ) -> Dict[str, Any]:
     full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
     shifted = _prepare_shifted(full_state)
@@ -303,7 +311,12 @@ def _teacher_forced_predict(
     with torch.no_grad():
         stage1_out = stage1_model(shifted, token_mask=token_mask)
 
-    sem_enc = semantic_encoder(batch["semantic_features"])
+    sem_enc = semantic_encoder(
+        batch.get("semantic_features"),
+        semantic_rgb_crop=batch.get("semantic_rgb_crop"),
+        semantic_mask_crop=batch.get("semantic_mask_crop"),
+        source_mode=str(semantic_source_mainline),
+    )
     fused_hidden, aux = semantic_fusion(stage1_out["hidden"], sem_enc, token_mask=token_mask)
     pred_coord = readout_head(fused_hidden[:, int(obs_len) :])
 
@@ -329,6 +342,7 @@ def _free_rollout_predict(
     batch: Dict[str, Any],
     obs_len: int,
     fut_len: int,
+    semantic_source_mainline: str,
 ) -> Dict[str, Any]:
     token_mask = batch["token_mask"]
     obs_state = batch["obs_state"]
@@ -339,7 +353,12 @@ def _free_rollout_predict(
     state_seq = torch.zeros((bsz, total_len, k_len, d_state), device=obs_state.device, dtype=obs_state.dtype)
     state_seq[:, : int(obs_len)] = obs_state
 
-    sem_enc = semantic_encoder(batch["semantic_features"])
+    sem_enc = semantic_encoder(
+        batch.get("semantic_features"),
+        semantic_rgb_crop=batch.get("semantic_rgb_crop"),
+        semantic_mask_crop=batch.get("semantic_mask_crop"),
+        source_mode=str(semantic_source_mainline),
+    )
     gate_vals: List[float] = []
 
     for step in range(int(fut_len)):
@@ -382,6 +401,7 @@ def _evaluate(
     obs_len: int,
     fut_len: int,
     max_batches: int,
+    semantic_source_mainline: str,
 ) -> Dict[str, Any]:
     semantic_encoder.eval()
     semantic_fusion.eval()
@@ -411,6 +431,7 @@ def _evaluate(
                 readout_head=readout_head,
                 batch=batch,
                 obs_len=int(obs_len),
+                semantic_source_mainline=str(semantic_source_mainline),
             )
             fr_out = _free_rollout_predict(
                 stage1_model=stage1_model,
@@ -420,6 +441,7 @@ def _evaluate(
                 batch=batch,
                 obs_len=int(obs_len),
                 fut_len=int(fut_len),
+                semantic_source_mainline=str(semantic_source_mainline),
             )
 
             tf_sq = ((tf_out["pred_coord"] - tf_out["target_coord"]) ** 2).sum(dim=-1)
@@ -579,6 +601,8 @@ def main() -> None:
         max_tokens=int(args.max_tokens),
         max_samples_per_dataset=int(args.max_samples_train),
         semantic_patch_radius=int(args.semantic_patch_radius),
+        semantic_crop_size=int(args.semantic_crop_size),
+        semantic_source_mainline=str(args.semantic_source_mainline),
     )
     val_cfg = Stage2SemanticDatasetConfig(
         dataset_names=[str(x) for x in args.dataset_names],
@@ -589,6 +613,8 @@ def main() -> None:
         max_tokens=int(args.max_tokens),
         max_samples_per_dataset=int(args.max_samples_val),
         semantic_patch_radius=int(args.semantic_patch_radius),
+        semantic_crop_size=int(args.semantic_crop_size),
+        semantic_source_mainline=str(args.semantic_source_mainline),
     )
 
     train_ds = Stage2SemanticDataset(train_cfg)
@@ -636,6 +662,8 @@ def main() -> None:
             hidden_dim=int(args.semantic_hidden_dim),
             output_dim=int(args.semantic_embed_dim),
             dropout=0.1,
+            mainline_source=str(args.semantic_source_mainline),
+            legacy_source=str(args.legacy_semantic_source),
         )
     ).to(device)
     fusion_hidden_dim = int(stage1_model.config.d_model)
@@ -667,6 +695,8 @@ def main() -> None:
         "started_at_utc": now_iso(),
         "cuda_visible_devices": str(os.environ.get("CUDA_VISIBLE_DEVICES", "")),
         "gpu_selection": gpu_selection,
+        "current_mainline_semantic_source": str(args.semantic_source_mainline),
+        "legacy_semantic_source": str(args.legacy_semantic_source),
     }
 
     resolved_resume = _resolve_resume_path(
@@ -746,6 +776,7 @@ def main() -> None:
             readout_head=readout_head,
             batch=batch,
             obs_len=int(args.obs_len),
+            semantic_source_mainline=str(args.semantic_source_mainline),
         )
 
         teacher_loss = _masked_mse_coord(tf_out["pred_coord"], tf_out["target_coord"], tf_out["valid_mask"])
@@ -796,6 +827,7 @@ def main() -> None:
                 obs_len=int(args.obs_len),
                 fut_len=int(args.fut_len),
                 max_batches=int(args.eval_max_batches),
+                semantic_source_mainline=str(args.semantic_source_mainline),
             )
             rk = _rank_key(metrics)
             event = {
@@ -841,6 +873,7 @@ def main() -> None:
             obs_len=int(args.obs_len),
             fut_len=int(args.fut_len),
             max_batches=int(args.eval_max_batches),
+            semantic_source_mainline=str(args.semantic_source_mainline),
         )
         rk = _rank_key(metrics)
         best_metric_so_far = {
@@ -881,6 +914,8 @@ def main() -> None:
         "generated_at_utc": now_iso(),
         "run_name": str(args.run_name),
         "objective": "Stage2 small-train run on frozen Stage1 220m backbone",
+        "current_mainline_semantic_source": str(args.semantic_source_mainline),
+        "legacy_semantic_source": str(args.legacy_semantic_source),
         "stage2_contract_path": str(args.stage2_contract_path),
         "stage2_data_binding": {
             "core": core_names,
@@ -923,7 +958,10 @@ def main() -> None:
         "semantic_branch_metrics": {
             "train_gate_mean": float(sum(gate_history) / max(len(gate_history), 1)),
             "train_semantic_input_nonempty_ratio": float(semantic_nonempty_count / max(len(gate_history), 1)),
-            "semantic_feature_dim": 10,
+            "semantic_crop_size": int(args.semantic_crop_size),
+            "current_mainline_semantic_source": str(args.semantic_source_mainline),
+            "legacy_semantic_source": str(args.legacy_semantic_source),
+            "legacy_semantic_feature_dim": 10,
         },
         "selection_policy": {
             "primary": "free_rollout_endpoint_l2",

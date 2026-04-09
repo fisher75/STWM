@@ -14,6 +14,7 @@ from stwm.tracewm_v2.constants import STATE_DIM
 
 
 SEMANTIC_FEATURE_DIM = 10
+DEFAULT_SEMANTIC_CROP_SIZE = 64
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 
@@ -27,6 +28,8 @@ class Stage2SemanticDatasetConfig:
     max_tokens: int
     max_samples_per_dataset: int
     semantic_patch_radius: int = 12
+    semantic_crop_size: int = DEFAULT_SEMANTIC_CROP_SIZE
+    semantic_source_mainline: str = "crop_visual_encoder"
     semantic_frame_index: int = 0
 
 
@@ -185,6 +188,45 @@ def _semantic_feature(
         ],
         dtype=np.float32,
     )
+
+
+def _build_semantic_crops(
+    rgb: np.ndarray,
+    mask: np.ndarray | None,
+    box_xyxy: np.ndarray,
+    crop_size: int,
+) -> Tuple[np.ndarray, np.ndarray, bool]:
+    h, w, _ = rgb.shape
+    x0 = max(0, min(int(float(box_xyxy[0])), w - 1))
+    y0 = max(0, min(int(float(box_xyxy[1])), h - 1))
+    x1 = max(x0 + 1, min(int(float(box_xyxy[2])), w))
+    y1 = max(y0 + 1, min(int(float(box_xyxy[3])), h))
+
+    rgb_patch = rgb[y0:y1, x0:x1]
+    if rgb_patch.size == 0:
+        rgb_patch = np.zeros((1, 1, 3), dtype=np.float32)
+
+    rgb_u8 = np.clip(rgb_patch * 255.0, 0.0, 255.0).astype(np.uint8)
+    rgb_img = Image.fromarray(rgb_u8, mode="RGB")
+    rgb_resized = np.asarray(
+        rgb_img.resize((int(crop_size), int(crop_size)), resample=Image.BILINEAR),
+        dtype=np.float32,
+    )
+    rgb_crop = np.transpose(rgb_resized / 255.0, (2, 0, 1)).astype(np.float32)
+
+    mask_available = bool(mask is not None and mask.shape[0] == h and mask.shape[1] == w)
+    if mask_available:
+        mask_patch = (mask[y0:y1, x0:x1] > 0).astype(np.uint8) * 255
+    else:
+        mask_patch = np.zeros((max(y1 - y0, 1), max(x1 - x0, 1)), dtype=np.uint8)
+
+    mask_img = Image.fromarray(mask_patch, mode="L")
+    mask_resized = np.asarray(
+        mask_img.resize((int(crop_size), int(crop_size)), resample=Image.NEAREST),
+        dtype=np.float32,
+    )
+    mask_crop = (mask_resized[None, ...] / 255.0).astype(np.float32)
+    return rgb_crop, mask_crop, bool(mask_available)
 
 
 def _build_state_from_boxes(boxes: List[np.ndarray], sizes: List[Tuple[int, int]]) -> np.ndarray:
@@ -397,6 +439,13 @@ class Stage2SemanticDataset(Dataset):
             sem_mask = _load_mask(mask_paths[0] if mask_paths else "")
             sem_box = boxes[0]
 
+        semantic_rgb_crop, semantic_mask_crop, mask_crop_available = _build_semantic_crops(
+            rgb=sem_rgb,
+            mask=sem_mask,
+            box_xyxy=sem_box,
+            crop_size=int(self.cfg.semantic_crop_size),
+        )
+
         semantic_feat = _semantic_feature(
             rgb=sem_rgb,
             mask=sem_mask,
@@ -429,14 +478,23 @@ class Stage2SemanticDataset(Dataset):
             "semantic_features": torch.from_numpy(semantic_feat[None, :]).to(torch.float32),
             "semantic_boxes": torch.from_numpy(np.asarray([sem_box], dtype=np.float32)).to(torch.float32),
             "semantic_mask": torch.tensor([True], dtype=torch.bool),
+            "semantic_rgb_crop": torch.from_numpy(semantic_rgb_crop[None, ...]).to(torch.float32),
+            "semantic_mask_crop": torch.from_numpy(semantic_mask_crop[None, ...]).to(torch.float32),
+            "semantic_crop_valid": torch.tensor([True], dtype=torch.bool),
+            "semantic_mask_crop_valid": torch.tensor([bool(mask_crop_available)], dtype=torch.bool),
             "semantic_frame_path": sem_frame_path,
             "semantic_mask_path": sem_mask_path,
             "semantic_source_mode": "object_region_or_mask_crop_visual_state",
+            "current_mainline_semantic_source": str(self.cfg.semantic_source_mainline),
+            "legacy_semantic_source": "hand_crafted_stats",
             "semantic_source_summary": {
                 "mask_crop_used_tokens": int(1 if sem_mask_used else 0),
                 "region_crop_used_tokens": int(0 if sem_mask_used else 1),
                 "mask_available": bool(sem_mask_path),
-                "semantic_feature_dim": int(SEMANTIC_FEATURE_DIM),
+                "semantic_crop_size": int(self.cfg.semantic_crop_size),
+                "current_mainline_semantic_source": str(self.cfg.semantic_source_mainline),
+                "legacy_semantic_source": "hand_crafted_stats",
+                "legacy_semantic_feature_dim": int(SEMANTIC_FEATURE_DIM),
             },
         }
         return sample
@@ -450,6 +508,8 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
     obs_len = int(batch[0]["obs_state"].shape[0])
     fut_len = int(batch[0]["fut_state"].shape[0])
     feat_dim = int(batch[0]["semantic_features"].shape[-1])
+    crop_h = int(batch[0]["semantic_rgb_crop"].shape[-2])
+    crop_w = int(batch[0]["semantic_rgb_crop"].shape[-1])
     max_k = max(int(item["obs_state"].shape[1]) for item in batch)
 
     obs_state = torch.zeros((bsz, obs_len, max_k, STATE_DIM), dtype=torch.float32)
@@ -462,6 +522,10 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
     semantic_features = torch.zeros((bsz, max_k, feat_dim), dtype=torch.float32)
     semantic_boxes = torch.zeros((bsz, max_k, 4), dtype=torch.float32)
     semantic_mask = torch.zeros((bsz, max_k), dtype=torch.bool)
+    semantic_rgb_crop = torch.zeros((bsz, max_k, 3, crop_h, crop_w), dtype=torch.float32)
+    semantic_mask_crop = torch.zeros((bsz, max_k, 1, crop_h, crop_w), dtype=torch.float32)
+    semantic_crop_valid = torch.zeros((bsz, max_k), dtype=torch.bool)
+    semantic_mask_crop_valid = torch.zeros((bsz, max_k), dtype=torch.bool)
 
     semantic_frame_paths: List[str] = []
     semantic_mask_paths: List[str] = []
@@ -481,6 +545,10 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         semantic_features[i, :k] = item["semantic_features"]
         semantic_boxes[i, :k] = item["semantic_boxes"]
         semantic_mask[i, :k] = item["semantic_mask"]
+        semantic_rgb_crop[i, :k] = item["semantic_rgb_crop"]
+        semantic_mask_crop[i, :k] = item["semantic_mask_crop"]
+        semantic_crop_valid[i, :k] = item["semantic_crop_valid"]
+        semantic_mask_crop_valid[i, :k] = item["semantic_mask_crop_valid"]
 
         semantic_frame_paths.append(str(item.get("semantic_frame_path", "")))
         semantic_mask_paths.append(str(item.get("semantic_mask_path", "")))
@@ -499,8 +567,14 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         "semantic_features": semantic_features,
         "semantic_boxes": semantic_boxes,
         "semantic_mask": semantic_mask,
+        "semantic_rgb_crop": semantic_rgb_crop,
+        "semantic_mask_crop": semantic_mask_crop,
+        "semantic_crop_valid": semantic_crop_valid,
+        "semantic_mask_crop_valid": semantic_mask_crop_valid,
         "semantic_frame_paths": semantic_frame_paths,
         "semantic_mask_paths": semantic_mask_paths,
         "semantic_source_mode": "object_region_or_mask_crop_visual_state",
+        "current_mainline_semantic_source": str(batch[0].get("current_mainline_semantic_source", "crop_visual_encoder")),
+        "legacy_semantic_source": str(batch[0].get("legacy_semantic_source", "hand_crafted_stats")),
         "semantic_source_summaries": semantic_source_summaries,
     }
