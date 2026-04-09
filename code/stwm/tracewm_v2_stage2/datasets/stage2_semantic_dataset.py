@@ -300,13 +300,20 @@ class Stage2SemanticDataset(Dataset):
             else:
                 ds_entries = []
 
-            max_take = max(int(cfg.max_samples_per_dataset), 1)
-            ds_entries = ds_entries[:max_take]
+            source_count_before_limit = int(len(ds_entries))
+            requested_limit = int(cfg.max_samples_per_dataset)
+            full_dataset_used = bool(requested_limit < 0)
+            if not full_dataset_used:
+                max_take = max(int(requested_limit), 1)
+                ds_entries = ds_entries[:max_take]
             self.entries.extend(ds_entries)
 
             display_name = str(rec.get("dataset_name", name))
             self.dataset_summary[display_name] = {
                 "sample_count": int(len(ds_entries)),
+                "source_count_before_limit": int(source_count_before_limit),
+                "requested_max_samples_per_dataset": int(requested_limit),
+                "full_dataset_used": bool(full_dataset_used),
                 "split": str(cfg.split),
                 "used_in_bootstrap_train": bool(rec.get("used_in_bootstrap_train", False)),
                 "used_in_bootstrap_eval": bool(rec.get("used_in_bootstrap_eval", False)),
