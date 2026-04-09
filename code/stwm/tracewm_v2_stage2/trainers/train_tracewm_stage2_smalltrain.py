@@ -88,6 +88,7 @@ def parse_args() -> Any:
 
     p.add_argument("--run-name", required=True)
     p.add_argument("--run-summary-json", required=True)
+    p.add_argument("--progress-json", default="")
     p.add_argument("--seed", type=int, default=20260408)
     return p.parse_args()
 
@@ -525,6 +526,66 @@ def _split_counts_used(summary: Dict[str, Dict[str, Any]]) -> Dict[str, int]:
     return out
 
 
+def _full_usage_flag(max_samples_value: Any) -> bool:
+    try:
+        return int(max_samples_value) < 0
+    except Exception:
+        return False
+
+
+def _build_progress_payload(
+    *,
+    args: Any,
+    status: str,
+    global_step: int,
+    target_steps: int,
+    train_summary: Dict[str, Dict[str, Any]],
+    val_summary: Dict[str, Dict[str, Any]],
+    run_metadata: Dict[str, Any],
+    runtime_meta: Dict[str, Any],
+    checkpoint_dir: Path,
+    best_ckpt: Path,
+    latest_ckpt: Path,
+    eval_history: List[Dict[str, Any]],
+    best_metric_so_far: Dict[str, Any] | None,
+) -> Dict[str, Any]:
+    latest_event = eval_history[-1] if eval_history and isinstance(eval_history[-1], dict) else {}
+    latest_metrics = latest_event.get("metrics", {}) if isinstance(latest_event.get("metrics", {}), dict) else {}
+    return {
+        "generated_at_utc": now_iso(),
+        "run_name": str(args.run_name),
+        "status": str(status),
+        "current_mainline_semantic_source": str(args.semantic_source_mainline),
+        "datasets_bound_for_train": [str(x) for x in args.dataset_names],
+        "datasets_bound_for_eval": [str(x) for x in args.dataset_names],
+        "runtime": runtime_meta,
+        "run_metadata": run_metadata,
+        "global_step": int(global_step),
+        "train_steps_target": int(target_steps),
+        "progress_ratio": float(float(global_step) / float(max(target_steps, 1))),
+        "whether_full_train_used": bool(_full_usage_flag(args.max_samples_train)),
+        "whether_full_val_used": bool(_full_usage_flag(args.max_samples_val)),
+        "effective_train_sample_count_per_dataset": _split_counts_used(train_summary),
+        "effective_val_sample_count_per_dataset": _split_counts_used(val_summary),
+        "checkpoint_inventory": {
+            "checkpoint_dir": str(checkpoint_dir),
+            "best": str(best_ckpt),
+            "latest": str(latest_ckpt),
+            "best_exists": bool(best_ckpt.exists()),
+            "latest_exists": bool(latest_ckpt.exists()),
+        },
+        "latest_eval_metrics": _metric_triplet(latest_metrics),
+        "best_metric_so_far": best_metric_so_far if isinstance(best_metric_so_far, dict) else None,
+    }
+
+
+def _write_progress_snapshot(path_value: str, payload: Dict[str, Any]) -> None:
+    target = str(path_value).strip()
+    if not target:
+        return
+    _write_json(Path(target), payload)
+
+
 def _checkpoint_payload(
     *,
     args: Any,
@@ -564,6 +625,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     run_summary_json = Path(str(args.run_summary_json))
     run_summary_json.parent.mkdir(parents=True, exist_ok=True)
+    progress_json = str(args.progress_json).strip()
 
     best_ckpt = output_dir / "best.pt"
     latest_ckpt = output_dir / "latest.pt"
@@ -754,6 +816,25 @@ def main() -> None:
     eval_interval = int(args.eval_interval)
     save_every = int(args.save_every_n_steps)
 
+    _write_progress_snapshot(
+        progress_json,
+        _build_progress_payload(
+            args=args,
+            status="initialized",
+            global_step=int(global_step),
+            target_steps=int(target_steps),
+            train_summary=train_summary,
+            val_summary=val_summary,
+            run_metadata=run_metadata,
+            runtime_meta=runtime_meta,
+            checkpoint_dir=output_dir,
+            best_ckpt=best_ckpt,
+            latest_ckpt=latest_ckpt,
+            eval_history=eval_history,
+            best_metric_so_far=best_metric_so_far,
+        ),
+    )
+
     def _save_latest_and_optional_step(step_now: int, save_step: bool) -> None:
         payload = _checkpoint_payload(
             args=args,
@@ -869,6 +950,25 @@ def main() -> None:
                 )
                 _atomic_torch_save(best_payload, best_ckpt)
 
+            _write_progress_snapshot(
+                progress_json,
+                _build_progress_payload(
+                    args=args,
+                    status="running",
+                    global_step=int(global_step),
+                    target_steps=int(target_steps),
+                    train_summary=train_summary,
+                    val_summary=val_summary,
+                    run_metadata=run_metadata,
+                    runtime_meta=runtime_meta,
+                    checkpoint_dir=output_dir,
+                    best_ckpt=best_ckpt,
+                    latest_ckpt=latest_ckpt,
+                    eval_history=eval_history,
+                    best_metric_so_far=best_metric_so_far,
+                ),
+            )
+
         should_save_step = bool(global_step % save_every == 0)
         should_save_latest = bool(should_save_step or global_step == target_steps)
         if should_save_latest:
@@ -970,6 +1070,10 @@ def main() -> None:
             "train": train_summary,
             "val": val_summary,
         },
+        "whether_full_train_used": bool(_full_usage_flag(args.max_samples_train)),
+        "whether_full_val_used": bool(_full_usage_flag(args.max_samples_val)),
+        "effective_train_sample_count_per_dataset": train_split_counts_used,
+        "effective_val_sample_count_per_dataset": val_split_counts_used,
         "core_dataset_inputs": {
             "ready": bool(core_ready),
             "details": core_details,
@@ -1049,6 +1153,24 @@ def main() -> None:
     }
 
     _write_json(run_summary_json, payload)
+    _write_progress_snapshot(
+        progress_json,
+        _build_progress_payload(
+            args=args,
+            status="completed",
+            global_step=int(global_step),
+            target_steps=int(target_steps),
+            train_summary=train_summary,
+            val_summary=val_summary,
+            run_metadata=run_metadata,
+            runtime_meta=runtime_meta,
+            checkpoint_dir=output_dir,
+            best_ckpt=best_ckpt,
+            latest_ckpt=latest_ckpt,
+            eval_history=eval_history,
+            best_metric_so_far=best_metric_so_far,
+        ),
+    )
 
     print(f"[stage2-smalltrain] run_name={args.run_name}")
     print(f"[stage2-smalltrain] run_summary_json={run_summary_json}")

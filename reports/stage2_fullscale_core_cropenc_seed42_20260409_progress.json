@@ -1,0 +1,94 @@
+{
+  "generated_at_utc": "2026-04-09T10:54:05.931589+00:00",
+  "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+  "status": "running",
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "datasets_bound_for_train": [
+    "vspw",
+    "vipseg"
+  ],
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": 6,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0
+  },
+  "run_metadata": {
+    "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+    "started_at_utc": "2026-04-09T10:33:58.084833+00:00",
+    "cuda_visible_devices": "2",
+    "gpu_selection": {
+      "selected_gpu_id": 2,
+      "lease_id": "f3350f11-fc08-4b33-bff8-13283286a601",
+      "selected_reason": "best_rank_after_window_sampling",
+      "owner": "stage2_fullscale_core_cropenc_seed42_20260409",
+      "mode": "single_gpu_only"
+    },
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "resumed_from": ""
+  },
+  "global_step": 1000,
+  "train_steps_target": 10000,
+  "progress_ratio": 0.1,
+  "whether_full_train_used": true,
+  "whether_full_val_used": true,
+  "effective_train_sample_count_per_dataset": {
+    "VSPW": 2806,
+    "VIPSeg": 2806
+  },
+  "effective_val_sample_count_per_dataset": {
+    "VSPW": 343,
+    "VIPSeg": 343
+  },
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/latest.pt",
+    "best_exists": true,
+    "latest_exists": false
+  },
+  "latest_eval_metrics": {
+    "teacher_forced_coord_loss": 7.269212835415405e-05,
+    "free_rollout_coord_mean_l2": 0.007109660622677372,
+    "free_rollout_endpoint_l2": 0.007114655677631019,
+    "total_loss_reference": 7.26172043065416e-05
+  },
+  "best_metric_so_far": {
+    "global_step": 1000,
+    "metrics": {
+      "teacher_forced_coord_loss": 7.269212835415405e-05,
+      "free_rollout_coord_mean_l2": 0.007109660622677372,
+      "free_rollout_endpoint_l2": 0.007114655677631019,
+      "total_loss_reference": 7.26172043065416e-05,
+      "tapvid_style_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "tapvid3d_limited_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "semantic_branch_metrics": {
+        "eval_gate_mean": 0.17717083716808363,
+        "semantic_input_nonempty_ratio": 1.0,
+        "eval_batches": 86
+      }
+    },
+    "rank_key": [
+      0.007114655677631019,
+      0.007109660622677372,
+      7.269212835415405e-05
+    ]
+  }
+}
