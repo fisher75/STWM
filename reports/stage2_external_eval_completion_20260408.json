@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-09T09:06:02.101476+00:00",
+  "generated_at_utc": "2026-04-09T09:48:55.685521+00:00",
   "round": "stage2_external_eval_completion_20260408",
   "external_eval_protocol_version": "stage2_external_eval_completion_20260408_v1",
   "current_stage2_mainline_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
@@ -30,7 +30,7 @@
     "current stage2 dataset/bridge path does not export intrinsics, extrinsics, projection, or lifting utilities needed to convert 2D rollout states into camera-consistent 3D trajectories",
     "current evaluator-side completion round does not yet include a verified adapter that emits official TAPVid-3D prediction files with tracks_XYZ and visibility for the frozen stage2 checkpoint"
   ],
-  "next_step_choice": "do_one_targeted_external_eval_fix",
+  "next_step_choice": "start_paper_framing_prep",
   "primary_checkpoint_eval": {
     "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
     "internal_metrics_reference": {
@@ -206,7 +206,9 @@
           "average_pts_within_thresh": [
             16
           ]
-        }
+        },
+        "adapter_probe_only": true,
+        "paper_official_benchmark": false
       },
       "exact_blocking_reason": "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
       "exact_blocking_reasons": [
@@ -219,6 +221,28 @@
         "benchmark-native TAP query sampler over full observed video horizon",
         "model-produced occlusion predictions for TAP-style metrics",
         "official TAP-Vid dataset binding for the frozen stage2 core mainline"
+      ],
+      "claim_scope_name": "adapter_based_tap_style_probe",
+      "adapter_probe_only": true,
+      "paper_official_benchmark": false,
+      "current_metric_scope": "adapter-based TAP-style probe: official TAP-Vid evaluator run on an adapter-converted, non-benchmark-faithful payload exported from the frozen Stage2 core-only VSPW+VIPSeg binding",
+      "status_boundary_rule": {
+        "fully_implemented_and_run": "Requires official_evaluator_invoked=true and official_task_faithfully_instantiated=true, meaning the official evaluator ran on a benchmark-faithful task instantiation.",
+        "partially_bridged": "Allowed only when the official TAP-Vid evaluator successfully ran on an adapter-converted payload and returned metrics, but official_task_faithfully_instantiated=false remains true.",
+        "proxy_only": "Required when only proxy bridge outputs exist, or when no successful official TAP-Vid evaluator invocation/result is available on adapter payload.",
+        "not_yet_implemented": "Use when neither proxy bridge nor official-evaluator-side adapter path is operational enough to produce a meaningful probe."
+      },
+      "why_partially_bridged_not_proxy_only": "Kept as partially_bridged because the official TAP-Vid evaluator was actually invoked on an adapter-converted payload, returned metric tensors, and therefore exceeds a pure proxy-only bridge. It is still not an official benchmark result because task faithfulness remains false.",
+      "allowed_paper_usage": [
+        "Can be reported as an adapter-based TAP-style probe or proxy-style external tracking probe.",
+        "Can be used as supporting evidence that the frozen Stage2 rollout can be exported into an official evaluator interface.",
+        "Can be discussed in text or appendix as boundary-checked external evidence, with explicit non-official labeling."
+      ],
+      "forbidden_paper_usage": [
+        "Do not call these numbers official TAP-Vid benchmark results.",
+        "Do not place these numbers into a main table labeled TAP-Vid benchmark or official external benchmark.",
+        "Do not compare these numbers directly against papers evaluated on the official TAP-Vid dataset family and protocol as if they were commensurate.",
+        "Do not claim TAPVid-3D results are obtained."
       ]
     },
     "legacy_semantic_source": "hand_crafted_stats",
@@ -399,7 +423,9 @@
           "average_pts_within_thresh": [
             16
           ]
-        }
+        },
+        "adapter_probe_only": true,
+        "paper_official_benchmark": false
       },
       "exact_blocking_reason": "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
       "exact_blocking_reasons": [
@@ -412,6 +438,28 @@
         "benchmark-native TAP query sampler over full observed video horizon",
         "model-produced occlusion predictions for TAP-style metrics",
         "official TAP-Vid dataset binding for the frozen stage2 core mainline"
+      ],
+      "claim_scope_name": "adapter_based_tap_style_probe",
+      "adapter_probe_only": true,
+      "paper_official_benchmark": false,
+      "current_metric_scope": "adapter-based TAP-style probe: official TAP-Vid evaluator run on an adapter-converted, non-benchmark-faithful payload exported from the frozen Stage2 core-only VSPW+VIPSeg binding",
+      "status_boundary_rule": {
+        "fully_implemented_and_run": "Requires official_evaluator_invoked=true and official_task_faithfully_instantiated=true, meaning the official evaluator ran on a benchmark-faithful task instantiation.",
+        "partially_bridged": "Allowed only when the official TAP-Vid evaluator successfully ran on an adapter-converted payload and returned metrics, but official_task_faithfully_instantiated=false remains true.",
+        "proxy_only": "Required when only proxy bridge outputs exist, or when no successful official TAP-Vid evaluator invocation/result is available on adapter payload.",
+        "not_yet_implemented": "Use when neither proxy bridge nor official-evaluator-side adapter path is operational enough to produce a meaningful probe."
+      },
+      "why_partially_bridged_not_proxy_only": "Kept as partially_bridged because the official TAP-Vid evaluator was actually invoked on an adapter-converted payload, returned metric tensors, and therefore exceeds a pure proxy-only bridge. It is still not an official benchmark result because task faithfulness remains false.",
+      "allowed_paper_usage": [
+        "Can be reported as an adapter-based TAP-style probe or proxy-style external tracking probe.",
+        "Can be used as supporting evidence that the frozen Stage2 rollout can be exported into an official evaluator interface.",
+        "Can be discussed in text or appendix as boundary-checked external evidence, with explicit non-official labeling."
+      ],
+      "forbidden_paper_usage": [
+        "Do not call these numbers official TAP-Vid benchmark results.",
+        "Do not place these numbers into a main table labeled TAP-Vid benchmark or official external benchmark.",
+        "Do not compare these numbers directly against papers evaluated on the official TAP-Vid dataset family and protocol as if they were commensurate.",
+        "Do not claim TAPVid-3D results are obtained."
       ]
     },
     "legacy_semantic_source": "hand_crafted_stats",
@@ -466,6 +514,31 @@
     "tapvid_average_jaccard_best": 0.9,
     "tapvid_average_jaccard_latest": 0.6625,
     "tapvid_average_pts_within_thresh_best": 0.9,
-    "tapvid_average_pts_within_thresh_latest": 0.6625
-  }
+    "tapvid_average_pts_within_thresh_latest": 0.6625,
+    "comparison_scope": "adapter_based_tap_style_probe_only",
+    "adapter_probe_only": true,
+    "paper_official_benchmark": false
+  },
+  "paper_official_benchmark": false,
+  "adapter_probe_only": true,
+  "current_metric_scope": "adapter-based TAP-style probe: official TAP-Vid evaluator run on an adapter-converted, non-benchmark-faithful payload exported from the frozen Stage2 core-only VSPW+VIPSeg binding",
+  "status_boundary_rule": {
+    "fully_implemented_and_run": "Requires official_evaluator_invoked=true and official_task_faithfully_instantiated=true, meaning the official evaluator ran on a benchmark-faithful task instantiation.",
+    "partially_bridged": "Allowed only when the official TAP-Vid evaluator successfully ran on an adapter-converted payload and returned metrics, but official_task_faithfully_instantiated=false remains true.",
+    "proxy_only": "Required when only proxy bridge outputs exist, or when no successful official TAP-Vid evaluator invocation/result is available on adapter payload.",
+    "not_yet_implemented": "Use when neither proxy bridge nor official-evaluator-side adapter path is operational enough to produce a meaningful probe."
+  },
+  "why_partially_bridged_not_proxy_only": "Kept as partially_bridged because the official TAP-Vid evaluator was actually invoked on an adapter-converted payload, returned metric tensors, and therefore exceeds a pure proxy-only bridge. It is still not an official benchmark result because task faithfulness remains false.",
+  "allowed_paper_usage": [
+    "Can be reported as an adapter-based TAP-style probe or proxy-style external tracking probe.",
+    "Can be used as supporting evidence that the frozen Stage2 rollout can be exported into an official evaluator interface.",
+    "Can be discussed in text or appendix as boundary-checked external evidence, with explicit non-official labeling."
+  ],
+  "forbidden_paper_usage": [
+    "Do not call these numbers official TAP-Vid benchmark results.",
+    "Do not place these numbers into a main table labeled TAP-Vid benchmark or official external benchmark.",
+    "Do not compare these numbers directly against papers evaluated on the official TAP-Vid dataset family and protocol as if they were commensurate.",
+    "Do not claim TAPVid-3D results are obtained."
+  ],
+  "safest_one_sentence_description_for_paper": "We report an adapter-based TAP-style probe in which the official TAP-Vid evaluator is run on a converted payload from the frozen VSPW+VIPSeg Stage2 rollout; this is not an official TAP-Vid benchmark result."
 }
