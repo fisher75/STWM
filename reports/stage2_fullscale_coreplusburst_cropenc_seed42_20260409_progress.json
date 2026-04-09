@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-09T10:55:42.271271+00:00",
+  "generated_at_utc": "2026-04-09T13:52:54.786117+00:00",
   "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
-  "status": "running",
+  "status": "completed",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "datasets_bound_for_train": [
     "vspw",
@@ -40,9 +40,9 @@
     "legacy_semantic_source": "hand_crafted_stats",
     "resumed_from": ""
   },
-  "global_step": 1000,
+  "global_step": 10000,
   "train_steps_target": 10000,
-  "progress_ratio": 0.1,
+  "progress_ratio": 1.0,
   "whether_full_train_used": true,
   "whether_full_val_used": true,
   "effective_train_sample_count_per_dataset": {
@@ -60,21 +60,21 @@
     "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/best.pt",
     "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/latest.pt",
     "best_exists": true,
-    "latest_exists": false
+    "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 4.493459447162026e-05,
-    "free_rollout_coord_mean_l2": 0.004979220981073752,
-    "free_rollout_endpoint_l2": 0.004994084889364615,
-    "total_loss_reference": 4.495086823551121e-05
+    "teacher_forced_coord_loss": 1.7544818576441568e-05,
+    "free_rollout_coord_mean_l2": 0.0016009031842814305,
+    "free_rollout_endpoint_l2": 0.0016124288448183199,
+    "total_loss_reference": 1.7536900623819445e-05
   },
   "best_metric_so_far": {
-    "global_step": 1000,
+    "global_step": 7000,
     "metrics": {
-      "teacher_forced_coord_loss": 4.493459447162026e-05,
-      "free_rollout_coord_mean_l2": 0.004979220981073752,
-      "free_rollout_endpoint_l2": 0.004994084889364615,
-      "total_loss_reference": 4.495086823551121e-05,
+      "teacher_forced_coord_loss": 1.6356694202232215e-05,
+      "free_rollout_coord_mean_l2": 0.00087502125403771,
+      "free_rollout_endpoint_l2": 0.0008881782940557686,
+      "total_loss_reference": 1.634485406982427e-05,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -84,15 +84,15 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.1781163037355457,
+        "eval_gate_mean": 0.0682841180158513,
         "semantic_input_nonempty_ratio": 1.0,
         "eval_batches": 168
       }
     },
     "rank_key": [
-      0.004994084889364615,
-      0.004979220981073752,
-      4.493459447162026e-05
+      0.0008881782940557686,
+      0.00087502125403771,
+      1.6356694202232215e-05
     ]
   }
 }
