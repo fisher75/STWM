@@ -1,0 +1,160 @@
+{
+  "generated_at_utc": "2026-04-09T06:16:11.768902+00:00",
+  "round": "stage2_external_eval_bridge_20260408",
+  "external_eval_protocol_version": "stage2_external_eval_bridge_20260408_v1",
+  "checkpoint_under_test": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
+  "current_stage2_mainline_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
+  "secondary_checkpoint_reference": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/latest.pt",
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "frozen_boundary_kept_correct": true,
+  "tap_style_eval_status": "implemented_and_run",
+  "tap3d_style_eval_status": "not_yet_implemented",
+  "external_eval_connected": true,
+  "readiness": "training_ready_but_eval_gap_remains",
+  "allowed_next_step_choice": [
+    "finalize_stage2_mainline_and_prepare_paper_results",
+    "do_one_targeted_external_eval_fix",
+    "revisit_stage2_eval_inputs"
+  ],
+  "next_step_choice": "do_one_targeted_external_eval_fix",
+  "primary_checkpoint_eval": {
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
+    "internal_metrics_reference": {
+      "teacher_forced_coord_loss": 2.238263391518558e-05,
+      "free_rollout_coord_mean_l2": 0.0043439829896669835,
+      "free_rollout_endpoint_l2": 0.0043440041481517255,
+      "total_loss_reference": 2.238263391518558e-05
+    },
+    "tap_style_eval": {
+      "status": "implemented_and_run",
+      "compatible_external_eval_payload": true,
+      "bridge_protocol": "stage2_tap_style_proxy_v1",
+      "official_tapvid_evaluator_connected": false,
+      "payload": {
+        "payload_npz": "/home/chen034/workspace/stwm/reports/stage2_external_eval_bridge_tap_style_payload_20260408.npz",
+        "payload_shapes": {
+          "predicted_tracks_2d": [
+            16,
+            8,
+            1,
+            2
+          ],
+          "gt_tracks_2d": [
+            16,
+            8,
+            1,
+            2
+          ],
+          "visibility_mask": [
+            16,
+            8,
+            1
+          ],
+          "query_points_2d": [
+            16,
+            1,
+            2
+          ]
+        },
+        "tap_style_bridge_metrics": {
+          "free_rollout_coord_mean_l2": 0.004343983717262745,
+          "free_rollout_endpoint_l2": 0.0043440042063593864,
+          "frames_evaluated": 8,
+          "tokens_per_frame": 1,
+          "samples": 16
+        }
+      },
+      "metrics": {
+        "free_rollout_coord_mean_l2": 0.004343983717262745,
+        "free_rollout_endpoint_l2": 0.0043440042063593864,
+        "frames_evaluated": 8,
+        "tokens_per_frame": 1,
+        "samples": 16
+      }
+    },
+    "tap3d_style_eval": {
+      "status": "not_yet_implemented",
+      "compatible_external_eval_payload": false,
+      "blocking_reason": "stage2 core state currently exposes 2D track targets only; no verified 3D target alignment is available in bridge path",
+      "missing_component": [
+        "tap3d_aligned_ground_truth_trajectories",
+        "camera_geometry_projection_or_lift_module",
+        "official_tapvid3d_metric_adapter"
+      ]
+    },
+    "legacy_semantic_source": "hand_crafted_stats",
+    "eval_batches": 8
+  },
+  "secondary_checkpoint_eval": {
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/latest.pt",
+    "internal_metrics_reference": {
+      "teacher_forced_coord_loss": 7.665730436201557e-05,
+      "free_rollout_coord_mean_l2": 0.008630546915810555,
+      "free_rollout_endpoint_l2": 0.008630570489913225,
+      "total_loss_reference": 7.665730436201557e-05
+    },
+    "tap_style_eval": {
+      "status": "implemented_and_run",
+      "compatible_external_eval_payload": true,
+      "bridge_protocol": "stage2_tap_style_proxy_v1",
+      "official_tapvid_evaluator_connected": false,
+      "payload": {
+        "payload_npz": "/home/chen034/workspace/stwm/reports/stage2_external_eval_bridge_tap_style_payload_latest_20260408.npz",
+        "payload_shapes": {
+          "predicted_tracks_2d": [
+            16,
+            8,
+            1,
+            2
+          ],
+          "gt_tracks_2d": [
+            16,
+            8,
+            1,
+            2
+          ],
+          "visibility_mask": [
+            16,
+            8,
+            1
+          ],
+          "query_points_2d": [
+            16,
+            1,
+            2
+          ]
+        },
+        "tap_style_bridge_metrics": {
+          "free_rollout_coord_mean_l2": 0.008630545809864998,
+          "free_rollout_endpoint_l2": 0.008630570024251938,
+          "frames_evaluated": 8,
+          "tokens_per_frame": 1,
+          "samples": 16
+        }
+      },
+      "metrics": {
+        "free_rollout_coord_mean_l2": 0.008630545809864998,
+        "free_rollout_endpoint_l2": 0.008630570024251938,
+        "frames_evaluated": 8,
+        "tokens_per_frame": 1,
+        "samples": 16
+      }
+    },
+    "tap3d_style_eval": {
+      "status": "not_yet_implemented",
+      "compatible_external_eval_payload": false,
+      "blocking_reason": "stage2 core state currently exposes 2D track targets only; no verified 3D target alignment is available in bridge path",
+      "missing_component": [
+        "tap3d_aligned_ground_truth_trajectories",
+        "camera_geometry_projection_or_lift_module",
+        "official_tapvid3d_metric_adapter"
+      ]
+    },
+    "legacy_semantic_source": "hand_crafted_stats",
+    "eval_batches": 8
+  }
+}
