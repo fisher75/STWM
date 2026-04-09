@@ -685,6 +685,14 @@ def main() -> None:
     for module in [semantic_encoder, semantic_fusion, readout_head]:
         trainable_params.extend([p for p in module.parameters() if p.requires_grad])
 
+    pre_frozen_parameter_count = int(stage1_meta.get("parameter_count", 0))
+    pre_stage1_trainable_parameter_count = int(stage1_meta.get("trainable_parameter_count", 0))
+    pre_trainable_parameter_count = int(sum(p.numel() for p in trainable_params))
+
+    print(f"[stage2-smalltrain] pre_frozen_parameter_count={pre_frozen_parameter_count}")
+    print(f"[stage2-smalltrain] pre_stage1_trainable_parameter_count={pre_stage1_trainable_parameter_count}")
+    print(f"[stage2-smalltrain] pre_stage2_trainable_parameter_count={pre_trainable_parameter_count}")
+
     optimizer = torch.optim.AdamW(trainable_params, lr=float(args.lr), weight_decay=float(args.weight_decay))
 
     gpu_selection = {}
@@ -926,10 +934,16 @@ def main() -> None:
         and np.isfinite(float(final_metrics.get("free_rollout_endpoint_l2", np.inf)))
     )
 
+    train_total_count = int(sum(train_split_counts_used.values()))
+    effective_batch = int(args.batch_size)
+    epochs_completed = 0.0
+    if train_total_count > 0:
+        epochs_completed = float(optimizer_steps_this_run * effective_batch) / float(train_total_count)
+
     payload = {
         "generated_at_utc": now_iso(),
         "run_name": str(args.run_name),
-        "objective": "Stage2 small-train run on frozen Stage1 220m backbone",
+        "objective": "Stage2 training run on frozen Stage1 220m backbone",
         "current_mainline_semantic_source": str(args.semantic_source_mainline),
         "legacy_semantic_source": str(args.legacy_semantic_source),
         "stage2_contract_path": str(args.stage2_contract_path),
@@ -939,6 +953,8 @@ def main() -> None:
             "excluded": binding.get("excluded", []),
             "run_datasets": [str(x) for x in args.dataset_names],
         },
+        "datasets_bound_for_train": [str(x) for x in args.dataset_names],
+        "datasets_bound_for_eval": [str(x) for x in args.dataset_names],
         "runtime": runtime_meta,
         "run_metadata": run_metadata,
         "training_budget": {
@@ -1006,11 +1022,18 @@ def main() -> None:
         },
         "train_split_counts_used": train_split_counts_used,
         "val_split_counts_used": val_split_counts_used,
-        "train_split_total_count_used": int(sum(train_split_counts_used.values())),
+        "train_split_total_count_used": int(train_total_count),
         "val_split_total_count_used": int(sum(val_split_counts_used.values())),
         "frozen_parameter_count": int(frozen_count),
         "trainable_parameter_count": int(trainable_count),
         "boundary_ok": bool(boundary_ok),
+        "training_progress": {
+            "optimizer_steps": int(optimizer_steps_this_run),
+            "effective_batch": int(effective_batch),
+            "epochs_completed": float(epochs_completed),
+            "eval_interval": int(eval_interval),
+            "save_every_n_steps": int(save_every),
+        },
         "final_metrics": final_metrics,
         "best_metric_so_far": best_metric_so_far,
         "eval_history": eval_history,
