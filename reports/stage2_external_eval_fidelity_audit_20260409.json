@@ -1,0 +1,79 @@
+{
+  "generated_at_utc": "2026-04-09T09:07:18.034983+00:00",
+  "current_stage2_mainline_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/best.pt",
+  "secondary_checkpoint_reference": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_core_mainline_train_20260408/latest.pt",
+  "tap_style_eval_status": "partially_bridged",
+  "tap3d_style_eval_status": "not_yet_implemented",
+  "official_evaluator_invoked": true,
+  "official_tapvid_evaluator_connected": true,
+  "official_task_faithfully_instantiated": false,
+  "tap_style_task_checks": {
+    "benchmark_native_full_tap_episode": false,
+    "query_time_matches_official_task": false,
+    "pred_visibility_from_model_output": false,
+    "dataset_binding_is_official_tap_dataset_family": false
+  },
+  "tap3d_task_checks": {
+    "aligned_3d_gt_for_current_binding": false,
+    "camera_geometry_projection_or_lifting_path_available": false,
+    "verified_exporter_to_tracks_xyz_visibility": false,
+    "official_tapvid3d_metric_importable": true
+  },
+  "exact_blocking_reasons": [
+    "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
+    "current frozen stage2 mainline does not expose a predicted occlusion head; pred_occluded is evaluator-side all-visible adapter output",
+    "current evaluation binding remains VSPW+VIPSeg core-only rather than the official TAP-Vid dataset family",
+    "current frozen stage2 external eval binding is fixed to VSPW+VIPSeg, which does not provide TAPVid-3D aligned XYZ ground truth for the checkpoint under test",
+    "current stage2 dataset/bridge path does not export intrinsics, extrinsics, projection, or lifting utilities needed to convert 2D rollout states into camera-consistent 3D trajectories",
+    "current evaluator-side completion round does not yet include a verified adapter that emits official TAPVid-3D prediction files with tracks_XYZ and visibility for the frozen stage2 checkpoint"
+  ],
+  "completion_log": {
+    "path": "/home/chen034/workspace/stwm/logs/tracewm_stage2_external_eval_completion_20260408.log",
+    "resolved_path": "/raid/chen034/workspace/stwm/logs/tracewm_stage2_external_eval_completion_20260408.log",
+    "exists": true,
+    "is_file": true,
+    "is_dir": false,
+    "within_repo_root": true,
+    "tracked_in_git": false,
+    "ignored_by_git": true,
+    "packaged_in_repo_snapshot": false,
+    "regenerated_in_this_round": false,
+    "note": "exists locally but logs/** are gitignored"
+  },
+  "smoke_tests": {
+    "export_stage2_tap_payload": {
+      "command": [
+        "/home/chen034/miniconda3/envs/stwm/bin/python",
+        "/home/chen034/workspace/stwm/code/stwm/tracewm_v2_stage2/tools/export_stage2_tap_payload.py",
+        "--proxy-payload-npz",
+        "/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_proxy_payload_20260408.npz",
+        "--output-npz",
+        "/home/chen034/workspace/stwm/tmp/stage2_tap_payload_export_smoke_20260409.npz",
+        "--output-report-json",
+        "/home/chen034/workspace/stwm/reports/stage2_tap_payload_export_smoke_20260409.json"
+      ],
+      "returncode": 0,
+      "success": true,
+      "stdout_tail": "{\n  \"adapter_version\": \"stage2_tapvid_adapter_v1\",\n  \"source_proxy_payload_npz\": \"/home/chen034/workspace/stwm/reports/stage2_external_eval_completion_tap_style_proxy_payload_20260408.npz\",\n  \"output_tap_payload_npz\": \"/home/chen034/workspace/stwm/tmp/stage2_tap_payload_export_smoke_20260409.npz\",\n  \"coord_space_input\": \"normalized_stage2_xy\",\n  \"coord_space_output\": \"raster_xy_256\",\n  \"query_mode_expected_for_eval\": \"first\",\n  \"query_time_index\": 0,\n  \"pred_occlusion_mode\": \"all_visible\",\n  \"predicted_visibility_is_model_output\": false,\n  \"benchmark_native_full_tap_episode\": false,\n  \"query_time_matches_official_task\": false,\n  \"adapter_limitations\": [\n    \"stage2 current rollout exports future-only 2D tracks rather than full official TAP-Vid benchmark episodes\",\n    \"query point is anchored to the first predicted frame because the frozen stage2 bridge does not export benchmark-native TAP query times\",\n    \"pred_occluded is synthesized as all-visible because current frozen stage2 mainline does not expose an occlusion prediction head\"\n  ],\n  \"shapes\": {\n    \"query_points\": [\n      16,\n      1,\n      3\n    ],\n    \"gt_occluded\": [\n      16,\n      1,\n      8\n    ],\n    \"gt_tracks\": [\n      16,\n      1,\n      8,\n      2\n    ],\n    \"pred_occluded\": [\n      16,\n      1,\n      8\n    ],\n    \"pred_tracks\": [\n      16,\n      1,\n      8,\n      2\n    ]\n  },\n  \"counts\": {\n    \"batch\": 16,\n    \"queries_per_sample\": 1,\n    \"frames_per_track\": 8,\n    \"gt_occluded_points\": 0,\n    \"total_points\": 128\n  }\n}\n",
+      "stderr_tail": "",
+      "report_path": "/home/chen034/workspace/stwm/reports/stage2_tap_payload_export_smoke_20260409.json"
+    },
+    "run_stage2_tap_eval": {
+      "command": [
+        "/home/chen034/miniconda3/envs/stwm/bin/python",
+        "/home/chen034/workspace/stwm/code/stwm/tracewm_v2_stage2/tools/run_stage2_tap_eval.py",
+        "--tap-payload-npz",
+        "/home/chen034/workspace/stwm/tmp/stage2_tap_payload_export_smoke_20260409.npz",
+        "--output-json",
+        "/home/chen034/workspace/stwm/reports/stage2_tap_eval_smoke_20260409.json",
+        "--tapnet-python",
+        "/home/chen034/workspace/data/.venv_tapvid3d_repair_20260406_py310/bin/python"
+      ],
+      "returncode": 0,
+      "success": true,
+      "stdout_tail": "\\\"jaccard_8\\\": [16], \\\"pts_within_16\\\": [16], \\\"jaccard_16\\\": [16], \\\"average_jaccard\\\": [16], \\\"average_pts_within_thresh\\\": [16]}}\\n\",\n  \"stderr_tail\": \"2026-04-09 17:07:16.697686: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered\\n2026-04-09 17:07:16.697712: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered\\n2026-04-09 17:07:16.698877: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered\\n2026-04-09 17:07:17.205505: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT\\n\",\n  \"official_evaluator_invoked\": true,\n  \"official_tapvid_evaluator_connected\": true,\n  \"tapvid_module_path\": \"/raid/chen034/workspace/data/_repos/tapnet/tapnet/tapvid/evaluation_datasets.py\",\n  \"metric_means\": {\n    \"occlusion_accuracy\": 1.0,\n    \"pts_within_1\": 0.5,\n    \"jaccard_1\": 0.5,\n    \"pts_within_2\": 1.0,\n    \"jaccard_2\": 1.0,\n    \"pts_within_4\": 1.0,\n    \"jaccard_4\": 1.0,\n    \"pts_within_8\": 1.0,\n    \"jaccard_8\": 1.0,\n    \"pts_within_16\": 1.0,\n    \"jaccard_16\": 1.0,\n    \"average_jaccard\": 0.9,\n    \"average_pts_within_thresh\": 0.9\n  },\n  \"metric_shapes\": {\n    \"occlusion_accuracy\": [\n      16\n    ],\n    \"pts_within_1\": [\n      16\n    ],\n    \"jaccard_1\": [\n      16\n    ],\n    \"pts_within_2\": [\n      16\n    ],\n    \"jaccard_2\": [\n      16\n    ],\n    \"pts_within_4\": [\n      16\n    ],\n    \"jaccard_4\": [\n      16\n    ],\n    \"pts_within_8\": [\n      16\n    ],\n    \"jaccard_8\": [\n      16\n    ],\n    \"pts_within_16\": [\n      16\n    ],\n    \"jaccard_16\": [\n      16\n    ],\n    \"average_jaccard\": [\n      16\n    ],\n    \"average_pts_within_thresh\": [\n      16\n    ]\n  }\n}\n",
+      "stderr_tail": "",
+      "report_path": "/home/chen034/workspace/stwm/reports/stage2_tap_eval_smoke_20260409.json"
+    }
+  }
+}

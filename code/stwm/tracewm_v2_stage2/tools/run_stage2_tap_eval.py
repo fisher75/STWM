@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import Any, Dict
 import json
+import os
 import subprocess
 import sys
 
@@ -12,6 +13,13 @@ import numpy as np
 
 
 DEFAULT_TAPNET_PYTHON = "/home/chen034/workspace/data/.venv_tapvid3d_repair_20260406_py310/bin/python"
+
+
+def _default_tapnet_python() -> str:
+    env_val = str(os.environ.get("TRACEWM_TAPNET_PYTHON", "")).strip()
+    if env_val:
+        return env_val
+    return DEFAULT_TAPNET_PYTHON
 
 
 def _write_json(path: str | Path, payload: Dict[str, Any]) -> None:
@@ -76,6 +84,7 @@ print(json.dumps(out, ensure_ascii=True))
         "returncode": int(proc.returncode),
         "stdout_tail": _tail(proc.stdout),
         "stderr_tail": _tail(proc.stderr),
+        "official_evaluator_invoked": bool(proc.returncode == 0),
         "official_tapvid_evaluator_connected": False,
     }
 
@@ -98,7 +107,7 @@ def parse_args() -> Any:
     p = ArgumentParser(description="Run the official TAP-Vid metric on an exported Stage2 TAP payload")
     p.add_argument("--tap-payload-npz", required=True)
     p.add_argument("--output-json", default="")
-    p.add_argument("--tapnet-python", default=DEFAULT_TAPNET_PYTHON)
+    p.add_argument("--tapnet-python", default=_default_tapnet_python())
     p.add_argument("--query-mode", default="first")
     return p.parse_args()
 

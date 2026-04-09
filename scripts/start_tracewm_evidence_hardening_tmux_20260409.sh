@@ -2,9 +2,9 @@
 set -euo pipefail
 
 WORK_ROOT="${STWM_ROOT:-/home/chen034/workspace/stwm}"
-SESSION="tracewm_stage2_external_eval_completion_20260408"
-RUN_SCRIPT="$WORK_ROOT/scripts/run_tracewm_stage2_external_eval_completion_20260408.sh"
-LOG_PATH="${TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_LOG:-$WORK_ROOT/logs/tracewm_stage2_external_eval_completion_20260408.log}"
+SESSION="tracewm_evidence_hardening_20260409"
+RUN_SCRIPT="$WORK_ROOT/scripts/run_tracewm_evidence_hardening_20260409.sh"
+LOG_PATH="${TRACEWM_EVIDENCE_HARDENING_LOG:-$WORK_ROOT/logs/tracewm_evidence_hardening_20260409.log}"
 
 if [[ ! -x "$RUN_SCRIPT" ]]; then
   chmod +x "$RUN_SCRIPT"

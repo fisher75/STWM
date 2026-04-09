@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WORK_ROOT="/home/chen034/workspace/stwm"
+WORK_ROOT="${STWM_ROOT:-/home/chen034/workspace/stwm}"
 DATE_TAG="20260408"
 
-LOG_PATH="$WORK_ROOT/logs/tracewm_stage2_external_eval_completion_${DATE_TAG}.log"
-PROTOCOL_DOC="$WORK_ROOT/docs/TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_PROTOCOL_${DATE_TAG}.md"
-CORE_MAINLINE_FINAL_JSON="$WORK_ROOT/reports/stage2_core_mainline_train_final_${DATE_TAG}.json"
-CORE_MAINLINE_RAW_JSON="$WORK_ROOT/reports/stage2_core_mainline_train_raw_${DATE_TAG}.json"
-STAGE2_CONTRACT_JSON="$WORK_ROOT/reports/stage2_bootstrap_data_contract_${DATE_TAG}.json"
+LOG_PATH="${TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_LOG:-$WORK_ROOT/logs/tracewm_stage2_external_eval_completion_${DATE_TAG}.log}"
+PROTOCOL_DOC="${TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_PROTOCOL_DOC:-$WORK_ROOT/docs/TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_PROTOCOL_${DATE_TAG}.md}"
+CORE_MAINLINE_FINAL_JSON="${TRACEWM_STAGE2_CORE_MAINLINE_FINAL_JSON:-$WORK_ROOT/reports/stage2_core_mainline_train_final_${DATE_TAG}.json}"
+CORE_MAINLINE_RAW_JSON="${TRACEWM_STAGE2_CORE_MAINLINE_RAW_JSON:-$WORK_ROOT/reports/stage2_core_mainline_train_raw_${DATE_TAG}.json}"
+STAGE2_CONTRACT_JSON="${TRACEWM_STAGE2_CONTRACT_JSON:-$WORK_ROOT/reports/stage2_bootstrap_data_contract_${DATE_TAG}.json}"
 
-PRIMARY_CKPT="$WORK_ROOT/outputs/checkpoints/stage2_core_mainline_train_${DATE_TAG}/best.pt"
-SECONDARY_CKPT="$WORK_ROOT/outputs/checkpoints/stage2_core_mainline_train_${DATE_TAG}/latest.pt"
+PRIMARY_CKPT="${TRACEWM_STAGE2_MAINLINE_BEST_CKPT:-$WORK_ROOT/outputs/checkpoints/stage2_core_mainline_train_${DATE_TAG}/best.pt}"
+SECONDARY_CKPT="${TRACEWM_STAGE2_MAINLINE_LATEST_CKPT:-$WORK_ROOT/outputs/checkpoints/stage2_core_mainline_train_${DATE_TAG}/latest.pt}"
 
-COMPLETION_JSON="$WORK_ROOT/reports/stage2_external_eval_completion_${DATE_TAG}.json"
-RESULTS_MD="$WORK_ROOT/docs/STAGE2_EXTERNAL_EVAL_COMPLETION_RESULTS_${DATE_TAG}.md"
-TAPNET_PYTHON="/home/chen034/workspace/data/.venv_tapvid3d_repair_20260406_py310/bin/python"
+COMPLETION_JSON="${TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_JSON:-$WORK_ROOT/reports/stage2_external_eval_completion_${DATE_TAG}.json}"
+RESULTS_MD="${TRACEWM_STAGE2_EXTERNAL_EVAL_COMPLETION_MD:-$WORK_ROOT/docs/STAGE2_EXTERNAL_EVAL_COMPLETION_RESULTS_${DATE_TAG}.md}"
+TAPNET_PYTHON="${TRACEWM_TAPNET_PYTHON:-/home/chen034/workspace/data/.venv_tapvid3d_repair_20260406_py310/bin/python}"
+TAPVID3D_DATASET_ROOT="${TRACEWM_TAPVID3D_DATASET_ROOT:-/home/chen034/workspace/data/tapvid3d/minival_dataset}"
 
-if [[ -x "/home/chen034/miniconda3/envs/stwm/bin/python" ]]; then
+if [[ -n "${TRACEWM_PYTHON_BIN:-}" ]]; then
+  PYTHON_BIN="${TRACEWM_PYTHON_BIN}"
+elif [[ -x "/home/chen034/miniconda3/envs/stwm/bin/python" ]]; then
   PYTHON_BIN="/home/chen034/miniconda3/envs/stwm/bin/python"
 else
   PYTHON_BIN="python3"
@@ -88,7 +91,7 @@ echo "[stage2-external-eval-completion] step=run_completion_round"
   --tap-style-official-eval-json "$WORK_ROOT/reports/stage2_external_eval_completion_tap_style_eval_${DATE_TAG}.json" \
   --tap-style-secondary-official-eval-json "$WORK_ROOT/reports/stage2_external_eval_completion_tap_style_eval_latest_${DATE_TAG}.json" \
   --tapnet-python "$TAPNET_PYTHON" \
-  --tap3d-dataset-root "/home/chen034/workspace/data/tapvid3d/minival_dataset" \
+  --tap3d-dataset-root "$TAPVID3D_DATASET_ROOT" \
   --max-eval-batches 8
 
 echo "[stage2-external-eval-completion] done: $(date '+%Y-%m-%d %H:%M:%S %z')"
