@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-04-09T13:51:07.568954+00:00",
-  "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+  "generated_at_utc": "2026-04-09T13:52:54.785194+00:00",
+  "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
   "objective": "Stage2 training run on frozen Stage1 220m backbone",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "legacy_semantic_source": "hand_crafted_stats",
@@ -25,16 +25,19 @@
     ],
     "run_datasets": [
       "vspw",
-      "vipseg"
+      "vipseg",
+      "burst"
     ]
   },
   "datasets_bound_for_train": [
     "vspw",
-    "vipseg"
+    "vipseg",
+    "burst"
   ],
   "datasets_bound_for_eval": [
     "vspw",
-    "vipseg"
+    "vipseg",
+    "burst"
   ],
   "runtime": {
     "source": "recommended_runtime_json",
@@ -49,14 +52,14 @@
     "safety_margin_gb": 8.0
   },
   "run_metadata": {
-    "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
-    "started_at_utc": "2026-04-09T10:33:58.084833+00:00",
-    "cuda_visible_devices": "2",
+    "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+    "started_at_utc": "2026-04-09T10:34:50.234133+00:00",
+    "cuda_visible_devices": "1",
     "gpu_selection": {
-      "selected_gpu_id": 2,
-      "lease_id": "f3350f11-fc08-4b33-bff8-13283286a601",
+      "selected_gpu_id": 1,
+      "lease_id": "2b129a53-8fea-4a7c-8f02-00693c1b438c",
       "selected_reason": "best_rank_after_window_sampling",
-      "owner": "stage2_fullscale_core_cropenc_seed42_20260409",
+      "owner": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
       "mode": "single_gpu_only"
     },
     "current_mainline_semantic_source": "crop_visual_encoder",
@@ -93,6 +96,16 @@
         "used_in_bootstrap_train": true,
         "used_in_bootstrap_eval": true,
         "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      },
+      "BURST": {
+        "sample_count": 329,
+        "source_count_before_limit": 329,
+        "requested_max_samples_per_dataset": -1,
+        "full_dataset_used": true,
+        "split": "train",
+        "used_in_bootstrap_train": false,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/burst"
       }
     },
     "val": {
@@ -115,6 +128,16 @@
         "used_in_bootstrap_train": true,
         "used_in_bootstrap_eval": true,
         "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      },
+      "BURST": {
+        "sample_count": 657,
+        "source_count_before_limit": 657,
+        "requested_max_samples_per_dataset": -1,
+        "full_dataset_used": true,
+        "split": "val",
+        "used_in_bootstrap_train": false,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/burst"
       }
     }
   },
@@ -122,11 +145,13 @@
   "whether_full_val_used": true,
   "effective_train_sample_count_per_dataset": {
     "VSPW": 2806,
-    "VIPSeg": 2806
+    "VIPSeg": 2806,
+    "BURST": 329
   },
   "effective_val_sample_count_per_dataset": {
     "VSPW": 343,
-    "VIPSeg": 343
+    "VIPSeg": 343,
+    "BURST": 657
   },
   "core_dataset_inputs": {
     "ready": true,
@@ -162,11 +187,11 @@
     "stage1_trainable_parameter_count": 0,
     "semantic_trainable_parameter_count": 3463298,
     "stage1_grad_detected_after_backward": false,
-    "semantic_grad_norm_latest": 0.37507098319455484,
+    "semantic_grad_norm_latest": 0.03277742558618593,
     "boundary_ok": true
   },
   "semantic_branch_metrics": {
-    "train_gate_mean": 0.11667898127827793,
+    "train_gate_mean": 0.1201548027087003,
     "train_semantic_input_nonempty_ratio": 1.0,
     "semantic_crop_size": 64,
     "current_mainline_semantic_source": "crop_visual_encoder",
@@ -185,62 +210,64 @@
     "tertiary": "teacher_forced_coord_loss",
     "total_loss_usage": "reference_only"
   },
-  "teacher_forced_coord_loss": 3.02700085095072e-05,
-  "free_rollout_coord_mean_l2": 0.0011106466086385853,
-  "free_rollout_endpoint_l2": 0.001136954303602783,
+  "teacher_forced_coord_loss": 1.6356694202232215e-05,
+  "free_rollout_coord_mean_l2": 0.00087502125403771,
+  "free_rollout_endpoint_l2": 0.0008881782940557686,
   "best_checkpoint_metric": {
-    "global_step": 3000,
+    "global_step": 7000,
     "metrics": {
-      "teacher_forced_coord_loss": 3.02700085095072e-05,
-      "free_rollout_coord_mean_l2": 0.0011106466086385853,
-      "free_rollout_endpoint_l2": 0.001136954303602783,
-      "total_loss_reference": 3.0185054667466046e-05
+      "teacher_forced_coord_loss": 1.6356694202232215e-05,
+      "free_rollout_coord_mean_l2": 0.00087502125403771,
+      "free_rollout_endpoint_l2": 0.0008881782940557686,
+      "total_loss_reference": 1.634485406982427e-05
     },
     "rank_key": [
-      0.001136954303602783,
-      0.0011106466086385853,
-      3.02700085095072e-05
+      0.0008881782940557686,
+      0.00087502125403771,
+      1.6356694202232215e-05
     ]
   },
   "latest_checkpoint_metric": {
     "global_step": 10000,
     "metrics": {
-      "teacher_forced_coord_loss": 4.7400425137842004e-05,
-      "free_rollout_coord_mean_l2": 0.004872353899539734,
-      "free_rollout_endpoint_l2": 0.004887476196898142,
-      "total_loss_reference": 4.732665602628109e-05
+      "teacher_forced_coord_loss": 1.7544818576441568e-05,
+      "free_rollout_coord_mean_l2": 0.0016009031842814305,
+      "free_rollout_endpoint_l2": 0.0016124288448183199,
+      "total_loss_reference": 1.7536900623819445e-05
     },
     "rank_key": [
-      0.004887476196898142,
-      0.004872353899539734,
-      4.7400425137842004e-05
+      0.0016124288448183199,
+      0.0016009031842814305,
+      1.7544818576441568e-05
     ]
   },
   "train_split_counts_used": {
     "VSPW": 2806,
-    "VIPSeg": 2806
+    "VIPSeg": 2806,
+    "BURST": 329
   },
   "val_split_counts_used": {
     "VSPW": 343,
-    "VIPSeg": 343
+    "VIPSeg": 343,
+    "BURST": 657
   },
-  "train_split_total_count_used": 5612,
-  "val_split_total_count_used": 686,
+  "train_split_total_count_used": 5941,
+  "val_split_total_count_used": 1343,
   "frozen_parameter_count": 207615754,
   "trainable_parameter_count": 3463298,
   "boundary_ok": true,
   "training_progress": {
     "optimizer_steps": 10000,
     "effective_batch": 8,
-    "epochs_completed": 14.255167498218103,
+    "epochs_completed": 13.465746507321999,
     "eval_interval": 1000,
     "save_every_n_steps": 1000
   },
   "final_metrics": {
-    "teacher_forced_coord_loss": 3.02700085095072e-05,
-    "free_rollout_coord_mean_l2": 0.0011106466086385853,
-    "free_rollout_endpoint_l2": 0.001136954303602783,
-    "total_loss_reference": 3.0185054667466046e-05,
+    "teacher_forced_coord_loss": 1.6356694202232215e-05,
+    "free_rollout_coord_mean_l2": 0.00087502125403771,
+    "free_rollout_endpoint_l2": 0.0008881782940557686,
+    "total_loss_reference": 1.634485406982427e-05,
     "tapvid_style_eval": {
       "compatible": false,
       "status": "not_supported_in_current_stage2_trainer"
@@ -250,18 +277,18 @@
       "status": "not_supported_in_current_stage2_trainer"
     },
     "semantic_branch_metrics": {
-      "eval_gate_mean": 0.14864685126515323,
+      "eval_gate_mean": 0.0682841180158513,
       "semantic_input_nonempty_ratio": 1.0,
-      "eval_batches": 86
+      "eval_batches": 168
     }
   },
   "best_metric_so_far": {
-    "global_step": 3000,
+    "global_step": 7000,
     "metrics": {
-      "teacher_forced_coord_loss": 3.02700085095072e-05,
-      "free_rollout_coord_mean_l2": 0.0011106466086385853,
-      "free_rollout_endpoint_l2": 0.001136954303602783,
-      "total_loss_reference": 3.0185054667466046e-05,
+      "teacher_forced_coord_loss": 1.6356694202232215e-05,
+      "free_rollout_coord_mean_l2": 0.00087502125403771,
+      "free_rollout_endpoint_l2": 0.0008881782940557686,
+      "total_loss_reference": 1.634485406982427e-05,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -271,25 +298,25 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.14864685126515323,
+        "eval_gate_mean": 0.0682841180158513,
         "semantic_input_nonempty_ratio": 1.0,
-        "eval_batches": 86
+        "eval_batches": 168
       }
     },
     "rank_key": [
-      0.001136954303602783,
-      0.0011106466086385853,
-      3.02700085095072e-05
+      0.0008881782940557686,
+      0.00087502125403771,
+      1.6356694202232215e-05
     ]
   },
   "eval_history": [
     {
       "global_step": 1000,
       "metrics": {
-        "teacher_forced_coord_loss": 7.269212835415405e-05,
-        "free_rollout_coord_mean_l2": 0.007109660622677372,
-        "free_rollout_endpoint_l2": 0.007114655677631019,
-        "total_loss_reference": 7.26172043065416e-05,
+        "teacher_forced_coord_loss": 4.493459447162026e-05,
+        "free_rollout_coord_mean_l2": 0.004979220981073752,
+        "free_rollout_endpoint_l2": 0.004994084889364615,
+        "total_loss_reference": 4.495086823551121e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -299,24 +326,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.17717083716808363,
+          "eval_gate_mean": 0.1781163037355457,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.007114655677631019,
-        0.007109660622677372,
-        7.269212835415405e-05
+        0.004994084889364615,
+        0.004979220981073752,
+        4.493459447162026e-05
       ]
     },
     {
       "global_step": 2000,
       "metrics": {
-        "teacher_forced_coord_loss": 3.5308251233047497e-05,
-        "free_rollout_coord_mean_l2": 0.002900034216376505,
-        "free_rollout_endpoint_l2": 0.0029253532061945245,
-        "total_loss_reference": 3.522842128531497e-05,
+        "teacher_forced_coord_loss": 2.0023784342857994e-05,
+        "free_rollout_coord_mean_l2": 0.001988776718500006,
+        "free_rollout_endpoint_l2": 0.0020028770750781006,
+        "total_loss_reference": 2.0009839539219293e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -326,24 +353,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.1679561178005019,
+          "eval_gate_mean": 0.16868672812623636,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.0029253532061945245,
-        0.002900034216376505,
-        3.5308251233047497e-05
+        0.0020028770750781006,
+        0.001988776718500006,
+        2.0023784342857994e-05
       ]
     },
     {
       "global_step": 3000,
       "metrics": {
-        "teacher_forced_coord_loss": 3.02700085095072e-05,
-        "free_rollout_coord_mean_l2": 0.0011106466086385853,
-        "free_rollout_endpoint_l2": 0.001136954303602783,
-        "total_loss_reference": 3.0185054667466046e-05,
+        "teacher_forced_coord_loss": 2.3517280060440623e-05,
+        "free_rollout_coord_mean_l2": 0.0026648628226552803,
+        "free_rollout_endpoint_l2": 0.0026780940253878388,
+        "total_loss_reference": 2.3533608660792587e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -353,24 +380,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.14864685126515323,
+          "eval_gate_mean": 0.15196846948847884,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.001136954303602783,
-        0.0011106466086385853,
-        3.02700085095072e-05
+        0.0026780940253878388,
+        0.0026648628226552803,
+        2.3517280060440623e-05
       ]
     },
     {
       "global_step": 4000,
       "metrics": {
-        "teacher_forced_coord_loss": 2.97354439019359e-05,
-        "free_rollout_coord_mean_l2": 0.0013877315162993294,
-        "free_rollout_endpoint_l2": 0.0014150110127692146,
-        "total_loss_reference": 2.9654268254896738e-05,
+        "teacher_forced_coord_loss": 1.919930460517221e-05,
+        "free_rollout_coord_mean_l2": 0.0017295782010494686,
+        "free_rollout_endpoint_l2": 0.0017435358398977447,
+        "total_loss_reference": 1.9186682631841667e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -380,24 +407,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.12675641598396523,
+          "eval_gate_mean": 0.12729593765522754,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.0014150110127692146,
-        0.0013877315162993294,
-        2.97354439019359e-05
+        0.0017435358398977447,
+        0.0017295782010494686,
+        1.919930460517221e-05
       ]
     },
     {
       "global_step": 5000,
       "metrics": {
-        "teacher_forced_coord_loss": 3.168467573956075e-05,
-        "free_rollout_coord_mean_l2": 0.0012700811996458658,
-        "free_rollout_endpoint_l2": 0.0012977268864501148,
-        "total_loss_reference": 3.15948260159731e-05,
+        "teacher_forced_coord_loss": 3.825400743617862e-05,
+        "free_rollout_coord_mean_l2": 0.004496180589018876,
+        "free_rollout_endpoint_l2": 0.004506190922541221,
+        "total_loss_reference": 3.826410878917029e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -407,24 +434,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.10208824311577996,
+          "eval_gate_mean": 0.10977727028408221,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.0012977268864501148,
-        0.0012700811996458658,
-        3.168467573956075e-05
+        0.004506190922541221,
+        0.004496180589018876,
+        3.825400743617862e-05
       ]
     },
     {
       "global_step": 6000,
       "metrics": {
-        "teacher_forced_coord_loss": 4.110992456993031e-05,
-        "free_rollout_coord_mean_l2": 0.0034096882388039164,
-        "free_rollout_endpoint_l2": 0.003438990603882613,
-        "total_loss_reference": 4.101673244423542e-05,
+        "teacher_forced_coord_loss": 1.665470269549482e-05,
+        "free_rollout_coord_mean_l2": 0.001220985964822707,
+        "free_rollout_endpoint_l2": 0.0012341067959483066,
+        "total_loss_reference": 1.664368655171632e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -434,24 +461,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.08368745801407237,
+          "eval_gate_mean": 0.08981643945333503,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.003438990603882613,
-        0.0034096882388039164,
-        4.110992456993031e-05
+        0.0012341067959483066,
+        0.001220985964822707,
+        1.665470269549482e-05
       ]
     },
     {
       "global_step": 7000,
       "metrics": {
-        "teacher_forced_coord_loss": 4.551263851103096e-05,
-        "free_rollout_coord_mean_l2": 0.004330209277179255,
-        "free_rollout_endpoint_l2": 0.0043561132244613705,
-        "total_loss_reference": 4.542719632936073e-05,
+        "teacher_forced_coord_loss": 1.6356694202232215e-05,
+        "free_rollout_coord_mean_l2": 0.00087502125403771,
+        "free_rollout_endpoint_l2": 0.0008881782940557686,
+        "total_loss_reference": 1.634485406982427e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -461,24 +488,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.058555949955832125,
+          "eval_gate_mean": 0.0682841180158513,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.0043561132244613705,
-        0.004330209277179255,
-        4.551263851103096e-05
+        0.0008881782940557686,
+        0.00087502125403771,
+        1.6356694202232215e-05
       ]
     },
     {
       "global_step": 8000,
       "metrics": {
-        "teacher_forced_coord_loss": 2.9923663791356884e-05,
-        "free_rollout_coord_mean_l2": 0.001530581141710716,
-        "free_rollout_endpoint_l2": 0.0015566429848247818,
-        "total_loss_reference": 2.983992817198034e-05,
+        "teacher_forced_coord_loss": 2.1350170317407303e-05,
+        "free_rollout_coord_mean_l2": 0.002299204454164361,
+        "free_rollout_endpoint_l2": 0.0023138311088961713,
+        "total_loss_reference": 2.1337061363895027e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -488,24 +515,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.04369486552164998,
+          "eval_gate_mean": 0.05571529949970898,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.0015566429848247818,
-        0.001530581141710716,
-        2.9923663791356884e-05
+        0.0023138311088961713,
+        0.002299204454164361,
+        2.1350170317407303e-05
       ]
     },
     {
       "global_step": 9000,
       "metrics": {
-        "teacher_forced_coord_loss": 4.963020787475245e-05,
-        "free_rollout_coord_mean_l2": 0.0053668871587115195,
-        "free_rollout_endpoint_l2": 0.005380432835560151,
-        "total_loss_reference": 4.9560062359168386e-05,
+        "teacher_forced_coord_loss": 3.7455976673621027e-05,
+        "free_rollout_coord_mean_l2": 0.004728786597390363,
+        "free_rollout_endpoint_l2": 0.004737432922665876,
+        "total_loss_reference": 3.74628431083173e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -515,24 +542,24 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.03471850612482359,
+          "eval_gate_mean": 0.03758791880682111,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.005380432835560151,
-        0.0053668871587115195,
-        4.963020787475245e-05
+        0.004737432922665876,
+        0.004728786597390363,
+        3.7455976673621027e-05
       ]
     },
     {
       "global_step": 10000,
       "metrics": {
-        "teacher_forced_coord_loss": 4.7400425137842004e-05,
-        "free_rollout_coord_mean_l2": 0.004872353899539734,
-        "free_rollout_endpoint_l2": 0.004887476196898142,
-        "total_loss_reference": 4.732665602628109e-05,
+        "teacher_forced_coord_loss": 1.7544818576441568e-05,
+        "free_rollout_coord_mean_l2": 0.0016009031842814305,
+        "free_rollout_endpoint_l2": 0.0016124288448183199,
+        "total_loss_reference": 1.7536900623819445e-05,
         "tapvid_style_eval": {
           "compatible": false,
           "status": "not_supported_in_current_stage2_trainer"
@@ -542,42 +569,36 @@
           "status": "not_supported_in_current_stage2_trainer"
         },
         "semantic_branch_metrics": {
-          "eval_gate_mean": 0.024906810979510464,
+          "eval_gate_mean": 0.025708626734004134,
           "semantic_input_nonempty_ratio": 1.0,
-          "eval_batches": 86
+          "eval_batches": 168
         }
       },
       "rank_key": [
-        0.004887476196898142,
-        0.004872353899539734,
-        4.7400425137842004e-05
+        0.0016124288448183199,
+        0.0016009031842814305,
+        1.7544818576441568e-05
       ]
     }
   ],
   "checkpoint_inventory": {
-    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409",
-    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt",
-    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/latest.pt",
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/latest.pt",
     "step_checkpoints": [
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0001000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0002000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0003000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0004000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0005000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0006000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0007000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0008000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0009000.pt",
-      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0010000.pt"
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0001000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0002000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0003000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0004000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0005000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0006000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0007000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0008000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0009000.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0010000.pt"
     ],
     "resume_from": "",
     "auto_resume_latest": false
   },
-  "run_stable": true,
-  "status": "completed",
-  "selected_gpu_id": 2,
-  "lease_id": "f3350f11-fc08-4b33-bff8-13283286a601",
-  "raw_json_path": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed42_20260409_raw.json",
-  "progress_json_path": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed42_20260409_progress.json",
-  "trainer_mode": "full_scale"
+  "run_stable": true
 }
