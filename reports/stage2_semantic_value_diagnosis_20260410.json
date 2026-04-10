@@ -1,0 +1,1093 @@
+{
+  "generated_at_utc": "2026-04-10T08:47:49.683804+00:00",
+  "ljs_alignment": {
+    "main_task": "future trace / future state generation",
+    "full_video_reconstruction_is_main_task": false,
+    "teacher_as_mainline_semantic_source": false,
+    "stage1_frozen": true
+  },
+  "full_validation_panel": {
+    "stage1_frozen_baseline": {
+      "free_rollout_endpoint_l2": 0.08646162406001077,
+      "free_rollout_coord_mean_l2": 0.08644179813020779,
+      "teacher_forced_coord_loss": 0.007495416002483827
+    },
+    "stage2_runs": [
+      {
+        "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+        "family": "cropenc",
+        "seed": 42,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed42_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "teacher_forced_coord_loss": 3.02700085095072e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+        "family": "cropenc",
+        "seed": 123,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed123_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0008026909849500561,
+          "free_rollout_coord_mean_l2": 0.000777029686230004,
+          "teacher_forced_coord_loss": 2.9777691952834867e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "family": "cropenc",
+        "seed": 456,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed456_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0005719647855659453,
+          "free_rollout_coord_mean_l2": 0.0005451074948007615,
+          "teacher_forced_coord_loss": 2.9811124511501298e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+        "family": "cropenc",
+        "seed": 789,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed789_wave2_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.001271645017864275,
+          "free_rollout_coord_mean_l2": 0.0012406741042211434,
+          "teacher_forced_coord_loss": 2.846273378982376e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+        "family": "legacysem",
+        "seed": 42,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed42_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.000996361602689669,
+          "free_rollout_coord_mean_l2": 0.0009725921992321143,
+          "teacher_forced_coord_loss": 3.390455406972262e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+        "family": "legacysem",
+        "seed": 123,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed123_wave2_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0006497075011459541,
+          "free_rollout_coord_mean_l2": 0.000631465420972708,
+          "teacher_forced_coord_loss": 2.8024997752298172e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "family": "legacysem",
+        "seed": 456,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed456_wave2_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0006332492062811123,
+          "free_rollout_coord_mean_l2": 0.0006095297280264578,
+          "teacher_forced_coord_loss": 2.987299539593003e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+        "family": "coreplusburst",
+        "seed": 42,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed42_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0008881782940557686,
+          "free_rollout_coord_mean_l2": 0.00087502125403771,
+          "teacher_forced_coord_loss": 1.6356694202232215e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+        "family": "coreplusburst",
+        "seed": 123,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0011112007506820008,
+          "free_rollout_coord_mean_l2": 0.0010977727265672082,
+          "teacher_forced_coord_loss": 1.698330996349207e-05
+        }
+      },
+      {
+        "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+        "family": "coreplusburst",
+        "seed": 456,
+        "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409_final.json",
+        "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/best.pt",
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0008530785630083326,
+          "free_rollout_coord_mean_l2": 0.0008373070556437424,
+          "teacher_forced_coord_loss": 1.8949669189048105e-05
+        }
+      }
+    ],
+    "family_aggregates": {
+      "cropenc": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0009458137729957648,
+          "std": 0.00031777764785751985,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0009183644734726236,
+          "std": 0.0003163079785005914,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 2.958038969091678e-05,
+          "std": 7.782235257709826e-07,
+          "count": 4
+        }
+      },
+      "legacysem": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0007597727700389118,
+          "std": 0.00020505712781747074,
+          "count": 3
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0007378624494104267,
+          "std": 0.00020357759023225538,
+          "count": 3
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.0600849072650274e-05,
+          "std": 3.0065967227877117e-06,
+          "count": 3
+        }
+      },
+      "coreplusburst": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0009508192025820339,
+          "std": 0.00013999885180995974,
+          "count": 3
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0009367003454162202,
+          "std": 0.00014076158626330466,
+          "count": 3
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 1.7429891118257464e-05,
+          "std": 1.352943408427311e-06,
+          "count": 3
+        }
+      }
+    },
+    "relative_ranking_by_endpoint_l2": [
+      "legacysem",
+      "cropenc",
+      "coreplusburst"
+    ],
+    "source": "stage2 fullscale Wave1/Wave2 final-json best_checkpoint_metric plus freshly evaluated Stage1 baseline"
+  },
+  "hard_subset_panels": {
+    "occlusion_reappearance": {
+      "clip_count": 24,
+      "dataset_scope": "core_val",
+      "stage1_frozen_baseline": {
+        "free_rollout_endpoint_l2": 0.08612316101789474,
+        "free_rollout_coord_mean_l2": 0.08612339198589325,
+        "teacher_forced_coord_loss": 0.007417237386107445
+      },
+      "families": {
+        "cropenc": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0005561463767662644,
+                "free_rollout_coord_mean_l2": 0.0005561931078167012,
+                "teacher_forced_coord_loss": 4.4516481049565e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00032064491339648765,
+                "free_rollout_coord_mean_l2": 0.0003207221549625198,
+                "teacher_forced_coord_loss": 1.171700579523834e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00013218194362707436,
+                "free_rollout_coord_mean_l2": 0.00013220962622047713,
+                "teacher_forced_coord_loss": 2.5239271413587023e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+              "seed": 789,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007290893893999358,
+                "free_rollout_coord_mean_l2": 0.0007291440269909799,
+                "teacher_forced_coord_loss": 7.134666664872688e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00043451565579744056,
+              "std": 0.0002620050484892532,
+              "count": 4
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0004345672289976695,
+              "std": 0.000262010919081459,
+              "count": 4
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 3.252602015872223e-07,
+              "std": 3.15380955379308e-07,
+              "count": 4
+            }
+          }
+        },
+        "legacysem": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00046514362717668217,
+                "free_rollout_coord_mean_l2": 0.0004651567724067718,
+                "teacher_forced_coord_loss": 2.677836619113805e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00020535557026353976,
+                "free_rollout_coord_mean_l2": 0.00020528251964909336,
+                "teacher_forced_coord_loss": 5.565869069338684e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00023550405846132585,
+                "free_rollout_coord_mean_l2": 0.00023542783067872128,
+                "teacher_forced_coord_loss": 5.974318402953334e-08
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00030200108530051593,
+              "std": 0.00014208747151848224,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0003019557075781955,
+              "std": 0.00014213769948593556,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.2772851221143355e-07,
+              "std": 1.2130850955130543e-07,
+              "count": 3
+            }
+          }
+        },
+        "coreplusburst": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0006235369946807623,
+                "free_rollout_coord_mean_l2": 0.0006235124892555177,
+                "teacher_forced_coord_loss": 4.456626735797424e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0013871665578335524,
+                "free_rollout_coord_mean_l2": 0.0013870216983680923,
+                "teacher_forced_coord_loss": 2.005285674992289e-06
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007708065677434206,
+                "free_rollout_coord_mean_l2": 0.0007706316149172684,
+                "teacher_forced_coord_loss": 6.531182066282781e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.0009271700400859118,
+              "std": 0.0004051168708440578,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0009270552675136261,
+              "std": 0.0004050775819748814,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.0346888517334364e-06,
+              "std": 8.469374797104241e-07,
+              "count": 3
+            }
+          }
+        }
+      },
+      "relative_ranking_by_endpoint_l2": [
+        "legacysem",
+        "cropenc",
+        "coreplusburst"
+      ]
+    },
+    "crossing_or_interaction_ambiguity": {
+      "clip_count": 24,
+      "dataset_scope": "core_val",
+      "stage1_frozen_baseline": {
+        "free_rollout_endpoint_l2": 0.08612316101789474,
+        "free_rollout_coord_mean_l2": 0.08612339198589325,
+        "teacher_forced_coord_loss": 0.007417237386107445
+      },
+      "families": {
+        "cropenc": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0005561463767662644,
+                "free_rollout_coord_mean_l2": 0.0005561931078167012,
+                "teacher_forced_coord_loss": 4.4516481049565e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00032064491339648765,
+                "free_rollout_coord_mean_l2": 0.0003207221549625198,
+                "teacher_forced_coord_loss": 1.171700579523834e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00013218194362707436,
+                "free_rollout_coord_mean_l2": 0.00013220962622047713,
+                "teacher_forced_coord_loss": 2.5239271413587023e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+              "seed": 789,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007290893893999358,
+                "free_rollout_coord_mean_l2": 0.0007291440269909799,
+                "teacher_forced_coord_loss": 7.134666664872688e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00043451565579744056,
+              "std": 0.0002620050484892532,
+              "count": 4
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0004345672289976695,
+              "std": 0.000262010919081459,
+              "count": 4
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 3.252602015872223e-07,
+              "std": 3.15380955379308e-07,
+              "count": 4
+            }
+          }
+        },
+        "legacysem": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00046514362717668217,
+                "free_rollout_coord_mean_l2": 0.0004651567724067718,
+                "teacher_forced_coord_loss": 2.677836619113805e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00020535557026353976,
+                "free_rollout_coord_mean_l2": 0.00020528251964909336,
+                "teacher_forced_coord_loss": 5.565869069338684e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00023550405846132585,
+                "free_rollout_coord_mean_l2": 0.00023542783067872128,
+                "teacher_forced_coord_loss": 5.974318402953334e-08
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00030200108530051593,
+              "std": 0.00014208747151848224,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0003019557075781955,
+              "std": 0.00014213769948593556,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.2772851221143355e-07,
+              "std": 1.2130850955130543e-07,
+              "count": 3
+            }
+          }
+        },
+        "coreplusburst": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0006235369946807623,
+                "free_rollout_coord_mean_l2": 0.0006235124892555177,
+                "teacher_forced_coord_loss": 4.456626735797424e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0013871665578335524,
+                "free_rollout_coord_mean_l2": 0.0013870216983680923,
+                "teacher_forced_coord_loss": 2.005285674992289e-06
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007708065677434206,
+                "free_rollout_coord_mean_l2": 0.0007706316149172684,
+                "teacher_forced_coord_loss": 6.531182066282781e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.0009271700400859118,
+              "std": 0.0004051168708440578,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0009270552675136261,
+              "std": 0.0004050775819748814,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.0346888517334364e-06,
+              "std": 8.469374797104241e-07,
+              "count": 3
+            }
+          }
+        }
+      },
+      "relative_ranking_by_endpoint_l2": [
+        "legacysem",
+        "cropenc",
+        "coreplusburst"
+      ]
+    },
+    "small_object_or_low_area": {
+      "clip_count": 24,
+      "dataset_scope": "core_val",
+      "stage1_frozen_baseline": {
+        "free_rollout_endpoint_l2": 0.08612316101789474,
+        "free_rollout_coord_mean_l2": 0.08612339198589325,
+        "teacher_forced_coord_loss": 0.007417237386107445
+      },
+      "families": {
+        "cropenc": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0005561463767662644,
+                "free_rollout_coord_mean_l2": 0.0005561931078167012,
+                "teacher_forced_coord_loss": 4.4516481049565e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00032064491339648765,
+                "free_rollout_coord_mean_l2": 0.0003207221549625198,
+                "teacher_forced_coord_loss": 1.171700579523834e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00013218194362707436,
+                "free_rollout_coord_mean_l2": 0.00013220962622047713,
+                "teacher_forced_coord_loss": 2.5239271413587023e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+              "seed": 789,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007290893893999358,
+                "free_rollout_coord_mean_l2": 0.0007291440269909799,
+                "teacher_forced_coord_loss": 7.134666664872688e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00043451565579744056,
+              "std": 0.0002620050484892532,
+              "count": 4
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0004345672289976695,
+              "std": 0.000262010919081459,
+              "count": 4
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 3.252602015872223e-07,
+              "std": 3.15380955379308e-07,
+              "count": 4
+            }
+          }
+        },
+        "legacysem": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00046514362717668217,
+                "free_rollout_coord_mean_l2": 0.0004651567724067718,
+                "teacher_forced_coord_loss": 2.677836619113805e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00020535557026353976,
+                "free_rollout_coord_mean_l2": 0.00020528251964909336,
+                "teacher_forced_coord_loss": 5.565869069338684e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00023550405846132585,
+                "free_rollout_coord_mean_l2": 0.00023542783067872128,
+                "teacher_forced_coord_loss": 5.974318402953334e-08
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00030200108530051593,
+              "std": 0.00014208747151848224,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0003019557075781955,
+              "std": 0.00014213769948593556,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.2772851221143355e-07,
+              "std": 1.2130850955130543e-07,
+              "count": 3
+            }
+          }
+        },
+        "coreplusburst": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0006235369946807623,
+                "free_rollout_coord_mean_l2": 0.0006235124892555177,
+                "teacher_forced_coord_loss": 4.456626735797424e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0013871665578335524,
+                "free_rollout_coord_mean_l2": 0.0013870216983680923,
+                "teacher_forced_coord_loss": 2.005285674992289e-06
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007708065677434206,
+                "free_rollout_coord_mean_l2": 0.0007706316149172684,
+                "teacher_forced_coord_loss": 6.531182066282781e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.0009271700400859118,
+              "std": 0.0004051168708440578,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0009270552675136261,
+              "std": 0.0004050775819748814,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.0346888517334364e-06,
+              "std": 8.469374797104241e-07,
+              "count": 3
+            }
+          }
+        }
+      },
+      "relative_ranking_by_endpoint_l2": [
+        "legacysem",
+        "cropenc",
+        "coreplusburst"
+      ]
+    },
+    "appearance_change_or_semantic_shift": {
+      "clip_count": 24,
+      "dataset_scope": "core_val",
+      "stage1_frozen_baseline": {
+        "free_rollout_endpoint_l2": 0.08612316101789474,
+        "free_rollout_coord_mean_l2": 0.08612339198589325,
+        "teacher_forced_coord_loss": 0.007417237386107445
+      },
+      "families": {
+        "cropenc": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007481538729431728,
+                "free_rollout_coord_mean_l2": 0.0007481515834418436,
+                "teacher_forced_coord_loss": 6.514237232598438e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00041211889280627173,
+                "free_rollout_coord_mean_l2": 0.00041216579847969115,
+                "teacher_forced_coord_loss": 1.9171193343936466e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00012329189970235652,
+                "free_rollout_coord_mean_l2": 0.00012330109651278084,
+                "teacher_forced_coord_loss": 2.4298461021032836e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+              "seed": 789,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0007232088634433845,
+                "free_rollout_coord_mean_l2": 0.0007232885303286215,
+                "teacher_forced_coord_loss": 6.502124089517262e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.0005016933822237963,
+              "std": 0.0002949707064746234,
+              "count": 4
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0005017267521907343,
+              "std": 0.00029498133290864394,
+              "count": 4
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 3.7941163166799186e-07,
+              "std": 3.2075960865405245e-07,
+              "count": 4
+            }
+          }
+        },
+        "legacysem": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00043644511606544256,
+                "free_rollout_coord_mean_l2": 0.0004365207569207996,
+                "teacher_forced_coord_loss": 2.4460199673133803e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00021885699243284762,
+                "free_rollout_coord_mean_l2": 0.00021885435853619128,
+                "teacher_forced_coord_loss": 6.038650468553897e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00022450025426223874,
+                "free_rollout_coord_mean_l2": 0.00022445848056425652,
+                "teacher_forced_coord_loss": 5.1651891652682025e-08
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.00029326745425350964,
+              "std": 0.00012402759262546356,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0002932778653404158,
+              "std": 0.00012408362517737204,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 1.1888013102318634e-07,
+              "std": 1.0896588458807801e-07,
+              "count": 3
+            }
+          }
+        },
+        "coreplusburst": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0005464298495401939,
+                "free_rollout_coord_mean_l2": 0.0005464210795859495,
+                "teacher_forced_coord_loss": 3.4877947049002006e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.001237651992899676,
+                "free_rollout_coord_mean_l2": 0.0012376140803098679,
+                "teacher_forced_coord_loss": 1.560241495705365e-06
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0008881969455008706,
+                "free_rollout_coord_mean_l2": 0.0008880252717062831,
+                "teacher_forced_coord_loss": 8.19212687019899e-07
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.0008907595959802469,
+              "std": 0.0003456181972216288,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0008906868105340335,
+              "std": 0.00034560418675723875,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 9.09411217738428e-07,
+              "std": 6.107469941330471e-07,
+              "count": 3
+            }
+          }
+        }
+      },
+      "relative_ranking_by_endpoint_l2": [
+        "legacysem",
+        "cropenc",
+        "coreplusburst"
+      ]
+    },
+    "burst_persistence_stress": {
+      "clip_count": 24,
+      "dataset_scope": "burst_val_optional_extension",
+      "stage1_frozen_baseline": {
+        "free_rollout_endpoint_l2": 0.08599548786878586,
+        "free_rollout_coord_mean_l2": 0.08599565178155899,
+        "teacher_forced_coord_loss": 0.0073952628299593925
+      },
+      "families": {
+        "cropenc": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.005044653235624234,
+                "free_rollout_coord_mean_l2": 0.005044666429360707,
+                "teacher_forced_coord_loss": 3.274282335041789e-05
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00911652452001969,
+                "free_rollout_coord_mean_l2": 0.009116464604934057,
+                "teacher_forced_coord_loss": 9.603535242301102e-05
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0020173573090384402,
+                "free_rollout_coord_mean_l2": 0.0020174047676846385,
+                "teacher_forced_coord_loss": 6.808734193934167e-06
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+              "seed": 789,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.01107466034591198,
+                "free_rollout_coord_mean_l2": 0.0110746951152881,
+                "teacher_forced_coord_loss": 0.00013794983775975803
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.006813298852648586,
+              "std": 0.004065841973460119,
+              "count": 4
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.006813307729316875,
+              "std": 0.004065822233871064,
+              "count": 4
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 6.838418693178028e-05,
+              "std": 5.962608463291083e-05,
+              "count": 4
+            }
+          }
+        },
+        "legacysem": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.20371392369270325,
+                "free_rollout_coord_mean_l2": 0.20371383925278982,
+                "teacher_forced_coord_loss": 0.04153689121206602
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.19874116281668344,
+                "free_rollout_coord_mean_l2": 0.19874112804730734,
+                "teacher_forced_coord_loss": 0.039891512443621956
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.012964772060513496,
+                "free_rollout_coord_mean_l2": 0.012964815522233645,
+                "teacher_forced_coord_loss": 0.0001691541886733224
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.1384732861899667,
+              "std": 0.10872199605838687,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.13847326094077694,
+              "std": 0.10872193600059686,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 0.02719918594812043,
+              "std": 0.02342314625558341,
+              "count": 3
+            }
+          }
+        },
+        "coreplusburst": {
+          "runs": [
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+              "seed": 42,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.0008530342796196541,
+                "free_rollout_coord_mean_l2": 0.0008530708534332613,
+                "teacher_forced_coord_loss": 7.728192675434306e-07
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+              "seed": 123,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00018345828963598856,
+                "free_rollout_coord_mean_l2": 0.00018345283266777793,
+                "teacher_forced_coord_loss": 4.4863162074193497e-08
+              }
+            },
+            {
+              "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+              "seed": 456,
+              "metrics": {
+                "free_rollout_endpoint_l2": 0.00024824960079664987,
+                "free_rollout_coord_mean_l2": 0.0002482730778865516,
+                "teacher_forced_coord_loss": 6.469864880879565e-08
+              }
+            }
+          ],
+          "aggregate": {
+            "free_rollout_endpoint_l2": {
+              "mean": 0.0004282473900174308,
+              "std": 0.00036929988448945923,
+              "count": 3
+            },
+            "free_rollout_coord_mean_l2": {
+              "mean": 0.0004282655879958636,
+              "std": 0.0003693170063848386,
+              "count": 3
+            },
+            "teacher_forced_coord_loss": {
+              "mean": 2.9412702614213987e-07,
+              "std": 4.146782585533552e-07,
+              "count": 3
+            }
+          }
+        }
+      },
+      "relative_ranking_by_endpoint_l2": [
+        "coreplusburst",
+        "cropenc",
+        "legacysem"
+      ]
+    }
+  },
+  "win_loss": {
+    "cropenc_vs_legacysem_semantic_hard_endpoint": [
+      "loss",
+      "loss",
+      "loss",
+      "loss"
+    ],
+    "cropenc_semantic_hard_win_count": 0,
+    "cropenc_semantic_hard_loss_count": 4,
+    "cropenc_vs_legacysem_full_endpoint": "loss",
+    "cropenc_vs_stage1_full_endpoint": "win"
+  },
+  "scientific_judgment": {
+    "stage2_overall_better_than_stage1_frozen_baseline": true,
+    "cropenc_overall_better_than_legacysem": false,
+    "cropenc_semantic_hard_better_than_legacysem": false,
+    "coreplusburst_only_improves_teacher_forced_fitting": true,
+    "phase_a_conclusion": "redesign_stage2_semantic_objective_before_more_training",
+    "phase_b_triggered": true
+  },
+  "semantic_rescue_wave0": {
+    "summary_path": "/home/chen034/workspace/stwm/reports/stage2_semantic_rescue_wave0_summary_20260410.json",
+    "positive_signal": {
+      "semantic_rescue_at_least_not_worse_than_current_cropenc_baseline": false,
+      "semantic_rescue_latest_beats_warm_start_anchor": false,
+      "best_wave0_latest_endpoint_l2": 0.0028203538713569287,
+      "warm_start_anchor_best_endpoint_l2": 0.001136954303602783,
+      "current_cropenc_fullscale_mean_endpoint_l2": 0.0009458137729957648,
+      "completed_wave0_count": 3,
+      "completed_wave0_latest_rows": [
+        {
+          "run_name": "stage2_semrescue_align_seed42_wave0_20260410",
+          "latest_endpoint": 0.005775832949439064,
+          "best_endpoint": 0.001136954303602783
+        },
+        {
+          "run_name": "stage2_semrescue_querypersist_seed42_wave0_20260410",
+          "latest_endpoint": 0.0052575544686988,
+          "best_endpoint": 0.001136954303602783
+        },
+        {
+          "run_name": "stage2_semrescue_bootstrapplabel_seed42_wave0_20260410",
+          "latest_endpoint": 0.0028203538713569287,
+          "best_endpoint": 0.001136954303602783
+        }
+      ]
+    }
+  },
+  "next_step_choice": "redesign_stage2_semantic_objective"
+}

@@ -1,0 +1,151 @@
+{
+  "generated_at_utc": "2026-04-10T15:03:40.218968+00:00",
+  "wave0_status": "0_running_3_completed_0_failed",
+  "runs": [
+    {
+      "run_name": "stage2_semrescue_align_seed42_wave0_20260410",
+      "semantic_rescue_mode": "align",
+      "selected_gpu_id": 7,
+      "lease_id": "3630e165-4f75-432b-9765-ded96d6c154b",
+      "batch_size": 8,
+      "train_steps": 3200,
+      "eval_interval": 50,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semrescue_align_seed42_wave0_20260410_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3200,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.423192799800745e-05,
+          "free_rollout_coord_mean_l2": 0.0057758840121096,
+          "free_rollout_endpoint_l2": 0.005775832949439064,
+          "total_loss_reference": 3.423192799800745e-05
+        },
+        "rank_key": [
+          0.005775832949439064,
+          0.0057758840121096,
+          3.423192799800745e-05
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_semrescue_querypersist_seed42_wave0_20260410",
+      "semantic_rescue_mode": "querypersist",
+      "selected_gpu_id": 6,
+      "lease_id": "60cfa205-e02d-4ab8-b089-af82fb16c014",
+      "batch_size": 8,
+      "train_steps": 3200,
+      "eval_interval": 50,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semrescue_querypersist_seed42_wave0_20260410_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3200,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.8370621805606788e-05,
+          "free_rollout_coord_mean_l2": 0.005257563345367089,
+          "free_rollout_endpoint_l2": 0.0052575544686988,
+          "total_loss_reference": 2.8370621805606788e-05
+        },
+        "rank_key": [
+          0.0052575544686988,
+          0.005257563345367089,
+          2.8370621805606788e-05
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_semrescue_bootstrapplabel_seed42_wave0_20260410",
+      "semantic_rescue_mode": "bootstrapplabel",
+      "selected_gpu_id": 5,
+      "lease_id": "24c58862-53e9-4a98-ad17-d305221d11ce",
+      "batch_size": 8,
+      "train_steps": 3200,
+      "eval_interval": 50,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semrescue_bootstrapplabel_seed42_wave0_20260410_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3200,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.0259697162950943e-05,
+          "free_rollout_coord_mean_l2": 0.002820332534611225,
+          "free_rollout_endpoint_l2": 0.0028203538713569287,
+          "total_loss_reference": 1.0259697162950943e-05
+        },
+        "rank_key": [
+          0.0028203538713569287,
+          0.002820332534611225,
+          1.0259697162950943e-05
+        ]
+      }
+    }
+  ],
+  "next_step_choice_internal": "summarize_semantic_rescue_wave0_after_completion"
+}

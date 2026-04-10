@@ -1,0 +1,11 @@
+# Stage2 Semantic Bootstrap Cache Build
+
+- generated_at_utc: 2026-04-10T09:04:39.913479+00:00
+- cache_path: /home/chen034/workspace/stwm/data/processed/stage2_semantic_bootstrap_cache_20260410/core_trainval_pseudo_targets.jsonl
+- backend: crop_stats_pseudo_target_cache
+- coverage_mode: required_subset_cache
+- requested_limit_per_dataset_split: 64
+- total_covered_samples: 256
+- per_dataset_coverage: {'train': {'VSPW': 64, 'VIPSeg': 64}, 'val': {'VSPW': 64, 'VIPSeg': 64}}
+- missing_or_failed_items_count: 0
+- teacher_as_mainline_semantic_source: False

@@ -1,0 +1,79 @@
+{
+  "generated_at_utc": "2026-04-10T08:33:03.992295+00:00",
+  "manifest_type": "stage2_semantic_hard_subsets_20260410",
+  "core_dataset_binding": [
+    "VSPW",
+    "VIPSeg"
+  ],
+  "burst_usage": "optional_persistence_stress_only_not_main_training",
+  "scan_window": {
+    "core_val_first_n": 60,
+    "burst_val_first_n": 40,
+    "selection_limit_per_subset": 24,
+    "reason": "bounded deterministic audit window to keep this diagnosis round tractable while preserving reproducibility"
+  },
+  "subsets": {
+    "occlusion_reappearance": {
+      "dataset_scope": "core_val",
+      "build_rule": "top area_range clips, using sampled mask-derived box area range as occlusion/reappearance proxy",
+      "exact_source_fields_used": [
+        "obs_state[...,6:8]",
+        "fut_state[...,6:8]",
+        "mask_paths via dataset box extraction"
+      ],
+      "clip_count": 24,
+      "per_dataset_count": {
+        "VSPW": 24
+      }
+    },
+    "crossing_or_interaction_ambiguity": {
+      "dataset_scope": "core_val",
+      "build_rule": "top center_interaction score, using high trajectory motion near image center as ambiguity proxy",
+      "exact_source_fields_used": [
+        "obs_state[...,0:2]",
+        "fut_state[...,0:2]"
+      ],
+      "clip_count": 24,
+      "per_dataset_count": {
+        "VSPW": 24
+      }
+    },
+    "small_object_or_low_area": {
+      "dataset_scope": "core_val",
+      "build_rule": "lowest average normalized mask/box area",
+      "exact_source_fields_used": [
+        "obs_state[...,6:8]",
+        "fut_state[...,6:8]"
+      ],
+      "clip_count": 24,
+      "per_dataset_count": {
+        "VSPW": 24
+      }
+    },
+    "appearance_change_or_semantic_shift": {
+      "dataset_scope": "core_val",
+      "build_rule": "top color_std_mean + area_range proxy over object/mask crop statistics",
+      "exact_source_fields_used": [
+        "semantic_features[3:6]",
+        "obs_state[...,6:8]",
+        "fut_state[...,6:8]"
+      ],
+      "clip_count": 24,
+      "per_dataset_count": {
+        "VSPW": 24
+      }
+    },
+    "burst_persistence_stress": {
+      "dataset_scope": "burst_val_optional_extension",
+      "build_rule": "top frame_count BURST validation clips as optional persistence/long-gap stress panel",
+      "exact_source_fields_used": [
+        "meta.frame_count_total",
+        "BURST val frame paths"
+      ],
+      "clip_count": 24,
+      "per_dataset_count": {
+        "BURST": 24
+      }
+    }
+  }
+}

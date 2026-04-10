@@ -81,10 +81,23 @@ def parse_args() -> Any:
     p.add_argument("--semantic-source-mainline", default="crop_visual_encoder")
     p.add_argument("--legacy-semantic-source", default="hand_crafted_stats")
     p.add_argument("--semantic-crop-size", type=int, default=64)
+    p.add_argument(
+        "--semantic-rescue-mode",
+        default="none",
+        choices=["none", "align", "querypersist", "bootstrapplabel"],
+        help="Optional Stage2 semantic objective rescue pilot; default keeps the Wave1/Wave2 objective unchanged.",
+    )
+    p.add_argument("--semantic-rescue-weight", type=float, default=0.0)
+    p.add_argument("--semantic-bootstrap-cache-path", default="")
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
     p.add_argument("--auto-resume-latest", action="store_true")
+    p.add_argument(
+        "--skip-resume-optimizer",
+        action="store_true",
+        help="Load module weights from --resume-from but start with a fresh optimizer state.",
+    )
 
     p.add_argument("--run-name", required=True)
     p.add_argument("--run-summary-json", required=True)
@@ -114,6 +127,51 @@ def _safe_load_checkpoint(path: str | Path, device: torch.device) -> Dict[str, A
     if not isinstance(payload, dict):
         raise RuntimeError(f"unsupported checkpoint payload type: {type(payload)}")
     return payload
+
+
+def _load_bootstrap_cache(path_value: str) -> Dict[str, torch.Tensor]:
+    target = str(path_value).strip()
+    if not target:
+        return {}
+    p = Path(target)
+    if not p.exists():
+        return {}
+
+    cache: Dict[str, torch.Tensor] = {}
+    suffix = p.suffix.lower()
+    if suffix == ".jsonl":
+        for raw in p.read_text(encoding="utf-8", errors="ignore").splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+            except Exception:
+                continue
+            key = f"{str(item.get('dataset', '')).upper()}::{str(item.get('clip_id', ''))}"
+            target_values = item.get("feature_target", [])
+            if key != "::" and isinstance(target_values, list):
+                try:
+                    cache[key] = torch.tensor([float(x) for x in target_values], dtype=torch.float32)
+                except Exception:
+                    continue
+        return cache
+
+    try:
+        payload = _safe_json(p)
+    except Exception:
+        return {}
+    for item in payload.get("items", []) if isinstance(payload.get("items", []), list) else []:
+        if not isinstance(item, dict):
+            continue
+        key = f"{str(item.get('dataset', '')).upper()}::{str(item.get('clip_id', ''))}"
+        target_values = item.get("feature_target", [])
+        if key != "::" and isinstance(target_values, list):
+            try:
+                cache[key] = torch.tensor([float(x) for x in target_values], dtype=torch.float32)
+            except Exception:
+                continue
+    return cache
 
 
 def _norm_name(name: str) -> str:
@@ -328,6 +386,7 @@ def _teacher_forced_predict(
         "pred_coord": pred_coord,
         "target_coord": target_coord,
         "valid_mask": valid_mask,
+        "semantic_tokens": sem_enc,
         "gate_mean": float(aux.get("gate_mean", 0.0)),
         "gate_std": float(aux.get("gate_std", 0.0)),
         "semantic_input_nonempty": bool((batch["semantic_mask"] & token_mask).any().item()),
@@ -517,6 +576,110 @@ def _metric_triplet(metrics: Dict[str, Any]) -> Dict[str, float]:
     }
 
 
+class SemanticRescueAuxHeads(torch.nn.Module):
+    def __init__(self, semantic_dim: int, target_dim: int = 10) -> None:
+        super().__init__()
+        self.feature_head = torch.nn.Sequential(
+            torch.nn.LayerNorm(int(semantic_dim)),
+            torch.nn.Linear(int(semantic_dim), int(target_dim)),
+        )
+        self.endpoint_head = torch.nn.Sequential(
+            torch.nn.LayerNorm(int(semantic_dim)),
+            torch.nn.Linear(int(semantic_dim), 2),
+        )
+
+    def forward(self, semantic_tokens: torch.Tensor) -> Dict[str, torch.Tensor]:
+        return {
+            "feature_target": self.feature_head(semantic_tokens),
+            "endpoint": self.endpoint_head(semantic_tokens),
+        }
+
+
+def _bootstrap_targets_from_batch(
+    *,
+    batch: Dict[str, Any],
+    cache: Dict[str, torch.Tensor],
+    device: torch.device,
+) -> Tuple[torch.Tensor, torch.Tensor, float]:
+    fallback = batch["semantic_features"].to(device=device, dtype=torch.float32)
+    if not cache:
+        valid = batch["semantic_mask"].to(device=device, dtype=torch.bool)
+        return fallback, valid, 0.0
+
+    targets = torch.zeros_like(fallback)
+    valid = torch.zeros(batch["semantic_mask"].shape, dtype=torch.bool, device=device)
+    hits = 0
+    total = 0
+    metas = batch.get("meta", [])
+    for bi, meta in enumerate(metas if isinstance(metas, list) else []):
+        if not isinstance(meta, dict):
+            continue
+        key = f"{str(meta.get('dataset', '')).upper()}::{str(meta.get('clip_id', ''))}"
+        total += 1
+        target = cache.get(key)
+        if target is None:
+            targets[bi] = fallback[bi]
+            valid[bi] = batch["semantic_mask"][bi].to(device=device, dtype=torch.bool)
+            continue
+        dim = min(int(target.numel()), int(targets.shape[-1]))
+        targets[bi, :, :dim] = target[:dim].to(device=device, dtype=torch.float32)[None, :]
+        valid[bi] = batch["semantic_mask"][bi].to(device=device, dtype=torch.bool)
+        hits += 1
+    coverage = float(hits / max(total, 1))
+    return targets, valid, coverage
+
+
+def _semantic_rescue_loss(
+    *,
+    mode: str,
+    aux_heads: SemanticRescueAuxHeads | None,
+    tf_out: Dict[str, Any],
+    batch: Dict[str, Any],
+    bootstrap_cache: Dict[str, torch.Tensor],
+    device: torch.device,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    if aux_heads is None or str(mode) == "none":
+        zero = tf_out["pred_coord"].sum() * 0.0
+        return zero, {"semantic_rescue_loss": 0.0, "semantic_bootstrap_cache_hit_ratio": 0.0}
+
+    semantic_tokens = tf_out["semantic_tokens"]
+    token_mask = batch["token_mask"].to(device=device, dtype=torch.bool)
+    semantic_mask = batch["semantic_mask"].to(device=device, dtype=torch.bool) & token_mask
+    aux = aux_heads(semantic_tokens)
+
+    loss_terms: List[torch.Tensor] = []
+    cache_hit_ratio = 0.0
+    mode_norm = str(mode).strip().lower()
+
+    if mode_norm in {"align", "bootstrapplabel"}:
+        target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(
+            batch=batch,
+            cache=bootstrap_cache if mode_norm == "bootstrapplabel" else {},
+            device=device,
+        )
+        valid = semantic_mask & target_valid
+        denom = valid.float().sum().clamp_min(1.0)
+        sq = ((aux["feature_target"] - target) ** 2).mean(dim=-1)
+        loss_terms.append((sq * valid.float()).sum() / denom)
+
+    if mode_norm in {"querypersist", "bootstrapplabel"}:
+        endpoint_target = batch["fut_state"][:, -1, :, 0:2].to(device=device, dtype=torch.float32)
+        endpoint_valid = batch["fut_valid"][:, -1].to(device=device, dtype=torch.bool) & semantic_mask
+        denom = endpoint_valid.float().sum().clamp_min(1.0)
+        sq = ((aux["endpoint"] - endpoint_target) ** 2).sum(dim=-1)
+        loss_terms.append((sq * endpoint_valid.float()).sum() / denom)
+
+    if not loss_terms:
+        zero = tf_out["pred_coord"].sum() * 0.0
+        return zero, {"semantic_rescue_loss": 0.0, "semantic_bootstrap_cache_hit_ratio": 0.0}
+
+    loss = sum(loss_terms) / float(len(loss_terms))
+    return loss, {
+        "semantic_rescue_loss": float(loss.detach().cpu().item()),
+        "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+    }
+
+
 def _split_counts_used(summary: Dict[str, Dict[str, Any]]) -> Dict[str, int]:
     out: Dict[str, int] = {}
     for name, meta in summary.items():
@@ -595,10 +758,11 @@ def _checkpoint_payload(
     semantic_encoder: SemanticEncoder,
     semantic_fusion: SemanticFusion,
     readout_head: torch.nn.Linear,
+    semantic_rescue_heads: SemanticRescueAuxHeads | None,
     optimizer: torch.optim.Optimizer,
     run_metadata: Dict[str, Any],
 ) -> Dict[str, Any]:
-    return {
+    payload = {
         "run_name": str(args.run_name),
         "global_step": int(global_step),
         "best_metric_so_far": best_metric_so_far if isinstance(best_metric_so_far, dict) else None,
@@ -610,6 +774,9 @@ def _checkpoint_payload(
         "args": vars(args),
         "run_metadata": run_metadata,
     }
+    if semantic_rescue_heads is not None:
+        payload["semantic_rescue_heads_state_dict"] = semantic_rescue_heads.state_dict()
+    return payload
 
 
 def main() -> None:
@@ -742,9 +909,21 @@ def main() -> None:
         )
     ).to(device)
     readout_head = torch.nn.Linear(fusion_hidden_dim, 2).to(device)
+    semantic_rescue_heads: SemanticRescueAuxHeads | None = None
+    rescue_mode = str(args.semantic_rescue_mode).strip().lower()
+    rescue_weight = float(args.semantic_rescue_weight)
+    bootstrap_cache = _load_bootstrap_cache(str(args.semantic_bootstrap_cache_path))
+    if rescue_mode != "none" and rescue_weight > 0.0:
+        semantic_rescue_heads = SemanticRescueAuxHeads(
+            semantic_dim=int(args.semantic_embed_dim),
+            target_dim=10,
+        ).to(device)
 
     trainable_params: List[torch.nn.Parameter] = []
-    for module in [semantic_encoder, semantic_fusion, readout_head]:
+    modules_for_training: List[torch.nn.Module] = [semantic_encoder, semantic_fusion, readout_head]
+    if semantic_rescue_heads is not None:
+        modules_for_training.append(semantic_rescue_heads)
+    for module in modules_for_training:
         trainable_params.extend([p for p in module.parameters() if p.requires_grad])
 
     pre_frozen_parameter_count = int(stage1_meta.get("parameter_count", 0))
@@ -772,6 +951,13 @@ def main() -> None:
         "gpu_selection": gpu_selection,
         "current_mainline_semantic_source": str(args.semantic_source_mainline),
         "legacy_semantic_source": str(args.legacy_semantic_source),
+        "semantic_rescue_mode": str(rescue_mode),
+        "semantic_rescue_weight": float(rescue_weight),
+        "semantic_bootstrap_cache_path": str(args.semantic_bootstrap_cache_path),
+        "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
+        "skip_resume_optimizer": bool(args.skip_resume_optimizer),
+        "resume_optimizer_loaded": False,
+        "resume_optimizer_skip_reason": "",
     }
 
     resolved_resume = _resolve_resume_path(
@@ -788,8 +974,17 @@ def main() -> None:
         semantic_encoder.load_state_dict(payload.get("semantic_encoder_state_dict", {}))
         semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}))
         readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
+        if semantic_rescue_heads is not None and isinstance(payload.get("semantic_rescue_heads_state_dict", None), dict):
+            semantic_rescue_heads.load_state_dict(payload["semantic_rescue_heads_state_dict"])
         if isinstance(payload.get("optimizer_state_dict", None), dict):
-            optimizer.load_state_dict(payload["optimizer_state_dict"])
+            if bool(args.skip_resume_optimizer):
+                run_metadata["resume_optimizer_skip_reason"] = "explicit_skip_resume_optimizer"
+            else:
+                try:
+                    optimizer.load_state_dict(payload["optimizer_state_dict"])
+                    run_metadata["resume_optimizer_loaded"] = True
+                except ValueError as exc:
+                    run_metadata["resume_optimizer_skip_reason"] = f"incompatible_optimizer_state: {exc}"
         global_step = int(payload.get("global_step", 0) or 0)
         if isinstance(payload.get("best_metric_so_far", None), dict):
             best_metric_so_far = payload.get("best_metric_so_far")
@@ -802,12 +997,16 @@ def main() -> None:
     semantic_encoder.train()
     semantic_fusion.train()
     readout_head.train()
+    if semantic_rescue_heads is not None:
+        semantic_rescue_heads.train()
 
     train_iter = iter(train_loader)
     step_checkpoints: List[str] = sorted(str(p) for p in output_dir.glob("step_*.pt"))
     stage1_grad_detected_any = False
     semantic_grad_norm_latest = 0.0
     teacher_loss_history: List[float] = []
+    rescue_loss_history: List[float] = []
+    rescue_cache_hit_history: List[float] = []
     gate_history: List[float] = []
     semantic_nonempty_count = 0
     optimizer_steps_this_run = 0
@@ -844,6 +1043,7 @@ def main() -> None:
             semantic_encoder=semantic_encoder,
             semantic_fusion=semantic_fusion,
             readout_head=readout_head,
+            semantic_rescue_heads=semantic_rescue_heads,
             optimizer=optimizer,
             run_metadata=run_metadata,
         )
@@ -874,9 +1074,18 @@ def main() -> None:
         )
 
         teacher_loss = _masked_mse_coord(tf_out["pred_coord"], tf_out["target_coord"], tf_out["valid_mask"])
+        rescue_loss, rescue_info = _semantic_rescue_loss(
+            mode=str(rescue_mode),
+            aux_heads=semantic_rescue_heads,
+            tf_out=tf_out,
+            batch=batch,
+            bootstrap_cache=bootstrap_cache,
+            device=device,
+        )
+        total_train_loss = teacher_loss + float(rescue_weight) * rescue_loss
 
         optimizer.zero_grad(set_to_none=True)
-        teacher_loss.backward()
+        total_train_loss.backward()
 
         if float(args.clip_grad_norm) > 0.0:
             torch.nn.utils.clip_grad_norm_(trainable_params, max_norm=float(args.clip_grad_norm))
@@ -902,6 +1111,8 @@ def main() -> None:
         optimizer_steps_this_run += 1
 
         teacher_loss_history.append(float(teacher_loss.detach().cpu().item()))
+        rescue_loss_history.append(float(rescue_info.get("semantic_rescue_loss", 0.0)))
+        rescue_cache_hit_history.append(float(rescue_info.get("semantic_bootstrap_cache_hit_ratio", 0.0)))
         gate_history.append(float(tf_out["gate_mean"]))
         semantic_nonempty_count += 1 if bool(tf_out["semantic_input_nonempty"]) else 0
 
@@ -945,6 +1156,7 @@ def main() -> None:
                     semantic_encoder=semantic_encoder,
                     semantic_fusion=semantic_fusion,
                     readout_head=readout_head,
+                    semantic_rescue_heads=semantic_rescue_heads,
                     optimizer=optimizer,
                     run_metadata=run_metadata,
                 )
@@ -1004,6 +1216,7 @@ def main() -> None:
             semantic_encoder=semantic_encoder,
             semantic_fusion=semantic_fusion,
             readout_head=readout_head,
+            semantic_rescue_heads=semantic_rescue_heads,
             optimizer=optimizer,
             run_metadata=run_metadata,
         )
@@ -1098,6 +1311,11 @@ def main() -> None:
             "current_mainline_semantic_source": str(args.semantic_source_mainline),
             "legacy_semantic_source": str(args.legacy_semantic_source),
             "legacy_semantic_feature_dim": 10,
+            "semantic_rescue_mode": str(rescue_mode),
+            "semantic_rescue_weight": float(rescue_weight),
+            "semantic_rescue_loss_mean": float(sum(rescue_loss_history) / max(len(rescue_loss_history), 1)),
+            "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
+            "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
         },
         "selection_policy": {
             "primary": "free_rollout_endpoint_l2",
