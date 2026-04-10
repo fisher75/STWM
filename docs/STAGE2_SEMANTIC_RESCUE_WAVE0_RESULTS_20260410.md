@@ -2,6 +2,9 @@
 
 - wave0_status: 0_running_3_completed_0_failed
 - next_step_choice_internal: summarize_semantic_rescue_wave0_after_completion
+- semantic_rescue_at_least_not_worse_than_current_cropenc_baseline: False
+- semantic_rescue_semantic_hard_positive_signal: False
+- recommended_next_step_choice: redesign_stage2_semantic_objective
 
 | run_name | mode | gpu | batch | steps | status | best_endpoint_l2 | latest_endpoint_l2 |
 |---|---|---:|---:|---:|---|---:|---:|
