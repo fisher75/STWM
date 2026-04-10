@@ -226,10 +226,42 @@ def summarize(args: Any) -> Dict[str, Any]:
         next_step = "summarize_semantic_rescue_wave0_after_completion"
     else:
         next_step = "continue_semantic_rescue_wave0"
+    latest_endpoints = []
+    for row in rows:
+        metrics = row.get("latest_checkpoint_metric", {}).get("metrics", {}) if isinstance(row.get("latest_checkpoint_metric", {}), dict) else {}
+        try:
+            latest_endpoints.append(float(metrics.get("free_rollout_endpoint_l2")))
+        except Exception:
+            pass
+    diagnosis_path = Path(str(args.work_root)) / "reports/stage2_semantic_value_diagnosis_20260410.json"
+    cropenc_baseline_endpoint = None
+    if diagnosis_path.exists():
+        try:
+            diagnosis = _read_json(diagnosis_path)
+            cropenc_baseline_endpoint = float(
+                diagnosis["full_validation_panel"]["family_aggregates"]["cropenc"]["free_rollout_endpoint_l2"]["mean"]
+            )
+        except Exception:
+            cropenc_baseline_endpoint = None
+    best_latest_endpoint = min(latest_endpoints) if latest_endpoints else None
+    not_worse_than_cropenc = (
+        bool(best_latest_endpoint <= cropenc_baseline_endpoint)
+        if best_latest_endpoint is not None and cropenc_baseline_endpoint is not None
+        else False
+    )
+    success_criteria = {
+        "semantic_rescue_at_least_not_worse_than_current_cropenc_baseline": bool(not_worse_than_cropenc),
+        "best_wave0_latest_endpoint_l2": best_latest_endpoint,
+        "current_cropenc_fullscale_mean_endpoint_l2": cropenc_baseline_endpoint,
+        "semantic_rescue_semantic_hard_positive_signal": False,
+        "semantic_hard_positive_signal_reason": "not_evaluated_as_a_separate_wave0_panel; phase A hard-subset diagnosis stayed negative for cropenc",
+        "recommended_next_step_choice": "stage2_semantic_rescue_fullscale_wave1" if not_worse_than_cropenc else "redesign_stage2_semantic_objective",
+    }
     payload = {
         "generated_at_utc": now_iso(),
         "wave0_status": f"{running}_running_{completed}_completed_{failed}_failed",
         "runs": rows,
+        "success_criteria": success_criteria,
         "next_step_choice_internal": next_step,
     }
     _write_json(args.summary_report, payload)
@@ -238,6 +270,9 @@ def summarize(args: Any) -> Dict[str, Any]:
         "",
         f"- wave0_status: {payload['wave0_status']}",
         f"- next_step_choice_internal: {payload['next_step_choice_internal']}",
+        f"- semantic_rescue_at_least_not_worse_than_current_cropenc_baseline: {success_criteria['semantic_rescue_at_least_not_worse_than_current_cropenc_baseline']}",
+        f"- semantic_rescue_semantic_hard_positive_signal: {success_criteria['semantic_rescue_semantic_hard_positive_signal']}",
+        f"- recommended_next_step_choice: {success_criteria['recommended_next_step_choice']}",
         "",
         "| run_name | mode | gpu | batch | steps | status | best_endpoint_l2 | latest_endpoint_l2 |",
         "|---|---|---:|---:|---:|---|---:|---:|",
