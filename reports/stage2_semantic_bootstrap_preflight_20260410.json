@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-04-10T09:06:59.571423+00:00",
+  "backend_policy": "bootstrap/pseudo-label/cache only; never mainline semantic token source",
+  "available_bootstrap_backends": [
+    {
+      "name": "open_clip",
+      "available": false,
+      "reason": "No module named 'open_clip'"
+    },
+    {
+      "name": "transformers_siglip_or_clip_local",
+      "available": false,
+      "reason": "transformers is installed but no local SigLIP/CLIP cache found"
+    },
+    {
+      "name": "sam2_local_features_candidate",
+      "available": true,
+      "chosen": false,
+      "reason": "available checkpoint but no verified Stage2 crop-feature interface in current trainer"
+    }
+  ],
+  "chosen_bootstrap_backend": "crop_stats_pseudo_target_cache",
+  "feature_dim": 10,
+  "target_format": "jsonl rows keyed by DATASET::clip_id with 10-d crop-stat pseudo target",
+  "cache_feasibility_on_vspw_vipseg_train_val": "full core train/val is feasible but slow in this live round; using bounded required-subset cache first",
+  "teacher_as_mainline_semantic_source": false
+}
