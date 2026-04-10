@@ -1,0 +1,351 @@
+{
+  "generated_at_utc": "2026-04-10T04:38:41.832489+00:00",
+  "wave2_status": "0_running_5_completed_0_failed",
+  "runs": [
+    {
+      "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+      "selected_gpu_id": 2,
+      "lease_id": "1e32f36a-18a9-4552-80da-c146f3e6789b",
+      "batch_size": 8,
+      "train_steps": 10000,
+      "eval_interval": 1000,
+      "save_every_n_steps": 1000,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "status": "completed",
+      "raw_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed123_wave2_20260409_raw.json",
+      "progress_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed123_wave2_20260409_progress.json",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed123_wave2_20260409_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.8024997752298172e-05,
+          "free_rollout_coord_mean_l2": 0.000631465420972708,
+          "free_rollout_endpoint_l2": 0.0006497075011459541,
+          "total_loss_reference": 2.794373892638059e-05
+        },
+        "rank_key": [
+          0.0006497075011459541,
+          0.000631465420972708,
+          2.8024997752298172e-05
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "selected_gpu_id": 0,
+      "lease_id": "6073dc4f-d862-4886-af2d-e336bcd6ad0a",
+      "batch_size": 8,
+      "train_steps": 10000,
+      "eval_interval": 1000,
+      "save_every_n_steps": 1000,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "status": "completed",
+      "raw_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed456_wave2_20260409_raw.json",
+      "progress_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed456_wave2_20260409_progress.json",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_legacysem_seed456_wave2_20260409_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.987299539593003e-05,
+          "free_rollout_coord_mean_l2": 0.0006095297280264578,
+          "free_rollout_endpoint_l2": 0.0006332492062811123,
+          "total_loss_reference": 2.978637393711447e-05
+        },
+        "rank_key": [
+          0.0006332492062811123,
+          0.0006095297280264578,
+          2.987299539593003e-05
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+      "selected_gpu_id": 1,
+      "lease_id": "75300b90-322a-4570-af9d-d3401a5a23f3",
+      "batch_size": 8,
+      "train_steps": 10000,
+      "eval_interval": 1000,
+      "save_every_n_steps": 1000,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806,
+        "BURST": 329
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343,
+        "BURST": 657
+      },
+      "status": "completed",
+      "raw_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409_raw.json",
+      "progress_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409_progress.json",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 9000,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.698330996349207e-05,
+          "free_rollout_coord_mean_l2": 0.0010977727265672082,
+          "free_rollout_endpoint_l2": 0.0011112007506820008,
+          "total_loss_reference": 1.697159445448354e-05
+        },
+        "rank_key": [
+          0.0011112007506820008,
+          0.0010977727265672082,
+          1.698330996349207e-05
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+      "selected_gpu_id": 5,
+      "lease_id": "684b0265-ec49-48f1-8357-91eee65db45d",
+      "batch_size": 8,
+      "train_steps": 10000,
+      "eval_interval": 1000,
+      "save_every_n_steps": 1000,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806,
+        "BURST": 329
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343,
+        "BURST": 657
+      },
+      "status": "completed",
+      "raw_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409_raw.json",
+      "progress_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409_progress.json",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.8949669189048105e-05,
+          "free_rollout_coord_mean_l2": 0.0008373070556437424,
+          "free_rollout_endpoint_l2": 0.0008530785630083326,
+          "total_loss_reference": 1.8936264736310737e-05
+        },
+        "rank_key": [
+          0.0008530785630083326,
+          0.0008373070556437424,
+          1.8949669189048105e-05
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+      "selected_gpu_id": 3,
+      "lease_id": "b38f05f7-46a8-4787-99ad-c68a8cef98a9",
+      "batch_size": 8,
+      "train_steps": 10000,
+      "eval_interval": 1000,
+      "save_every_n_steps": 1000,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "status": "completed",
+      "raw_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed789_wave2_20260409_raw.json",
+      "progress_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed789_wave2_20260409_progress.json",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_fullscale_core_cropenc_seed789_wave2_20260409_final.json",
+      "best_checkpoint_metric": {
+        "global_step": 4000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.846273378982376e-05,
+          "free_rollout_coord_mean_l2": 0.0012406741042211434,
+          "free_rollout_endpoint_l2": 0.001271645017864275,
+          "total_loss_reference": 2.838228341805768e-05
+        },
+        "rank_key": [
+          0.001271645017864275,
+          0.0012406741042211434,
+          2.846273378982376e-05
+        ]
+      }
+    }
+  ],
+  "aggregate_groups": {
+    "mainline": {
+      "group": "mainline",
+      "run_names": [
+        "stage2_fullscale_core_cropenc_seed42_20260409",
+        "stage2_fullscale_core_cropenc_seed123_20260409",
+        "stage2_fullscale_core_cropenc_seed456_20260409",
+        "stage2_fullscale_core_cropenc_seed789_wave2_20260409"
+      ],
+      "completed_count": 4,
+      "metrics_mean": {
+        "free_rollout_endpoint_l2": 0.0009458137729957648,
+        "free_rollout_coord_mean_l2": 0.0009183644734726236,
+        "teacher_forced_coord_loss": 2.958038969091678e-05
+      },
+      "metrics_std": {
+        "free_rollout_endpoint_l2": 0.00031777764785751985,
+        "free_rollout_coord_mean_l2": 0.0003163079785005914,
+        "teacher_forced_coord_loss": 7.782235257709826e-07
+      },
+      "metrics_values": [
+        {
+          "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.001136954303602783,
+            "free_rollout_coord_mean_l2": 0.0011106466086385853,
+            "teacher_forced_coord_loss": 3.02700085095072e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0008026909849500561,
+            "free_rollout_coord_mean_l2": 0.000777029686230004,
+            "teacher_forced_coord_loss": 2.9777691952834867e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005719647855659453,
+            "free_rollout_coord_mean_l2": 0.0005451074948007615,
+            "teacher_forced_coord_loss": 2.9811124511501298e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.001271645017864275,
+            "free_rollout_coord_mean_l2": 0.0012406741042211434,
+            "teacher_forced_coord_loss": 2.846273378982376e-05
+          }
+        }
+      ]
+    },
+    "legacysem": {
+      "group": "legacysem",
+      "run_names": [
+        "stage2_fullscale_core_legacysem_seed42_20260409",
+        "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+        "stage2_fullscale_core_legacysem_seed456_wave2_20260409"
+      ],
+      "completed_count": 3,
+      "metrics_mean": {
+        "free_rollout_endpoint_l2": 0.0007597727700389118,
+        "free_rollout_coord_mean_l2": 0.0007378624494104267,
+        "teacher_forced_coord_loss": 3.0600849072650274e-05
+      },
+      "metrics_std": {
+        "free_rollout_endpoint_l2": 0.00020505712781747074,
+        "free_rollout_coord_mean_l2": 0.00020357759023225538,
+        "teacher_forced_coord_loss": 3.0065967227877117e-06
+      },
+      "metrics_values": [
+        {
+          "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.000996361602689669,
+            "free_rollout_coord_mean_l2": 0.0009725921992321143,
+            "teacher_forced_coord_loss": 3.390455406972262e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0006497075011459541,
+            "free_rollout_coord_mean_l2": 0.000631465420972708,
+            "teacher_forced_coord_loss": 2.8024997752298172e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0006332492062811123,
+            "free_rollout_coord_mean_l2": 0.0006095297280264578,
+            "teacher_forced_coord_loss": 2.987299539593003e-05
+          }
+        }
+      ]
+    },
+    "coreplusburst": {
+      "group": "coreplusburst",
+      "run_names": [
+        "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+        "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+        "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409"
+      ],
+      "completed_count": 3,
+      "metrics_mean": {
+        "free_rollout_endpoint_l2": 0.0009508192025820339,
+        "free_rollout_coord_mean_l2": 0.0009367003454162202,
+        "teacher_forced_coord_loss": 1.7429891118257464e-05
+      },
+      "metrics_std": {
+        "free_rollout_endpoint_l2": 0.00013999885180995974,
+        "free_rollout_coord_mean_l2": 0.00014076158626330466,
+        "teacher_forced_coord_loss": 1.352943408427311e-06
+      },
+      "metrics_values": [
+        {
+          "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0008881782940557686,
+            "free_rollout_coord_mean_l2": 0.00087502125403771,
+            "teacher_forced_coord_loss": 1.6356694202232215e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0011112007506820008,
+            "free_rollout_coord_mean_l2": 0.0010977727265672082,
+            "teacher_forced_coord_loss": 1.698330996349207e-05
+          }
+        },
+        {
+          "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0008530785630083326,
+            "free_rollout_coord_mean_l2": 0.0008373070556437424,
+            "teacher_forced_coord_loss": 1.8949669189048105e-05
+          }
+        }
+      ]
+    }
+  },
+  "aggregate_seed_sets": {
+    "mainline_seeds": [
+      42,
+      123,
+      456,
+      789
+    ],
+    "legacysem_seeds": [
+      42,
+      123,
+      456
+    ],
+    "coreplusburst_seeds": [
+      42,
+      123,
+      456
+    ]
+  },
+  "current_strongest_candidate_mainline": "core-only + crop_visual_encoder",
+  "next_step_choice": "summarize_wave2_after_completion"
+}
