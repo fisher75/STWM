@@ -1,0 +1,235 @@
+{
+  "generated_at_utc": "2026-04-10T15:59:50.550953+00:00",
+  "redesign_v1_status": "0_running_4_completed_0_failed",
+  "runs": [
+    {
+      "run_name": "stage2_semobjv1_align_seed42_20260410",
+      "objective_combo": "semantic_alignment_loss",
+      "seed": 42,
+      "selected_gpu_id": 5,
+      "lease_id": "05dd1fed-aa9e-4d76-80a5-2ff36e61b9c4",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "semantic_rescue_mode": "bootstrapplabel",
+      "semantic_rescue_weight": 0.002,
+      "semantic_alignment_loss_weight": 1.0,
+      "query_persistence_consistency_loss_weight": 0.0,
+      "semantic_hard_curriculum_weight": 0.0,
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv1_align_seed42_20260410_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_align_seed42_20260410/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_align_seed42_20260410/latest.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00011556846999383197,
+          "free_rollout_coord_mean_l2": 0.004142163263168186,
+          "free_rollout_endpoint_l2": 0.003781928200623952,
+          "total_loss_reference": 0.00011556846999383197
+        },
+        "rank_key": [
+          0.003781928200623952,
+          0.004142163263168186,
+          0.00011556846999383197
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_semobjv1_alignpersist_seed42_20260410",
+      "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+      "seed": 42,
+      "selected_gpu_id": 1,
+      "lease_id": "520bc5d4-3834-48dd-bb39-a2de414f69b3",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "semantic_rescue_mode": "bootstrapplabel",
+      "semantic_rescue_weight": 0.002,
+      "semantic_alignment_loss_weight": 1.0,
+      "query_persistence_consistency_loss_weight": 0.25,
+      "semantic_hard_curriculum_weight": 0.0,
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv1_alignpersist_seed42_20260410_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_alignpersist_seed42_20260410/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_alignpersist_seed42_20260410/latest.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010902731567341561,
+          "free_rollout_coord_mean_l2": 0.002605829024105333,
+          "free_rollout_endpoint_l2": 0.0022452416160376742,
+          "total_loss_reference": 0.00010902731567341561
+        },
+        "rank_key": [
+          0.0022452416160376742,
+          0.002605829024105333,
+          0.00010902731567341561
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_semobjv1_alignhard_seed42_20260410",
+      "objective_combo": "semantic_alignment_loss+semantic_hard_curriculum_or_weighting",
+      "seed": 42,
+      "selected_gpu_id": 2,
+      "lease_id": "6f24c9c8-4a21-436f-bb75-00ec6578cb52",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "semantic_rescue_mode": "bootstrapplabel",
+      "semantic_rescue_weight": 0.002,
+      "semantic_alignment_loss_weight": 1.0,
+      "query_persistence_consistency_loss_weight": 0.0,
+      "semantic_hard_curriculum_weight": 0.5,
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv1_alignhard_seed42_20260410_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_alignhard_seed42_20260410/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_alignhard_seed42_20260410/latest.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010523410621487983,
+          "free_rollout_coord_mean_l2": 0.002383630329859443,
+          "free_rollout_endpoint_l2": 0.002023487220867537,
+          "total_loss_reference": 0.00010523410621487983
+        },
+        "rank_key": [
+          0.002023487220867537,
+          0.002383630329859443,
+          0.00010523410621487983
+        ]
+      }
+    },
+    {
+      "run_name": "stage2_semobjv1_alignpersist_seed123_20260410",
+      "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+      "seed": 123,
+      "selected_gpu_id": 4,
+      "lease_id": "385b33d9-ba0f-4d61-9605-db8cfe487b1f",
+      "batch_size": 8,
+      "train_steps": 8300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "semantic_rescue_mode": "bootstrapplabel",
+      "semantic_rescue_weight": 0.002,
+      "semantic_alignment_loss_weight": 1.0,
+      "query_persistence_consistency_loss_weight": 0.25,
+      "semantic_hard_curriculum_weight": 0.0,
+      "status": "completed",
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv1_alignpersist_seed123_20260410_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_alignpersist_seed123_20260410/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv1_alignpersist_seed123_20260410/latest.pt",
+      "best_checkpoint_metric": {
+        "global_step": 8000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9777691952834867e-05,
+          "free_rollout_coord_mean_l2": 0.000777029686230004,
+          "free_rollout_endpoint_l2": 0.0008026909849500561,
+          "total_loss_reference": 2.9691506242597878e-05
+        },
+        "rank_key": [
+          0.0008026909849500561,
+          0.000777029686230004,
+          2.9777691952834867e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 8300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010563290093301703,
+          "free_rollout_coord_mean_l2": 0.0022876540606375784,
+          "free_rollout_endpoint_l2": 0.0019271601340733469,
+          "total_loss_reference": 0.00010563290093301703
+        },
+        "rank_key": [
+          0.0019271601340733469,
+          0.0022876540606375784,
+          0.00010563290093301703
+        ]
+      }
+    }
+  ],
+  "next_step_choice_internal": "summarize_redesign_v1_after_completion"
+}
