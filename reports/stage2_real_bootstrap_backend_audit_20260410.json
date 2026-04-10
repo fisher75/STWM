@@ -1,0 +1,76 @@
+{
+  "generated_at_utc": "2026-04-10T15:47:42.067302+00:00",
+  "audit_type": "stage2_real_bootstrap_backend_audit",
+  "teacher_usage_policy": {
+    "teacher_as_mainline_semantic_source": false,
+    "allowed_uses": [
+      "bootstrap",
+      "pseudo_label",
+      "cache",
+      "semantic_alignment_target"
+    ],
+    "forbidden_uses": [
+      "replace_trainable_crop_semantic_encoder",
+      "direct_teacher_semantic_token_input"
+    ]
+  },
+  "available_backends": [
+    {
+      "name": "open_clip",
+      "importable": false,
+      "reason": "No module named 'open_clip'"
+    },
+    {
+      "name": "clip",
+      "importable": true,
+      "module_file": "/home/chen034/miniconda3/envs/stwm/lib/python3.10/site-packages/clip/__init__.py"
+    },
+    {
+      "name": "transformers",
+      "importable": true,
+      "module_file": "/home/chen034/miniconda3/envs/stwm/lib/python3.10/site-packages/transformers/__init__.py"
+    },
+    {
+      "name": "timm",
+      "importable": true,
+      "module_file": "/home/chen034/miniconda3/envs/stwm/lib/python3.10/site-packages/timm/__init__.py"
+    },
+    {
+      "name": "segment_anything",
+      "importable": true,
+      "module_file": "/home/chen034/miniconda3/envs/stwm/lib/python3.10/site-packages/segment_anything/__init__.py"
+    },
+    {
+      "name": "dinov2",
+      "importable": false,
+      "reason": "No module named 'dinov2'"
+    },
+    {
+      "name": "sam2",
+      "importable": true,
+      "reason": "",
+      "local_weights": [
+        "/home/chen034/workspace/stwm/models/checkpoints/sam2/sam2.1_hiera_base_plus.pt",
+        "/home/chen034/workspace/stwm/models/checkpoints/sam2/sam2.1_hiera_large.pt"
+      ],
+      "module_file": "/home/chen034/workspace/stwm/third_party/sam2/sam2/__init__.py"
+    }
+  ],
+  "verified_usable_backends": [
+    {
+      "name": "local_clip_vit_b32_mask_crop_visual_teacher",
+      "usable": true,
+      "backend": "clip",
+      "model": "ViT-B/32",
+      "feature_dim": 512,
+      "local_weight": "/home/chen034/.cache/clip/ViT-B-32.pt",
+      "usage_boundary": "bootstrap/pseudo-label/cache/alignment target only; never the mainline semantic token source"
+    }
+  ],
+  "chosen_bootstrap_backend": "local_clip_vit_b32_mask_crop_visual_teacher",
+  "chosen_backend_usable": true,
+  "chosen_backend_feature_dim": 512,
+  "why_crop_stats_pseudo_target_cache_is_insufficient": "crop_stats_pseudo_target_cache is a 10-d handcrafted color/area/foreground-stat target. It is useful as a fallback sanity signal but is not a real visual semantic teacher representation.",
+  "blocking_reason_if_no_real_backend": "",
+  "minimal_missing_items_if_blocked": []
+}

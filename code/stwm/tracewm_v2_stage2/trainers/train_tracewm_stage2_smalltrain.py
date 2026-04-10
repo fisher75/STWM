@@ -89,6 +89,10 @@ def parse_args() -> Any:
     )
     p.add_argument("--semantic-rescue-weight", type=float, default=0.0)
     p.add_argument("--semantic-bootstrap-cache-path", default="")
+    p.add_argument("--semantic-bootstrap-target-dim", type=int, default=10)
+    p.add_argument("--semantic-alignment-loss-weight", type=float, default=0.0)
+    p.add_argument("--query-persistence-consistency-loss-weight", type=float, default=0.0)
+    p.add_argument("--semantic-hard-curriculum-weight", type=float, default=0.0)
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -579,9 +583,10 @@ def _metric_triplet(metrics: Dict[str, Any]) -> Dict[str, float]:
 class SemanticRescueAuxHeads(torch.nn.Module):
     def __init__(self, semantic_dim: int, target_dim: int = 10) -> None:
         super().__init__()
+        self.target_dim = int(target_dim)
         self.feature_head = torch.nn.Sequential(
             torch.nn.LayerNorm(int(semantic_dim)),
-            torch.nn.Linear(int(semantic_dim), int(target_dim)),
+            torch.nn.Linear(int(semantic_dim), self.target_dim),
         )
         self.endpoint_head = torch.nn.Sequential(
             torch.nn.LayerNorm(int(semantic_dim)),
@@ -600,8 +605,16 @@ def _bootstrap_targets_from_batch(
     batch: Dict[str, Any],
     cache: Dict[str, torch.Tensor],
     device: torch.device,
+    target_dim: int,
 ) -> Tuple[torch.Tensor, torch.Tensor, float]:
-    fallback = batch["semantic_features"].to(device=device, dtype=torch.float32)
+    fallback_raw = batch["semantic_features"].to(device=device, dtype=torch.float32)
+    fallback = torch.zeros(
+        (*fallback_raw.shape[:-1], int(target_dim)),
+        device=device,
+        dtype=torch.float32,
+    )
+    fallback_dim = min(int(fallback_raw.shape[-1]), int(target_dim))
+    fallback[..., :fallback_dim] = fallback_raw[..., :fallback_dim]
     if not cache:
         valid = batch["semantic_mask"].to(device=device, dtype=torch.bool)
         return fallback, valid, 0.0
@@ -621,7 +634,7 @@ def _bootstrap_targets_from_batch(
             targets[bi] = fallback[bi]
             valid[bi] = batch["semantic_mask"][bi].to(device=device, dtype=torch.bool)
             continue
-        dim = min(int(target.numel()), int(targets.shape[-1]))
+        dim = min(int(target.numel()), int(target_dim))
         targets[bi, :, :dim] = target[:dim].to(device=device, dtype=torch.float32)[None, :]
         valid[bi] = batch["semantic_mask"][bi].to(device=device, dtype=torch.bool)
         hits += 1
@@ -637,47 +650,118 @@ def _semantic_rescue_loss(
     batch: Dict[str, Any],
     bootstrap_cache: Dict[str, torch.Tensor],
     device: torch.device,
+    semantic_alignment_loss_weight: float,
+    query_persistence_consistency_loss_weight: float,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     if aux_heads is None or str(mode) == "none":
         zero = tf_out["pred_coord"].sum() * 0.0
-        return zero, {"semantic_rescue_loss": 0.0, "semantic_bootstrap_cache_hit_ratio": 0.0}
+        return zero, {
+            "semantic_rescue_loss": 0.0,
+            "semantic_alignment_loss": 0.0,
+            "query_persistence_consistency_loss": 0.0,
+            "semantic_bootstrap_cache_hit_ratio": 0.0,
+        }
 
     semantic_tokens = tf_out["semantic_tokens"]
     token_mask = batch["token_mask"].to(device=device, dtype=torch.bool)
     semantic_mask = batch["semantic_mask"].to(device=device, dtype=torch.bool) & token_mask
     aux = aux_heads(semantic_tokens)
 
-    loss_terms: List[torch.Tensor] = []
+    weighted_terms: List[torch.Tensor] = []
+    weight_sum = 0.0
     cache_hit_ratio = 0.0
     mode_norm = str(mode).strip().lower()
+    align_weight = float(semantic_alignment_loss_weight)
+    query_weight = float(query_persistence_consistency_loss_weight)
+    if mode_norm == "align" and align_weight <= 0.0:
+        align_weight = 1.0
+    if mode_norm == "querypersist" and query_weight <= 0.0:
+        query_weight = 1.0
+    if mode_norm == "bootstrapplabel":
+        if align_weight <= 0.0:
+            align_weight = 1.0
+        if query_weight <= 0.0:
+            query_weight = 1.0
 
-    if mode_norm in {"align", "bootstrapplabel"}:
+    align_loss = semantic_tokens.sum() * 0.0
+    query_loss = semantic_tokens.sum() * 0.0
+    if align_weight > 0.0:
         target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(
             batch=batch,
             cache=bootstrap_cache if mode_norm == "bootstrapplabel" else {},
             device=device,
+            target_dim=int(aux_heads.target_dim),
         )
         valid = semantic_mask & target_valid
         denom = valid.float().sum().clamp_min(1.0)
-        sq = ((aux["feature_target"] - target) ** 2).mean(dim=-1)
-        loss_terms.append((sq * valid.float()).sum() / denom)
+        pred = torch.nn.functional.normalize(aux["feature_target"], dim=-1)
+        tgt = torch.nn.functional.normalize(target, dim=-1)
+        cosine = 1.0 - (pred * tgt).sum(dim=-1)
+        align_loss = (cosine * valid.float()).sum() / denom
+        weighted_terms.append(float(align_weight) * align_loss)
+        weight_sum += float(align_weight)
 
-    if mode_norm in {"querypersist", "bootstrapplabel"}:
+    if query_weight > 0.0:
         endpoint_target = batch["fut_state"][:, -1, :, 0:2].to(device=device, dtype=torch.float32)
         endpoint_valid = batch["fut_valid"][:, -1].to(device=device, dtype=torch.bool) & semantic_mask
         denom = endpoint_valid.float().sum().clamp_min(1.0)
         sq = ((aux["endpoint"] - endpoint_target) ** 2).sum(dim=-1)
-        loss_terms.append((sq * endpoint_valid.float()).sum() / denom)
+        query_loss = (sq * endpoint_valid.float()).sum() / denom
+        weighted_terms.append(float(query_weight) * query_loss)
+        weight_sum += float(query_weight)
 
-    if not loss_terms:
+    if not weighted_terms:
         zero = tf_out["pred_coord"].sum() * 0.0
-        return zero, {"semantic_rescue_loss": 0.0, "semantic_bootstrap_cache_hit_ratio": 0.0}
+        return zero, {
+            "semantic_rescue_loss": 0.0,
+            "semantic_alignment_loss": 0.0,
+            "query_persistence_consistency_loss": 0.0,
+            "semantic_bootstrap_cache_hit_ratio": 0.0,
+        }
 
-    loss = sum(loss_terms) / float(len(loss_terms))
+    loss = sum(weighted_terms) / max(float(weight_sum), 1e-6)
     return loss, {
         "semantic_rescue_loss": float(loss.detach().cpu().item()),
+        "semantic_alignment_loss": float(align_loss.detach().cpu().item()),
+        "query_persistence_consistency_loss": float(query_loss.detach().cpu().item()),
         "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
     }
+
+
+def _semantic_hard_sample_weights(batch: Dict[str, Any], device: torch.device, strength: float) -> torch.Tensor:
+    bsz = int(batch["obs_state"].shape[0])
+    if float(strength) <= 0.0:
+        return torch.ones((bsz,), device=device, dtype=torch.float32)
+    state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1).to(device=device, dtype=torch.float32)
+    valid = torch.cat([batch["obs_valid"], batch["fut_valid"]], dim=1).to(device=device, dtype=torch.bool)
+    token_mask = batch["token_mask"].to(device=device, dtype=torch.bool)
+    vt = valid & token_mask[:, None, :]
+    coords = state[..., 0:2]
+    area = (state[..., 6] * state[..., 7]).clamp(0.0, 1.0)
+    step_motion = torch.sqrt(((coords[:, 1:] - coords[:, :-1]) ** 2).sum(dim=-1).clamp_min(1e-12))
+    motion_valid = vt[:, 1:] & vt[:, :-1]
+    motion = (step_motion * motion_valid.float()).sum(dim=(1, 2)) / motion_valid.float().sum(dim=(1, 2)).clamp_min(1.0)
+    area_masked = torch.where(vt, area, torch.zeros_like(area))
+    area_mean = area_masked.sum(dim=(1, 2)) / vt.float().sum(dim=(1, 2)).clamp_min(1.0)
+    area_max = torch.where(vt, area, torch.full_like(area, -1.0)).amax(dim=(1, 2))
+    area_min = torch.where(vt, area, torch.full_like(area, 2.0)).amin(dim=(1, 2))
+    area_range = (area_max - area_min).clamp_min(0.0)
+    small_score = (0.05 - area_mean).clamp_min(0.0) / 0.05
+    hard_score = (0.5 * motion / 0.05 + 0.3 * area_range / 0.25 + 0.2 * small_score).clamp(0.0, 2.0)
+    return 1.0 + float(strength) * hard_score.detach()
+
+
+def _weighted_teacher_loss(
+    pred_coord: torch.Tensor,
+    target_coord: torch.Tensor,
+    valid_mask: torch.Tensor,
+    sample_weights: torch.Tensor,
+) -> torch.Tensor:
+    sq = ((pred_coord - target_coord) ** 2).sum(dim=-1)
+    mask_f = valid_mask.float()
+    weights = sample_weights[:, None, None].to(device=pred_coord.device, dtype=torch.float32)
+    denom = (mask_f * weights).sum().clamp_min(1.0)
+    return (sq * mask_f * weights).sum() / denom
 
 
 def _split_counts_used(summary: Dict[str, Dict[str, Any]]) -> Dict[str, int]:
@@ -916,7 +1000,7 @@ def main() -> None:
     if rescue_mode != "none" and rescue_weight > 0.0:
         semantic_rescue_heads = SemanticRescueAuxHeads(
             semantic_dim=int(args.semantic_embed_dim),
-            target_dim=10,
+            target_dim=int(args.semantic_bootstrap_target_dim),
         ).to(device)
 
     trainable_params: List[torch.nn.Parameter] = []
@@ -954,6 +1038,10 @@ def main() -> None:
         "semantic_rescue_mode": str(rescue_mode),
         "semantic_rescue_weight": float(rescue_weight),
         "semantic_bootstrap_cache_path": str(args.semantic_bootstrap_cache_path),
+        "semantic_bootstrap_target_dim": int(args.semantic_bootstrap_target_dim),
+        "semantic_alignment_loss_weight": float(args.semantic_alignment_loss_weight),
+        "query_persistence_consistency_loss_weight": float(args.query_persistence_consistency_loss_weight),
+        "semantic_hard_curriculum_weight": float(args.semantic_hard_curriculum_weight),
         "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
         "skip_resume_optimizer": bool(args.skip_resume_optimizer),
         "resume_optimizer_loaded": False,
@@ -1006,7 +1094,10 @@ def main() -> None:
     semantic_grad_norm_latest = 0.0
     teacher_loss_history: List[float] = []
     rescue_loss_history: List[float] = []
+    semantic_alignment_loss_history: List[float] = []
+    query_persistence_loss_history: List[float] = []
     rescue_cache_hit_history: List[float] = []
+    semantic_hard_weight_mean_history: List[float] = []
     gate_history: List[float] = []
     semantic_nonempty_count = 0
     optimizer_steps_this_run = 0
@@ -1073,7 +1164,17 @@ def main() -> None:
             semantic_source_mainline=str(args.semantic_source_mainline),
         )
 
-        teacher_loss = _masked_mse_coord(tf_out["pred_coord"], tf_out["target_coord"], tf_out["valid_mask"])
+        semantic_hard_weights = _semantic_hard_sample_weights(
+            batch=batch,
+            device=device,
+            strength=float(args.semantic_hard_curriculum_weight),
+        )
+        teacher_loss = _weighted_teacher_loss(
+            tf_out["pred_coord"],
+            tf_out["target_coord"],
+            tf_out["valid_mask"],
+            semantic_hard_weights,
+        )
         rescue_loss, rescue_info = _semantic_rescue_loss(
             mode=str(rescue_mode),
             aux_heads=semantic_rescue_heads,
@@ -1081,6 +1182,8 @@ def main() -> None:
             batch=batch,
             bootstrap_cache=bootstrap_cache,
             device=device,
+            semantic_alignment_loss_weight=float(args.semantic_alignment_loss_weight),
+            query_persistence_consistency_loss_weight=float(args.query_persistence_consistency_loss_weight),
         )
         total_train_loss = teacher_loss + float(rescue_weight) * rescue_loss
 
@@ -1112,7 +1215,10 @@ def main() -> None:
 
         teacher_loss_history.append(float(teacher_loss.detach().cpu().item()))
         rescue_loss_history.append(float(rescue_info.get("semantic_rescue_loss", 0.0)))
+        semantic_alignment_loss_history.append(float(rescue_info.get("semantic_alignment_loss", 0.0)))
+        query_persistence_loss_history.append(float(rescue_info.get("query_persistence_consistency_loss", 0.0)))
         rescue_cache_hit_history.append(float(rescue_info.get("semantic_bootstrap_cache_hit_ratio", 0.0)))
+        semantic_hard_weight_mean_history.append(float(semantic_hard_weights.detach().mean().cpu().item()))
         gate_history.append(float(tf_out["gate_mean"]))
         semantic_nonempty_count += 1 if bool(tf_out["semantic_input_nonempty"]) else 0
 
@@ -1313,8 +1419,15 @@ def main() -> None:
             "legacy_semantic_feature_dim": 10,
             "semantic_rescue_mode": str(rescue_mode),
             "semantic_rescue_weight": float(rescue_weight),
+            "semantic_bootstrap_target_dim": int(args.semantic_bootstrap_target_dim),
+            "semantic_alignment_loss_weight": float(args.semantic_alignment_loss_weight),
+            "query_persistence_consistency_loss_weight": float(args.query_persistence_consistency_loss_weight),
+            "semantic_hard_curriculum_weight": float(args.semantic_hard_curriculum_weight),
             "semantic_rescue_loss_mean": float(sum(rescue_loss_history) / max(len(rescue_loss_history), 1)),
+            "semantic_alignment_loss_mean": float(sum(semantic_alignment_loss_history) / max(len(semantic_alignment_loss_history), 1)),
+            "query_persistence_consistency_loss_mean": float(sum(query_persistence_loss_history) / max(len(query_persistence_loss_history), 1)),
             "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
+            "semantic_hard_sample_weight_mean": float(sum(semantic_hard_weight_mean_history) / max(len(semantic_hard_weight_mean_history), 1)),
             "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
         },
         "selection_policy": {
