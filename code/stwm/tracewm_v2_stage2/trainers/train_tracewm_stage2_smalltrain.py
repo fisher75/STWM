@@ -97,6 +97,7 @@ def parse_args() -> Any:
             "v3confpersist",
             "v3confpersistdelay",
             "v3confhardsidecar",
+            "v4sparse",
         ],
         help="Optional Stage2 semantic objective rescue pilot; default keeps the Wave1/Wave2 objective unchanged.",
     )
@@ -116,6 +117,18 @@ def parse_args() -> Any:
     p.add_argument("--semantic-hard-score-threshold", type=float, default=0.25)
     p.add_argument("--aux-loss-delay-steps", type=int, default=0)
     p.add_argument("--aux-loss-ramp-steps", type=int, default=0)
+    p.add_argument(
+        "--v4-sparse-gating-family",
+        default="quantile_sparse_gating",
+        choices=["quantile_sparse_gating", "topk_query_gating"],
+    )
+    p.add_argument("--v4-gating-quantile", type=float, default=0.85)
+    p.add_argument("--v4-topk-token-ratio", type=float, default=0.20)
+    p.add_argument("--v4-topk-min-tokens", type=int, default=2)
+    p.add_argument("--v4-gate-min-strength", type=float, default=0.05)
+    p.add_argument("--v4-persistence-value-quantile", type=float, default=0.70)
+    p.add_argument("--v4-persistence-max-pairs", type=int, default=0)
+    p.add_argument("--v4-persistence-margin", type=float, default=0.10)
     p.add_argument("--semantic-hard-sidecar-enabled", action="store_true")
     p.add_argument(
         "--semantic-hard-manifest-path",
@@ -686,6 +699,34 @@ def _bootstrap_targets_from_batch(
     return targets, valid, coverage
 
 
+def _clamp01(value: float) -> float:
+    return float(min(max(float(value), 0.0), 1.0))
+
+
+def _sparse_topk_mask(scores: torch.Tensor, valid: torch.Tensor, keep_ratio: float, min_tokens: int) -> torch.Tensor:
+    mask = torch.zeros_like(valid, dtype=torch.bool)
+    if scores.ndim != 2 or valid.ndim != 2:
+        return mask
+    ratio = _clamp01(float(keep_ratio))
+    min_keep = max(int(min_tokens), 1)
+    for bi in range(int(scores.shape[0])):
+        valid_idx = torch.nonzero(valid[bi], as_tuple=False).squeeze(-1)
+        n = int(valid_idx.numel())
+        if n <= 0:
+            continue
+        keep_count = max(min_keep, int(np.ceil(float(n) * ratio)))
+        keep_count = min(max(keep_count, 1), n)
+        vals = scores[bi, valid_idx]
+        pick = torch.topk(vals, k=keep_count, largest=True, sorted=False).indices
+        mask[bi, valid_idx[pick]] = True
+    return mask
+
+
+def _sparse_quantile_mask(scores: torch.Tensor, valid: torch.Tensor, quantile: float, min_tokens: int) -> torch.Tensor:
+    keep_ratio = max(1.0 - _clamp01(float(quantile)), 0.0)
+    return _sparse_topk_mask(scores=scores, valid=valid, keep_ratio=keep_ratio, min_tokens=min_tokens)
+
+
 def _semantic_rescue_loss(
     *,
     mode: str,
@@ -708,6 +749,14 @@ def _semantic_rescue_loss(
     semantic_hard_score_threshold: float,
     aux_loss_delay_steps: int,
     aux_loss_ramp_steps: int,
+    v4_sparse_gating_family: str,
+    v4_gating_quantile: float,
+    v4_topk_token_ratio: float,
+    v4_topk_min_tokens: int,
+    v4_gate_min_strength: float,
+    v4_persistence_value_quantile: float,
+    v4_persistence_max_pairs: int,
+    v4_persistence_margin: float,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     if aux_heads is None or str(mode) == "none":
         zero = tf_out["pred_coord"].sum() * 0.0
@@ -998,6 +1047,228 @@ def _semantic_rescue_loss(
             "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
             "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+        }
+
+    if mode_norm.startswith("v4"):
+        readout_align_weight = float(confidence_gated_alignment_loss_weight)
+        sparse_weight = float(sparse_persistence_contrastive_loss_weight)
+        if readout_align_weight <= 0.0:
+            readout_align_weight = 1.0
+        if sparse_weight <= 0.0:
+            sparse_weight = 0.05
+
+        target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(
+            batch=batch,
+            cache=bootstrap_cache,
+            device=device,
+            target_dim=int(aux_heads.target_dim),
+        )
+        valid = semantic_mask & target_valid
+        hard_stats = _semantic_hard_sample_stats(batch=batch, device=device)
+        hard_score = hard_stats["hard_score"][:, None].expand_as(valid).to(torch.float32)
+        hard_relevance = (
+            (hard_stats["area_range"] >= float(semantic_hard_score_threshold))
+            | (hard_stats["center_interaction"] >= 0.30)
+            | (hard_stats["appearance_shift"] >= 0.20)
+            | (hard_stats["small_score"] >= 0.25)
+        )[:, None].expand_as(valid)
+
+        readout_pred = aux.get("readout_feature_target", aux["feature_target"])
+        pred = torch.nn.functional.normalize(readout_pred, dim=-1)
+        tgt = torch.nn.functional.normalize(target, dim=-1)
+        pos_sim = (pred * tgt).sum(dim=-1)
+        neg_sim = torch.full_like(pos_sim, -1.0)
+        flat_valid = valid.reshape(-1)
+        if int(flat_valid.sum().item()) >= 2:
+            flat_pred = pred.reshape(-1, pred.shape[-1])[flat_valid]
+            flat_tgt = tgt.reshape(-1, tgt.shape[-1])[flat_valid]
+            flat_sim = flat_pred @ flat_tgt.T
+            flat_sim = flat_sim.masked_fill(torch.eye(flat_sim.shape[0], device=device, dtype=torch.bool), -1e9)
+            flat_neg = flat_sim.max(dim=-1).values
+            flat_neg = torch.where(torch.isfinite(flat_neg), flat_neg, torch.full_like(flat_neg, -1.0))
+            neg_sim_flat = torch.full((flat_valid.shape[0],), -1.0, device=device, dtype=torch.float32)
+            neg_sim_flat[flat_valid] = flat_neg
+            neg_sim = neg_sim_flat.view_as(pos_sim)
+
+        margin = pos_sim - neg_sim
+        gate_raw = torch.sigmoid((float(confidence_gating_margin_threshold) - margin) / max(float(confidence_gating_temperature), 1e-4))
+        difficulty = (1.0 - pos_sim).clamp(0.0, 2.0)
+        confidence_score = (gate_raw * (1.0 + 0.75 * hard_score)).clamp(0.0, 3.0)
+        quantile_score = (0.60 * confidence_score + 0.25 * difficulty + 0.15 * hard_score).clamp(0.0, 3.0)
+        topk_score = (0.65 * difficulty + 0.25 * confidence_score + 0.10 * hard_score).clamp(0.0, 3.0)
+
+        family = str(v4_sparse_gating_family).strip().lower()
+        min_tokens = max(int(v4_topk_min_tokens), 1)
+        if family == "topk_query_gating":
+            sparse_selected = _sparse_topk_mask(
+                scores=topk_score,
+                valid=valid,
+                keep_ratio=float(v4_topk_token_ratio),
+                min_tokens=min_tokens,
+            )
+            sparse_score = topk_score
+            family_code = 2.0
+        else:
+            sparse_selected = _sparse_quantile_mask(
+                scores=quantile_score,
+                valid=valid,
+                quantile=float(v4_gating_quantile),
+                min_tokens=min_tokens,
+            )
+            sparse_score = quantile_score
+            family_code = 1.0
+
+        min_gate_strength = max(float(v4_gate_min_strength), 0.0)
+        gate = torch.where(sparse_selected, sparse_score.clamp_min(min_gate_strength), torch.zeros_like(sparse_score))
+        gate_denom = gate.sum().clamp_min(1.0)
+
+        conf_align_loss = semantic_tokens.sum() * 0.0
+        if readout_align_weight > 0.0:
+            cosine = 1.0 - pos_sim
+            conf_align_loss = (cosine * gate).sum() / gate_denom
+            weighted_terms.append(float(readout_align_weight) * conf_align_loss)
+            weight_sum += float(readout_align_weight)
+
+        future_readout = tf_out.get("future_fused_hidden")
+        sparse_loss = semantic_tokens.sum() * 0.0
+        positive_pair_count = 0.0
+        hard_negative_count = 0.0
+        pair_coverage_ratio = 0.0
+        candidate_pair_count = 0.0
+        high_value_pair_count = 0.0
+        high_value_pair_ratio = 0.0
+        persistence_value_threshold = 0.0
+        if (
+            sparse_weight > 0.0
+            and isinstance(future_readout, torch.Tensor)
+            and future_readout.ndim == 4
+            and future_readout.shape[1] >= 2
+            and aux_heads.readout_feature_head is not None
+        ):
+            future_proj = aux_heads.readout_feature_head(future_readout)
+            first_proj = torch.nn.functional.normalize(future_proj[:, 0], dim=-1)
+            last_proj = torch.nn.functional.normalize(future_proj[:, -1], dim=-1)
+            selected = sparse_selected & hard_relevance & valid
+            candidate_pair_count = float(selected.float().sum().item())
+
+            pair_value = (sparse_score * (1.0 + hard_score) * (difficulty + 0.1)).clamp(0.0, 10.0)
+            high_value_selected = selected
+            flat_selected = selected.reshape(-1)
+            if int(flat_selected.sum().item()) > 0:
+                selected_values = pair_value.reshape(-1)[flat_selected]
+                value_q = _clamp01(float(v4_persistence_value_quantile))
+                if int(selected_values.numel()) >= 2:
+                    persistence_value_threshold = float(torch.quantile(selected_values.detach(), value_q).item())
+                    high_value_selected = selected & (pair_value >= persistence_value_threshold)
+
+                flat_high = high_value_selected.reshape(-1)
+                max_pairs = int(v4_persistence_max_pairs)
+                if max_pairs > 0 and int(flat_high.sum().item()) > max_pairs:
+                    hv_idx = torch.nonzero(flat_high, as_tuple=False).squeeze(-1)
+                    hv_vals = pair_value.reshape(-1)[hv_idx]
+                    keep_local = torch.topk(hv_vals, k=max_pairs, largest=True, sorted=False).indices
+                    keep_idx = hv_idx[keep_local]
+                    pruned = torch.zeros_like(flat_high)
+                    pruned[keep_idx] = True
+                    high_value_selected = pruned.view_as(selected)
+                    flat_high = pruned
+
+                if int(flat_high.sum().item()) < 2 and int(flat_selected.sum().item()) >= 2:
+                    cand_idx = torch.nonzero(flat_selected, as_tuple=False).squeeze(-1)
+                    cand_vals = pair_value.reshape(-1)[cand_idx]
+                    keep_n = min(2, int(cand_idx.numel()))
+                    keep_local = torch.topk(cand_vals, k=keep_n, largest=True, sorted=False).indices
+                    keep_idx = cand_idx[keep_local]
+                    fallback = torch.zeros_like(flat_selected)
+                    fallback[keep_idx] = True
+                    high_value_selected = fallback.view_as(selected)
+
+            flat_sel = high_value_selected.reshape(-1)
+            high_value_pair_count = float(flat_sel.float().sum().item())
+            high_value_pair_ratio = float(high_value_pair_count / max(candidate_pair_count, 1.0))
+            if int(flat_sel.sum().item()) >= 2:
+                flat_first = first_proj.reshape(-1, first_proj.shape[-1])[flat_sel]
+                flat_last = last_proj.reshape(-1, last_proj.shape[-1])[flat_sel]
+                logits = flat_first @ flat_last.T
+                pos = torch.diagonal(logits)
+                logits_wo_diag = logits.masked_fill(torch.eye(logits.shape[0], device=device, dtype=torch.bool), -1e9)
+                max_neg = logits_wo_diag.max(dim=-1).values
+                max_neg = torch.where(torch.isfinite(max_neg), max_neg, torch.full_like(max_neg, -1.0))
+                sparse_loss = torch.relu(float(v4_persistence_margin) + max_neg - pos).mean()
+                weighted_terms.append(float(sparse_weight) * sparse_loss)
+                weight_sum += float(sparse_weight)
+                positive_pair_count = float(flat_first.shape[0])
+                hard_negative_count = float((logits_wo_diag > (pos[:, None] - float(v4_persistence_margin))).float().sum().item())
+                pair_coverage_ratio = float(positive_pair_count / max(candidate_pair_count, 1.0))
+            else:
+                positive_pair_count = float(flat_sel.sum().item())
+                pair_coverage_ratio = float(positive_pair_count / max(candidate_pair_count, 1.0))
+
+        sparse_gate_selected_ratio = float(sparse_selected.float().sum().item() / max(valid.float().sum().item(), 1.0))
+        aux_schedule_base = float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps))
+        aux_schedule_scaled = float(aux_schedule_base * aux_schedule_base)
+
+        if not weighted_terms:
+            zero = tf_out["pred_coord"].sum() * 0.0
+            return zero, {
+                "semantic_rescue_loss": 0.0,
+                "semantic_alignment_loss": 0.0,
+                "query_persistence_consistency_loss": 0.0,
+                "readout_semantic_alignment_loss": 0.0,
+                "persistence_contrastive_or_ranking_loss": 0.0,
+                "confidence_gated_alignment_loss": 0.0,
+                "sparse_persistence_contrastive_loss": 0.0,
+                "confidence_gated_affected_sample_ratio": float(sparse_gate_selected_ratio),
+                "low_confidence_sample_ratio": float(((gate_raw > 0.5) & valid).float().sum().item() / max(valid.float().sum().item(), 1.0)),
+                "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+                "confidence_metric_temperature": float(confidence_gating_temperature),
+                "confidence_metric_definition": 2.0,
+                "positive_pair_count": float(positive_pair_count),
+                "hard_negative_count": float(hard_negative_count),
+                "effective_pair_coverage_ratio": float(pair_coverage_ratio),
+                "aux_schedule_scale": float(aux_schedule_scaled),
+                "aux_loss_delay_steps": float(aux_loss_delay_steps),
+                "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+                "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+                "whether_main_rollout_loss_reweighted": False,
+                "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+                "sparse_gate_selected_ratio": float(sparse_gate_selected_ratio),
+                "high_value_pair_ratio": float(high_value_pair_ratio),
+                "high_value_pair_count": float(high_value_pair_count),
+                "persistence_candidate_pair_count": float(candidate_pair_count),
+                "persistence_value_threshold": float(persistence_value_threshold),
+                "v4_sparse_gating_family_code": float(family_code),
+            }
+
+        loss = sum(weighted_terms) / max(float(weight_sum), 1e-6)
+        return loss, {
+            "semantic_rescue_loss": float(loss.detach().cpu().item()),
+            "semantic_alignment_loss": 0.0,
+            "query_persistence_consistency_loss": 0.0,
+            "readout_semantic_alignment_loss": float(conf_align_loss.detach().cpu().item()),
+            "persistence_contrastive_or_ranking_loss": float(sparse_loss.detach().cpu().item()),
+            "confidence_gated_alignment_loss": float(conf_align_loss.detach().cpu().item()),
+            "sparse_persistence_contrastive_loss": float(sparse_loss.detach().cpu().item()),
+            "confidence_gated_affected_sample_ratio": float(sparse_gate_selected_ratio),
+            "low_confidence_sample_ratio": float(((gate_raw > 0.5) & valid).float().sum().item() / max(valid.float().sum().item(), 1.0)),
+            "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+            "confidence_metric_temperature": float(confidence_gating_temperature),
+            "confidence_metric_definition": 2.0,
+            "positive_pair_count": float(positive_pair_count),
+            "hard_negative_count": float(hard_negative_count),
+            "effective_pair_coverage_ratio": float(pair_coverage_ratio),
+            "aux_schedule_scale": float(aux_schedule_scaled),
+            "aux_loss_delay_steps": float(aux_loss_delay_steps),
+            "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+            "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": False,
+            "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+            "sparse_gate_selected_ratio": float(sparse_gate_selected_ratio),
+            "high_value_pair_ratio": float(high_value_pair_ratio),
+            "high_value_pair_count": float(high_value_pair_count),
+            "persistence_candidate_pair_count": float(candidate_pair_count),
+            "persistence_value_threshold": float(persistence_value_threshold),
+            "v4_sparse_gating_family_code": float(family_code),
         }
 
     align_loss = semantic_tokens.sum() * 0.0
@@ -1465,6 +1736,14 @@ def main() -> None:
         "semantic_hard_score_threshold": float(args.semantic_hard_score_threshold),
         "aux_loss_delay_steps": int(args.aux_loss_delay_steps),
         "aux_loss_ramp_steps": int(args.aux_loss_ramp_steps),
+        "v4_sparse_gating_family": str(args.v4_sparse_gating_family),
+        "v4_gating_quantile": float(args.v4_gating_quantile),
+        "v4_topk_token_ratio": float(args.v4_topk_token_ratio),
+        "v4_topk_min_tokens": int(args.v4_topk_min_tokens),
+        "v4_gate_min_strength": float(args.v4_gate_min_strength),
+        "v4_persistence_value_quantile": float(args.v4_persistence_value_quantile),
+        "v4_persistence_max_pairs": int(args.v4_persistence_max_pairs),
+        "v4_persistence_margin": float(args.v4_persistence_margin),
         "semantic_hard_sidecar_enabled": bool(args.semantic_hard_sidecar_enabled),
         "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
         "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
@@ -1535,6 +1814,10 @@ def main() -> None:
     positive_pair_count_history: List[float] = []
     hard_negative_count_history: List[float] = []
     aux_schedule_scale_history: List[float] = []
+    sparse_gate_selected_ratio_history: List[float] = []
+    high_value_pair_ratio_history: List[float] = []
+    high_value_pair_count_history: List[float] = []
+    persistence_candidate_pair_count_history: List[float] = []
     rescue_cache_hit_history: List[float] = []
     semantic_hard_weight_mean_history: List[float] = []
     gate_history: List[float] = []
@@ -1664,6 +1947,14 @@ def main() -> None:
             semantic_hard_score_threshold=float(args.semantic_hard_score_threshold),
             aux_loss_delay_steps=int(args.aux_loss_delay_steps),
             aux_loss_ramp_steps=int(args.aux_loss_ramp_steps),
+            v4_sparse_gating_family=str(args.v4_sparse_gating_family),
+            v4_gating_quantile=float(args.v4_gating_quantile),
+            v4_topk_token_ratio=float(args.v4_topk_token_ratio),
+            v4_topk_min_tokens=int(args.v4_topk_min_tokens),
+            v4_gate_min_strength=float(args.v4_gate_min_strength),
+            v4_persistence_value_quantile=float(args.v4_persistence_value_quantile),
+            v4_persistence_max_pairs=int(args.v4_persistence_max_pairs),
+            v4_persistence_margin=float(args.v4_persistence_margin),
         )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = teacher_loss + float(rescue_weight) * float(aux_schedule_scale) * rescue_loss
@@ -1708,6 +1999,10 @@ def main() -> None:
         positive_pair_count_history.append(float(rescue_info.get("positive_pair_count", 0.0)))
         hard_negative_count_history.append(float(rescue_info.get("hard_negative_count", 0.0)))
         aux_schedule_scale_history.append(float(aux_schedule_scale))
+        sparse_gate_selected_ratio_history.append(float(rescue_info.get("sparse_gate_selected_ratio", 0.0)))
+        high_value_pair_ratio_history.append(float(rescue_info.get("high_value_pair_ratio", 0.0)))
+        high_value_pair_count_history.append(float(rescue_info.get("high_value_pair_count", 0.0)))
+        persistence_candidate_pair_count_history.append(float(rescue_info.get("persistence_candidate_pair_count", 0.0)))
         rescue_cache_hit_history.append(float(rescue_info.get("semantic_bootstrap_cache_hit_ratio", 0.0)))
         semantic_hard_weight_mean_history.append(float(semantic_hard_weights.detach().mean().cpu().item()))
         gate_history.append(float(tf_out["gate_mean"]))
@@ -1982,6 +2277,14 @@ def main() -> None:
             "semantic_hard_score_threshold": float(args.semantic_hard_score_threshold),
             "aux_loss_delay_steps": int(args.aux_loss_delay_steps),
             "aux_loss_ramp_steps": int(args.aux_loss_ramp_steps),
+            "v4_sparse_gating_family": str(args.v4_sparse_gating_family),
+            "v4_gating_quantile": float(args.v4_gating_quantile),
+            "v4_topk_token_ratio": float(args.v4_topk_token_ratio),
+            "v4_topk_min_tokens": int(args.v4_topk_min_tokens),
+            "v4_gate_min_strength": float(args.v4_gate_min_strength),
+            "v4_persistence_value_quantile": float(args.v4_persistence_value_quantile),
+            "v4_persistence_max_pairs": int(args.v4_persistence_max_pairs),
+            "v4_persistence_margin": float(args.v4_persistence_margin),
             "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
             "semantic_rescue_loss_mean": float(sum(rescue_loss_history) / max(len(rescue_loss_history), 1)),
             "semantic_alignment_loss_mean": float(sum(semantic_alignment_loss_history) / max(len(semantic_alignment_loss_history), 1)),
@@ -1995,6 +2298,10 @@ def main() -> None:
             "effective_pair_coverage_ratio_mean": float(sum(pair_coverage_ratio_history) / max(len(pair_coverage_ratio_history), 1)),
             "positive_pair_count_mean": float(sum(positive_pair_count_history) / max(len(positive_pair_count_history), 1)),
             "hard_negative_count_mean": float(sum(hard_negative_count_history) / max(len(hard_negative_count_history), 1)),
+            "sparse_gate_selected_ratio_mean": float(sum(sparse_gate_selected_ratio_history) / max(len(sparse_gate_selected_ratio_history), 1)),
+            "high_value_pair_ratio_mean": float(sum(high_value_pair_ratio_history) / max(len(high_value_pair_ratio_history), 1)),
+            "high_value_pair_count_mean": float(sum(high_value_pair_count_history) / max(len(high_value_pair_count_history), 1)),
+            "persistence_candidate_pair_count_mean": float(sum(persistence_candidate_pair_count_history) / max(len(persistence_candidate_pair_count_history), 1)),
             "aux_schedule_scale_mean": float(sum(aux_schedule_scale_history) / max(len(aux_schedule_scale_history), 1)),
             "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
             "semantic_hard_sample_weight_mean": float(sum(semantic_hard_weight_mean_history) / max(len(semantic_hard_weight_mean_history), 1)),
