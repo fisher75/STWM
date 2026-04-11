@@ -1,0 +1,924 @@
+{
+  "generated_at_utc": "2026-04-10T18:36:58.924518+00:00",
+  "diagnosis_type": "stage2_semantic_objective_redesign_v2",
+  "teacher_as_mainline_semantic_source": false,
+  "chosen_bootstrap_backend": "local_clip_vit_b32_mask_crop_visual_teacher",
+  "v2_runs_terminal": true,
+  "baseline_refs": {
+    "current_cropenc_fullscale_mean_endpoint_l2": 0.0009458137729957648,
+    "legacysem_fullscale_mean_endpoint_l2": 0.0007597727700389118,
+    "v1_best_objective_combo_endpoint_l2": 0.0018621101247760367
+  },
+  "full_validation_panel": {
+    "runs": [
+      {
+        "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+        "objective_combo": "readout_semantic_alignment_head",
+        "seed": 42,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "teacher_forced_coord_loss": 3.02700085095072e-05
+        }
+      },
+      {
+        "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+        "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+        "seed": 42,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "teacher_forced_coord_loss": 3.02700085095072e-05
+        }
+      },
+      {
+        "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+        "objective_combo": "readout_semantic_alignment_head+auxiliary_subset_weighting_only",
+        "seed": 42,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "teacher_forced_coord_loss": 3.02700085095072e-05
+        }
+      },
+      {
+        "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+        "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+        "seed": 123,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.0008026909849500561,
+          "free_rollout_coord_mean_l2": 0.000777029686230004,
+          "teacher_forced_coord_loss": 2.9777691952834867e-05
+        }
+      }
+    ],
+    "aggregate": {
+      "free_rollout_endpoint_l2": {
+        "mean": 0.0010533884739396013,
+        "std": 0.00016713165932636347,
+        "count": 4
+      },
+      "free_rollout_coord_mean_l2": {
+        "mean": 0.0010272423780364399,
+        "std": 0.0001668084612042907,
+        "count": 4
+      },
+      "teacher_forced_coord_loss": {
+        "mean": 3.014692937033912e-05,
+        "std": 2.461582783361661e-07,
+        "count": 4
+      }
+    },
+    "dataset_binding": [
+      "VSPW",
+      "VIPSeg"
+    ],
+    "eval_scope": "full_validation"
+  },
+  "semantic_hard_subset_panel": {
+    "occlusion_reappearance": {
+      "clip_count": 24,
+      "runs": [
+        {
+          "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+auxiliary_subset_weighting_only",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 123,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.00032064491339648765,
+            "free_rollout_coord_mean_l2": 0.0003207221549625198,
+            "teacher_forced_coord_loss": 1.171700579523834e-07
+          }
+        }
+      ],
+      "aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0004972710109238202,
+          "std": 0.0001177507316848884,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0004973253696031558,
+          "std": 0.00011773547642709067,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.631661223598333e-07,
+          "std": 1.639973762716333e-07,
+          "count": 4
+        }
+      },
+      "cropenc_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00043451565579744056,
+          "std": 0.0002620050484892532,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0004345672289976695,
+          "std": 0.000262010919081459,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.252602015872223e-07,
+          "std": 3.15380955379308e-07,
+          "count": 4
+        }
+      },
+      "legacysem_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00030200108530051593,
+          "std": 0.00014208747151848224,
+          "count": 3
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0003019557075781955,
+          "std": 0.00014213769948593556,
+          "count": 3
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 1.2772851221143355e-07,
+          "std": 1.2130850955130543e-07,
+          "count": 3
+        }
+      },
+      "v1_best_reference": {
+        "clip_count": 24,
+        "runs": [
+          {
+            "run_name": "stage2_semobjv1_align_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.003446414368227124,
+              "free_rollout_coord_mean_l2": 0.0034463562381764254,
+              "teacher_forced_coord_loss": 1.2097243901128726e-05
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0018220579562087853,
+              "free_rollout_coord_mean_l2": 0.0018220141840477784,
+              "teacher_forced_coord_loss": 3.8220844847577e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignhard_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+semantic_hard_curriculum_or_weighting",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0016141550925870736,
+              "free_rollout_coord_mean_l2": 0.001614110078662634,
+              "teacher_forced_coord_loss": 2.785112201308948e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed123_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 123,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0014593938443188865,
+              "free_rollout_coord_mean_l2": 0.0014593825520326693,
+              "teacher_forced_coord_loss": 2.3037286306741103e-06
+            }
+          }
+        ],
+        "aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.0020855053153354675,
+            "std": 0.0009193593000738424,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0020854657632298768,
+            "std": 0.0009193450545706702,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 5.252042304467372e-06,
+            "std": 4.607235683068881e-06,
+            "count": 4
+          }
+        },
+        "cropenc_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00043451565579744056,
+            "std": 0.0002620050484892532,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0004345672289976695,
+            "std": 0.000262010919081459,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 3.252602015872223e-07,
+            "std": 3.15380955379308e-07,
+            "count": 4
+          }
+        },
+        "legacysem_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00030200108530051593,
+            "std": 0.00014208747151848224,
+            "count": 3
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0003019557075781955,
+            "std": 0.00014213769948593556,
+            "count": 3
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 1.2772851221143355e-07,
+            "std": 1.2130850955130543e-07,
+            "count": 3
+          }
+        }
+      }
+    },
+    "crossing_or_interaction_ambiguity": {
+      "clip_count": 24,
+      "runs": [
+        {
+          "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+auxiliary_subset_weighting_only",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 123,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.00032064491339648765,
+            "free_rollout_coord_mean_l2": 0.0003207221549625198,
+            "teacher_forced_coord_loss": 1.171700579523834e-07
+          }
+        }
+      ],
+      "aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0004972710109238202,
+          "std": 0.0001177507316848884,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0004973253696031558,
+          "std": 0.00011773547642709067,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.631661223598333e-07,
+          "std": 1.639973762716333e-07,
+          "count": 4
+        }
+      },
+      "cropenc_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00043451565579744056,
+          "std": 0.0002620050484892532,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0004345672289976695,
+          "std": 0.000262010919081459,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.252602015872223e-07,
+          "std": 3.15380955379308e-07,
+          "count": 4
+        }
+      },
+      "legacysem_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00030200108530051593,
+          "std": 0.00014208747151848224,
+          "count": 3
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0003019557075781955,
+          "std": 0.00014213769948593556,
+          "count": 3
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 1.2772851221143355e-07,
+          "std": 1.2130850955130543e-07,
+          "count": 3
+        }
+      },
+      "v1_best_reference": {
+        "clip_count": 24,
+        "runs": [
+          {
+            "run_name": "stage2_semobjv1_align_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.003446414368227124,
+              "free_rollout_coord_mean_l2": 0.0034463562381764254,
+              "teacher_forced_coord_loss": 1.2097243901128726e-05
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0018220579562087853,
+              "free_rollout_coord_mean_l2": 0.0018220141840477784,
+              "teacher_forced_coord_loss": 3.8220844847577e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignhard_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+semantic_hard_curriculum_or_weighting",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0016141550925870736,
+              "free_rollout_coord_mean_l2": 0.001614110078662634,
+              "teacher_forced_coord_loss": 2.785112201308948e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed123_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 123,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0014593938443188865,
+              "free_rollout_coord_mean_l2": 0.0014593825520326693,
+              "teacher_forced_coord_loss": 2.3037286306741103e-06
+            }
+          }
+        ],
+        "aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.0020855053153354675,
+            "std": 0.0009193593000738424,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0020854657632298768,
+            "std": 0.0009193450545706702,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 5.252042304467372e-06,
+            "std": 4.607235683068881e-06,
+            "count": 4
+          }
+        },
+        "cropenc_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00043451565579744056,
+            "std": 0.0002620050484892532,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0004345672289976695,
+            "std": 0.000262010919081459,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 3.252602015872223e-07,
+            "std": 3.15380955379308e-07,
+            "count": 4
+          }
+        },
+        "legacysem_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00030200108530051593,
+            "std": 0.00014208747151848224,
+            "count": 3
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0003019557075781955,
+            "std": 0.00014213769948593556,
+            "count": 3
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 1.2772851221143355e-07,
+            "std": 1.2130850955130543e-07,
+            "count": 3
+          }
+        }
+      }
+    },
+    "small_object_or_low_area": {
+      "clip_count": 24,
+      "runs": [
+        {
+          "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+auxiliary_subset_weighting_only",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0005561463767662644,
+            "free_rollout_coord_mean_l2": 0.0005561931078167012,
+            "teacher_forced_coord_loss": 4.4516481049565e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 123,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.00032064491339648765,
+            "free_rollout_coord_mean_l2": 0.0003207221549625198,
+            "teacher_forced_coord_loss": 1.171700579523834e-07
+          }
+        }
+      ],
+      "aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0004972710109238202,
+          "std": 0.0001177507316848884,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0004973253696031558,
+          "std": 0.00011773547642709067,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.631661223598333e-07,
+          "std": 1.639973762716333e-07,
+          "count": 4
+        }
+      },
+      "cropenc_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00043451565579744056,
+          "std": 0.0002620050484892532,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0004345672289976695,
+          "std": 0.000262010919081459,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.252602015872223e-07,
+          "std": 3.15380955379308e-07,
+          "count": 4
+        }
+      },
+      "legacysem_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00030200108530051593,
+          "std": 0.00014208747151848224,
+          "count": 3
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0003019557075781955,
+          "std": 0.00014213769948593556,
+          "count": 3
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 1.2772851221143355e-07,
+          "std": 1.2130850955130543e-07,
+          "count": 3
+        }
+      },
+      "v1_best_reference": {
+        "clip_count": 24,
+        "runs": [
+          {
+            "run_name": "stage2_semobjv1_align_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.003446414368227124,
+              "free_rollout_coord_mean_l2": 0.0034463562381764254,
+              "teacher_forced_coord_loss": 1.2097243901128726e-05
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0018220579562087853,
+              "free_rollout_coord_mean_l2": 0.0018220141840477784,
+              "teacher_forced_coord_loss": 3.8220844847577e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignhard_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+semantic_hard_curriculum_or_weighting",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0016141550925870736,
+              "free_rollout_coord_mean_l2": 0.001614110078662634,
+              "teacher_forced_coord_loss": 2.785112201308948e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed123_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 123,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0014593938443188865,
+              "free_rollout_coord_mean_l2": 0.0014593825520326693,
+              "teacher_forced_coord_loss": 2.3037286306741103e-06
+            }
+          }
+        ],
+        "aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.0020855053153354675,
+            "std": 0.0009193593000738424,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0020854657632298768,
+            "std": 0.0009193450545706702,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 5.252042304467372e-06,
+            "std": 4.607235683068881e-06,
+            "count": 4
+          }
+        },
+        "cropenc_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00043451565579744056,
+            "std": 0.0002620050484892532,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0004345672289976695,
+            "std": 0.000262010919081459,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 3.252602015872223e-07,
+            "std": 3.15380955379308e-07,
+            "count": 4
+          }
+        },
+        "legacysem_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00030200108530051593,
+            "std": 0.00014208747151848224,
+            "count": 3
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0003019557075781955,
+            "std": 0.00014213769948593556,
+            "count": 3
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 1.2772851221143355e-07,
+            "std": 1.2130850955130543e-07,
+            "count": 3
+          }
+        }
+      }
+    },
+    "appearance_change_or_semantic_shift": {
+      "clip_count": 24,
+      "runs": [
+        {
+          "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0007481538729431728,
+            "free_rollout_coord_mean_l2": 0.0007481515834418436,
+            "teacher_forced_coord_loss": 6.514237232598438e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0007481538729431728,
+            "free_rollout_coord_mean_l2": 0.0007481515834418436,
+            "teacher_forced_coord_loss": 6.514237232598438e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+          "objective_combo": "readout_semantic_alignment_head+auxiliary_subset_weighting_only",
+          "seed": 42,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.0007481538729431728,
+            "free_rollout_coord_mean_l2": 0.0007481515834418436,
+            "teacher_forced_coord_loss": 6.514237232598438e-07
+          }
+        },
+        {
+          "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+          "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+          "seed": 123,
+          "metrics": {
+            "free_rollout_endpoint_l2": 0.00041211889280627173,
+            "free_rollout_coord_mean_l2": 0.00041216579847969115,
+            "teacher_forced_coord_loss": 1.9171193343936466e-07
+          }
+        }
+      ],
+      "aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0006641451279089475,
+          "std": 0.00016801749006845054,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0006641551372013055,
+          "std": 0.00016799289248107624,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 5.36495775804724e-07,
+          "std": 2.2985589491023955e-07,
+          "count": 4
+        }
+      },
+      "cropenc_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.0005016933822237963,
+          "std": 0.0002949707064746234,
+          "count": 4
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0005017267521907343,
+          "std": 0.00029498133290864394,
+          "count": 4
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 3.7941163166799186e-07,
+          "std": 3.2075960865405245e-07,
+          "count": 4
+        }
+      },
+      "legacysem_baseline_aggregate": {
+        "free_rollout_endpoint_l2": {
+          "mean": 0.00029326745425350964,
+          "std": 0.00012402759262546356,
+          "count": 3
+        },
+        "free_rollout_coord_mean_l2": {
+          "mean": 0.0002932778653404158,
+          "std": 0.00012408362517737204,
+          "count": 3
+        },
+        "teacher_forced_coord_loss": {
+          "mean": 1.1888013102318634e-07,
+          "std": 1.0896588458807801e-07,
+          "count": 3
+        }
+      },
+      "v1_best_reference": {
+        "clip_count": 24,
+        "runs": [
+          {
+            "run_name": "stage2_semobjv1_align_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0031772595830261707,
+              "free_rollout_coord_mean_l2": 0.003177285504837831,
+              "teacher_forced_coord_loss": 1.0431044150512511e-05
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0016292710788547993,
+              "free_rollout_coord_mean_l2": 0.0016291998714829485,
+              "teacher_forced_coord_loss": 3.2005448247218737e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignhard_seed42_20260410",
+            "objective_combo": "semantic_alignment_loss+semantic_hard_curriculum_or_weighting",
+            "seed": 42,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0014016543282195926,
+              "free_rollout_coord_mean_l2": 0.001401663136978944,
+              "teacher_forced_coord_loss": 2.2222502214693427e-06
+            }
+          },
+          {
+            "run_name": "stage2_semobjv1_alignpersist_seed123_20260410",
+            "objective_combo": "semantic_alignment_loss+query_persistence_consistency_loss",
+            "seed": 123,
+            "metrics": {
+              "free_rollout_endpoint_l2": 0.0015192989570399125,
+              "free_rollout_coord_mean_l2": 0.0015193040405089657,
+              "teacher_forced_coord_loss": 2.4443645543215098e-06
+            }
+          }
+        ],
+        "aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.0019318709867851187,
+            "std": 0.0008354449602208329,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0019318631384521723,
+            "std": 0.0008354637384359381,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 4.574550937756309e-06,
+            "std": 3.926721203826022e-06,
+            "count": 4
+          }
+        },
+        "cropenc_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.0005016933822237963,
+            "std": 0.0002949707064746234,
+            "count": 4
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0005017267521907343,
+            "std": 0.00029498133290864394,
+            "count": 4
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 3.7941163166799186e-07,
+            "std": 3.2075960865405245e-07,
+            "count": 4
+          }
+        },
+        "legacysem_baseline_aggregate": {
+          "free_rollout_endpoint_l2": {
+            "mean": 0.00029326745425350964,
+            "std": 0.00012402759262546356,
+            "count": 3
+          },
+          "free_rollout_coord_mean_l2": {
+            "mean": 0.0002932778653404158,
+            "std": 0.00012408362517737204,
+            "count": 3
+          },
+          "teacher_forced_coord_loss": {
+            "mean": 1.1888013102318634e-07,
+            "std": 1.0896588458807801e-07,
+            "count": 3
+          }
+        }
+      }
+    }
+  },
+  "burst_persistence_hard_panel": {
+    "status": "evaluated_optional_stress_panel",
+    "clip_count": 24,
+    "runs": [
+      {
+        "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+        "objective_combo": "readout_semantic_alignment_head",
+        "seed": 42,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.005044653235624234,
+          "free_rollout_coord_mean_l2": 0.005044666429360707,
+          "teacher_forced_coord_loss": 3.274282335041789e-05
+        }
+      },
+      {
+        "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+        "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+        "seed": 42,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.005044653235624234,
+          "free_rollout_coord_mean_l2": 0.005044666429360707,
+          "teacher_forced_coord_loss": 3.274282335041789e-05
+        }
+      },
+      {
+        "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+        "objective_combo": "readout_semantic_alignment_head+auxiliary_subset_weighting_only",
+        "seed": 42,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.005044653235624234,
+          "free_rollout_coord_mean_l2": 0.005044666429360707,
+          "teacher_forced_coord_loss": 3.274282335041789e-05
+        }
+      },
+      {
+        "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+        "objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+        "seed": 123,
+        "metrics": {
+          "free_rollout_endpoint_l2": 0.00911652452001969,
+          "free_rollout_coord_mean_l2": 0.009116464604934057,
+          "teacher_forced_coord_loss": 9.603535242301102e-05
+        }
+      }
+    ],
+    "aggregate": {
+      "free_rollout_endpoint_l2": {
+        "mean": 0.006062621056723097,
+        "std": 0.0020359356421977277,
+        "count": 4
+      },
+      "free_rollout_coord_mean_l2": {
+        "mean": 0.006062615973254045,
+        "std": 0.002035899087786675,
+        "count": 4
+      },
+      "teacher_forced_coord_loss": {
+        "mean": 4.856595561856618e-05,
+        "std": 3.164626453629656e-05,
+        "count": 4
+      }
+    }
+  },
+  "success_criteria": {
+    "true_new_best_not_warm_start_inherited": false,
+    "semantic_hard_positive_signal": true,
+    "more_stable_than_v1_best": true,
+    "improved_vs_current_cropenc_baseline": true,
+    "narrowed_or_won_vs_legacysem": true,
+    "full_validation_non_catastrophic": true,
+    "best_v2_objective_combo": "readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss",
+    "best_v2_full_validation_endpoint_l2": 0.0008026909849500561,
+    "current_cropenc_fullscale_mean_endpoint_l2": 0.0009458137729957648,
+    "legacysem_fullscale_mean_endpoint_l2": 0.0007597727700389118,
+    "v1_best_objective_combo_endpoint_l2": 0.0018621101247760367
+  }
+}

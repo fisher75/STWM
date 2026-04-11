@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Tuple
 import json
 import os
 import random
+import shutil
 
 import numpy as np
 import torch
@@ -84,7 +85,7 @@ def parse_args() -> Any:
     p.add_argument(
         "--semantic-rescue-mode",
         default="none",
-        choices=["none", "align", "querypersist", "bootstrapplabel"],
+        choices=["none", "align", "querypersist", "bootstrapplabel", "v2readoutalign", "v2readoutpersist", "v2readouthard"],
         help="Optional Stage2 semantic objective rescue pilot; default keeps the Wave1/Wave2 objective unchanged.",
     )
     p.add_argument("--semantic-rescue-weight", type=float, default=0.0)
@@ -93,6 +94,9 @@ def parse_args() -> Any:
     p.add_argument("--semantic-alignment-loss-weight", type=float, default=0.0)
     p.add_argument("--query-persistence-consistency-loss-weight", type=float, default=0.0)
     p.add_argument("--semantic-hard-curriculum-weight", type=float, default=0.0)
+    p.add_argument("--readout-semantic-alignment-loss-weight", type=float, default=0.0)
+    p.add_argument("--persistence-contrastive-ranking-loss-weight", type=float, default=0.0)
+    p.add_argument("--semantic-aux-subset-weighting-strength", type=float, default=0.0)
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -391,6 +395,7 @@ def _teacher_forced_predict(
         "target_coord": target_coord,
         "valid_mask": valid_mask,
         "semantic_tokens": sem_enc,
+        "future_fused_hidden": fused_hidden[:, int(obs_len) :],
         "gate_mean": float(aux.get("gate_mean", 0.0)),
         "gate_std": float(aux.get("gate_std", 0.0)),
         "semantic_input_nonempty": bool((batch["semantic_mask"] & token_mask).any().item()),
@@ -581,7 +586,7 @@ def _metric_triplet(metrics: Dict[str, Any]) -> Dict[str, float]:
 
 
 class SemanticRescueAuxHeads(torch.nn.Module):
-    def __init__(self, semantic_dim: int, target_dim: int = 10) -> None:
+    def __init__(self, semantic_dim: int, target_dim: int = 10, readout_dim: int | None = None) -> None:
         super().__init__()
         self.target_dim = int(target_dim)
         self.feature_head = torch.nn.Sequential(
@@ -592,12 +597,21 @@ class SemanticRescueAuxHeads(torch.nn.Module):
             torch.nn.LayerNorm(int(semantic_dim)),
             torch.nn.Linear(int(semantic_dim), 2),
         )
+        self.readout_feature_head: torch.nn.Module | None = None
+        if readout_dim is not None and int(readout_dim) > 0:
+            self.readout_feature_head = torch.nn.Sequential(
+                torch.nn.LayerNorm(int(readout_dim)),
+                torch.nn.Linear(int(readout_dim), self.target_dim),
+            )
 
-    def forward(self, semantic_tokens: torch.Tensor) -> Dict[str, torch.Tensor]:
-        return {
+    def forward(self, semantic_tokens: torch.Tensor, readout_tokens: torch.Tensor | None = None) -> Dict[str, torch.Tensor]:
+        out = {
             "feature_target": self.feature_head(semantic_tokens),
             "endpoint": self.endpoint_head(semantic_tokens),
         }
+        if readout_tokens is not None and self.readout_feature_head is not None:
+            out["readout_feature_target"] = self.readout_feature_head(readout_tokens)
+        return out
 
 
 def _bootstrap_targets_from_batch(
@@ -652,6 +666,9 @@ def _semantic_rescue_loss(
     device: torch.device,
     semantic_alignment_loss_weight: float,
     query_persistence_consistency_loss_weight: float,
+    readout_semantic_alignment_loss_weight: float,
+    persistence_contrastive_or_ranking_loss_weight: float,
+    semantic_aux_subset_weighting_strength: float,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     if aux_heads is None or str(mode) == "none":
         zero = tf_out["pred_coord"].sum() * 0.0
@@ -659,13 +676,19 @@ def _semantic_rescue_loss(
             "semantic_rescue_loss": 0.0,
             "semantic_alignment_loss": 0.0,
             "query_persistence_consistency_loss": 0.0,
+            "readout_semantic_alignment_loss": 0.0,
+            "persistence_contrastive_or_ranking_loss": 0.0,
+            "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": 0.0,
         }
 
     semantic_tokens = tf_out["semantic_tokens"]
     token_mask = batch["token_mask"].to(device=device, dtype=torch.bool)
     semantic_mask = batch["semantic_mask"].to(device=device, dtype=torch.bool) & token_mask
-    aux = aux_heads(semantic_tokens)
+    readout_tokens = tf_out.get("future_fused_hidden")
+    readout_tokens = readout_tokens[:, -1] if isinstance(readout_tokens, torch.Tensor) and readout_tokens.ndim == 4 else None
+    aux = aux_heads(semantic_tokens, readout_tokens=readout_tokens)
 
     weighted_terms: List[torch.Tensor] = []
     weight_sum = 0.0
@@ -677,11 +700,82 @@ def _semantic_rescue_loss(
         align_weight = 1.0
     if mode_norm == "querypersist" and query_weight <= 0.0:
         query_weight = 1.0
-    if mode_norm == "bootstrapplabel":
-        if align_weight <= 0.0:
-            align_weight = 1.0
-        if query_weight <= 0.0:
-            query_weight = 1.0
+    if mode_norm.startswith("v2"):
+        readout_align_weight = float(readout_semantic_alignment_loss_weight)
+        contrastive_weight = float(persistence_contrastive_or_ranking_loss_weight)
+        if mode_norm == "v2readoutalign" and readout_align_weight <= 0.0:
+            readout_align_weight = 1.0
+        if mode_norm == "v2readoutpersist":
+            if readout_align_weight <= 0.0:
+                readout_align_weight = 1.0
+            if contrastive_weight <= 0.0:
+                contrastive_weight = 0.25
+        if mode_norm == "v2readouthard" and readout_align_weight <= 0.0:
+            readout_align_weight = 1.0
+
+        target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(
+            batch=batch,
+            cache=bootstrap_cache,
+            device=device,
+            target_dim=int(aux_heads.target_dim),
+        )
+        valid = semantic_mask & target_valid
+        sample_weights = _semantic_hard_sample_weights(
+            batch=batch,
+            device=device,
+            strength=float(semantic_aux_subset_weighting_strength),
+        )[:, None]
+        aux_weights = torch.where(valid, sample_weights.expand_as(valid).to(torch.float32), torch.zeros_like(valid, dtype=torch.float32))
+        denom = aux_weights.sum().clamp_min(1.0)
+        readout_align_loss = semantic_tokens.sum() * 0.0
+        contrastive_loss = semantic_tokens.sum() * 0.0
+
+        readout_pred = aux.get("readout_feature_target", aux["feature_target"])
+        if readout_align_weight > 0.0:
+            pred = torch.nn.functional.normalize(readout_pred, dim=-1)
+            tgt = torch.nn.functional.normalize(target, dim=-1)
+            cosine = 1.0 - (pred * tgt).sum(dim=-1)
+            readout_align_loss = (cosine * aux_weights).sum() / denom
+            weighted_terms.append(float(readout_align_weight) * readout_align_loss)
+            weight_sum += float(readout_align_weight)
+
+        if contrastive_weight > 0.0:
+            flat_valid = valid.reshape(-1)
+            flat_pred = torch.nn.functional.normalize(readout_pred.reshape(-1, readout_pred.shape[-1])[flat_valid], dim=-1)
+            flat_tgt = torch.nn.functional.normalize(target.reshape(-1, target.shape[-1])[flat_valid], dim=-1)
+            if flat_pred.shape[0] > 1:
+                logits = flat_pred @ flat_tgt.T / 0.07
+                labels = torch.arange(flat_pred.shape[0], device=device)
+                contrastive_loss = 0.5 * (
+                    torch.nn.functional.cross_entropy(logits, labels)
+                    + torch.nn.functional.cross_entropy(logits.T, labels)
+                )
+                weighted_terms.append(float(contrastive_weight) * contrastive_loss)
+                weight_sum += float(contrastive_weight)
+
+        if not weighted_terms:
+            zero = tf_out["pred_coord"].sum() * 0.0
+            return zero, {
+                "semantic_rescue_loss": 0.0,
+                "semantic_alignment_loss": 0.0,
+                "query_persistence_consistency_loss": 0.0,
+                "readout_semantic_alignment_loss": 0.0,
+                "persistence_contrastive_or_ranking_loss": 0.0,
+                "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+                "whether_main_rollout_loss_reweighted": False,
+                "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+            }
+        loss = sum(weighted_terms) / max(float(weight_sum), 1e-6)
+        return loss, {
+            "semantic_rescue_loss": float(loss.detach().cpu().item()),
+            "semantic_alignment_loss": 0.0,
+            "query_persistence_consistency_loss": 0.0,
+            "readout_semantic_alignment_loss": float(readout_align_loss.detach().cpu().item()),
+            "persistence_contrastive_or_ranking_loss": float(contrastive_loss.detach().cpu().item()),
+            "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": False,
+            "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+        }
 
     align_loss = semantic_tokens.sum() * 0.0
     query_loss = semantic_tokens.sum() * 0.0
@@ -716,6 +810,10 @@ def _semantic_rescue_loss(
             "semantic_rescue_loss": 0.0,
             "semantic_alignment_loss": 0.0,
             "query_persistence_consistency_loss": 0.0,
+            "readout_semantic_alignment_loss": 0.0,
+            "persistence_contrastive_or_ranking_loss": 0.0,
+            "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": 0.0,
         }
 
@@ -724,6 +822,10 @@ def _semantic_rescue_loss(
         "semantic_rescue_loss": float(loss.detach().cpu().item()),
         "semantic_alignment_loss": float(align_loss.detach().cpu().item()),
         "query_persistence_consistency_loss": float(query_loss.detach().cpu().item()),
+        "readout_semantic_alignment_loss": 0.0,
+        "persistence_contrastive_or_ranking_loss": 0.0,
+        "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+        "whether_main_rollout_loss_reweighted": False,
         "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
     }
 
@@ -1001,6 +1103,7 @@ def main() -> None:
         semantic_rescue_heads = SemanticRescueAuxHeads(
             semantic_dim=int(args.semantic_embed_dim),
             target_dim=int(args.semantic_bootstrap_target_dim),
+            readout_dim=int(fusion_hidden_dim),
         ).to(device)
 
     trainable_params: List[torch.nn.Parameter] = []
@@ -1042,6 +1145,10 @@ def main() -> None:
         "semantic_alignment_loss_weight": float(args.semantic_alignment_loss_weight),
         "query_persistence_consistency_loss_weight": float(args.query_persistence_consistency_loss_weight),
         "semantic_hard_curriculum_weight": float(args.semantic_hard_curriculum_weight),
+        "readout_semantic_alignment_loss_weight": float(args.readout_semantic_alignment_loss_weight),
+        "persistence_contrastive_ranking_loss_weight": float(args.persistence_contrastive_ranking_loss_weight),
+        "semantic_aux_subset_weighting_strength": float(args.semantic_aux_subset_weighting_strength),
+        "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
         "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
         "skip_resume_optimizer": bool(args.skip_resume_optimizer),
         "resume_optimizer_loaded": False,
@@ -1055,6 +1162,8 @@ def main() -> None:
     )
 
     global_step = 0
+    resume_global_step_loaded = 0
+    new_best_written_this_run = False
     best_metric_so_far: Dict[str, Any] | None = None
     eval_history: List[Dict[str, Any]] = []
     if resolved_resume:
@@ -1074,6 +1183,7 @@ def main() -> None:
                 except ValueError as exc:
                     run_metadata["resume_optimizer_skip_reason"] = f"incompatible_optimizer_state: {exc}"
         global_step = int(payload.get("global_step", 0) or 0)
+        resume_global_step_loaded = int(global_step)
         if isinstance(payload.get("best_metric_so_far", None), dict):
             best_metric_so_far = payload.get("best_metric_so_far")
         if isinstance(payload.get("eval_history", None), list):
@@ -1096,6 +1206,8 @@ def main() -> None:
     rescue_loss_history: List[float] = []
     semantic_alignment_loss_history: List[float] = []
     query_persistence_loss_history: List[float] = []
+    readout_alignment_loss_history: List[float] = []
+    persistence_contrastive_loss_history: List[float] = []
     rescue_cache_hit_history: List[float] = []
     semantic_hard_weight_mean_history: List[float] = []
     gate_history: List[float] = []
@@ -1164,10 +1276,11 @@ def main() -> None:
             semantic_source_mainline=str(args.semantic_source_mainline),
         )
 
+        main_rollout_reweight_strength = 0.0 if str(rescue_mode).startswith("v2") else float(args.semantic_hard_curriculum_weight)
         semantic_hard_weights = _semantic_hard_sample_weights(
             batch=batch,
             device=device,
-            strength=float(args.semantic_hard_curriculum_weight),
+            strength=float(main_rollout_reweight_strength),
         )
         teacher_loss = _weighted_teacher_loss(
             tf_out["pred_coord"],
@@ -1184,6 +1297,9 @@ def main() -> None:
             device=device,
             semantic_alignment_loss_weight=float(args.semantic_alignment_loss_weight),
             query_persistence_consistency_loss_weight=float(args.query_persistence_consistency_loss_weight),
+            readout_semantic_alignment_loss_weight=float(args.readout_semantic_alignment_loss_weight),
+            persistence_contrastive_or_ranking_loss_weight=float(args.persistence_contrastive_ranking_loss_weight),
+            semantic_aux_subset_weighting_strength=float(args.semantic_aux_subset_weighting_strength),
         )
         total_train_loss = teacher_loss + float(rescue_weight) * rescue_loss
 
@@ -1217,6 +1333,8 @@ def main() -> None:
         rescue_loss_history.append(float(rescue_info.get("semantic_rescue_loss", 0.0)))
         semantic_alignment_loss_history.append(float(rescue_info.get("semantic_alignment_loss", 0.0)))
         query_persistence_loss_history.append(float(rescue_info.get("query_persistence_consistency_loss", 0.0)))
+        readout_alignment_loss_history.append(float(rescue_info.get("readout_semantic_alignment_loss", 0.0)))
+        persistence_contrastive_loss_history.append(float(rescue_info.get("persistence_contrastive_or_ranking_loss", 0.0)))
         rescue_cache_hit_history.append(float(rescue_info.get("semantic_bootstrap_cache_hit_ratio", 0.0)))
         semantic_hard_weight_mean_history.append(float(semantic_hard_weights.detach().mean().cpu().item()))
         gate_history.append(float(tf_out["gate_mean"]))
@@ -1267,6 +1385,7 @@ def main() -> None:
                     run_metadata=run_metadata,
                 )
                 _atomic_torch_save(best_payload, best_ckpt)
+                new_best_written_this_run = True
 
             _write_progress_snapshot(
                 progress_json,
@@ -1314,19 +1433,28 @@ def main() -> None:
         }
 
     if not best_ckpt.exists():
-        best_payload = _checkpoint_payload(
-            args=args,
-            global_step=int(global_step),
-            best_metric_so_far=best_metric_so_far,
-            eval_history=eval_history,
-            semantic_encoder=semantic_encoder,
-            semantic_fusion=semantic_fusion,
-            readout_head=readout_head,
-            semantic_rescue_heads=semantic_rescue_heads,
-            optimizer=optimizer,
-            run_metadata=run_metadata,
-        )
-        _atomic_torch_save(best_payload, best_ckpt)
+        inherited_best_step = int((best_metric_so_far or {}).get("global_step", -1))
+        if (
+            resolved_resume
+            and (not new_best_written_this_run)
+            and inherited_best_step <= int(resume_global_step_loaded)
+            and Path(str(resolved_resume)).resolve() != best_ckpt.resolve()
+        ):
+            shutil.copy2(str(resolved_resume), str(best_ckpt))
+        else:
+            best_payload = _checkpoint_payload(
+                args=args,
+                global_step=int(global_step),
+                best_metric_so_far=best_metric_so_far,
+                eval_history=eval_history,
+                semantic_encoder=semantic_encoder,
+                semantic_fusion=semantic_fusion,
+                readout_head=readout_head,
+                semantic_rescue_heads=semantic_rescue_heads,
+                optimizer=optimizer,
+                run_metadata=run_metadata,
+            )
+            _atomic_torch_save(best_payload, best_ckpt)
     if not latest_ckpt.exists():
         _save_latest_and_optional_step(step_now=int(global_step), save_step=False)
 
@@ -1423,9 +1551,15 @@ def main() -> None:
             "semantic_alignment_loss_weight": float(args.semantic_alignment_loss_weight),
             "query_persistence_consistency_loss_weight": float(args.query_persistence_consistency_loss_weight),
             "semantic_hard_curriculum_weight": float(args.semantic_hard_curriculum_weight),
+            "readout_semantic_alignment_loss_weight": float(args.readout_semantic_alignment_loss_weight),
+            "persistence_contrastive_ranking_loss_weight": float(args.persistence_contrastive_ranking_loss_weight),
+            "semantic_aux_subset_weighting_strength": float(args.semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
             "semantic_rescue_loss_mean": float(sum(rescue_loss_history) / max(len(rescue_loss_history), 1)),
             "semantic_alignment_loss_mean": float(sum(semantic_alignment_loss_history) / max(len(semantic_alignment_loss_history), 1)),
             "query_persistence_consistency_loss_mean": float(sum(query_persistence_loss_history) / max(len(query_persistence_loss_history), 1)),
+            "readout_semantic_alignment_loss_mean": float(sum(readout_alignment_loss_history) / max(len(readout_alignment_loss_history), 1)),
+            "persistence_contrastive_or_ranking_loss_mean": float(sum(persistence_contrastive_loss_history) / max(len(persistence_contrastive_loss_history), 1)),
             "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
             "semantic_hard_sample_weight_mean": float(sum(semantic_hard_weight_mean_history) / max(len(semantic_hard_weight_mean_history), 1)),
             "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
