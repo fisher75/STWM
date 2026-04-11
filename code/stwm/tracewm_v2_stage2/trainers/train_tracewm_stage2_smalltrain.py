@@ -85,7 +85,19 @@ def parse_args() -> Any:
     p.add_argument(
         "--semantic-rescue-mode",
         default="none",
-        choices=["none", "align", "querypersist", "bootstrapplabel", "v2readoutalign", "v2readoutpersist", "v2readouthard"],
+        choices=[
+            "none",
+            "align",
+            "querypersist",
+            "bootstrapplabel",
+            "v2readoutalign",
+            "v2readoutpersist",
+            "v2readouthard",
+            "v3confalign",
+            "v3confpersist",
+            "v3confpersistdelay",
+            "v3confhardsidecar",
+        ],
         help="Optional Stage2 semantic objective rescue pilot; default keeps the Wave1/Wave2 objective unchanged.",
     )
     p.add_argument("--semantic-rescue-weight", type=float, default=0.0)
@@ -97,6 +109,18 @@ def parse_args() -> Any:
     p.add_argument("--readout-semantic-alignment-loss-weight", type=float, default=0.0)
     p.add_argument("--persistence-contrastive-ranking-loss-weight", type=float, default=0.0)
     p.add_argument("--semantic-aux-subset-weighting-strength", type=float, default=0.0)
+    p.add_argument("--confidence-gated-alignment-loss-weight", type=float, default=0.0)
+    p.add_argument("--sparse-persistence-contrastive-loss-weight", type=float, default=0.0)
+    p.add_argument("--confidence-gating-margin-threshold", type=float, default=0.10)
+    p.add_argument("--confidence-gating-temperature", type=float, default=0.05)
+    p.add_argument("--semantic-hard-score-threshold", type=float, default=0.25)
+    p.add_argument("--aux-loss-delay-steps", type=int, default=0)
+    p.add_argument("--aux-loss-ramp-steps", type=int, default=0)
+    p.add_argument("--semantic-hard-sidecar-enabled", action="store_true")
+    p.add_argument(
+        "--semantic-hard-manifest-path",
+        default="/home/chen034/workspace/stwm/manifests/protocol_v2/stage2_semantic_hard_subsets_20260410.json",
+    )
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -585,6 +609,12 @@ def _metric_triplet(metrics: Dict[str, Any]) -> Dict[str, float]:
     }
 
 
+def _semantic_hard_composite_score(metrics: Dict[str, Any]) -> float:
+    endpoint = float(metrics.get("free_rollout_endpoint_l2", 1e9))
+    coord = float(metrics.get("free_rollout_coord_mean_l2", 1e9))
+    return float(0.7 * endpoint + 0.3 * coord)
+
+
 class SemanticRescueAuxHeads(torch.nn.Module):
     def __init__(self, semantic_dim: int, target_dim: int = 10, readout_dim: int | None = None) -> None:
         super().__init__()
@@ -664,11 +694,20 @@ def _semantic_rescue_loss(
     batch: Dict[str, Any],
     bootstrap_cache: Dict[str, torch.Tensor],
     device: torch.device,
+    current_step: int,
+    resume_global_step: int,
     semantic_alignment_loss_weight: float,
     query_persistence_consistency_loss_weight: float,
     readout_semantic_alignment_loss_weight: float,
     persistence_contrastive_or_ranking_loss_weight: float,
     semantic_aux_subset_weighting_strength: float,
+    confidence_gated_alignment_loss_weight: float,
+    sparse_persistence_contrastive_loss_weight: float,
+    confidence_gating_margin_threshold: float,
+    confidence_gating_temperature: float,
+    semantic_hard_score_threshold: float,
+    aux_loss_delay_steps: int,
+    aux_loss_ramp_steps: int,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     if aux_heads is None or str(mode) == "none":
         zero = tf_out["pred_coord"].sum() * 0.0
@@ -678,6 +717,19 @@ def _semantic_rescue_loss(
             "query_persistence_consistency_loss": 0.0,
             "readout_semantic_alignment_loss": 0.0,
             "persistence_contrastive_or_ranking_loss": 0.0,
+            "confidence_gated_alignment_loss": 0.0,
+            "sparse_persistence_contrastive_loss": 0.0,
+            "confidence_gated_affected_sample_ratio": 0.0,
+            "low_confidence_sample_ratio": 0.0,
+            "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+            "confidence_metric_temperature": float(confidence_gating_temperature),
+            "confidence_metric_definition": 0.0,
+            "positive_pair_count": 0.0,
+            "hard_negative_count": 0.0,
+            "effective_pair_coverage_ratio": 0.0,
+            "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+            "aux_loss_delay_steps": float(aux_loss_delay_steps),
+            "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
             "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
             "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": 0.0,
@@ -761,6 +813,19 @@ def _semantic_rescue_loss(
                 "query_persistence_consistency_loss": 0.0,
                 "readout_semantic_alignment_loss": 0.0,
                 "persistence_contrastive_or_ranking_loss": 0.0,
+                "confidence_gated_alignment_loss": 0.0,
+                "sparse_persistence_contrastive_loss": 0.0,
+                "confidence_gated_affected_sample_ratio": 0.0,
+                "low_confidence_sample_ratio": 0.0,
+                "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+                "confidence_metric_temperature": float(confidence_gating_temperature),
+                "confidence_metric_definition": 0.0,
+                "positive_pair_count": 0.0,
+                "hard_negative_count": 0.0,
+                "effective_pair_coverage_ratio": 0.0,
+                "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+                "aux_loss_delay_steps": float(aux_loss_delay_steps),
+                "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
                 "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
                 "whether_main_rollout_loss_reweighted": False,
                 "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
@@ -772,6 +837,164 @@ def _semantic_rescue_loss(
             "query_persistence_consistency_loss": 0.0,
             "readout_semantic_alignment_loss": float(readout_align_loss.detach().cpu().item()),
             "persistence_contrastive_or_ranking_loss": float(contrastive_loss.detach().cpu().item()),
+            "confidence_gated_alignment_loss": 0.0,
+            "sparse_persistence_contrastive_loss": 0.0,
+            "confidence_gated_affected_sample_ratio": 0.0,
+            "low_confidence_sample_ratio": 0.0,
+            "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+            "confidence_metric_temperature": float(confidence_gating_temperature),
+            "confidence_metric_definition": 0.0,
+            "positive_pair_count": 0.0,
+            "hard_negative_count": 0.0,
+            "effective_pair_coverage_ratio": 0.0,
+            "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+            "aux_loss_delay_steps": float(aux_loss_delay_steps),
+            "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+            "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": False,
+            "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+        }
+
+    if mode_norm.startswith("v3"):
+        readout_align_weight = float(confidence_gated_alignment_loss_weight)
+        sparse_weight = float(sparse_persistence_contrastive_loss_weight)
+        if mode_norm == "v3confalign" and readout_align_weight <= 0.0:
+            readout_align_weight = 1.0
+        if mode_norm in {"v3confpersist", "v3confpersistdelay", "v3confhardsidecar"}:
+            if readout_align_weight <= 0.0:
+                readout_align_weight = 1.0
+            if sparse_weight <= 0.0:
+                sparse_weight = 0.05
+
+        target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(
+            batch=batch,
+            cache=bootstrap_cache,
+            device=device,
+            target_dim=int(aux_heads.target_dim),
+        )
+        valid = semantic_mask & target_valid
+        hard_stats = _semantic_hard_sample_stats(batch=batch, device=device)
+        hard_score = hard_stats["hard_score"][:, None].expand_as(valid).to(torch.float32)
+        hard_relevance = (
+            (hard_stats["area_range"] >= float(semantic_hard_score_threshold))
+            | (hard_stats["center_interaction"] >= 0.30)
+            | (hard_stats["appearance_shift"] >= 0.20)
+            | (hard_stats["small_score"] >= 0.25)
+        )[:, None].expand_as(valid)
+
+        readout_pred = aux.get("readout_feature_target", aux["feature_target"])
+        pred = torch.nn.functional.normalize(readout_pred, dim=-1)
+        tgt = torch.nn.functional.normalize(target, dim=-1)
+        pos_sim = (pred * tgt).sum(dim=-1)
+        neg_sim = torch.full_like(pos_sim, -1.0)
+        flat_valid = valid.reshape(-1)
+        if int(flat_valid.sum().item()) >= 2:
+            flat_pred = pred.reshape(-1, pred.shape[-1])[flat_valid]
+            flat_tgt = tgt.reshape(-1, tgt.shape[-1])[flat_valid]
+            flat_sim = flat_pred @ flat_tgt.T
+            flat_sim = flat_sim.masked_fill(
+                torch.eye(flat_sim.shape[0], device=device, dtype=torch.bool),
+                -1e9,
+            )
+            flat_neg = flat_sim.max(dim=-1).values
+            flat_neg = torch.where(torch.isfinite(flat_neg), flat_neg, torch.full_like(flat_neg, -1.0))
+            neg_sim_flat = torch.full((flat_valid.shape[0],), -1.0, device=device, dtype=torch.float32)
+            neg_sim_flat[flat_valid] = flat_neg
+            neg_sim = neg_sim_flat.view_as(pos_sim)
+        margin = pos_sim - neg_sim
+        gate_raw = torch.sigmoid((float(confidence_gating_margin_threshold) - margin) / max(float(confidence_gating_temperature), 1e-4))
+        gate = gate_raw * (1.0 + 0.75 * hard_score)
+        gate = torch.where(valid, gate, torch.zeros_like(gate))
+        gate = gate.clamp(0.0, 3.0)
+        gate_denom = gate.sum().clamp_min(1.0)
+        conf_align_loss = semantic_tokens.sum() * 0.0
+        if readout_align_weight > 0.0:
+            cosine = 1.0 - pos_sim
+            conf_align_loss = (cosine * gate).sum() / gate_denom
+            weighted_terms.append(float(readout_align_weight) * conf_align_loss)
+            weight_sum += float(readout_align_weight)
+
+        future_readout = tf_out.get("future_fused_hidden")
+        sparse_loss = semantic_tokens.sum() * 0.0
+        positive_pair_count = 0.0
+        hard_negative_count = 0.0
+        pair_coverage_ratio = 0.0
+        if (
+            sparse_weight > 0.0
+            and isinstance(future_readout, torch.Tensor)
+            and future_readout.ndim == 4
+            and future_readout.shape[1] >= 2
+            and aux_heads.readout_feature_head is not None
+        ):
+            future_proj = aux_heads.readout_feature_head(future_readout)
+            first_proj = torch.nn.functional.normalize(future_proj[:, 0], dim=-1)
+            last_proj = torch.nn.functional.normalize(future_proj[:, -1], dim=-1)
+            selected = valid & hard_relevance
+            total_candidates = float(selected.float().sum().item())
+            flat_sel = selected.reshape(-1)
+            if int(flat_sel.sum().item()) >= 2:
+                flat_first = first_proj.reshape(-1, first_proj.shape[-1])[flat_sel]
+                flat_last = last_proj.reshape(-1, last_proj.shape[-1])[flat_sel]
+                logits = flat_first @ flat_last.T
+                pos = torch.diagonal(logits)
+                logits_wo_diag = logits.masked_fill(torch.eye(logits.shape[0], device=device, dtype=torch.bool), -1e9)
+                max_neg = logits_wo_diag.max(dim=-1).values
+                max_neg = torch.where(torch.isfinite(max_neg), max_neg, torch.full_like(max_neg, -1.0))
+                sparse_loss = torch.relu(0.10 + max_neg - pos).mean()
+                weighted_terms.append(float(sparse_weight) * sparse_loss)
+                weight_sum += float(sparse_weight)
+                positive_pair_count = float(flat_first.shape[0])
+                hard_negative_count = float((logits_wo_diag > (pos[:, None] - 0.10)).float().sum().item())
+                pair_coverage_ratio = float(positive_pair_count / max(total_candidates, 1.0))
+            else:
+                positive_pair_count = float(flat_sel.sum().item())
+                pair_coverage_ratio = float(positive_pair_count / max(total_candidates, 1.0))
+
+        if not weighted_terms:
+            zero = tf_out["pred_coord"].sum() * 0.0
+            return zero, {
+                "semantic_rescue_loss": 0.0,
+                "semantic_alignment_loss": 0.0,
+                "query_persistence_consistency_loss": 0.0,
+                "readout_semantic_alignment_loss": 0.0,
+                "persistence_contrastive_or_ranking_loss": 0.0,
+                "confidence_gated_alignment_loss": 0.0,
+                "sparse_persistence_contrastive_loss": 0.0,
+                "confidence_gated_affected_sample_ratio": float(((gate > 0.25) & valid).float().sum().item() / max(valid.float().sum().item(), 1.0)),
+                "low_confidence_sample_ratio": float(((gate_raw > 0.5) & valid).float().sum().item() / max(valid.float().sum().item(), 1.0)),
+                "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+                "confidence_metric_temperature": float(confidence_gating_temperature),
+                "confidence_metric_definition": 1.0,
+                "positive_pair_count": float(positive_pair_count),
+                "hard_negative_count": float(hard_negative_count),
+                "effective_pair_coverage_ratio": float(pair_coverage_ratio),
+                "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+                "aux_loss_delay_steps": float(aux_loss_delay_steps),
+                "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+                "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+                "whether_main_rollout_loss_reweighted": False,
+                "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+            }
+        loss = sum(weighted_terms) / max(float(weight_sum), 1e-6)
+        return loss, {
+            "semantic_rescue_loss": float(loss.detach().cpu().item()),
+            "semantic_alignment_loss": 0.0,
+            "query_persistence_consistency_loss": 0.0,
+            "readout_semantic_alignment_loss": float(conf_align_loss.detach().cpu().item()),
+            "persistence_contrastive_or_ranking_loss": float(sparse_loss.detach().cpu().item()),
+            "confidence_gated_alignment_loss": float(conf_align_loss.detach().cpu().item()),
+            "sparse_persistence_contrastive_loss": float(sparse_loss.detach().cpu().item()),
+            "confidence_gated_affected_sample_ratio": float(((gate > 0.25) & valid).float().sum().item() / max(valid.float().sum().item(), 1.0)),
+            "low_confidence_sample_ratio": float(((gate_raw > 0.5) & valid).float().sum().item() / max(valid.float().sum().item(), 1.0)),
+            "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+            "confidence_metric_temperature": float(confidence_gating_temperature),
+            "confidence_metric_definition": 1.0,
+            "positive_pair_count": float(positive_pair_count),
+            "hard_negative_count": float(hard_negative_count),
+            "effective_pair_coverage_ratio": float(pair_coverage_ratio),
+            "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+            "aux_loss_delay_steps": float(aux_loss_delay_steps),
+            "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
             "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
             "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
@@ -812,6 +1035,19 @@ def _semantic_rescue_loss(
             "query_persistence_consistency_loss": 0.0,
             "readout_semantic_alignment_loss": 0.0,
             "persistence_contrastive_or_ranking_loss": 0.0,
+            "confidence_gated_alignment_loss": 0.0,
+            "sparse_persistence_contrastive_loss": 0.0,
+            "confidence_gated_affected_sample_ratio": 0.0,
+            "low_confidence_sample_ratio": 0.0,
+            "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+            "confidence_metric_temperature": float(confidence_gating_temperature),
+            "confidence_metric_definition": 0.0,
+            "positive_pair_count": 0.0,
+            "hard_negative_count": 0.0,
+            "effective_pair_coverage_ratio": 0.0,
+            "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+            "aux_loss_delay_steps": float(aux_loss_delay_steps),
+            "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
             "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
             "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": 0.0,
@@ -824,16 +1060,26 @@ def _semantic_rescue_loss(
         "query_persistence_consistency_loss": float(query_loss.detach().cpu().item()),
         "readout_semantic_alignment_loss": 0.0,
         "persistence_contrastive_or_ranking_loss": 0.0,
+        "confidence_gated_alignment_loss": 0.0,
+        "sparse_persistence_contrastive_loss": 0.0,
+        "confidence_gated_affected_sample_ratio": 0.0,
+        "low_confidence_sample_ratio": 0.0,
+        "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+        "confidence_metric_temperature": float(confidence_gating_temperature),
+        "confidence_metric_definition": 0.0,
+        "positive_pair_count": 0.0,
+        "hard_negative_count": 0.0,
+        "effective_pair_coverage_ratio": 0.0,
+        "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+        "aux_loss_delay_steps": float(aux_loss_delay_steps),
+        "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
         "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
         "whether_main_rollout_loss_reweighted": False,
         "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
     }
 
 
-def _semantic_hard_sample_weights(batch: Dict[str, Any], device: torch.device, strength: float) -> torch.Tensor:
-    bsz = int(batch["obs_state"].shape[0])
-    if float(strength) <= 0.0:
-        return torch.ones((bsz,), device=device, dtype=torch.float32)
+def _semantic_hard_sample_stats(batch: Dict[str, Any], device: torch.device) -> Dict[str, torch.Tensor]:
     state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1).to(device=device, dtype=torch.float32)
     valid = torch.cat([batch["obs_valid"], batch["fut_valid"]], dim=1).to(device=device, dtype=torch.bool)
     token_mask = batch["token_mask"].to(device=device, dtype=torch.bool)
@@ -849,8 +1095,71 @@ def _semantic_hard_sample_weights(batch: Dict[str, Any], device: torch.device, s
     area_min = torch.where(vt, area, torch.full_like(area, 2.0)).amin(dim=(1, 2))
     area_range = (area_max - area_min).clamp_min(0.0)
     small_score = (0.05 - area_mean).clamp_min(0.0) / 0.05
-    hard_score = (0.5 * motion / 0.05 + 0.3 * area_range / 0.25 + 0.2 * small_score).clamp(0.0, 2.0)
-    return 1.0 + float(strength) * hard_score.detach()
+    center_dist = torch.sqrt(((coords[..., 0] - 0.5) ** 2 + (coords[..., 1] - 0.5) ** 2).clamp_min(1e-12))
+    center_score = (1.0 - center_dist / 0.75).clamp(0.0, 1.0)
+    center_interaction = (center_score * vt.float()).sum(dim=(1, 2)) / vt.float().sum(dim=(1, 2)).clamp_min(1.0)
+    semantic_features = batch["semantic_features"].to(device=device, dtype=torch.float32)
+    color_std_mean = semantic_features[..., 3:6].mean(dim=(1, 2)).clamp_min(0.0)
+    appearance_shift = color_std_mean
+    hard_score = (
+        0.35 * (motion / 0.05)
+        + 0.20 * (area_range / 0.25)
+        + 0.20 * small_score
+        + 0.15 * center_interaction
+        + 0.10 * (appearance_shift / 0.25)
+    ).clamp(0.0, 2.5)
+    return {
+        "motion": motion.detach(),
+        "area_mean": area_mean.detach(),
+        "area_range": area_range.detach(),
+        "small_score": small_score.detach(),
+        "center_interaction": center_interaction.detach(),
+        "appearance_shift": appearance_shift.detach(),
+        "hard_score": hard_score.detach(),
+    }
+
+
+def _semantic_hard_sample_weights(batch: Dict[str, Any], device: torch.device, strength: float) -> torch.Tensor:
+    bsz = int(batch["obs_state"].shape[0])
+    if float(strength) <= 0.0:
+        return torch.ones((bsz,), device=device, dtype=torch.float32)
+    hard_score = _semantic_hard_sample_stats(batch=batch, device=device)["hard_score"]
+    return 1.0 + float(strength) * hard_score
+
+
+def _aux_schedule_scale(global_step: int, resume_global_step: int, delay_steps: int, ramp_steps: int) -> float:
+    step_offset = max(int(global_step) - int(resume_global_step), 0)
+    if step_offset < int(delay_steps):
+        return 0.0
+    if int(ramp_steps) <= 0:
+        return 1.0
+    return float(min(max(step_offset - int(delay_steps), 0) / max(int(ramp_steps), 1), 1.0))
+
+
+def _semantic_hard_subset_indices(path_value: str) -> List[int]:
+    target = str(path_value).strip()
+    if not target:
+        return []
+    p = Path(target)
+    if not p.exists():
+        return []
+    try:
+        payload = _safe_json(p)
+    except Exception:
+        return []
+    indices = set()
+    subsets = payload.get("subsets", {}) if isinstance(payload.get("subsets", {}), dict) else {}
+    for name in [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift",
+    ]:
+        meta = subsets.get(name, {}) if isinstance(subsets.get(name, {}), dict) else {}
+        for item in meta.get("items", []) if isinstance(meta.get("items", []), list) else []:
+            if isinstance(item, dict) and "dataset_index" in item:
+                indices.add(int(item["dataset_index"]))
+    return sorted(indices)
 
 
 def _weighted_teacher_loss(
@@ -1148,6 +1457,15 @@ def main() -> None:
         "readout_semantic_alignment_loss_weight": float(args.readout_semantic_alignment_loss_weight),
         "persistence_contrastive_ranking_loss_weight": float(args.persistence_contrastive_ranking_loss_weight),
         "semantic_aux_subset_weighting_strength": float(args.semantic_aux_subset_weighting_strength),
+        "confidence_gated_alignment_loss_weight": float(args.confidence_gated_alignment_loss_weight),
+        "sparse_persistence_contrastive_loss_weight": float(args.sparse_persistence_contrastive_loss_weight),
+        "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+        "confidence_gating_margin_threshold": float(args.confidence_gating_margin_threshold),
+        "confidence_gating_temperature": float(args.confidence_gating_temperature),
+        "semantic_hard_score_threshold": float(args.semantic_hard_score_threshold),
+        "aux_loss_delay_steps": int(args.aux_loss_delay_steps),
+        "aux_loss_ramp_steps": int(args.aux_loss_ramp_steps),
+        "semantic_hard_sidecar_enabled": bool(args.semantic_hard_sidecar_enabled),
         "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
         "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
         "skip_resume_optimizer": bool(args.skip_resume_optimizer),
@@ -1200,6 +1518,7 @@ def main() -> None:
 
     train_iter = iter(train_loader)
     step_checkpoints: List[str] = sorted(str(p) for p in output_dir.glob("step_*.pt"))
+    best_semantic_hard_ckpt = output_dir / "best_semantic_hard.pt"
     stage1_grad_detected_any = False
     semantic_grad_norm_latest = 0.0
     teacher_loss_history: List[float] = []
@@ -1208,11 +1527,47 @@ def main() -> None:
     query_persistence_loss_history: List[float] = []
     readout_alignment_loss_history: List[float] = []
     persistence_contrastive_loss_history: List[float] = []
+    confidence_gated_alignment_loss_history: List[float] = []
+    sparse_persistence_contrastive_loss_history: List[float] = []
+    confidence_gated_affected_ratio_history: List[float] = []
+    low_confidence_ratio_history: List[float] = []
+    pair_coverage_ratio_history: List[float] = []
+    positive_pair_count_history: List[float] = []
+    hard_negative_count_history: List[float] = []
+    aux_schedule_scale_history: List[float] = []
     rescue_cache_hit_history: List[float] = []
     semantic_hard_weight_mean_history: List[float] = []
     gate_history: List[float] = []
     semantic_nonempty_count = 0
     optimizer_steps_this_run = 0
+    best_semantic_hard_metric: Dict[str, Any] | None = None
+
+    semantic_hard_loader: DataLoader | None = None
+    if bool(args.semantic_hard_sidecar_enabled):
+        hard_indices = _semantic_hard_subset_indices(str(args.semantic_hard_manifest_path))
+        if hard_indices:
+            hard_cfg = Stage2SemanticDatasetConfig(
+                dataset_names=[str(x) for x in args.dataset_names],
+                split=str(args.val_split),
+                contract_path=str(args.stage2_contract_path),
+                obs_len=int(args.obs_len),
+                fut_len=int(args.fut_len),
+                max_tokens=int(args.max_tokens),
+                max_samples_per_dataset=-1,
+                semantic_patch_radius=int(args.semantic_patch_radius),
+                semantic_crop_size=int(args.semantic_crop_size),
+                semantic_source_mainline=str(args.semantic_source_mainline),
+            )
+            hard_ds_full = Stage2SemanticDataset(hard_cfg)
+            hard_subset = torch.utils.data.Subset(hard_ds_full, hard_indices)
+            semantic_hard_loader = DataLoader(
+                hard_subset,
+                batch_size=max(1, int(args.batch_size)),
+                shuffle=False,
+                num_workers=0,
+                pin_memory=bool(pin_memory),
+                collate_fn=stage2_semantic_collate_fn,
+            )
 
     target_steps = int(args.train_steps)
     eval_interval = int(args.eval_interval)
@@ -1295,13 +1650,23 @@ def main() -> None:
             batch=batch,
             bootstrap_cache=bootstrap_cache,
             device=device,
+            current_step=int(global_step),
+            resume_global_step=int(resume_global_step_loaded),
             semantic_alignment_loss_weight=float(args.semantic_alignment_loss_weight),
             query_persistence_consistency_loss_weight=float(args.query_persistence_consistency_loss_weight),
             readout_semantic_alignment_loss_weight=float(args.readout_semantic_alignment_loss_weight),
             persistence_contrastive_or_ranking_loss_weight=float(args.persistence_contrastive_ranking_loss_weight),
             semantic_aux_subset_weighting_strength=float(args.semantic_aux_subset_weighting_strength),
+            confidence_gated_alignment_loss_weight=float(args.confidence_gated_alignment_loss_weight),
+            sparse_persistence_contrastive_loss_weight=float(args.sparse_persistence_contrastive_loss_weight),
+            confidence_gating_margin_threshold=float(args.confidence_gating_margin_threshold),
+            confidence_gating_temperature=float(args.confidence_gating_temperature),
+            semantic_hard_score_threshold=float(args.semantic_hard_score_threshold),
+            aux_loss_delay_steps=int(args.aux_loss_delay_steps),
+            aux_loss_ramp_steps=int(args.aux_loss_ramp_steps),
         )
-        total_train_loss = teacher_loss + float(rescue_weight) * rescue_loss
+        aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
+        total_train_loss = teacher_loss + float(rescue_weight) * float(aux_schedule_scale) * rescue_loss
 
         optimizer.zero_grad(set_to_none=True)
         total_train_loss.backward()
@@ -1335,6 +1700,14 @@ def main() -> None:
         query_persistence_loss_history.append(float(rescue_info.get("query_persistence_consistency_loss", 0.0)))
         readout_alignment_loss_history.append(float(rescue_info.get("readout_semantic_alignment_loss", 0.0)))
         persistence_contrastive_loss_history.append(float(rescue_info.get("persistence_contrastive_or_ranking_loss", 0.0)))
+        confidence_gated_alignment_loss_history.append(float(rescue_info.get("confidence_gated_alignment_loss", 0.0)))
+        sparse_persistence_contrastive_loss_history.append(float(rescue_info.get("sparse_persistence_contrastive_loss", 0.0)))
+        confidence_gated_affected_ratio_history.append(float(rescue_info.get("confidence_gated_affected_sample_ratio", 0.0)))
+        low_confidence_ratio_history.append(float(rescue_info.get("low_confidence_sample_ratio", 0.0)))
+        pair_coverage_ratio_history.append(float(rescue_info.get("effective_pair_coverage_ratio", 0.0)))
+        positive_pair_count_history.append(float(rescue_info.get("positive_pair_count", 0.0)))
+        hard_negative_count_history.append(float(rescue_info.get("hard_negative_count", 0.0)))
+        aux_schedule_scale_history.append(float(aux_schedule_scale))
         rescue_cache_hit_history.append(float(rescue_info.get("semantic_bootstrap_cache_hit_ratio", 0.0)))
         semantic_hard_weight_mean_history.append(float(semantic_hard_weights.detach().mean().cpu().item()))
         gate_history.append(float(tf_out["gate_mean"]))
@@ -1358,12 +1731,33 @@ def main() -> None:
                 max_batches=int(args.eval_max_batches),
                 semantic_source_mainline=str(args.semantic_source_mainline),
             )
+            semantic_hard_payload: Dict[str, Any] | None = None
+            if semantic_hard_loader is not None:
+                hard_metrics = _evaluate(
+                    stage1_model=stage1_model,
+                    semantic_encoder=semantic_encoder,
+                    semantic_fusion=semantic_fusion,
+                    readout_head=readout_head,
+                    loader=semantic_hard_loader,
+                    device=device,
+                    pin_memory=bool(pin_memory),
+                    obs_len=int(args.obs_len),
+                    fut_len=int(args.fut_len),
+                    max_batches=-1,
+                    semantic_source_mainline=str(args.semantic_source_mainline),
+                )
+                semantic_hard_payload = {
+                    "metrics": hard_metrics,
+                    "semantic_hard_sidecar_score": float(_semantic_hard_composite_score(hard_metrics)),
+                }
             rk = _rank_key(metrics)
             event = {
                 "global_step": int(global_step),
                 "metrics": metrics,
                 "rank_key": [float(rk[0]), float(rk[1]), float(rk[2])],
             }
+            if semantic_hard_payload is not None:
+                event["semantic_hard_sidecar"] = semantic_hard_payload
             eval_history.append(event)
 
             if best_metric_so_far is None or tuple(event["rank_key"]) < tuple(best_metric_so_far.get("rank_key", [1e9, 1e9, 1e9])):
@@ -1386,6 +1780,29 @@ def main() -> None:
                 )
                 _atomic_torch_save(best_payload, best_ckpt)
                 new_best_written_this_run = True
+
+            if semantic_hard_payload is not None:
+                sidecar_score = float(semantic_hard_payload["semantic_hard_sidecar_score"])
+                prev_score = float((best_semantic_hard_metric or {}).get("semantic_hard_sidecar_score", 1e9))
+                if best_semantic_hard_metric is None or sidecar_score < prev_score:
+                    best_semantic_hard_metric = {
+                        "global_step": int(global_step),
+                        "semantic_hard_sidecar_score": float(sidecar_score),
+                        "metrics": semantic_hard_payload["metrics"],
+                    }
+                    sidecar_payload = _checkpoint_payload(
+                        args=args,
+                        global_step=int(global_step),
+                        best_metric_so_far=best_metric_so_far,
+                        eval_history=eval_history,
+                        semantic_encoder=semantic_encoder,
+                        semantic_fusion=semantic_fusion,
+                        readout_head=readout_head,
+                        semantic_rescue_heads=semantic_rescue_heads,
+                        optimizer=optimizer,
+                        run_metadata=run_metadata,
+                    )
+                    _atomic_torch_save(sidecar_payload, best_semantic_hard_ckpt)
 
             _write_progress_snapshot(
                 progress_json,
@@ -1470,6 +1887,9 @@ def main() -> None:
     latest_event = eval_history[-1] if eval_history and isinstance(eval_history[-1], dict) else {}
     latest_metrics = latest_event.get("metrics", {}) if isinstance(latest_event.get("metrics", {}), dict) else final_metrics
     latest_checkpoint_metric = _metric_triplet(latest_metrics)
+    best_semantic_hard_triplet = _metric_triplet(
+        (best_semantic_hard_metric.get("metrics", {}) if isinstance(best_semantic_hard_metric, dict) and isinstance(best_semantic_hard_metric.get("metrics", {}), dict) else {})
+    )
 
     train_split_counts_used = _split_counts_used(train_summary)
     val_split_counts_used = _split_counts_used(val_summary)
@@ -1554,12 +1974,28 @@ def main() -> None:
             "readout_semantic_alignment_loss_weight": float(args.readout_semantic_alignment_loss_weight),
             "persistence_contrastive_ranking_loss_weight": float(args.persistence_contrastive_ranking_loss_weight),
             "semantic_aux_subset_weighting_strength": float(args.semantic_aux_subset_weighting_strength),
+            "confidence_gated_alignment_loss_weight": float(args.confidence_gated_alignment_loss_weight),
+            "sparse_persistence_contrastive_loss_weight": float(args.sparse_persistence_contrastive_loss_weight),
+            "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+            "confidence_gating_margin_threshold": float(args.confidence_gating_margin_threshold),
+            "confidence_gating_temperature": float(args.confidence_gating_temperature),
+            "semantic_hard_score_threshold": float(args.semantic_hard_score_threshold),
+            "aux_loss_delay_steps": int(args.aux_loss_delay_steps),
+            "aux_loss_ramp_steps": int(args.aux_loss_ramp_steps),
             "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
             "semantic_rescue_loss_mean": float(sum(rescue_loss_history) / max(len(rescue_loss_history), 1)),
             "semantic_alignment_loss_mean": float(sum(semantic_alignment_loss_history) / max(len(semantic_alignment_loss_history), 1)),
             "query_persistence_consistency_loss_mean": float(sum(query_persistence_loss_history) / max(len(query_persistence_loss_history), 1)),
             "readout_semantic_alignment_loss_mean": float(sum(readout_alignment_loss_history) / max(len(readout_alignment_loss_history), 1)),
             "persistence_contrastive_or_ranking_loss_mean": float(sum(persistence_contrastive_loss_history) / max(len(persistence_contrastive_loss_history), 1)),
+            "confidence_gated_alignment_loss_mean": float(sum(confidence_gated_alignment_loss_history) / max(len(confidence_gated_alignment_loss_history), 1)),
+            "sparse_persistence_contrastive_loss_mean": float(sum(sparse_persistence_contrastive_loss_history) / max(len(sparse_persistence_contrastive_loss_history), 1)),
+            "confidence_gated_affected_sample_ratio_mean": float(sum(confidence_gated_affected_ratio_history) / max(len(confidence_gated_affected_ratio_history), 1)),
+            "low_confidence_sample_ratio_mean": float(sum(low_confidence_ratio_history) / max(len(low_confidence_ratio_history), 1)),
+            "effective_pair_coverage_ratio_mean": float(sum(pair_coverage_ratio_history) / max(len(pair_coverage_ratio_history), 1)),
+            "positive_pair_count_mean": float(sum(positive_pair_count_history) / max(len(positive_pair_count_history), 1)),
+            "hard_negative_count_mean": float(sum(hard_negative_count_history) / max(len(hard_negative_count_history), 1)),
+            "aux_schedule_scale_mean": float(sum(aux_schedule_scale_history) / max(len(aux_schedule_scale_history), 1)),
             "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
             "semantic_hard_sample_weight_mean": float(sum(semantic_hard_weight_mean_history) / max(len(semantic_hard_weight_mean_history), 1)),
             "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
@@ -1589,6 +2025,20 @@ def main() -> None:
             "metrics": latest_checkpoint_metric,
             "rank_key": _rank_key(latest_checkpoint_metric),
         },
+        "semantic_hard_sidecar_metric": {
+            "enabled": bool(args.semantic_hard_sidecar_enabled),
+            "checkpoint_path": str(best_semantic_hard_ckpt),
+            "exists": bool(best_semantic_hard_ckpt.exists()),
+            "global_step": int((best_semantic_hard_metric or {}).get("global_step", -1)),
+            "semantic_hard_sidecar_score": float((best_semantic_hard_metric or {}).get("semantic_hard_sidecar_score", 1e9)),
+            "metrics": best_semantic_hard_triplet,
+        },
+        "overall_vs_semantic_hard_best_delta": {
+            "same_step": bool(int((best_metric_so_far or {}).get("global_step", -1)) == int((best_semantic_hard_metric or {}).get("global_step", -2))),
+            "endpoint_l2_delta": float(best_semantic_hard_triplet["free_rollout_endpoint_l2"] - best_checkpoint_metric["free_rollout_endpoint_l2"]),
+            "coord_mean_l2_delta": float(best_semantic_hard_triplet["free_rollout_coord_mean_l2"] - best_checkpoint_metric["free_rollout_coord_mean_l2"]),
+            "semantic_hard_sidecar_score_delta": float((best_semantic_hard_metric or {}).get("semantic_hard_sidecar_score", 1e9) - _semantic_hard_composite_score(best_checkpoint_metric)),
+        },
         "train_split_counts_used": train_split_counts_used,
         "val_split_counts_used": val_split_counts_used,
         "train_split_total_count_used": int(train_total_count),
@@ -1610,6 +2060,7 @@ def main() -> None:
             "checkpoint_dir": str(output_dir),
             "best": str(best_ckpt),
             "latest": str(latest_ckpt),
+            "best_semantic_hard": str(best_semantic_hard_ckpt),
             "step_checkpoints": sorted(step_checkpoints),
             "resume_from": str(resolved_resume),
             "auto_resume_latest": bool(args.auto_resume_latest),
