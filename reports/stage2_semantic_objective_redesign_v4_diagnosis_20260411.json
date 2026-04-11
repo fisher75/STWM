@@ -1,0 +1,35 @@
+{
+  "generated_at_utc": "2026-04-11T07:15:26.286380+00:00",
+  "diagnosis_type": "stage2_semantic_objective_redesign_v4",
+  "teacher_as_mainline_semantic_source": false,
+  "chosen_bootstrap_backend": "local_clip_vit_b32_mask_crop_visual_teacher",
+  "v4_runs_terminal": false,
+  "baseline_refs": {
+    "current_cropenc_fullscale_mean_endpoint_l2": 0.0009458137729957648,
+    "legacysem_fullscale_mean_endpoint_l2": 0.0007597727700389118,
+    "v2_best_objective_combo_endpoint_l2": 0.0008026909849500561,
+    "v2_best_semantic_hard_composite_score": 0.00034351340824893367,
+    "v3_best_objective_combo_endpoint_l2": 0.0008026909849500561,
+    "v3_best_semantic_hard_composite_score": 0.00034351340824893367
+  },
+  "full_validation_panel": {},
+  "semantic_hard_subset_panel": {},
+  "burst_persistence_hard_panel": {},
+  "semantic_hard_composite_panel": {},
+  "success_criteria": {
+    "true_new_best_not_warm_start_inherited": false,
+    "gating_not_saturated_anymore": false,
+    "high_value_pair_filter_active": false,
+    "semantic_hard_composite_improved_vs_v3": false,
+    "semantic_hard_composite_improved_vs_v2": false,
+    "cross_seed_support_present": false,
+    "full_validation_non_catastrophic": false,
+    "improved_vs_current_cropenc_baseline": false,
+    "improved_vs_v3_best_objective_combo": false,
+    "best_v4_objective_combo": "none",
+    "best_v4_full_validation_endpoint_l2": 1000000000.0,
+    "best_v4_semantic_hard_composite_score": 1000000000.0,
+    "overall_best_and_semantic_hard_best_diverged": false,
+    "next_step_choice": "continue_redesign_v4"
+  }
+}

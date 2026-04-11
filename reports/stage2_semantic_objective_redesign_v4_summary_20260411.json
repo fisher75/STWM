@@ -1,0 +1,469 @@
+{
+  "generated_at_utc": "2026-04-11T07:22:51.687480+00:00",
+  "redesign_v4_status": "0_running_6_completed_0_failed",
+  "runs": [
+    {
+      "run_name": "stage2_semobjv4_quantile_align_seed42_20260411",
+      "objective_combo": "quantile_sparse_gating+confidence_gated_readout_alignment",
+      "seed": 42,
+      "selected_gpu_id": 5,
+      "lease_id": "833bc329-ca83-466e-a31a-ccb3539c0e26",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "status": "completed",
+      "semantic_rescue_mode": "v4sparse",
+      "v4_sparse_gating_family": "quantile_sparse_gating",
+      "confidence_gated_alignment_loss_weight": 1.0,
+      "sparse_persistence_contrastive_loss_weight": 0.0,
+      "aux_loss_delay_steps": 0,
+      "aux_loss_ramp_steps": 0,
+      "semantic_hard_sidecar_enabled": true,
+      "confidence_gated_affected_sample_ratio_mean": 1.0,
+      "sparse_gate_selected_ratio_mean": 1.0,
+      "high_value_pair_ratio_mean": 0.25,
+      "semantic_hard_sidecar_score": 0.0011201284455660825,
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv4_quantile_align_seed42_20260411_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/latest.pt",
+      "best_semantic_hard_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/best_semantic_hard.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010280642587190414,
+          "free_rollout_coord_mean_l2": 0.002802851995511446,
+          "free_rollout_endpoint_l2": 0.0024458806874463335,
+          "total_loss_reference": 0.00010280642587190414
+        },
+        "rank_key": [
+          0.0024458806874463335,
+          0.002802851995511446,
+          0.00010280642587190414
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 3200,
+        "semantic_hard_sidecar_score": 0.0011201284455660825,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.5482728952356877e-06,
+          "free_rollout_coord_mean_l2": 0.0011200960247944563,
+          "free_rollout_endpoint_l2": 0.001120142340182494,
+          "total_loss_reference": 1.5540070990027743e-06
+        }
+      }
+    },
+    {
+      "run_name": "stage2_semobjv4_topk_align_seed42_20260411",
+      "objective_combo": "topk_query_gating+confidence_gated_readout_alignment",
+      "seed": 42,
+      "selected_gpu_id": 1,
+      "lease_id": "0d5109cb-fe70-4d99-814c-3b2a993aa8a7",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "status": "completed",
+      "semantic_rescue_mode": "v4sparse",
+      "v4_sparse_gating_family": "topk_query_gating",
+      "confidence_gated_alignment_loss_weight": 1.0,
+      "sparse_persistence_contrastive_loss_weight": 0.0,
+      "aux_loss_delay_steps": 0,
+      "aux_loss_ramp_steps": 0,
+      "semantic_hard_sidecar_enabled": true,
+      "confidence_gated_affected_sample_ratio_mean": 1.0,
+      "sparse_gate_selected_ratio_mean": 1.0,
+      "high_value_pair_ratio_mean": 0.25,
+      "semantic_hard_sidecar_score": 0.001119029003744706,
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv4_topk_align_seed42_20260411_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/latest.pt",
+      "best_semantic_hard_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/best_semantic_hard.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010279393538326076,
+          "free_rollout_coord_mean_l2": 0.002801117858325597,
+          "free_rollout_endpoint_l2": 0.0024441809946438298,
+          "total_loss_reference": 0.00010279393538326076
+        },
+        "rank_key": [
+          0.0024441809946438298,
+          0.002801117858325597,
+          0.00010279393538326076
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 3200,
+        "semantic_hard_sidecar_score": 0.001119029003744706,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.5454727242915676e-06,
+          "free_rollout_coord_mean_l2": 0.0011190216486843734,
+          "free_rollout_endpoint_l2": 0.0011190321559134203,
+          "total_loss_reference": 1.5512217260038596e-06
+        }
+      }
+    },
+    {
+      "run_name": "stage2_semobjv4_quantile_persistdelay_seed42_20260411",
+      "objective_combo": "quantile_sparse_gating+high_value_sparse_persistence+strong_delayed_aux_schedule",
+      "seed": 42,
+      "selected_gpu_id": 3,
+      "lease_id": "f9e418c6-ff54-49ce-92ca-945d50b3df7f",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "status": "completed",
+      "semantic_rescue_mode": "v4sparse",
+      "v4_sparse_gating_family": "quantile_sparse_gating",
+      "confidence_gated_alignment_loss_weight": 1.0,
+      "sparse_persistence_contrastive_loss_weight": 0.05,
+      "aux_loss_delay_steps": 120,
+      "aux_loss_ramp_steps": 240,
+      "semantic_hard_sidecar_enabled": true,
+      "confidence_gated_affected_sample_ratio_mean": 1.0,
+      "sparse_gate_selected_ratio_mean": 1.0,
+      "high_value_pair_ratio_mean": 0.25,
+      "semantic_hard_sidecar_score": 0.001114680169102473,
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv4_quantile_persistdelay_seed42_20260411_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/latest.pt",
+      "best_semantic_hard_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/best_semantic_hard.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010266622281562832,
+          "free_rollout_coord_mean_l2": 0.0027773365727625787,
+          "free_rollout_endpoint_l2": 0.0024203671418945305,
+          "total_loss_reference": 0.00010266622281562832
+        },
+        "rank_key": [
+          0.0024203671418945305,
+          0.0027773365727625787,
+          0.00010266622281562832
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 3200,
+        "semantic_hard_sidecar_score": 0.001114680169102473,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.5361199705064512e-06,
+          "free_rollout_coord_mean_l2": 0.0011146803362629353,
+          "free_rollout_endpoint_l2": 0.001114680097462275,
+          "total_loss_reference": 1.5416050700878258e-06
+        }
+      }
+    },
+    {
+      "run_name": "stage2_semobjv4_quantile_persistdelay_seed123_20260411",
+      "objective_combo": "quantile_sparse_gating+high_value_sparse_persistence+strong_delayed_aux_schedule",
+      "seed": 123,
+      "selected_gpu_id": 2,
+      "lease_id": "b281ac59-7c28-4706-a11e-064c2ad934ae",
+      "batch_size": 8,
+      "train_steps": 8300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "status": "completed",
+      "semantic_rescue_mode": "v4sparse",
+      "v4_sparse_gating_family": "quantile_sparse_gating",
+      "confidence_gated_alignment_loss_weight": 1.0,
+      "sparse_persistence_contrastive_loss_weight": 0.05,
+      "aux_loss_delay_steps": 120,
+      "aux_loss_ramp_steps": 240,
+      "semantic_hard_sidecar_enabled": true,
+      "confidence_gated_affected_sample_ratio_mean": 1.0,
+      "sparse_gate_selected_ratio_mean": 1.0,
+      "high_value_pair_ratio_mean": 0.25125,
+      "semantic_hard_sidecar_score": 0.0006307678177761725,
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv4_quantile_persistdelay_seed123_20260411_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/latest.pt",
+      "best_semantic_hard_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/best_semantic_hard.pt",
+      "best_checkpoint_metric": {
+        "global_step": 8000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9777691952834867e-05,
+          "free_rollout_coord_mean_l2": 0.000777029686230004,
+          "free_rollout_endpoint_l2": 0.0008026909849500561,
+          "total_loss_reference": 2.9691506242597878e-05
+        },
+        "rank_key": [
+          0.0008026909849500561,
+          0.000777029686230004,
+          2.9777691952834867e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 8300,
+        "metrics": {
+          "teacher_forced_coord_loss": 9.930307117755888e-05,
+          "free_rollout_coord_mean_l2": 0.0014019977570569608,
+          "free_rollout_endpoint_l2": 0.001041620560499723,
+          "total_loss_reference": 9.930307117755888e-05
+        },
+        "rank_key": [
+          0.001041620560499723,
+          0.0014019977570569608,
+          9.930307117755888e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 8300,
+        "semantic_hard_sidecar_score": 0.0006307678177761725,
+        "metrics": {
+          "teacher_forced_coord_loss": 4.4148123379272874e-07,
+          "free_rollout_coord_mean_l2": 0.0006307395509420297,
+          "free_rollout_endpoint_l2": 0.0006307799321336624,
+          "total_loss_reference": 4.3902828679165394e-07
+        }
+      }
+    },
+    {
+      "run_name": "stage2_semobjv4_topk_persistdelay_seed42_20260411",
+      "objective_combo": "topk_query_gating+high_value_sparse_persistence+strong_delayed_aux_schedule",
+      "seed": 42,
+      "selected_gpu_id": 4,
+      "lease_id": "79fdd96e-85dc-4154-86cc-441f78e77a1e",
+      "batch_size": 8,
+      "train_steps": 3300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "status": "completed",
+      "semantic_rescue_mode": "v4sparse",
+      "v4_sparse_gating_family": "topk_query_gating",
+      "confidence_gated_alignment_loss_weight": 1.0,
+      "sparse_persistence_contrastive_loss_weight": 0.05,
+      "aux_loss_delay_steps": 120,
+      "aux_loss_ramp_steps": 240,
+      "semantic_hard_sidecar_enabled": true,
+      "confidence_gated_affected_sample_ratio_mean": 1.0,
+      "sparse_gate_selected_ratio_mean": 1.0,
+      "high_value_pair_ratio_mean": 0.25,
+      "semantic_hard_sidecar_score": 0.0011155027382744429,
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv4_topk_persistdelay_seed42_20260411_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/latest.pt",
+      "best_semantic_hard_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/best_semantic_hard.pt",
+      "best_checkpoint_metric": {
+        "global_step": 3000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.02700085095072e-05,
+          "free_rollout_coord_mean_l2": 0.0011106466086385853,
+          "free_rollout_endpoint_l2": 0.001136954303602783,
+          "total_loss_reference": 3.0185054667466046e-05
+        },
+        "rank_key": [
+          0.001136954303602783,
+          0.0011106466086385853,
+          3.02700085095072e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 3300,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00010266596773078618,
+          "free_rollout_coord_mean_l2": 0.002776248802547343,
+          "free_rollout_endpoint_l2": 0.0024193158678826876,
+          "total_loss_reference": 0.00010266596773078618
+        },
+        "rank_key": [
+          0.0024193158678826876,
+          0.002776248802547343,
+          0.00010266596773078618
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 3200,
+        "semantic_hard_sidecar_score": 0.0011155027382744429,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.5379448133246162e-06,
+          "free_rollout_coord_mean_l2": 0.0011155297263310505,
+          "free_rollout_endpoint_l2": 0.0011154911719644682,
+          "total_loss_reference": 1.5434232864208753e-06
+        }
+      }
+    },
+    {
+      "run_name": "stage2_semobjv4_topk_persistdelay_seed123_20260411",
+      "objective_combo": "topk_query_gating+high_value_sparse_persistence+strong_delayed_aux_schedule",
+      "seed": 123,
+      "selected_gpu_id": 7,
+      "lease_id": "7ce7e4e6-6895-4070-8c8c-63e05349d705",
+      "batch_size": 8,
+      "train_steps": 8300,
+      "additional_train_steps": 300,
+      "eval_interval": 100,
+      "save_every_n_steps": 100,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 128,
+        "VIPSeg": 128
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 64,
+        "VIPSeg": 64
+      },
+      "status": "completed",
+      "semantic_rescue_mode": "v4sparse",
+      "v4_sparse_gating_family": "topk_query_gating",
+      "confidence_gated_alignment_loss_weight": 1.0,
+      "sparse_persistence_contrastive_loss_weight": 0.05,
+      "aux_loss_delay_steps": 120,
+      "aux_loss_ramp_steps": 240,
+      "semantic_hard_sidecar_enabled": true,
+      "confidence_gated_affected_sample_ratio_mean": 1.0,
+      "sparse_gate_selected_ratio_mean": 1.0,
+      "high_value_pair_ratio_mean": 0.25125,
+      "semantic_hard_sidecar_score": 0.0006374798291243421,
+      "final_json": "/home/chen034/workspace/stwm/reports/stage2_semobjv4_topk_persistdelay_seed123_20260411_final.json",
+      "best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/best.pt",
+      "latest_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/latest.pt",
+      "best_semantic_hard_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/best_semantic_hard.pt",
+      "best_checkpoint_metric": {
+        "global_step": 8000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9777691952834867e-05,
+          "free_rollout_coord_mean_l2": 0.000777029686230004,
+          "free_rollout_endpoint_l2": 0.0008026909849500561,
+          "total_loss_reference": 2.9691506242597878e-05
+        },
+        "rank_key": [
+          0.0008026909849500561,
+          0.000777029686230004,
+          2.9777691952834867e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 8300,
+        "metrics": {
+          "teacher_forced_coord_loss": 9.935067727973035e-05,
+          "free_rollout_coord_mean_l2": 0.0014087796771491412,
+          "free_rollout_endpoint_l2": 0.001048445326887304,
+          "total_loss_reference": 9.935067727973035e-05
+        },
+        "rank_key": [
+          0.001048445326887304,
+          0.0014087796771491412,
+          9.935067727973035e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 8300,
+        "semantic_hard_sidecar_score": 0.0006374798291243421,
+        "metrics": {
+          "teacher_forced_coord_loss": 4.504829867539975e-07,
+          "free_rollout_coord_mean_l2": 0.0006374494435313421,
+          "free_rollout_endpoint_l2": 0.0006374928515213422,
+          "total_loss_reference": 4.4796722704631974e-07
+        }
+      }
+    }
+  ],
+  "next_step_choice_internal": "summarize_redesign_v4_after_completion"
+}
