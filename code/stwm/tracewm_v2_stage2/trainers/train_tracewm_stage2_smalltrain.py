@@ -98,6 +98,7 @@ def parse_args() -> Any:
             "v3confpersistdelay",
             "v3confhardsidecar",
             "v4sparse",
+            "v5sparse",
         ],
         help="Optional Stage2 semantic objective rescue pilot; default keeps the Wave1/Wave2 objective unchanged.",
     )
@@ -129,6 +130,18 @@ def parse_args() -> Any:
     p.add_argument("--v4-persistence-value-quantile", type=float, default=0.70)
     p.add_argument("--v4-persistence-max-pairs", type=int, default=0)
     p.add_argument("--v4-persistence-margin", type=float, default=0.10)
+    p.add_argument(
+        "--v5-gating-family",
+        default="hard_topk_query_gating_v2",
+        choices=["hard_topk_query_gating_v2", "capped_quantile_sparse_gating_v2"],
+    )
+    p.add_argument("--v5-topk-query-k", type=int, default=1)
+    p.add_argument("--v5-capped-quantile", type=float, default=0.85)
+    p.add_argument("--v5-max-affected-ratio", type=float, default=0.20)
+    p.add_argument("--v5-gate-min-strength", type=float, default=0.05)
+    p.add_argument("--v5-max-pairs-per-sample", type=int, default=2)
+    p.add_argument("--v5-hard-negative-cap", type=int, default=4)
+    p.add_argument("--v5-pair-sampling-temperature", type=float, default=0.35)
     p.add_argument("--semantic-hard-sidecar-enabled", action="store_true")
     p.add_argument(
         "--semantic-hard-manifest-path",
@@ -727,6 +740,123 @@ def _sparse_quantile_mask(scores: torch.Tensor, valid: torch.Tensor, quantile: f
     return _sparse_topk_mask(scores=scores, valid=valid, keep_ratio=keep_ratio, min_tokens=min_tokens)
 
 
+def _hard_topk_query_mask_v2(scores: torch.Tensor, valid: torch.Tensor, topk: int) -> Tuple[torch.Tensor, Dict[str, float]]:
+    mask = torch.zeros_like(valid, dtype=torch.bool)
+    if scores.shape != valid.shape or scores.ndim != 3:
+        return mask, {
+            "activated_query_count_mean": 0.0,
+            "activated_query_ratio": 0.0,
+            "per_batch_sparsity_mean": 0.0,
+            "per_batch_sparsity_std": 0.0,
+            "raw_quantile_ratio": 0.0,
+            "capped_ratio": 0.0,
+            "actual_gate_positive_ratio": 0.0,
+        }
+
+    counts: List[float] = []
+    ratios: List[float] = []
+    k = max(int(topk), 1)
+    for bi in range(int(scores.shape[0])):
+        flat_valid = valid[bi].reshape(-1)
+        flat_scores = scores[bi].reshape(-1)
+        valid_idx = torch.nonzero(flat_valid, as_tuple=False).squeeze(-1)
+        n = int(valid_idx.numel())
+        if n <= 0:
+            counts.append(0.0)
+            ratios.append(0.0)
+            continue
+        keep = min(k, n)
+        pick_local = torch.topk(flat_scores[valid_idx], k=keep, largest=True, sorted=False).indices
+        chosen = valid_idx[pick_local]
+        flat_mask = torch.zeros_like(flat_valid, dtype=torch.bool)
+        flat_mask[chosen] = True
+        mask[bi] = flat_mask.view_as(valid[bi])
+        counts.append(float(keep))
+        ratios.append(float(keep / max(n, 1)))
+
+    mean_ratio = float(sum(ratios) / max(len(ratios), 1))
+    return mask, {
+        "activated_query_count_mean": float(sum(counts) / max(len(counts), 1)),
+        "activated_query_ratio": mean_ratio,
+        "per_batch_sparsity_mean": mean_ratio,
+        "per_batch_sparsity_std": float(np.std(ratios, ddof=1)) if len(ratios) > 1 else 0.0,
+        "raw_quantile_ratio": mean_ratio,
+        "capped_ratio": mean_ratio,
+        "actual_gate_positive_ratio": mean_ratio,
+    }
+
+
+def _capped_quantile_query_mask_v2(
+    scores: torch.Tensor,
+    valid: torch.Tensor,
+    quantile: float,
+    max_ratio: float,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    mask = torch.zeros_like(valid, dtype=torch.bool)
+    if scores.shape != valid.shape or scores.ndim != 3:
+        return mask, {
+            "activated_query_count_mean": 0.0,
+            "activated_query_ratio": 0.0,
+            "per_batch_sparsity_mean": 0.0,
+            "per_batch_sparsity_std": 0.0,
+            "raw_quantile_ratio": 0.0,
+            "capped_ratio": 0.0,
+            "actual_gate_positive_ratio": 0.0,
+        }
+
+    q = _clamp01(float(quantile))
+    cap = _clamp01(float(max_ratio))
+    counts: List[float] = []
+    final_ratios: List[float] = []
+    raw_ratios: List[float] = []
+    cap_ratios: List[float] = []
+    for bi in range(int(scores.shape[0])):
+        flat_valid = valid[bi].reshape(-1)
+        flat_scores = scores[bi].reshape(-1)
+        valid_idx = torch.nonzero(flat_valid, as_tuple=False).squeeze(-1)
+        n = int(valid_idx.numel())
+        if n <= 0:
+            counts.append(0.0)
+            final_ratios.append(0.0)
+            raw_ratios.append(0.0)
+            cap_ratios.append(0.0)
+            continue
+
+        vals = flat_scores[valid_idx]
+        threshold = float(torch.quantile(vals.detach(), q).item()) if n >= 2 else float(vals[0].detach().item())
+        raw_keep_idx = valid_idx[vals >= threshold]
+        if int(raw_keep_idx.numel()) <= 0:
+            raw_keep_idx = valid_idx[torch.topk(vals, k=1, largest=True, sorted=False).indices]
+
+        max_keep = max(1, int(np.floor(float(n) * cap)))
+        max_keep = min(max_keep, n)
+        chosen = raw_keep_idx
+        if int(chosen.numel()) > max_keep:
+            raw_scores = flat_scores[chosen]
+            keep_local = torch.topk(raw_scores, k=max_keep, largest=True, sorted=False).indices
+            chosen = chosen[keep_local]
+
+        flat_mask = torch.zeros_like(flat_valid, dtype=torch.bool)
+        flat_mask[chosen] = True
+        mask[bi] = flat_mask.view_as(valid[bi])
+
+        raw_ratios.append(float(raw_keep_idx.numel() / max(n, 1)))
+        cap_ratios.append(float(max_keep / max(n, 1)))
+        final_ratios.append(float(chosen.numel() / max(n, 1)))
+        counts.append(float(chosen.numel()))
+
+    mean_ratio = float(sum(final_ratios) / max(len(final_ratios), 1))
+    return mask, {
+        "activated_query_count_mean": float(sum(counts) / max(len(counts), 1)),
+        "activated_query_ratio": mean_ratio,
+        "per_batch_sparsity_mean": mean_ratio,
+        "per_batch_sparsity_std": float(np.std(final_ratios, ddof=1)) if len(final_ratios) > 1 else 0.0,
+        "raw_quantile_ratio": float(sum(raw_ratios) / max(len(raw_ratios), 1)),
+        "capped_ratio": float(sum(cap_ratios) / max(len(cap_ratios), 1)),
+        "actual_gate_positive_ratio": mean_ratio,
+    }
+
+
 def _semantic_rescue_loss(
     *,
     mode: str,
@@ -757,6 +887,14 @@ def _semantic_rescue_loss(
     v4_persistence_value_quantile: float,
     v4_persistence_max_pairs: int,
     v4_persistence_margin: float,
+    v5_gating_family: str,
+    v5_topk_query_k: int,
+    v5_capped_quantile: float,
+    v5_max_affected_ratio: float,
+    v5_gate_min_strength: float,
+    v5_max_pairs_per_sample: int,
+    v5_hard_negative_cap: int,
+    v5_pair_sampling_temperature: float,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     if aux_heads is None or str(mode) == "none":
         zero = tf_out["pred_coord"].sum() * 0.0
@@ -782,6 +920,18 @@ def _semantic_rescue_loss(
             "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
             "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": 0.0,
+            "actual_gate_positive_ratio": 0.0,
+            "activated_query_count": 0.0,
+            "activated_query_ratio": 0.0,
+            "per_batch_sparsity_mean": 0.0,
+            "per_batch_sparsity_std": 0.0,
+            "raw_quantile_ratio": 0.0,
+            "capped_ratio": 0.0,
+            "valuable_pair_ratio": 0.0,
+            "max_pairs_per_sample": float(v5_max_pairs_per_sample),
+            "hard_negative_cap": float(v5_hard_negative_cap),
+            "pair_sampling_temperature": float(v5_pair_sampling_temperature),
+            "final_effective_aux_weight": 0.0,
         }
 
     semantic_tokens = tf_out["semantic_tokens"]
@@ -1047,6 +1197,316 @@ def _semantic_rescue_loss(
             "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
             "whether_main_rollout_loss_reweighted": False,
             "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+        }
+
+    if mode_norm.startswith("v5"):
+        readout_align_weight = float(confidence_gated_alignment_loss_weight)
+        sparse_weight = float(sparse_persistence_contrastive_loss_weight)
+        if readout_align_weight <= 0.0:
+            readout_align_weight = 1.0
+        if sparse_weight <= 0.0:
+            sparse_weight = 0.05
+
+        target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(
+            batch=batch,
+            cache=bootstrap_cache,
+            device=device,
+            target_dim=int(aux_heads.target_dim),
+        )
+        future_readout = tf_out.get("future_fused_hidden")
+        if (
+            not isinstance(future_readout, torch.Tensor)
+            or future_readout.ndim != 4
+            or aux_heads.readout_feature_head is None
+        ):
+            zero = tf_out["pred_coord"].sum() * 0.0
+            return zero, {
+                "semantic_rescue_loss": 0.0,
+                "semantic_alignment_loss": 0.0,
+                "query_persistence_consistency_loss": 0.0,
+                "readout_semantic_alignment_loss": 0.0,
+                "persistence_contrastive_or_ranking_loss": 0.0,
+                "confidence_gated_alignment_loss": 0.0,
+                "sparse_persistence_contrastive_loss": 0.0,
+                "confidence_gated_affected_sample_ratio": 0.0,
+                "low_confidence_sample_ratio": 0.0,
+                "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+                "confidence_metric_temperature": float(confidence_gating_temperature),
+                "confidence_metric_definition": 3.0,
+                "positive_pair_count": 0.0,
+                "hard_negative_count": 0.0,
+                "effective_pair_coverage_ratio": 0.0,
+                "aux_schedule_scale": float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps)),
+                "aux_loss_delay_steps": float(aux_loss_delay_steps),
+                "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+                "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+                "whether_main_rollout_loss_reweighted": False,
+                "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+                "actual_gate_positive_ratio": 0.0,
+                "activated_query_count": 0.0,
+                "activated_query_ratio": 0.0,
+                "per_batch_sparsity_mean": 0.0,
+                "per_batch_sparsity_std": 0.0,
+                "raw_quantile_ratio": 0.0,
+                "capped_ratio": 0.0,
+                "valuable_pair_ratio": 0.0,
+                "sparse_gate_selected_ratio": 0.0,
+                "high_value_pair_ratio": 0.0,
+                "high_value_pair_count": 0.0,
+                "persistence_candidate_pair_count": 0.0,
+                "max_pairs_per_sample": float(v5_max_pairs_per_sample),
+                "hard_negative_cap": float(v5_hard_negative_cap),
+                "pair_sampling_temperature": float(v5_pair_sampling_temperature),
+                "final_effective_aux_weight": 0.0,
+            }
+
+        query_valid = tf_out["valid_mask"] & target_valid[:, None, :]
+        hard_stats = _semantic_hard_sample_stats(batch=batch, device=device)
+        hard_score = hard_stats["hard_score"][:, None, None].expand_as(query_valid).to(torch.float32)
+        small_score = hard_stats["small_score"][:, None, None].expand_as(query_valid).to(torch.float32)
+        center_interaction = hard_stats["center_interaction"][:, None, None].expand_as(query_valid).to(torch.float32)
+        appearance_shift = hard_stats["appearance_shift"][:, None, None].expand_as(query_valid).to(torch.float32)
+
+        future_proj = aux_heads.readout_feature_head(future_readout)
+        pred = torch.nn.functional.normalize(future_proj, dim=-1)
+        tgt = torch.nn.functional.normalize(target[:, None, :, :].expand(-1, pred.shape[1], -1, -1), dim=-1)
+        pos_sim = (pred * tgt).sum(dim=-1)
+        neg_sim = torch.full_like(pos_sim, -1.0)
+
+        flat_valid = query_valid.reshape(-1)
+        if int(flat_valid.sum().item()) >= 2:
+            flat_pred = pred.reshape(-1, pred.shape[-1])[flat_valid]
+            flat_tgt = tgt.reshape(-1, tgt.shape[-1])[flat_valid]
+            sample_ids = torch.arange(pred.shape[0], device=device)[:, None, None].expand_as(query_valid).reshape(-1)[flat_valid]
+            flat_sim = flat_pred @ flat_tgt.T
+            same_sample = sample_ids[:, None] == sample_ids[None, :]
+            flat_sim = flat_sim.masked_fill(same_sample, -1e9)
+            flat_neg = flat_sim.max(dim=-1).values
+            flat_neg = torch.where(torch.isfinite(flat_neg), flat_neg, torch.full_like(flat_neg, -1.0))
+            neg_sim_flat = torch.full((flat_valid.shape[0],), -1.0, device=device, dtype=torch.float32)
+            neg_sim_flat[flat_valid] = flat_neg
+            neg_sim = neg_sim_flat.view_as(pos_sim)
+
+        future_state = batch["fut_state"]
+        area = (future_state[..., 6].abs() * future_state[..., 7].abs()).clamp(0.0, 1.0)
+        small_query = (1.0 - area).clamp(0.0, 1.0)
+        coord = future_state[..., 0:2]
+        step_motion = torch.zeros_like(pos_sim)
+        if coord.shape[1] >= 2:
+            motion_delta = torch.sqrt(((coord[:, 1:] - coord[:, :-1]) ** 2).sum(dim=-1).clamp_min(1e-12))
+            step_motion[:, 1:] = motion_delta
+        motion_norm = step_motion / step_motion.amax(dim=1, keepdim=True).clamp_min(1e-6)
+        area_jump = torch.zeros_like(pos_sim)
+        if area.shape[1] >= 2:
+            area_delta = (area[:, 1:] - area[:, :-1]).abs()
+            area_jump[:, 1:] = area_delta
+        area_jump = area_jump / area_jump.amax(dim=1, keepdim=True).clamp_min(1e-6)
+
+        margin = pos_sim - neg_sim
+        gate_raw = torch.sigmoid((float(confidence_gating_margin_threshold) - margin) / max(float(confidence_gating_temperature), 1e-4))
+        difficulty = (1.0 - pos_sim).clamp(0.0, 2.0)
+        query_score = (
+            0.35 * gate_raw
+            + 0.20 * difficulty
+            + 0.15 * motion_norm
+            + 0.10 * area_jump
+            + 0.10 * hard_score
+            + 0.10 * small_query
+        ).clamp(0.0, 3.0)
+
+        family = str(v5_gating_family).strip().lower()
+        if family == "hard_topk_query_gating_v2":
+            sparse_selected, sparse_stats = _hard_topk_query_mask_v2(
+                scores=query_score,
+                valid=query_valid,
+                topk=max(int(v5_topk_query_k), 1),
+            )
+            family_code = 3.0
+        else:
+            sparse_selected, sparse_stats = _capped_quantile_query_mask_v2(
+                scores=query_score,
+                valid=query_valid,
+                quantile=float(v5_capped_quantile),
+                max_ratio=float(v5_max_affected_ratio),
+            )
+            family_code = 4.0
+
+        gate = torch.where(
+            sparse_selected,
+            query_score.clamp_min(float(max(v5_gate_min_strength, 0.0))),
+            torch.zeros_like(query_score),
+        )
+        gate_denom = gate.sum().clamp_min(1.0)
+
+        conf_align_loss = semantic_tokens.sum() * 0.0
+        if readout_align_weight > 0.0:
+            cosine = 1.0 - pos_sim
+            conf_align_loss = (cosine * gate).sum() / gate_denom
+            weighted_terms.append(float(readout_align_weight) * conf_align_loss)
+            weight_sum += float(readout_align_weight)
+
+        positive_pair_count = 0.0
+        hard_negative_count = 0.0
+        effective_pair_coverage_ratio = 0.0
+        valuable_pair_ratio = 0.0
+        valuable_pair_count = 0.0
+        candidate_pair_count = 0.0
+        sparse_loss_terms: List[torch.Tensor] = []
+
+        if sparse_weight > 0.0:
+            valuable_query = sparse_selected & query_valid & (
+                (motion_norm >= 0.40)
+                | (area_jump >= 0.35)
+                | (small_query >= 0.65)
+                | (appearance_shift >= 0.25)
+                | (center_interaction >= 0.35)
+                | (hard_score >= float(semantic_hard_score_threshold))
+            )
+            valuable_query_count = float(valuable_query.float().sum().item())
+            selected_query_count = float(sparse_selected.float().sum().item())
+
+            temp = max(float(v5_pair_sampling_temperature), 1e-4)
+            max_pairs = max(int(v5_max_pairs_per_sample), 1)
+            hard_neg_cap = max(int(v5_hard_negative_cap), 1)
+            flat_all_pred = pred.reshape(-1, pred.shape[-1])
+            flat_all_valid = query_valid.reshape(-1)
+            flat_all_pred_valid = flat_all_pred[flat_all_valid]
+            flat_all_sid_valid = torch.arange(pred.shape[0], device=device)[:, None, None].expand_as(query_valid).reshape(-1)[flat_all_valid]
+
+            for bi in range(int(pred.shape[0])):
+                sel = valuable_query[bi].reshape(-1)
+                base_sel = sparse_selected[bi].reshape(-1)
+                n_base = int(base_sel.sum().item())
+                if n_base >= 2:
+                    candidate_pair_count += float((n_base * (n_base - 1)) // 2)
+                idx = torch.nonzero(sel, as_tuple=False).squeeze(-1)
+                if int(idx.numel()) < 2:
+                    continue
+
+                valuable_pair_count += float((int(idx.numel()) * (int(idx.numel()) - 1)) // 2)
+                local_pred = pred[bi].reshape(-1, pred.shape[-1])[idx]
+                local_scores = query_score[bi].reshape(-1)[idx]
+                pair_i, pair_j = torch.triu_indices(int(idx.numel()), int(idx.numel()), offset=1, device=device)
+                if int(pair_i.numel()) <= 0:
+                    continue
+                pair_value = ((local_scores[pair_i] + local_scores[pair_j]) * 0.5) / temp
+                if int(pair_i.numel()) > max_pairs:
+                    keep_local = torch.topk(pair_value, k=max_pairs, largest=True, sorted=False).indices
+                    pair_i = pair_i[keep_local]
+                    pair_j = pair_j[keep_local]
+                    pair_value = pair_value[keep_local]
+
+                for pi, pj in zip(pair_i.tolist(), pair_j.tolist()):
+                    src = local_pred[int(pi)]
+                    pos = torch.dot(src, local_pred[int(pj)])
+                    neg_mask = flat_all_sid_valid != int(bi)
+                    if int(neg_mask.sum().item()) <= 0:
+                        continue
+                    neg_logits = torch.matmul(flat_all_pred_valid[neg_mask], src)
+                    if int(neg_logits.numel()) > hard_neg_cap:
+                        neg_logits = torch.topk(neg_logits, k=hard_neg_cap, largest=True, sorted=False).values
+                    max_neg = neg_logits.mean()
+                    sparse_loss_terms.append(torch.relu(float(v4_persistence_margin) + max_neg - pos))
+                    positive_pair_count += 1.0
+                    hard_negative_count += float(neg_logits.numel())
+
+            if sparse_loss_terms:
+                sparse_loss = torch.stack(sparse_loss_terms).mean()
+                weighted_terms.append(float(sparse_weight) * sparse_loss)
+                weight_sum += float(sparse_weight)
+            else:
+                sparse_loss = semantic_tokens.sum() * 0.0
+            valuable_pair_ratio = float(valuable_pair_count / max(candidate_pair_count, 1.0))
+            effective_pair_coverage_ratio = float(positive_pair_count / max(candidate_pair_count, 1.0))
+        else:
+            sparse_loss = semantic_tokens.sum() * 0.0
+
+        aux_schedule_scale = float(_aux_schedule_scale(current_step, resume_global_step, aux_loss_delay_steps, aux_loss_ramp_steps))
+        final_effective_aux_weight = float(aux_schedule_scale)
+
+        if not weighted_terms:
+            zero = tf_out["pred_coord"].sum() * 0.0
+            return zero, {
+                "semantic_rescue_loss": 0.0,
+                "semantic_alignment_loss": 0.0,
+                "query_persistence_consistency_loss": 0.0,
+                "readout_semantic_alignment_loss": 0.0,
+                "persistence_contrastive_or_ranking_loss": 0.0,
+                "confidence_gated_alignment_loss": 0.0,
+                "sparse_persistence_contrastive_loss": 0.0,
+                "confidence_gated_affected_sample_ratio": float(sparse_stats["actual_gate_positive_ratio"]),
+                "low_confidence_sample_ratio": float(((gate_raw > 0.5) & query_valid).float().sum().item() / max(query_valid.float().sum().item(), 1.0)),
+                "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+                "confidence_metric_temperature": float(confidence_gating_temperature),
+                "confidence_metric_definition": 3.0,
+                "positive_pair_count": float(positive_pair_count),
+                "hard_negative_count": float(hard_negative_count),
+                "effective_pair_coverage_ratio": float(effective_pair_coverage_ratio),
+                "aux_schedule_scale": float(aux_schedule_scale),
+                "aux_loss_delay_steps": float(aux_loss_delay_steps),
+                "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+                "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+                "whether_main_rollout_loss_reweighted": False,
+                "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+                "actual_gate_positive_ratio": float(sparse_stats["actual_gate_positive_ratio"]),
+                "activated_query_count": float(sparse_stats["activated_query_count_mean"]),
+                "activated_query_ratio": float(sparse_stats["activated_query_ratio"]),
+                "per_batch_sparsity_mean": float(sparse_stats["per_batch_sparsity_mean"]),
+                "per_batch_sparsity_std": float(sparse_stats["per_batch_sparsity_std"]),
+                "raw_quantile_ratio": float(sparse_stats["raw_quantile_ratio"]),
+                "capped_ratio": float(sparse_stats["capped_ratio"]),
+                "valuable_pair_ratio": float(valuable_pair_ratio),
+                "sparse_gate_selected_ratio": float(sparse_stats["actual_gate_positive_ratio"]),
+                "high_value_pair_ratio": float(valuable_pair_ratio),
+                "high_value_pair_count": float(valuable_pair_count),
+                "persistence_candidate_pair_count": float(candidate_pair_count),
+                "max_pairs_per_sample": float(v5_max_pairs_per_sample),
+                "hard_negative_cap": float(v5_hard_negative_cap),
+                "pair_sampling_temperature": float(v5_pair_sampling_temperature),
+                "final_effective_aux_weight": float(final_effective_aux_weight),
+                "v4_sparse_gating_family_code": float(family_code),
+            }
+
+        loss = sum(weighted_terms) / max(float(weight_sum), 1e-6)
+        return loss, {
+            "semantic_rescue_loss": float(loss.detach().cpu().item()),
+            "semantic_alignment_loss": 0.0,
+            "query_persistence_consistency_loss": 0.0,
+            "readout_semantic_alignment_loss": float(conf_align_loss.detach().cpu().item()),
+            "persistence_contrastive_or_ranking_loss": float(sparse_loss.detach().cpu().item()),
+            "confidence_gated_alignment_loss": float(conf_align_loss.detach().cpu().item()),
+            "sparse_persistence_contrastive_loss": float(sparse_loss.detach().cpu().item()),
+            "confidence_gated_affected_sample_ratio": float(sparse_stats["actual_gate_positive_ratio"]),
+            "low_confidence_sample_ratio": float(((gate_raw > 0.5) & query_valid).float().sum().item() / max(query_valid.float().sum().item(), 1.0)),
+            "confidence_metric_threshold": float(confidence_gating_margin_threshold),
+            "confidence_metric_temperature": float(confidence_gating_temperature),
+            "confidence_metric_definition": 3.0,
+            "positive_pair_count": float(positive_pair_count),
+            "hard_negative_count": float(hard_negative_count),
+            "effective_pair_coverage_ratio": float(effective_pair_coverage_ratio),
+            "aux_schedule_scale": float(aux_schedule_scale),
+            "aux_loss_delay_steps": float(aux_loss_delay_steps),
+            "aux_loss_ramp_steps": float(aux_loss_ramp_steps),
+            "semantic_aux_subset_weighting_strength": float(semantic_aux_subset_weighting_strength),
+            "whether_main_rollout_loss_reweighted": False,
+            "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
+            "actual_gate_positive_ratio": float(sparse_stats["actual_gate_positive_ratio"]),
+            "activated_query_count": float(sparse_stats["activated_query_count_mean"]),
+            "activated_query_ratio": float(sparse_stats["activated_query_ratio"]),
+            "per_batch_sparsity_mean": float(sparse_stats["per_batch_sparsity_mean"]),
+            "per_batch_sparsity_std": float(sparse_stats["per_batch_sparsity_std"]),
+            "raw_quantile_ratio": float(sparse_stats["raw_quantile_ratio"]),
+            "capped_ratio": float(sparse_stats["capped_ratio"]),
+            "valuable_pair_ratio": float(valuable_pair_ratio),
+            "sparse_gate_selected_ratio": float(sparse_stats["actual_gate_positive_ratio"]),
+            "high_value_pair_ratio": float(valuable_pair_ratio),
+            "high_value_pair_count": float(valuable_pair_count),
+            "persistence_candidate_pair_count": float(candidate_pair_count),
+            "max_pairs_per_sample": float(v5_max_pairs_per_sample),
+            "hard_negative_cap": float(v5_hard_negative_cap),
+            "pair_sampling_temperature": float(v5_pair_sampling_temperature),
+            "final_effective_aux_weight": float(final_effective_aux_weight),
+            "v4_sparse_gating_family_code": float(family_code),
         }
 
     if mode_norm.startswith("v4"):
@@ -1744,6 +2204,14 @@ def main() -> None:
         "v4_persistence_value_quantile": float(args.v4_persistence_value_quantile),
         "v4_persistence_max_pairs": int(args.v4_persistence_max_pairs),
         "v4_persistence_margin": float(args.v4_persistence_margin),
+        "v5_gating_family": str(args.v5_gating_family),
+        "v5_topk_query_k": int(args.v5_topk_query_k),
+        "v5_capped_quantile": float(args.v5_capped_quantile),
+        "v5_max_affected_ratio": float(args.v5_max_affected_ratio),
+        "v5_gate_min_strength": float(args.v5_gate_min_strength),
+        "v5_max_pairs_per_sample": int(args.v5_max_pairs_per_sample),
+        "v5_hard_negative_cap": int(args.v5_hard_negative_cap),
+        "v5_pair_sampling_temperature": float(args.v5_pair_sampling_temperature),
         "semantic_hard_sidecar_enabled": bool(args.semantic_hard_sidecar_enabled),
         "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
         "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
@@ -1813,6 +2281,15 @@ def main() -> None:
     pair_coverage_ratio_history: List[float] = []
     positive_pair_count_history: List[float] = []
     hard_negative_count_history: List[float] = []
+    actual_gate_positive_ratio_history: List[float] = []
+    activated_query_count_history: List[float] = []
+    activated_query_ratio_history: List[float] = []
+    per_batch_sparsity_mean_history: List[float] = []
+    per_batch_sparsity_std_history: List[float] = []
+    raw_quantile_ratio_history: List[float] = []
+    capped_ratio_history: List[float] = []
+    valuable_pair_ratio_history: List[float] = []
+    final_effective_aux_weight_history: List[float] = []
     aux_schedule_scale_history: List[float] = []
     sparse_gate_selected_ratio_history: List[float] = []
     high_value_pair_ratio_history: List[float] = []
@@ -1955,6 +2432,14 @@ def main() -> None:
             v4_persistence_value_quantile=float(args.v4_persistence_value_quantile),
             v4_persistence_max_pairs=int(args.v4_persistence_max_pairs),
             v4_persistence_margin=float(args.v4_persistence_margin),
+            v5_gating_family=str(args.v5_gating_family),
+            v5_topk_query_k=int(args.v5_topk_query_k),
+            v5_capped_quantile=float(args.v5_capped_quantile),
+            v5_max_affected_ratio=float(args.v5_max_affected_ratio),
+            v5_gate_min_strength=float(args.v5_gate_min_strength),
+            v5_max_pairs_per_sample=int(args.v5_max_pairs_per_sample),
+            v5_hard_negative_cap=int(args.v5_hard_negative_cap),
+            v5_pair_sampling_temperature=float(args.v5_pair_sampling_temperature),
         )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = teacher_loss + float(rescue_weight) * float(aux_schedule_scale) * rescue_loss
@@ -1998,6 +2483,15 @@ def main() -> None:
         pair_coverage_ratio_history.append(float(rescue_info.get("effective_pair_coverage_ratio", 0.0)))
         positive_pair_count_history.append(float(rescue_info.get("positive_pair_count", 0.0)))
         hard_negative_count_history.append(float(rescue_info.get("hard_negative_count", 0.0)))
+        actual_gate_positive_ratio_history.append(float(rescue_info.get("actual_gate_positive_ratio", 0.0)))
+        activated_query_count_history.append(float(rescue_info.get("activated_query_count", 0.0)))
+        activated_query_ratio_history.append(float(rescue_info.get("activated_query_ratio", 0.0)))
+        per_batch_sparsity_mean_history.append(float(rescue_info.get("per_batch_sparsity_mean", 0.0)))
+        per_batch_sparsity_std_history.append(float(rescue_info.get("per_batch_sparsity_std", 0.0)))
+        raw_quantile_ratio_history.append(float(rescue_info.get("raw_quantile_ratio", 0.0)))
+        capped_ratio_history.append(float(rescue_info.get("capped_ratio", 0.0)))
+        valuable_pair_ratio_history.append(float(rescue_info.get("valuable_pair_ratio", 0.0)))
+        final_effective_aux_weight_history.append(float(rescue_info.get("final_effective_aux_weight", 0.0)))
         aux_schedule_scale_history.append(float(aux_schedule_scale))
         sparse_gate_selected_ratio_history.append(float(rescue_info.get("sparse_gate_selected_ratio", 0.0)))
         high_value_pair_ratio_history.append(float(rescue_info.get("high_value_pair_ratio", 0.0)))
@@ -2285,6 +2779,14 @@ def main() -> None:
             "v4_persistence_value_quantile": float(args.v4_persistence_value_quantile),
             "v4_persistence_max_pairs": int(args.v4_persistence_max_pairs),
             "v4_persistence_margin": float(args.v4_persistence_margin),
+            "v5_gating_family": str(args.v5_gating_family),
+            "v5_topk_query_k": int(args.v5_topk_query_k),
+            "v5_capped_quantile": float(args.v5_capped_quantile),
+            "v5_max_affected_ratio": float(args.v5_max_affected_ratio),
+            "v5_gate_min_strength": float(args.v5_gate_min_strength),
+            "v5_max_pairs_per_sample": int(args.v5_max_pairs_per_sample),
+            "v5_hard_negative_cap": int(args.v5_hard_negative_cap),
+            "v5_pair_sampling_temperature": float(args.v5_pair_sampling_temperature),
             "whether_main_rollout_loss_reweighted": bool((not str(rescue_mode).startswith("v2")) and float(args.semantic_hard_curriculum_weight) > 0.0),
             "semantic_rescue_loss_mean": float(sum(rescue_loss_history) / max(len(rescue_loss_history), 1)),
             "semantic_alignment_loss_mean": float(sum(semantic_alignment_loss_history) / max(len(semantic_alignment_loss_history), 1)),
@@ -2298,11 +2800,21 @@ def main() -> None:
             "effective_pair_coverage_ratio_mean": float(sum(pair_coverage_ratio_history) / max(len(pair_coverage_ratio_history), 1)),
             "positive_pair_count_mean": float(sum(positive_pair_count_history) / max(len(positive_pair_count_history), 1)),
             "hard_negative_count_mean": float(sum(hard_negative_count_history) / max(len(hard_negative_count_history), 1)),
+            "actual_gate_positive_ratio_mean": float(sum(actual_gate_positive_ratio_history) / max(len(actual_gate_positive_ratio_history), 1)),
+            "activated_query_count_mean": float(sum(activated_query_count_history) / max(len(activated_query_count_history), 1)),
+            "activated_query_ratio_mean": float(sum(activated_query_ratio_history) / max(len(activated_query_ratio_history), 1)),
+            "per_batch_sparsity_mean": float(sum(per_batch_sparsity_mean_history) / max(len(per_batch_sparsity_mean_history), 1)),
+            "per_batch_sparsity_std_mean": float(sum(per_batch_sparsity_std_history) / max(len(per_batch_sparsity_std_history), 1)),
+            "raw_quantile_ratio_mean": float(sum(raw_quantile_ratio_history) / max(len(raw_quantile_ratio_history), 1)),
+            "capped_ratio_mean": float(sum(capped_ratio_history) / max(len(capped_ratio_history), 1)),
+            "valuable_pair_ratio_mean": float(sum(valuable_pair_ratio_history) / max(len(valuable_pair_ratio_history), 1)),
             "sparse_gate_selected_ratio_mean": float(sum(sparse_gate_selected_ratio_history) / max(len(sparse_gate_selected_ratio_history), 1)),
             "high_value_pair_ratio_mean": float(sum(high_value_pair_ratio_history) / max(len(high_value_pair_ratio_history), 1)),
             "high_value_pair_count_mean": float(sum(high_value_pair_count_history) / max(len(high_value_pair_count_history), 1)),
             "persistence_candidate_pair_count_mean": float(sum(persistence_candidate_pair_count_history) / max(len(persistence_candidate_pair_count_history), 1)),
             "aux_schedule_scale_mean": float(sum(aux_schedule_scale_history) / max(len(aux_schedule_scale_history), 1)),
+            "final_effective_aux_weight_mean": float(float(rescue_weight) * (sum(final_effective_aux_weight_history) / max(len(final_effective_aux_weight_history), 1))),
+            "final_effective_aux_weight": float(float(rescue_weight) * (final_effective_aux_weight_history[-1] if final_effective_aux_weight_history else 0.0)),
             "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
             "semantic_hard_sample_weight_mean": float(sum(semantic_hard_weight_mean_history) / max(len(semantic_hard_weight_mean_history), 1)),
             "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
@@ -2339,6 +2851,19 @@ def main() -> None:
             "global_step": int((best_semantic_hard_metric or {}).get("global_step", -1)),
             "semantic_hard_sidecar_score": float((best_semantic_hard_metric or {}).get("semantic_hard_sidecar_score", 1e9)),
             "metrics": best_semantic_hard_triplet,
+            "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift",
+        },
+        "sidecar_checkpoint_selection": {
+            "overall_best_checkpoint": str(best_ckpt),
+            "semantic_hard_best_checkpoint": str(best_semantic_hard_ckpt),
+            "overall_best_global_step": int((best_metric_so_far or {}).get("global_step", -1)),
+            "semantic_hard_best_global_step": int((best_semantic_hard_metric or {}).get("global_step", -1)),
+            "same_checkpoint_selected": bool(int((best_metric_so_far or {}).get("global_step", -1)) == int((best_semantic_hard_metric or {}).get("global_step", -2))),
+            "sidecar_truly_diverged": bool(
+                bool(args.semantic_hard_sidecar_enabled)
+                and int((best_semantic_hard_metric or {}).get("global_step", -1)) >= 0
+                and int((best_metric_so_far or {}).get("global_step", -1)) != int((best_semantic_hard_metric or {}).get("global_step", -2))
+            ),
         },
         "overall_vs_semantic_hard_best_delta": {
             "same_step": bool(int((best_metric_so_far or {}).get("global_step", -1)) == int((best_semantic_hard_metric or {}).get("global_step", -2))),
