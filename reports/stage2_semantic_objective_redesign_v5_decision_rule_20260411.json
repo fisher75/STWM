@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-04-11T17:35:31.164133+00:00",
+  "rule_scope": "stage2_semantic_objective_redesign_v5_and_later",
+  "freeze_conditions": {
+    "true_new_best_not_warm_start_inherited": true,
+    "gating_not_saturated_anymore": true,
+    "semantic_hard_composite_improved_vs_prev": true,
+    "full_validation_non_catastrophic": true
+  },
+  "continue_rescue_conditions": {
+    "description": "do not freeze; continue rescue if there is some positive signal but strict freeze conditions are not all satisfied",
+    "requires": [
+      "full_validation_non_catastrophic",
+      "at least one of: improved_vs_current_cropenc_baseline, sidecar_truly_diverged, actual_gate_positive_ratio_below_0.30, semantic_hard_composite_improved_vs_prev"
+    ]
+  },
+  "fail_hard_conditions": {
+    "description": "objective family still not working under current Stage2 design",
+    "trigger_any": [
+      "full_validation_non_catastrophic = false",
+      "true_new_best_not_warm_start_inherited = false and semantic_hard_composite_improved_vs_prev = false and gating_not_saturated_anymore = false"
+    ]
+  },
+  "prohibited_if_freeze_conditions_missing": [
+    "freeze_stage2_core_mainline"
+  ],
+  "notes": [
+    "This rule gates any later freeze recommendation; the v5 runner itself still only outputs rescue-oriented next steps.",
+    "A true v5 success should advance to stage2_semantic_rescue_fullscale_wave1 rather than direct freeze."
+  ]
+}
