@@ -1,207 +1,128 @@
 {
-  "generated_at_utc": "2026-04-13T07:35:36.741612+00:00",
-  "diagnosis_type": "stage2_semantic_objective_redesign_v7",
+  "generated_at_utc": "2026-04-13T14:46:23.451817+00:00",
+  "diagnosis_type": "stage2_semantic_objective_redesign_v7_repair",
   "teacher_as_mainline_semantic_source": false,
   "chosen_bootstrap_backend": "local_clip_vit_b32_mask_crop_visual_teacher",
   "v7_runs_terminal": true,
-  "activation_audit": {
-    "generated_at_utc": "2026-04-13T07:03:02.264119+00:00",
-    "audit_stage": "pre_launch",
-    "diagnosis_source": "/home/chen034/workspace/stwm/reports/stage2_semantic_objective_redesign_v5_summary_20260411.json",
-    "run_count": 8,
-    "runs": [
-      {
-        "run_name": "stage2_semobjv7_alignonly_topk1_seed42_20260413",
-        "seed": 42,
-        "objective_combo": "v7_calibration_only_topk1_alignment",
-        "semantic_rescue_mode": "v7alignonly",
-        "v6_gating_family": "hard_topk_query_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.85,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 0,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": false,
-        "expected_gate_positive_ratio_floor": 0.125,
-        "expected_min_pairs_per_sample_floor": 0.0,
-        "v5_reference_run": "stage2_semobjv5_topk1_persistdelay_seed42_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignonly_qcap15_seed42_20260413",
-        "seed": 42,
-        "objective_combo": "v7_calibration_only_qcap15_alignment",
-        "semantic_rescue_mode": "v7alignonly",
-        "v6_gating_family": "capped_quantile_sparse_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.8,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 0,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": false,
-        "expected_gate_positive_ratio_floor": 0.15,
-        "expected_min_pairs_per_sample_floor": 0.0,
-        "v5_reference_run": "stage2_semobjv5_qcap15_persistdelay_seed42_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignpersist_topk1_seed42_20260413",
-        "seed": 42,
-        "objective_combo": "v7_calibration_plus_active_persistence_topk1",
-        "semantic_rescue_mode": "v7alignpersist",
-        "v6_gating_family": "hard_topk_query_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.85,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 2,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": true,
-        "expected_gate_positive_ratio_floor": 0.125,
-        "expected_min_pairs_per_sample_floor": 2.0,
-        "v5_reference_run": "stage2_semobjv5_topk1_persistdelay_seed42_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignpersist_qcap15_seed42_20260413",
-        "seed": 42,
-        "objective_combo": "v7_calibration_plus_active_persistence_qcap15",
-        "semantic_rescue_mode": "v7alignpersist",
-        "v6_gating_family": "capped_quantile_sparse_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.8,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 2,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": true,
-        "expected_gate_positive_ratio_floor": 0.15,
-        "expected_min_pairs_per_sample_floor": 2.0,
-        "v5_reference_run": "stage2_semobjv5_qcap15_persistdelay_seed42_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
-        "seed": 123,
-        "objective_combo": "v7_calibration_only_topk1_alignment",
-        "semantic_rescue_mode": "v7alignonly",
-        "v6_gating_family": "hard_topk_query_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.85,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 0,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": false,
-        "expected_gate_positive_ratio_floor": 0.125,
-        "expected_min_pairs_per_sample_floor": 0.0,
-        "v5_reference_run": "stage2_semobjv5_topk1_persistdelay_seed123_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignonly_qcap15_seed123_20260413",
-        "seed": 123,
-        "objective_combo": "v7_calibration_only_qcap15_alignment",
-        "semantic_rescue_mode": "v7alignonly",
-        "v6_gating_family": "capped_quantile_sparse_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.8,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 0,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": false,
-        "expected_gate_positive_ratio_floor": 0.15,
-        "expected_min_pairs_per_sample_floor": 0.0,
-        "v5_reference_run": "stage2_semobjv5_qcap15_persistdelay_seed123_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
-        "seed": 123,
-        "objective_combo": "v7_calibration_plus_active_persistence_topk1",
-        "semantic_rescue_mode": "v7alignpersist",
-        "v6_gating_family": "hard_topk_query_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.85,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 2,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": true,
-        "expected_gate_positive_ratio_floor": 0.125,
-        "expected_min_pairs_per_sample_floor": 2.0,
-        "v5_reference_run": "stage2_semobjv5_topk1_persistdelay_seed123_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      },
-      {
-        "run_name": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
-        "seed": 123,
-        "objective_combo": "v7_calibration_plus_active_persistence_qcap15",
-        "semantic_rescue_mode": "v7alignpersist",
-        "v6_gating_family": "capped_quantile_sparse_gating_v2",
-        "v6_topk_query_k": 1,
-        "v6_capped_quantile": 0.8,
-        "v6_max_affected_ratio": 0.15,
-        "v6_guaranteed_min_pairs_per_sample": 2,
-        "v6_strict_max_pairs_per_sample": 2,
-        "v6_two_level_pair_mining_enabled": true,
-        "expected_gate_positive_ratio_floor": 0.15,
-        "expected_min_pairs_per_sample_floor": 2.0,
-        "v5_reference_run": "stage2_semobjv5_qcap15_persistdelay_seed123_20260411",
-        "v5_reference_gate_positive_ratio_mean": 0.125,
-        "v5_reference_valuable_pair_ratio_mean": 0.0,
-        "attribution_decision": "persistence_mining_under_activated_despite_sparse_gate"
-      }
-    ],
-    "global_attribution_decision": "persistence_mining_under_activated_primary_bottleneck",
-    "launch_permitted": true
+  "current_cropenc_baseline_anchor": {
+    "source_report": "/home/chen034/workspace/stwm/reports/stage2_semantic_value_diagnosis_20260410.json",
+    "aggregate_mean_free_rollout_endpoint_l2": 0.0009458137729957648,
+    "aggregate_mean_legacysem_free_rollout_endpoint_l2": 0.0007597727700389118
   },
-  "baseline_refs": {
-    "current_cropenc_fullscale_mean_endpoint_l2": 0.0009458137729957648,
-    "legacysem_fullscale_mean_endpoint_l2": 0.0007597727700389118,
-    "v5_best_objective_combo_endpoint_l2": 0.0008026909849500561,
-    "v5_best_semantic_hard_composite_score": 0.00034351340824893367,
-    "v6_best_objective_combo_endpoint_l2": 0.0008026909849500561,
-    "v6_best_semantic_hard_composite_score": 0.00034351340824893367,
-    "warm_start_anchor": {
-      "42": {
-        "checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt",
-        "global_step": 3000,
-        "metrics": {
-          "teacher_forced_coord_loss": 3.02700085095072e-05,
-          "free_rollout_coord_mean_l2": 0.0011106466086385853,
-          "free_rollout_endpoint_l2": 0.001136954303602783,
-          "total_loss_reference": 3.0185054667466046e-05
-        }
+  "v6_best_objective_combo_anchor": {
+    "source_report": "/home/chen034/workspace/stwm/reports/stage2_semantic_objective_redesign_v6_diagnosis_20260411.json",
+    "best_v6_objective_combo": "hard_topk_query_gating_v6_k1+guaranteed_sparse_persistence_g2+two_level_pair_mining+conservative_delayed_aux_schedule",
+    "overall_best_run_name": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+    "semantic_hard_best_run_name": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+    "best_v6_full_validation_endpoint_l2": 0.0008026909849500561,
+    "best_v6_semantic_hard_composite_score": 0.00034351340824893367
+  },
+  "v7_overall_best_anchor": {
+    "run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+    "family": "alignonly",
+    "seed": 123,
+    "best_checkpoint_metric": {
+      "global_step": 8000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.9777691952834867e-05,
+        "free_rollout_coord_mean_l2": 0.000777029686230004,
+        "free_rollout_endpoint_l2": 0.0008026909849500561,
+        "total_loss_reference": 2.9691506242597878e-05
       },
-      "123": {
-        "checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/best.pt",
-        "global_step": 8000,
-        "metrics": {
-          "teacher_forced_coord_loss": 2.9777691952834867e-05,
-          "free_rollout_coord_mean_l2": 0.000777029686230004,
-          "free_rollout_endpoint_l2": 0.0008026909849500561,
-          "total_loss_reference": 2.9691506242597878e-05
-        }
+      "rank_key": [
+        0.0008026909849500561,
+        0.000777029686230004,
+        2.9777691952834867e-05
+      ]
+    },
+    "semantic_hard_sidecar_metric": {
+      "enabled": true,
+      "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed123_20260413/best_semantic_hard.pt",
+      "exists": true,
+      "global_step": 8300,
+      "semantic_hard_sidecar_score": 0.0006712237528214851,
+      "metrics": {
+        "teacher_forced_coord_loss": 4.971516376920193e-07,
+        "free_rollout_coord_mean_l2": 0.0006711078353990347,
+        "free_rollout_endpoint_l2": 0.0006712734317168212,
+        "total_loss_reference": 4.943384567468456e-07
+      },
+      "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+    },
+    "actual_gate_positive_ratio_mean": 0.125,
+    "valuable_pair_ratio_mean": 0.0,
+    "guaranteed_pair_count_mean": 0.0,
+    "persistence_declared_but_inactive": false
+  },
+  "v7_semantic_hard_best_anchor": {
+    "run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+    "family": "alignpersist",
+    "seed": 123,
+    "best_checkpoint_metric": {
+      "global_step": 8000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.9777691952834867e-05,
+        "free_rollout_coord_mean_l2": 0.000777029686230004,
+        "free_rollout_endpoint_l2": 0.0008026909849500561,
+        "total_loss_reference": 2.9691506242597878e-05
+      },
+      "rank_key": [
+        0.0008026909849500561,
+        0.000777029686230004,
+        2.9777691952834867e-05
+      ]
+    },
+    "semantic_hard_sidecar_metric": {
+      "enabled": true,
+      "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed123_20260413/best_semantic_hard.pt",
+      "exists": true,
+      "global_step": 8300,
+      "semantic_hard_sidecar_score": 0.0006690374909876248,
+      "metrics": {
+        "teacher_forced_coord_loss": 4.940648768052387e-07,
+        "free_rollout_coord_mean_l2": 0.0006689731007776199,
+        "free_rollout_endpoint_l2": 0.0006690650867919127,
+        "total_loss_reference": 4.912728797989985e-07
+      },
+      "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+    },
+    "actual_gate_positive_ratio_mean": 0.125,
+    "valuable_pair_ratio_mean": 0.0,
+    "guaranteed_pair_count_mean": 0.0,
+    "persistence_declared_but_inactive": true
+  },
+  "v7_best_effective_persistence_anchor": {
+    "run_name": "none"
+  },
+  "warm_start_anchor": {
+    "42": {
+      "checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt",
+      "global_step": 3000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.02700085095072e-05,
+        "free_rollout_coord_mean_l2": 0.0011106466086385853,
+        "free_rollout_endpoint_l2": 0.001136954303602783,
+        "total_loss_reference": 3.0185054667466046e-05
+      }
+    },
+    "123": {
+      "checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/best.pt",
+      "global_step": 8000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.9777691952834867e-05,
+        "free_rollout_coord_mean_l2": 0.000777029686230004,
+        "free_rollout_endpoint_l2": 0.0008026909849500561,
+        "total_loss_reference": 2.9691506242597878e-05
       }
     }
   },
+  "summary_source": "/home/chen034/workspace/stwm/reports/stage2_semantic_objective_redesign_v7_summary_20260413.json",
+  "audit_source": "/home/chen034/workspace/stwm/reports/stage2_semantic_objective_redesign_v7_repair_audit_20260413.json",
   "full_validation_panel": {
     "runs": [
       {
         "run_name": "stage2_semobjv7_alignonly_topk1_seed42_20260413",
-        "objective_combo": "v7_calibration_only_topk1_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 42,
         "metrics": {
           "free_rollout_endpoint_l2": 0.001136954303602783,
@@ -211,8 +132,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignonly_qcap15_seed42_20260413",
-        "objective_combo": "v7_calibration_only_qcap15_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 42,
         "metrics": {
           "free_rollout_endpoint_l2": 0.001136954303602783,
@@ -222,8 +142,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_topk1_seed42_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_topk1",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 42,
         "metrics": {
           "free_rollout_endpoint_l2": 0.001136954303602783,
@@ -233,8 +152,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_qcap15_seed42_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_qcap15",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 42,
         "metrics": {
           "free_rollout_endpoint_l2": 0.001136954303602783,
@@ -244,8 +162,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
-        "objective_combo": "v7_calibration_only_topk1_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 123,
         "metrics": {
           "free_rollout_endpoint_l2": 0.0008026909849500561,
@@ -255,8 +172,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignonly_qcap15_seed123_20260413",
-        "objective_combo": "v7_calibration_only_qcap15_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 123,
         "metrics": {
           "free_rollout_endpoint_l2": 0.0008026909849500561,
@@ -266,8 +182,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_topk1",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 123,
         "metrics": {
           "free_rollout_endpoint_l2": 0.0008026909849500561,
@@ -277,8 +192,7 @@
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_qcap15",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 123,
         "metrics": {
           "free_rollout_endpoint_l2": 0.0008026909849500561,
@@ -308,202 +222,148 @@
       "VSPW",
       "VIPSeg"
     ],
-    "eval_scope": "best_checkpoint_metric_from_run_final_json"
+    "eval_scope": "best_checkpoint_metric_from_repaired_summary"
   },
   "semantic_hard_subset_panel": {
-    "status": "omitted_in_v7_fast_diagnosis",
-    "reason": "use per-run semantic_hard_sidecar_score for disambiguation"
+    "status": "omitted_in_v7_repair",
+    "reason": "use semantic_hard_sidecar_metric emitted by completed v7 artifacts; no re-eval allowed in repair round"
   },
   "burst_persistence_hard_panel": {
-    "status": "skipped_in_v7_fast_diagnosis",
-    "reason": "not required for alignment-vs-persistence final disambiguation"
+    "status": "omitted_in_v7_repair",
+    "reason": "repair round is artifact truth audit only"
   },
   "semantic_hard_composite_panel": {
     "runs": [
       {
         "run_name": "stage2_semobjv7_alignonly_topk1_seed42_20260413",
-        "objective_combo": "v7_calibration_only_topk1_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 42,
         "semantic_hard_composite_score": 0.001111090875779971,
-        "persistence_objective_declared": false,
-        "persistence_declared_but_inactive": false,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": false
       },
       {
         "run_name": "stage2_semobjv7_alignonly_qcap15_seed42_20260413",
-        "objective_combo": "v7_calibration_only_qcap15_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 42,
         "semantic_hard_composite_score": 0.0011114631815312,
-        "persistence_objective_declared": false,
-        "persistence_declared_but_inactive": false,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": false
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_topk1_seed42_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_topk1",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 42,
         "semantic_hard_composite_score": 0.0011100398388524087,
-        "persistence_objective_declared": true,
-        "persistence_declared_but_inactive": true,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": true
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_qcap15_seed42_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_qcap15",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 42,
         "semantic_hard_composite_score": 0.0011105385119429766,
-        "persistence_objective_declared": true,
-        "persistence_declared_but_inactive": true,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": true
       },
       {
         "run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
-        "objective_combo": "v7_calibration_only_topk1_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 123,
         "semantic_hard_composite_score": 0.0006712237528214851,
-        "persistence_objective_declared": false,
-        "persistence_declared_but_inactive": false,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": false
       },
       {
         "run_name": "stage2_semobjv7_alignonly_qcap15_seed123_20260413",
-        "objective_combo": "v7_calibration_only_qcap15_alignment",
-        "objective_family": "calibration_only_family",
+        "family": "alignonly",
         "seed": 123,
         "semantic_hard_composite_score": 0.0006786666535891783,
-        "persistence_objective_declared": false,
-        "persistence_declared_but_inactive": false,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": false
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_topk1",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 123,
         "semantic_hard_composite_score": 0.0006690374909876248,
-        "persistence_objective_declared": true,
-        "persistence_declared_but_inactive": true,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": true
       },
       {
         "run_name": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
-        "objective_combo": "v7_calibration_plus_active_persistence_qcap15",
-        "objective_family": "calibration_plus_active_persistence_family",
+        "family": "alignpersist",
         "seed": 123,
         "semantic_hard_composite_score": 0.0006854776412439651,
-        "persistence_objective_declared": true,
-        "persistence_declared_but_inactive": true,
         "actual_gate_positive_ratio": 0.125,
         "valuable_pair_ratio": 0.0,
-        "fallback_trigger_rate": 0.0,
         "guaranteed_pair_count": 0.0,
-        "strict_pair_ratio": 0.0,
-        "fallback_pair_ratio": 0.0,
-        "same_checkpoint_selected": false,
-        "sidecar_truly_diverged": true
+        "persistence_declared_but_inactive": true
       }
     ]
   },
   "family_disambiguation_panel": {
     "alignment_only_family": {
       "best_run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
-      "best_full_validation_endpoint_l2": 0.0008026909849500561,
+      "best_full_validation_rank": [
+        0.0008026909849500561,
+        0.000777029686230004,
+        2.9777691952834867e-05
+      ],
       "best_semantic_hard_composite_score": 0.0006712237528214851
     },
     "calibration_plus_active_persistence_family": {
       "best_run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
-      "best_full_validation_endpoint_l2": 0.0008026909849500561,
       "best_semantic_hard_composite_score": 0.0006690374909876248,
       "best_effective_run_name": "none",
-      "best_effective_full_validation_endpoint_l2": 1000000000.0,
       "best_effective_semantic_hard_composite_score": 1000000000.0
-    }
+    },
+    "alignment_only_is_already_sufficient_rule": "true iff overall best resolves to alignonly and no effective persistence run beats the best alignment-only run on semantic-hard score without violating the full-validation non-regression guardrail",
+    "persistence_branch_actually_contributed_rule": "true iff a declared persistence run is effective, exists as a non-none effective candidate, and improves semantic-hard score by >=2% over alignment-only while keeping full-validation endpoint within +2%"
   },
+  "true_new_best_not_warm_start_inherited": false,
+  "actual_gate_positive_ratio_below_0_30": true,
+  "semantic_hard_composite_improved_vs_v6": false,
+  "cross_seed_support_present": true,
+  "overall_best_run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+  "semantic_hard_best_run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+  "best_effective_persistence_run_name": "none",
+  "alignment_only_is_already_sufficient": true,
+  "persistence_branch_actually_contributed": false,
+  "persistence_declared_but_inactive_any": true,
+  "persistence_declared_but_inactive_all": true,
+  "next_step_choice": "alignment_only_is_true_mainline",
   "success_criteria": {
-    "semantic_hard_composite_improved_vs_v5": false,
-    "improved_vs_v5_best_objective_combo": false,
-    "alignment_only_is_already_sufficient": false,
-    "persistence_branch_actually_contributed": false,
-    "full_validation_non_catastrophic": true,
-    "persistence_declared_but_inactive_any": true,
-    "persistence_declared_but_inactive_all": true,
-    "improved_vs_current_cropenc_baseline": true,
-    "improved_vs_v6_best_objective_combo": false,
-    "best_v7_objective_combo": "v7_calibration_plus_active_persistence_topk1",
-    "best_v7_full_validation_endpoint_l2": 0.0008026909849500561,
-    "best_v7_semantic_hard_composite_score": 0.0006690374909876248,
-    "best_alignment_only_run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
-    "best_persistence_run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
-    "best_effective_persistence_run_name": "none",
+    "true_new_best_not_warm_start_inherited": false,
+    "actual_gate_positive_ratio_below_0_30": true,
+    "semantic_hard_composite_improved_vs_v6": false,
+    "cross_seed_support_present": true,
     "overall_best_run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
     "semantic_hard_best_run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
-    "restricted_next_step_enum": [
-      "alignment_only_is_true_mainline",
-      "persistence_is_load_bearing",
-      "persistence_declared_but_not_active",
-      "still_cannot_disambiguate"
-    ],
-    "next_step_choice": "persistence_declared_but_not_active"
+    "best_effective_persistence_run_name": "none",
+    "alignment_only_is_already_sufficient": true,
+    "persistence_branch_actually_contributed": false,
+    "persistence_declared_but_inactive_any": true,
+    "persistence_declared_but_inactive_all": true,
+    "next_step_choice": "alignment_only_is_true_mainline"
   },
-  "evaluation_cache": {
-    "path": "",
-    "cache_hits": 0,
-    "cache_misses": 0,
-    "cached_run_count": 0,
-    "mode": "derived_from_final_metrics_only"
-  }
+  "notes": [
+    "true_new_best_not_warm_start_inherited uses checkpoint lineage via best checkpoint global_step > warm-start anchor global_step for the same seed",
+    "cross_seed_support_present requires at least two seeds whose per-seed family verdict supports the repaired alignment-only conclusion",
+    "best_effective_persistence_run_name stays 'none' unless persistence telemetry is both declared and effective"
+  ]
 }
