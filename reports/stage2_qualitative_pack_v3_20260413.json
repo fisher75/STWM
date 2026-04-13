@@ -4,7 +4,7 @@
   "selection_policy": {
     "base_panel": "semantic-hard subsets from protocol_v2 manifest",
     "taxonomy": [
-      "persistence_active_improved_cases",
+      "persistence_declared_probe_cases",
       "alignment_only_wins_cases",
       "persistence_declared_but_inactive_cases",
       "unresolved_or_failure_cases"
@@ -23,7 +23,7 @@
   "cases": [
     {
       "case_id": "stage2_000",
-      "group": "persistence_active_improved_cases",
+      "group": "persistence_declared_probe_cases",
       "dataset_source": "VSPW",
       "clip_id": "2097_HVti7xTm2ow",
       "dataset_index": 4,
@@ -32,8 +32,8 @@
         "crossing_or_interaction_ambiguity",
         "small_object_or_low_area"
       ],
-      "why_selected": "persistence branch beats alignment-only and baseline envelope on semantic-hard clips",
-      "qualitative_interpretation": "persistence branch appears active and helpful on this clip",
+      "why_selected": "persistence-declared checkpoint looked favorable on this semantic-hard clip, but v7 repair audit marked persistence telemetry inactive; keep only as probe case",
+      "qualitative_interpretation": "this clip visually favors the persistence-declared sidecar checkpoint, but it is not valid evidence that the persistence branch became effective",
       "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/2097_HVti7xTm2ow/origin/00004503.jpg",
       "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_active_improved_cases_stage2_000.png",
       "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
@@ -66,15 +66,15 @@
     },
     {
       "case_id": "stage2_001",
-      "group": "persistence_active_improved_cases",
+      "group": "persistence_declared_probe_cases",
       "dataset_source": "VSPW",
       "clip_id": "736_ML-JwZIxno0",
       "dataset_index": 35,
       "subset_tags": [
         "appearance_change_or_semantic_shift"
       ],
-      "why_selected": "persistence branch beats alignment-only and baseline envelope on semantic-hard clips",
-      "qualitative_interpretation": "persistence branch appears active and helpful on this clip",
+      "why_selected": "persistence-declared checkpoint looked favorable on this semantic-hard clip, but v7 repair audit marked persistence telemetry inactive; keep only as probe case",
+      "qualitative_interpretation": "this clip visually favors the persistence-declared sidecar checkpoint, but it is not valid evidence that the persistence branch became effective",
       "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/736_ML-JwZIxno0/origin/00001022.jpg",
       "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_active_improved_cases_stage2_001.png",
       "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
@@ -528,5 +528,11 @@
         }
       }
     }
-  ]
+  ],
+  "best_effective_persistence_run": "none",
+  "v7_repair_verdict": {
+    "alignment_only_is_already_sufficient": true,
+    "persistence_branch_actually_contributed": false,
+    "next_step_choice": "alignment_only_is_true_mainline"
+  }
 }
