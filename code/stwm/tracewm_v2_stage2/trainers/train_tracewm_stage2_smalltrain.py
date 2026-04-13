@@ -100,6 +100,8 @@ def parse_args() -> Any:
             "v4sparse",
             "v5sparse",
             "v6sparse",
+            "v7alignonly",
+            "v7alignpersist",
         ],
         help="Optional Stage2 semantic objective rescue pilot; default keeps the Wave1/Wave2 objective unchanged.",
     )
@@ -1240,12 +1242,14 @@ def _semantic_rescue_loss(
             "semantic_bootstrap_cache_hit_ratio": float(cache_hit_ratio),
         }
 
-    if mode_norm.startswith("v6"):
+    if mode_norm.startswith("v6") or mode_norm.startswith("v7"):
         readout_align_weight = float(confidence_gated_alignment_loss_weight)
         sparse_weight = float(sparse_persistence_contrastive_loss_weight)
         if readout_align_weight <= 0.0:
             readout_align_weight = 1.0
-        if sparse_weight <= 0.0:
+        if mode_norm == "v7alignonly":
+            sparse_weight = 0.0
+        elif sparse_weight <= 0.0:
             sparse_weight = 0.05
 
         target, target_valid, cache_hit_ratio = _bootstrap_targets_from_batch(

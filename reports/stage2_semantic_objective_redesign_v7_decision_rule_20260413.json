@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-04-13T07:03:02.263375+00:00",
+  "rule_scope": "stage2_semantic_objective_redesign_v7",
+  "strict_success_conditions": {
+    "v7_runs_terminal": true,
+    "semantic_hard_composite_improved_vs_v5": true,
+    "improved_vs_v5_best_objective_combo": true,
+    "full_validation_non_catastrophic": true
+  },
+  "restricted_next_step_enum": [
+    "alignment_only_is_true_mainline",
+    "persistence_is_load_bearing",
+    "persistence_declared_but_not_active",
+    "still_cannot_disambiguate"
+  ],
+  "prohibited_if_disambiguation_missing": [
+    "freeze_stage2_core_mainline"
+  ],
+  "notes": [
+    "The v7 diagnosis must report non-null booleans for alignment-only sufficiency and persistence contribution.",
+    "If persistence is declared but inactive, it cannot be used as evidence for load-bearing persistence."
+  ]
+}
