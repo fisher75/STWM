@@ -1,0 +1,748 @@
+{
+  "generated_at_utc": "2026-04-12T17:16:16.020207+00:00",
+  "run_name": "stage2_semobjv6_topk1_g2_fb1_seed42_20260411",
+  "objective": "Stage2 training run on frozen Stage1 220m backbone",
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "legacy_semantic_source": "hand_crafted_stats",
+  "stage2_contract_path": "/home/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+  "stage2_data_binding": {
+    "core": [
+      "VSPW",
+      "VIPSeg"
+    ],
+    "optional_extension": [
+      "BURST"
+    ],
+    "excluded": [
+      {
+        "dataset_name": "TAO",
+        "reason": "access_ready"
+      },
+      {
+        "dataset_name": "VISOR",
+        "reason": "manual_gate"
+      }
+    ],
+    "run_datasets": [
+      "vspw",
+      "vipseg"
+    ]
+  },
+  "datasets_bound_for_train": [
+    "vspw",
+    "vipseg"
+  ],
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": 6,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0
+  },
+  "run_metadata": {
+    "run_name": "stage2_semobjv6_topk1_g2_fb1_seed42_20260411",
+    "started_at_utc": "2026-04-12T17:05:47.951953+00:00",
+    "cuda_visible_devices": "7",
+    "gpu_selection": {
+      "selected_gpu_id": 7,
+      "lease_id": "e330d0b9-ddc2-40d3-b160-90edfa1ce3e5",
+      "owner": "stage2_semobjv6_topk1_g2_fb1_seed42_20260411",
+      "mode": "single_gpu_only"
+    },
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "semantic_rescue_mode": "v6sparse",
+    "semantic_rescue_weight": 0.00015,
+    "semantic_bootstrap_cache_path": "/home/chen034/workspace/stwm/data/processed/stage2_real_bootstrap_cache_20260410/clip_vit_b32_core_trainval_required_subset.jsonl",
+    "semantic_bootstrap_target_dim": 512,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 1.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
+    "sparse_persistence_contrastive_loss_weight": 0.05,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 180,
+    "aux_loss_ramp_steps": 360,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "hard_topk_query_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.85,
+    "v6_max_affected_ratio": 0.15,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 2,
+    "v6_hard_negative_cap": 6,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 2,
+    "v6_two_level_pair_mining_enabled": true,
+    "v6_relaxed_motion_threshold": 0.08,
+    "v6_relaxed_area_jump_threshold": 0.06,
+    "v6_relaxed_small_query_threshold": 0.2,
+    "v6_relaxed_appearance_shift_threshold": 0.25,
+    "v6_relaxed_center_interaction_threshold": 0.1,
+    "semantic_hard_sidecar_enabled": true,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_bootstrap_cache_item_count": 384,
+    "skip_resume_optimizer": true,
+    "resume_optimizer_loaded": false,
+    "resume_optimizer_skip_reason": "explicit_skip_resume_optimizer",
+    "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt"
+  },
+  "training_budget": {
+    "train_steps_target": 3360,
+    "train_steps_completed": 3360,
+    "optimizer_steps_this_invocation": 360,
+    "batch_size": 8,
+    "eval_interval": 100,
+    "eval_max_batches": 32,
+    "save_every_n_steps": 100
+  },
+  "dataset_summary": {
+    "train": {
+      "VSPW": {
+        "sample_count": 128,
+        "source_count_before_limit": 2806,
+        "requested_max_samples_per_dataset": 128,
+        "full_dataset_used": false,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 128,
+        "source_count_before_limit": 2806,
+        "requested_max_samples_per_dataset": 128,
+        "full_dataset_used": false,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      }
+    },
+    "val": {
+      "VSPW": {
+        "sample_count": 64,
+        "source_count_before_limit": 343,
+        "requested_max_samples_per_dataset": 64,
+        "full_dataset_used": false,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 64,
+        "source_count_before_limit": 343,
+        "requested_max_samples_per_dataset": 64,
+        "full_dataset_used": false,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      }
+    }
+  },
+  "whether_full_train_used": false,
+  "whether_full_val_used": false,
+  "effective_train_sample_count_per_dataset": {
+    "VSPW": 128,
+    "VIPSeg": 128
+  },
+  "effective_val_sample_count_per_dataset": {
+    "VSPW": 64,
+    "VIPSeg": 64
+  },
+  "core_dataset_inputs": {
+    "ready": true,
+    "details": {
+      "VSPW": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 128,
+        "val_sample_count": 64,
+        "ready": true
+      },
+      "VIPSEG": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 128,
+        "val_sample_count": 64,
+        "ready": true
+      }
+    }
+  },
+  "stage1_backbone": {
+    "load_success": true,
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "model_preset": "prototype_220m",
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "parameter_count": 207615754,
+    "trainable_parameter_count": 0
+  },
+  "parameter_count_frozen": 207615754,
+  "parameter_count_trainable": 4189060,
+  "freeze_trainable_boundary": {
+    "stage1_trainable_parameter_count": 0,
+    "semantic_trainable_parameter_count": 4189060,
+    "stage1_grad_detected_after_backward": false,
+    "semantic_grad_norm_latest": 0.10492121844466175,
+    "boundary_ok": true
+  },
+  "semantic_branch_metrics": {
+    "train_gate_mean": 0.12435427684750822,
+    "train_semantic_input_nonempty_ratio": 1.0,
+    "semantic_crop_size": 64,
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "legacy_semantic_feature_dim": 10,
+    "semantic_rescue_mode": "v6sparse",
+    "semantic_rescue_weight": 0.00015,
+    "semantic_bootstrap_target_dim": 512,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 1.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
+    "sparse_persistence_contrastive_loss_weight": 0.05,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 180,
+    "aux_loss_ramp_steps": 360,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "hard_topk_query_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.85,
+    "v6_max_affected_ratio": 0.15,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 2,
+    "v6_hard_negative_cap": 6,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 2,
+    "v6_two_level_pair_mining_enabled": true,
+    "v6_relaxed_motion_threshold": 0.08,
+    "v6_relaxed_area_jump_threshold": 0.06,
+    "v6_relaxed_small_query_threshold": 0.2,
+    "v6_relaxed_appearance_shift_threshold": 0.25,
+    "v6_relaxed_center_interaction_threshold": 0.1,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_rescue_loss_mean": 0.652819837960932,
+    "semantic_alignment_loss_mean": 0.0,
+    "query_persistence_consistency_loss_mean": 0.0,
+    "readout_semantic_alignment_loss_mean": 0.652819837960932,
+    "persistence_contrastive_or_ranking_loss_mean": 0.0,
+    "confidence_gated_alignment_loss_mean": 0.652819837960932,
+    "sparse_persistence_contrastive_loss_mean": 0.0,
+    "confidence_gated_affected_sample_ratio_mean": 0.125,
+    "low_confidence_sample_ratio_mean": 1.0,
+    "effective_pair_coverage_ratio_mean": 0.0,
+    "positive_pair_count_mean": 0.0,
+    "hard_negative_count_mean": 0.0,
+    "actual_gate_positive_ratio_mean": 0.125,
+    "activated_query_count_mean": 1.0,
+    "activated_query_ratio_mean": 0.125,
+    "per_batch_sparsity_mean": 0.125,
+    "per_batch_sparsity_std_mean": 0.0,
+    "raw_quantile_ratio_mean": 0.125,
+    "capped_ratio_mean": 0.125,
+    "valuable_pair_ratio_mean": 0.0,
+    "fallback_trigger_rate_mean": 0.0,
+    "guaranteed_pair_count_mean": 0.0,
+    "strict_pair_ratio_mean": 0.0,
+    "fallback_pair_ratio_mean": 0.0,
+    "sparse_gate_selected_ratio_mean": 0.125,
+    "high_value_pair_ratio_mean": 0.0,
+    "high_value_pair_count_mean": 0.0,
+    "persistence_candidate_pair_count_mean": 0.0,
+    "aux_schedule_scale_mean": 0.12430555555555556,
+    "final_effective_aux_weight_mean": 1.8645833333333334e-05,
+    "final_effective_aux_weight": 7.458333333333333e-05,
+    "semantic_bootstrap_cache_hit_ratio_mean": 1.0,
+    "semantic_hard_sample_weight_mean": 1.0,
+    "semantic_bootstrap_cache_item_count": 384
+  },
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "teacher_forced_coord_loss",
+    "total_loss_usage": "reference_only"
+  },
+  "comparison_sorting": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "teacher_forced_coord_loss",
+    "total_loss_usage": "reference_only"
+  },
+  "teacher_forced_coord_loss": 3.02700085095072e-05,
+  "free_rollout_coord_mean_l2": 0.0011106466086385853,
+  "free_rollout_endpoint_l2": 0.001136954303602783,
+  "best_checkpoint_metric": {
+    "global_step": 3000,
+    "metrics": {
+      "teacher_forced_coord_loss": 3.02700085095072e-05,
+      "free_rollout_coord_mean_l2": 0.0011106466086385853,
+      "free_rollout_endpoint_l2": 0.001136954303602783,
+      "total_loss_reference": 3.0185054667466046e-05
+    },
+    "rank_key": [
+      0.001136954303602783,
+      0.0011106466086385853,
+      3.02700085095072e-05
+    ]
+  },
+  "latest_checkpoint_metric": {
+    "global_step": 3360,
+    "metrics": {
+      "teacher_forced_coord_loss": 0.00013230352010396018,
+      "free_rollout_coord_mean_l2": 0.005616972164716572,
+      "free_rollout_endpoint_l2": 0.00525749457301572,
+      "total_loss_reference": 0.00013230352010396018
+    },
+    "rank_key": [
+      0.00525749457301572,
+      0.005616972164716572,
+      0.00013230352010396018
+    ]
+  },
+  "semantic_hard_sidecar_metric": {
+    "enabled": true,
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/best_semantic_hard.pt",
+    "exists": true,
+    "global_step": 3200,
+    "semantic_hard_sidecar_score": 0.001110397582539381,
+    "metrics": {
+      "teacher_forced_coord_loss": 1.526604673693864e-06,
+      "free_rollout_coord_mean_l2": 0.0011103253525037032,
+      "free_rollout_endpoint_l2": 0.0011104285382689573,
+      "total_loss_reference": 1.532098144707561e-06
+    },
+    "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+  },
+  "sidecar_checkpoint_selection": {
+    "overall_best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/best.pt",
+    "semantic_hard_best_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/best_semantic_hard.pt",
+    "overall_best_global_step": 3000,
+    "semantic_hard_best_global_step": 3200,
+    "same_checkpoint_selected": false,
+    "sidecar_truly_diverged": true
+  },
+  "overall_vs_semantic_hard_best_delta": {
+    "same_step": false,
+    "endpoint_l2_delta": -2.6525765333825727e-05,
+    "coord_mean_l2_delta": -3.212561348821426e-07,
+    "semantic_hard_sidecar_score_delta": -1.8664412574142652e-05
+  },
+  "train_split_counts_used": {
+    "VSPW": 128,
+    "VIPSeg": 128
+  },
+  "val_split_counts_used": {
+    "VSPW": 64,
+    "VIPSeg": 64
+  },
+  "train_split_total_count_used": 256,
+  "val_split_total_count_used": 128,
+  "frozen_parameter_count": 207615754,
+  "trainable_parameter_count": 4189060,
+  "boundary_ok": true,
+  "training_progress": {
+    "optimizer_steps": 360,
+    "effective_batch": 8,
+    "epochs_completed": 11.25,
+    "eval_interval": 100,
+    "save_every_n_steps": 100
+  },
+  "final_metrics": {
+    "teacher_forced_coord_loss": 3.02700085095072e-05,
+    "free_rollout_coord_mean_l2": 0.0011106466086385853,
+    "free_rollout_endpoint_l2": 0.001136954303602783,
+    "total_loss_reference": 3.0185054667466046e-05,
+    "tapvid_style_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "tapvid3d_limited_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "semantic_branch_metrics": {
+      "eval_gate_mean": 0.14864685126515323,
+      "semantic_input_nonempty_ratio": 1.0,
+      "eval_batches": 86
+    }
+  },
+  "best_metric_so_far": {
+    "global_step": 3000,
+    "metrics": {
+      "teacher_forced_coord_loss": 3.02700085095072e-05,
+      "free_rollout_coord_mean_l2": 0.0011106466086385853,
+      "free_rollout_endpoint_l2": 0.001136954303602783,
+      "total_loss_reference": 3.0185054667466046e-05,
+      "tapvid_style_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "tapvid3d_limited_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "semantic_branch_metrics": {
+        "eval_gate_mean": 0.14864685126515323,
+        "semantic_input_nonempty_ratio": 1.0,
+        "eval_batches": 86
+      }
+    },
+    "rank_key": [
+      0.001136954303602783,
+      0.0011106466086385853,
+      3.02700085095072e-05
+    ]
+  },
+  "eval_history": [
+    {
+      "global_step": 1000,
+      "metrics": {
+        "teacher_forced_coord_loss": 7.269212835415405e-05,
+        "free_rollout_coord_mean_l2": 0.007109660622677372,
+        "free_rollout_endpoint_l2": 0.007114655677631019,
+        "total_loss_reference": 7.26172043065416e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.17717083716808363,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.007114655677631019,
+        0.007109660622677372,
+        7.269212835415405e-05
+      ]
+    },
+    {
+      "global_step": 2000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.5308251233047497e-05,
+        "free_rollout_coord_mean_l2": 0.002900034216376505,
+        "free_rollout_endpoint_l2": 0.0029253532061945245,
+        "total_loss_reference": 3.522842128531497e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.1679561178005019,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0029253532061945245,
+        0.002900034216376505,
+        3.5308251233047497e-05
+      ]
+    },
+    {
+      "global_step": 3000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.02700085095072e-05,
+        "free_rollout_coord_mean_l2": 0.0011106466086385853,
+        "free_rollout_endpoint_l2": 0.001136954303602783,
+        "total_loss_reference": 3.0185054667466046e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.14864685126515323,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.001136954303602783,
+        0.0011106466086385853,
+        3.02700085095072e-05
+      ]
+    },
+    {
+      "global_step": 3100,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.00016066036823758623,
+        "free_rollout_coord_mean_l2": 0.007074693305185065,
+        "free_rollout_endpoint_l2": 0.006716153118759394,
+        "total_loss_reference": 0.00016066036823758623,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.1198283308185637,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 16
+        }
+      },
+      "rank_key": [
+        0.006716153118759394,
+        0.007074693305185065,
+        0.00016066036823758623
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.9973625322230735e-05,
+          "free_rollout_coord_mean_l2": 0.006069833078445532,
+          "free_rollout_endpoint_l2": 0.006069878737131755,
+          "total_loss_reference": 3.9683246723143387e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.11947479099035263,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.006069865039525888
+      }
+    },
+    {
+      "global_step": 3200,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.0001130753837621512,
+        "free_rollout_coord_mean_l2": 0.0019450074250926264,
+        "free_rollout_endpoint_l2": 0.0015848166149226017,
+        "total_loss_reference": 0.0001130753837621512,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.11828970583155751,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 16
+        }
+      },
+      "rank_key": [
+        0.0015848166149226017,
+        0.0019450074250926264,
+        0.0001130753837621512
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 1.526604673693864e-06,
+          "free_rollout_coord_mean_l2": 0.0011103253525037032,
+          "free_rollout_endpoint_l2": 0.0011104285382689573,
+          "total_loss_reference": 1.532098144707561e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.11809766441583633,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.001110397582539381
+      }
+    },
+    {
+      "global_step": 3300,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.00010269689666131399,
+        "free_rollout_coord_mean_l2": 0.002786058306810446,
+        "free_rollout_endpoint_l2": 0.002429097265121527,
+        "total_loss_reference": 0.00010269689666131399,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.11782836634665728,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 16
+        }
+      },
+      "rank_key": [
+        0.002429097265121527,
+        0.002786058306810446,
+        0.00010269689666131399
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 4.360209948992213e-06,
+          "free_rollout_coord_mean_l2": 0.0019482907433158313,
+          "free_rollout_endpoint_l2": 0.0019483260619334686,
+          "total_loss_reference": 4.354939210315933e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.11764919906854629,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0019483154663481775
+      }
+    },
+    {
+      "global_step": 3360,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.00013230352010396018,
+        "free_rollout_coord_mean_l2": 0.005616972164716572,
+        "free_rollout_endpoint_l2": 0.00525749457301572,
+        "total_loss_reference": 0.00013230352010396018,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.11717673437669873,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 16
+        }
+      },
+      "rank_key": [
+        0.00525749457301572,
+        0.005616972164716572,
+        0.00013230352010396018
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 2.3747669706025568e-05,
+          "free_rollout_coord_mean_l2": 0.004841474290841665,
+          "free_rollout_endpoint_l2": 0.004841566849977543,
+          "total_loss_reference": 2.3683423933107406e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.11702202707529068,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.004841539082236779
+      }
+    }
+  ],
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/latest.pt",
+    "best_semantic_hard": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/best_semantic_hard.pt",
+    "step_checkpoints": [
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/step_0003100.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/step_0003200.pt",
+      "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/step_0003300.pt"
+    ],
+    "resume_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt",
+    "auto_resume_latest": false
+  },
+  "run_stable": true,
+  "status": "completed",
+  "selected_gpu_id": 7,
+  "lease_id": "e330d0b9-ddc2-40d3-b160-90edfa1ce3e5",
+  "objective_combo": "hard_topk_query_gating_v6_k1+guaranteed_sparse_persistence_g2+two_level_pair_mining+conservative_delayed_aux_schedule",
+  "resume_global_step": 3000
+}
