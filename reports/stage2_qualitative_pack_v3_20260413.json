@@ -1,0 +1,532 @@
+{
+  "generated_at_utc": "2026-04-13T07:37:58.783440+00:00",
+  "pack_type": "stage2_qualitative_pack_v3",
+  "selection_policy": {
+    "base_panel": "semantic-hard subsets from protocol_v2 manifest",
+    "taxonomy": [
+      "persistence_active_improved_cases",
+      "alignment_only_wins_cases",
+      "persistence_declared_but_inactive_cases",
+      "unresolved_or_failure_cases"
+    ],
+    "persistence_vs_alignment_delta_threshold": 0.003,
+    "diversity_enforced": "unique (dataset, clip_id) per group",
+    "target_case_count_per_group": 4
+  },
+  "best_cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+  "best_legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+  "best_alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+  "best_alignment_only_checkpoint_used": "best_semantic_hard.pt",
+  "best_persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+  "best_persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+  "persistence_declared_but_inactive_all": true,
+  "cases": [
+    {
+      "case_id": "stage2_000",
+      "group": "persistence_active_improved_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "2097_HVti7xTm2ow",
+      "dataset_index": 4,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "persistence branch beats alignment-only and baseline envelope on semantic-hard clips",
+      "qualitative_interpretation": "persistence branch appears active and helpful on this clip",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/2097_HVti7xTm2ow/origin/00004503.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_active_improved_cases_stage2_000.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": -0.002512982115149498,
+      "persist_margin": 0.0023790572013240308,
+      "persist_vs_align_margin": 0.004892039316473529,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.0028389915823936462,
+          "free_rollout_coord_mean_l2": 0.00814290251582861
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.007210307288914919,
+          "free_rollout_coord_mean_l2": 0.009328057058155537
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.005351973697543144,
+          "free_rollout_coord_mean_l2": 0.0038361004553735256
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0004599343810696155,
+          "free_rollout_coord_mean_l2": 0.0021204191725701094
+        }
+      }
+    },
+    {
+      "case_id": "stage2_001",
+      "group": "persistence_active_improved_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "736_ML-JwZIxno0",
+      "dataset_index": 35,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "persistence branch beats alignment-only and baseline envelope on semantic-hard clips",
+      "qualitative_interpretation": "persistence branch appears active and helpful on this clip",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/736_ML-JwZIxno0/origin/00001022.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_active_improved_cases_stage2_001.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.0030128504149615765,
+      "persist_margin": 0.0063304214854724705,
+      "persist_vs_align_margin": 0.003317571070510894,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.007727501448243856,
+          "free_rollout_coord_mean_l2": 0.010936444625258446
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.007113047409802675,
+          "free_rollout_coord_mean_l2": 0.005771143361926079
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.004100196994841099,
+          "free_rollout_coord_mean_l2": 0.003517002332955599
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0007826259243302047,
+          "free_rollout_coord_mean_l2": 0.0014934359351173043
+        }
+      }
+    },
+    {
+      "case_id": "stage2_002",
+      "group": "alignment_only_wins_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1010_kI0mOZirPGs",
+      "dataset_index": 11,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "alignment-only branch beats persistence-declared branch and baseline envelope",
+      "qualitative_interpretation": "calibration-only branch appears sufficient on this clip",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1010_kI0mOZirPGs/origin/00000062.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/alignment_only_wins_cases_stage2_002.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.006433836126234382,
+      "persist_margin": 0.0013146973215043545,
+      "persist_vs_align_margin": -0.005119138804730028,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.007319517899304628,
+          "free_rollout_coord_mean_l2": 0.005445137619972229
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.006844580639153719,
+          "free_rollout_coord_mean_l2": 0.006198499817401171
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.00041074451291933656,
+          "free_rollout_coord_mean_l2": 0.002195405773818493
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0055298833176493645,
+          "free_rollout_coord_mean_l2": 0.00257979822345078
+        }
+      }
+    },
+    {
+      "case_id": "stage2_003",
+      "group": "alignment_only_wins_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "794_701d4x0AN9E",
+      "dataset_index": 36,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "alignment-only branch beats persistence-declared branch and baseline envelope",
+      "qualitative_interpretation": "calibration-only branch appears sufficient on this clip",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/794_701d4x0AN9E/origin/00000152.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/alignment_only_wins_cases_stage2_003.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.006067004636861384,
+      "persist_margin": 0.0017647077329456806,
+      "persist_vs_align_margin": -0.004302296903915703,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.029255900532007217,
+          "free_rollout_coord_mean_l2": 0.007483889348804951
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.007812430616468191,
+          "free_rollout_coord_mean_l2": 0.012286709621548653
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.0017454259796068072,
+          "free_rollout_coord_mean_l2": 0.002926462795585394
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0060477228835225105,
+          "free_rollout_coord_mean_l2": 0.003833408933132887
+        }
+      }
+    },
+    {
+      "case_id": "stage2_004",
+      "group": "persistence_declared_but_inactive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1010_kI0mOZirPGs",
+      "dataset_index": 11,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "persistence was declared but did not show active gain pattern",
+      "qualitative_interpretation": "declared persistence likely inactive or non-contributive",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1010_kI0mOZirPGs/origin/00000062.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_declared_but_inactive_cases_stage2_004.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.006433836126234382,
+      "persist_margin": 0.0013146973215043545,
+      "persist_vs_align_margin": -0.005119138804730028,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.007319517899304628,
+          "free_rollout_coord_mean_l2": 0.005445137619972229
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.006844580639153719,
+          "free_rollout_coord_mean_l2": 0.006198499817401171
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.00041074451291933656,
+          "free_rollout_coord_mean_l2": 0.002195405773818493
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0055298833176493645,
+          "free_rollout_coord_mean_l2": 0.00257979822345078
+        }
+      }
+    },
+    {
+      "case_id": "stage2_005",
+      "group": "persistence_declared_but_inactive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "794_701d4x0AN9E",
+      "dataset_index": 36,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "persistence was declared but did not show active gain pattern",
+      "qualitative_interpretation": "declared persistence likely inactive or non-contributive",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/794_701d4x0AN9E/origin/00000152.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_declared_but_inactive_cases_stage2_005.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.006067004636861384,
+      "persist_margin": 0.0017647077329456806,
+      "persist_vs_align_margin": -0.004302296903915703,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.029255900532007217,
+          "free_rollout_coord_mean_l2": 0.007483889348804951
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.007812430616468191,
+          "free_rollout_coord_mean_l2": 0.012286709621548653
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.0017454259796068072,
+          "free_rollout_coord_mean_l2": 0.002926462795585394
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0060477228835225105,
+          "free_rollout_coord_mean_l2": 0.003833408933132887
+        }
+      }
+    },
+    {
+      "case_id": "stage2_006",
+      "group": "persistence_declared_but_inactive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1272_kDLzAZhFEVY",
+      "dataset_index": 42,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "persistence was declared but did not show active gain pattern",
+      "qualitative_interpretation": "declared persistence likely inactive or non-contributive",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1272_kDLzAZhFEVY/origin/00000092.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_declared_but_inactive_cases_stage2_006.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.000874383607879281,
+      "persist_margin": -0.002009220654144883,
+      "persist_vs_align_margin": -0.002883604262024164,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.004111249931156635,
+          "free_rollout_coord_mean_l2": 0.006438568700104952
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.002918958431109786,
+          "free_rollout_coord_mean_l2": 0.004850790370255709
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.002044574823230505,
+          "free_rollout_coord_mean_l2": 0.002984618302434683
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.004928179085254669,
+          "free_rollout_coord_mean_l2": 0.002556079998612404
+        }
+      }
+    },
+    {
+      "case_id": "stage2_007",
+      "group": "persistence_declared_but_inactive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1132_ngMJTWUanCA",
+      "dataset_index": 10,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "persistence was declared but did not show active gain pattern",
+      "qualitative_interpretation": "declared persistence likely inactive or non-contributive",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1132_ngMJTWUanCA/origin/00000288.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/persistence_declared_but_inactive_cases_stage2_007.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.0017414854373782873,
+      "persist_margin": -0.0007124298717826605,
+      "persist_vs_align_margin": -0.002453915309160948,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.0038999763783067465,
+          "free_rollout_coord_mean_l2": 0.006558810826390982
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.004483792930841446,
+          "free_rollout_coord_mean_l2": 0.0066763488575816154
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.002158490940928459,
+          "free_rollout_coord_mean_l2": 0.0022724373266100883
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.004612406250089407,
+          "free_rollout_coord_mean_l2": 0.0035115398932248354
+        }
+      }
+    },
+    {
+      "case_id": "stage2_008",
+      "group": "unresolved_or_failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "281__lcLNaySFDc",
+      "dataset_index": 56,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "neither branch clearly dominates under semantic-hard stress",
+      "qualitative_interpretation": "remaining ambiguity/failure case",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/281__lcLNaySFDc/origin/00003287.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/unresolved_or_failure_cases_stage2_008.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": -0.0026326500810682774,
+      "persist_margin": -0.0033896449021995068,
+      "persist_vs_align_margin": -0.0007569948211312294,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.002165868878364563,
+          "free_rollout_coord_mean_l2": 0.008470561355352402
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.007720428053289652,
+          "free_rollout_coord_mean_l2": 0.006808235310018063
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.00479851895943284,
+          "free_rollout_coord_mean_l2": 0.0026626745238900185
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.00555551378056407,
+          "free_rollout_coord_mean_l2": 0.003159877145662904
+        }
+      }
+    },
+    {
+      "case_id": "stage2_009",
+      "group": "unresolved_or_failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "127_-hIVCYO4C90",
+      "dataset_index": 0,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "neither branch clearly dominates under semantic-hard stress",
+      "qualitative_interpretation": "remaining ambiguity/failure case",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/127_-hIVCYO4C90/origin/00001622.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/unresolved_or_failure_cases_stage2_009.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": -0.002614912751596421,
+      "persist_margin": 0.00013032671995460987,
+      "persist_vs_align_margin": 0.002745239471551031,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.008940249681472778,
+          "free_rollout_coord_mean_l2": 0.008177815936505795
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.0008644094341434538,
+          "free_rollout_coord_mean_l2": 0.005755928345024586
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.003479322185739875,
+          "free_rollout_coord_mean_l2": 0.0025964034721255302
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.000734082714188844,
+          "free_rollout_coord_mean_l2": 0.00146861735265702
+        }
+      }
+    },
+    {
+      "case_id": "stage2_010",
+      "group": "unresolved_or_failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "2097_HVti7xTm2ow",
+      "dataset_index": 4,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "neither branch clearly dominates under semantic-hard stress",
+      "qualitative_interpretation": "remaining ambiguity/failure case",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/2097_HVti7xTm2ow/origin/00004503.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/unresolved_or_failure_cases_stage2_010.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": -0.002512982115149498,
+      "persist_margin": 0.0023790572013240308,
+      "persist_vs_align_margin": 0.004892039316473529,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.0028389915823936462,
+          "free_rollout_coord_mean_l2": 0.00814290251582861
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.007210307288914919,
+          "free_rollout_coord_mean_l2": 0.009328057058155537
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.005351973697543144,
+          "free_rollout_coord_mean_l2": 0.0038361004553735256
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.0004599343810696155,
+          "free_rollout_coord_mean_l2": 0.0021204191725701094
+        }
+      }
+    },
+    {
+      "case_id": "stage2_011",
+      "group": "unresolved_or_failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1272_kDLzAZhFEVY",
+      "dataset_index": 42,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "neither branch clearly dominates under semantic-hard stress",
+      "qualitative_interpretation": "remaining ambiguity/failure case",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1272_kDLzAZhFEVY/origin/00000092.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v3_20260413/stage2/unresolved_or_failure_cases_stage2_011.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "alignment_only_run": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "alignment_only_checkpoint_used": "best_semantic_hard.pt",
+      "persistence_declared_run": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "persistence_declared_checkpoint_used": "best_semantic_hard.pt",
+      "align_margin": 0.000874383607879281,
+      "persist_margin": -0.002009220654144883,
+      "persist_vs_align_margin": -0.002883604262024164,
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.004111249931156635,
+          "free_rollout_coord_mean_l2": 0.006438568700104952
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.002918958431109786,
+          "free_rollout_coord_mean_l2": 0.004850790370255709
+        },
+        "alignment_only": {
+          "free_rollout_endpoint_l2": 0.002044574823230505,
+          "free_rollout_coord_mean_l2": 0.002984618302434683
+        },
+        "persistence_declared": {
+          "free_rollout_endpoint_l2": 0.004928179085254669,
+          "free_rollout_coord_mean_l2": 0.002556079998612404
+        }
+      }
+    }
+  ]
+}

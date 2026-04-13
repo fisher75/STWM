@@ -1,0 +1,148 @@
+{
+  "generated_at_utc": "2026-04-13T07:22:28.872069+00:00",
+  "run_name": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
+  "status": "completed",
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "datasets_bound_for_train": [
+    "vspw",
+    "vipseg"
+  ],
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": 6,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0
+  },
+  "run_metadata": {
+    "run_name": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
+    "started_at_utc": "2026-04-13T07:10:13.122321+00:00",
+    "cuda_visible_devices": "6",
+    "gpu_selection": {
+      "selected_gpu_id": 6,
+      "lease_id": "2aeaed21-4fd4-4565-9dbf-bbfbc12c1a38",
+      "owner": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
+      "mode": "single_gpu_only"
+    },
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "semantic_rescue_mode": "v7alignpersist",
+    "semantic_rescue_weight": 0.00015,
+    "semantic_bootstrap_cache_path": "/home/chen034/workspace/stwm/data/processed/stage2_real_bootstrap_cache_20260410/clip_vit_b32_core_trainval_required_subset.jsonl",
+    "semantic_bootstrap_target_dim": 512,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 1.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
+    "sparse_persistence_contrastive_loss_weight": 0.05,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 180,
+    "aux_loss_ramp_steps": 360,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "capped_quantile_sparse_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.8,
+    "v6_max_affected_ratio": 0.15,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 2,
+    "v6_hard_negative_cap": 6,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 2,
+    "v6_two_level_pair_mining_enabled": true,
+    "v6_relaxed_motion_threshold": 0.08,
+    "v6_relaxed_area_jump_threshold": 0.06,
+    "v6_relaxed_small_query_threshold": 0.2,
+    "v6_relaxed_appearance_shift_threshold": 0.25,
+    "v6_relaxed_center_interaction_threshold": 0.1,
+    "semantic_hard_sidecar_enabled": true,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_bootstrap_cache_item_count": 384,
+    "skip_resume_optimizer": true,
+    "resume_optimizer_loaded": false,
+    "resume_optimizer_skip_reason": "explicit_skip_resume_optimizer",
+    "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/best.pt"
+  },
+  "global_step": 8360,
+  "train_steps_target": 8360,
+  "progress_ratio": 1.0,
+  "whether_full_train_used": false,
+  "whether_full_val_used": false,
+  "effective_train_sample_count_per_dataset": {
+    "VSPW": 128,
+    "VIPSeg": 128
+  },
+  "effective_val_sample_count_per_dataset": {
+    "VSPW": 64,
+    "VIPSeg": 64
+  },
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed123_20260413/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed123_20260413/latest.pt",
+    "best_exists": true,
+    "latest_exists": true
+  },
+  "latest_eval_metrics": {
+    "teacher_forced_coord_loss": 0.00010289414765907168,
+    "free_rollout_coord_mean_l2": 0.0018209585614386015,
+    "free_rollout_endpoint_l2": 0.0014598349407606293,
+    "total_loss_reference": 0.00010289414765907168
+  },
+  "best_metric_so_far": {
+    "global_step": 8000,
+    "metrics": {
+      "teacher_forced_coord_loss": 2.9777691952834867e-05,
+      "free_rollout_coord_mean_l2": 0.000777029686230004,
+      "free_rollout_endpoint_l2": 0.0008026909849500561,
+      "total_loss_reference": 2.9691506242597878e-05,
+      "tapvid_style_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "tapvid3d_limited_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "semantic_branch_metrics": {
+        "eval_gate_mean": 0.02339230085788078,
+        "semantic_input_nonempty_ratio": 1.0,
+        "eval_batches": 86
+      }
+    },
+    "rank_key": [
+      0.0008026909849500561,
+      0.000777029686230004,
+      2.9777691952834867e-05
+    ]
+  }
+}
