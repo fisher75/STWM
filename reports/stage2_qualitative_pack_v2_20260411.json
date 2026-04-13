@@ -1,0 +1,288 @@
+{
+  "generated_at_utc": "2026-04-13T06:17:22.237101+00:00",
+  "pack_type": "stage2_qualitative_pack_v2",
+  "selection_policy": {
+    "base_panel": "semantic-hard subsets from protocol_v2 manifest",
+    "positive_margin_threshold": 0.005,
+    "failure_margin_threshold": 0.005,
+    "diversity_enforced": "unique (dataset, clip_id) per group",
+    "target_case_count_per_group": 4
+  },
+  "best_cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+  "best_legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+  "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+  "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+  "cases": [
+    {
+      "case_id": "stage2_000",
+      "group": "positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1083_GeoAbL3JXdQ",
+      "dataset_index": 16,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "best rescue beats both cropenc and legacysem on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard positive case where rescue readout calibration helps future localization",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1083_GeoAbL3JXdQ/origin/00000017.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/positive_cases_stage2_000.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.022354988381266594,
+          "free_rollout_coord_mean_l2": 0.01059434749186039
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.03159131109714508,
+          "free_rollout_coord_mean_l2": 0.009180992841720581
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.00669486727565527,
+          "free_rollout_coord_mean_l2": 0.0022513591684401035
+        }
+      }
+    },
+    {
+      "case_id": "stage2_001",
+      "group": "positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1182_tNbLX2wX4Bs",
+      "dataset_index": 28,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "best rescue beats both cropenc and legacysem on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard positive case where rescue readout calibration helps future localization",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1182_tNbLX2wX4Bs/origin/00000752.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/positive_cases_stage2_001.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.011949606239795685,
+          "free_rollout_coord_mean_l2": 0.00925899762660265
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.011176434345543385,
+          "free_rollout_coord_mean_l2": 0.010451444424688816
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.0012929339427500963,
+          "free_rollout_coord_mean_l2": 0.0027626450173556805
+        }
+      }
+    },
+    {
+      "case_id": "stage2_002",
+      "group": "positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "93_qZmq-lc8lAg",
+      "dataset_index": 7,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "best rescue beats both cropenc and legacysem on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard positive case where rescue readout calibration helps future localization",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/93_qZmq-lc8lAg/origin/00004667.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/positive_cases_stage2_002.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.0074945311062037945,
+          "free_rollout_coord_mean_l2": 0.007729784585535526
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.028762808069586754,
+          "free_rollout_coord_mean_l2": 0.011393248103559017
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.0018682859372347593,
+          "free_rollout_coord_mean_l2": 0.0022044158540666103
+        }
+      }
+    },
+    {
+      "case_id": "stage2_003",
+      "group": "positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "112_0OB2IP1enjU",
+      "dataset_index": 2,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "best rescue beats both cropenc and legacysem on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard positive case where rescue readout calibration helps future localization",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/112_0OB2IP1enjU/origin/00000061.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/positive_cases_stage2_003.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.006628049071878195,
+          "free_rollout_coord_mean_l2": 0.010407458990812302
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.008836922235786915,
+          "free_rollout_coord_mean_l2": 0.008517580106854439
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.0010938693303614855,
+          "free_rollout_coord_mean_l2": 0.002154117450118065
+        }
+      }
+    },
+    {
+      "case_id": "stage2_004",
+      "group": "failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1466_X9tU8ybzcFs",
+      "dataset_index": 14,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "best rescue still loses against at least one baseline on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard failure case where rescue still does not stabilize future semantic discrimination",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1466_X9tU8ybzcFs/origin/00000243.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/failure_cases_stage2_004.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.008995117619633675,
+          "free_rollout_coord_mean_l2": 0.010002092458307743
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.0015510874800384045,
+          "free_rollout_coord_mean_l2": 0.0050319042056798935
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.0041754464618861675,
+          "free_rollout_coord_mean_l2": 0.004577638115733862
+        }
+      }
+    },
+    {
+      "case_id": "stage2_005",
+      "group": "failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1132_ngMJTWUanCA",
+      "dataset_index": 10,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "best rescue still loses against at least one baseline on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard failure case where rescue still does not stabilize future semantic discrimination",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1132_ngMJTWUanCA/origin/00000288.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/failure_cases_stage2_005.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.007438435684889555,
+          "free_rollout_coord_mean_l2": 0.005512163043022156
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.0028285442385822535,
+          "free_rollout_coord_mean_l2": 0.007224631495773792
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.005044539924710989,
+          "free_rollout_coord_mean_l2": 0.003360253758728504
+        }
+      }
+    },
+    {
+      "case_id": "stage2_006",
+      "group": "failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1039_QZROp4t0doU",
+      "dataset_index": 22,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "best rescue still loses against at least one baseline on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard failure case where rescue still does not stabilize future semantic discrimination",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1039_QZROp4t0doU/origin/00000017.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/failure_cases_stage2_006.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.0018608857644721866,
+          "free_rollout_coord_mean_l2": 0.003958689048886299
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.028940124437212944,
+          "free_rollout_coord_mean_l2": 0.015182816423475742
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.003779995022341609,
+          "free_rollout_coord_mean_l2": 0.00282162893563509
+        }
+      }
+    },
+    {
+      "case_id": "stage2_007",
+      "group": "failure_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1047_CjUyIs7-IXQ",
+      "dataset_index": 23,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "best rescue still loses against at least one baseline on semantic-hard case",
+      "qualitative_interpretation": "semantic-hard failure case where rescue still does not stabilize future semantic discrimination",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1047_CjUyIs7-IXQ/origin/00001217.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage2/failure_cases_stage2_007.png",
+      "cropenc_run": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "legacysem_run": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "best_rescue_run": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "best_rescue_checkpoint_used": "best_semantic_hard.pt",
+      "metrics": {
+        "cropenc": {
+          "free_rollout_endpoint_l2": 0.006584633607417345,
+          "free_rollout_coord_mean_l2": 0.005577024072408676
+        },
+        "legacysem": {
+          "free_rollout_endpoint_l2": 0.0011284478241577744,
+          "free_rollout_coord_mean_l2": 0.007472021505236626
+        },
+        "best_rescue": {
+          "free_rollout_endpoint_l2": 0.0028180466033518314,
+          "free_rollout_coord_mean_l2": 0.0030535105615854263
+        }
+      }
+    }
+  ]
+}

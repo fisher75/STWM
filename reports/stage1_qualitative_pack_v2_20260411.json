@@ -1,0 +1,161 @@
+{
+  "generated_at_utc": "2026-04-13T06:16:29.479109+00:00",
+  "pack_type": "stage1_qualitative_pack_v2",
+  "source_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+  "selection_policy": {
+    "scan_window": 96,
+    "groups": [
+      "easy_cases",
+      "dynamic_change_cases",
+      "failure_boundary_cases"
+    ],
+    "target_case_count_per_group": 3,
+    "cross_group_dedup_key": [
+      "dataset",
+      "clip_id"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "stage1_000",
+      "bucket": "easy_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "127_-hIVCYO4C90",
+      "dataset_index": 0,
+      "why_selected": "low endpoint error under frozen trace rollout",
+      "qualitative_interpretation": "stable future trace continuation",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/127_-hIVCYO4C90/origin/00001622.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/easy_cases_stage1_000.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_001",
+      "bucket": "easy_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1643_T9npC-YHzuE",
+      "dataset_index": 1,
+      "why_selected": "low endpoint error under frozen trace rollout",
+      "qualitative_interpretation": "stable future trace continuation",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1643_T9npC-YHzuE/origin/00000543.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/easy_cases_stage1_001.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_002",
+      "bucket": "easy_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "112_0OB2IP1enjU",
+      "dataset_index": 2,
+      "why_selected": "low endpoint error under frozen trace rollout",
+      "qualitative_interpretation": "stable future trace continuation",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/112_0OB2IP1enjU/origin/00000061.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/easy_cases_stage1_002.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_003",
+      "bucket": "dynamic_change_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "231_-_w6ZFauJBI",
+      "dataset_index": 3,
+      "why_selected": "high motion / stronger future trace variation",
+      "qualitative_interpretation": "large motion regime with visible trajectory change",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/231_-_w6ZFauJBI/origin/00000586.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/dynamic_change_cases_stage1_003.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_004",
+      "bucket": "dynamic_change_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "2097_HVti7xTm2ow",
+      "dataset_index": 4,
+      "why_selected": "high motion / stronger future trace variation",
+      "qualitative_interpretation": "large motion regime with visible trajectory change",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/2097_HVti7xTm2ow/origin/00004503.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/dynamic_change_cases_stage1_004.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_005",
+      "bucket": "dynamic_change_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1296_oaQaoEjjG7I",
+      "dataset_index": 5,
+      "why_selected": "high motion / stronger future trace variation",
+      "qualitative_interpretation": "large motion regime with visible trajectory change",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1296_oaQaoEjjG7I/origin/00006775.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/dynamic_change_cases_stage1_005.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_006",
+      "bucket": "failure_boundary_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1678__qxxSOgqMpc",
+      "dataset_index": 6,
+      "why_selected": "highest endpoint error in bounded scan window",
+      "qualitative_interpretation": "clear failure or boundary behavior under frozen Stage1 rollout",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1678__qxxSOgqMpc/origin/00002628.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/failure_boundary_cases_stage1_006.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_007",
+      "bucket": "failure_boundary_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "93_qZmq-lc8lAg",
+      "dataset_index": 7,
+      "why_selected": "highest endpoint error in bounded scan window",
+      "qualitative_interpretation": "clear failure or boundary behavior under frozen Stage1 rollout",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/93_qZmq-lc8lAg/origin/00004667.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/failure_boundary_cases_stage1_007.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    },
+    {
+      "case_id": "stage1_008",
+      "bucket": "failure_boundary_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "50_9mZFBNGzmok",
+      "dataset_index": 8,
+      "why_selected": "highest endpoint error in bounded scan window",
+      "qualitative_interpretation": "clear failure or boundary behavior under frozen Stage1 rollout",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/50_9mZFBNGzmok/origin/00001780.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v2_20260411/stage1/failure_boundary_cases_stage1_008.png",
+      "metrics": {
+        "free_rollout_endpoint_l2": 0.08612348139286041,
+        "free_rollout_coord_mean_l2": 0.08612343668937683
+      }
+    }
+  ],
+  "notes": {
+    "matplotlib_available": true,
+    "pil_available": true,
+    "matplotlib_error": "",
+    "pil_error": ""
+  }
+}
