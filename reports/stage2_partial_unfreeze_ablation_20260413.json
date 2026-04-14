@@ -1,0 +1,110 @@
+{
+  "generated_at_utc": "2026-04-14T09:25:35.094631+00:00",
+  "status": "completed",
+  "winning_calibration_family": "topk1",
+  "frozen_calibration_best_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+  "frozen_calibration_best_checkpoint_metric": {
+    "global_step": 10500,
+    "metrics": {
+      "teacher_forced_coord_loss": 3.014592101484348e-05,
+      "free_rollout_coord_mean_l2": 0.0005033888573908999,
+      "free_rollout_endpoint_l2": 0.0005282461077264041,
+      "total_loss_reference": 3.0058316673588633e-05
+    },
+    "rank_key": [
+      0.0005282461077264041,
+      0.0005033888573908999,
+      3.014592101484348e-05
+    ]
+  },
+  "runs": [
+    {
+      "run_name": "stage2_partialunfreeze_topblock_seed42_20260413",
+      "seed": 42,
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 5500,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9959894559164227e-05,
+          "free_rollout_coord_mean_l2": 0.0006491923910082364,
+          "free_rollout_endpoint_l2": 0.0006753838883778053,
+          "total_loss_reference": 2.9872955285117714e-05
+        },
+        "rank_key": [
+          0.0006753838883778053,
+          0.0006491923910082364,
+          2.9959894559164227e-05
+        ]
+      },
+      "trainable_parameter_count_delta": 15942528,
+      "frozen_anchor_run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
+      "frozen_anchor_best_checkpoint_metric": {
+        "global_step": 5500,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9959894559164227e-05,
+          "free_rollout_coord_mean_l2": 0.0006491923910082364,
+          "free_rollout_endpoint_l2": 0.0006753838883778053,
+          "total_loss_reference": 2.9872955285117714e-05
+        },
+        "rank_key": [
+          0.0006753838883778053,
+          0.0006491923910082364,
+          2.9959894559164227e-05
+        ]
+      },
+      "boundary": {
+        "stage1_trainable_parameter_count": 15942528,
+        "semantic_trainable_parameter_count": 20131588,
+        "stage1_grad_detected_after_backward": true,
+        "semantic_grad_norm_latest": 0.7603803736382186,
+        "boundary_ok": true
+      },
+      "run_stable": true
+    },
+    {
+      "run_name": "stage2_partialunfreeze_topblock_seed123_20260413",
+      "seed": 123,
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "trainable_parameter_count_delta": 15942528,
+      "frozen_anchor_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+      "frozen_anchor_best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "boundary": {
+        "stage1_trainable_parameter_count": 15942528,
+        "semantic_trainable_parameter_count": 20131588,
+        "stage1_grad_detected_after_backward": true,
+        "semantic_grad_norm_latest": 0.07166338778164486,
+        "boundary_ok": true
+      },
+      "run_stable": true
+    }
+  ],
+  "partial_unfreeze_beats_frozen_calibration": false,
+  "forgetting_or_instability_detected": true
+}

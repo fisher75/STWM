@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-13T15:58:53.632583+00:00",
+  "generated_at_utc": "2026-04-14T08:02:09.284915+00:00",
   "run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
-  "status": "initialized",
+  "status": "completed",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "datasets_bound_for_train": [
     "vspw",
@@ -14,22 +14,22 @@
   "runtime": {
     "source": "recommended_runtime_json",
     "path": "/home/chen034/workspace/stwm/reports/stage2_calibration_only_fullscale_wave1_runtime_20260413.json",
-    "num_workers": 2,
-    "pin_memory": false,
-    "persistent_workers": false,
-    "prefetch_factor": 2,
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
     "single_gpu_only": true,
     "selected_gpu_id_runtime_json": 6,
-    "required_mem_gb": 40.0,
+    "required_mem_gb": 30.0,
     "safety_margin_gb": 8.0
   },
   "run_metadata": {
     "run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
-    "started_at_utc": "2026-04-13T15:58:52.743546+00:00",
-    "cuda_visible_devices": "5",
+    "started_at_utc": "2026-04-14T06:09:21.185064+00:00",
+    "cuda_visible_devices": "1",
     "gpu_selection": {
-      "selected_gpu_id": 5,
-      "lease_id": "58444513-d7b4-4a04-889e-420832ef8904",
+      "selected_gpu_id": 1,
+      "lease_id": "1370f808-eb6e-4c62-bcd9-e02db2d4dae2",
       "owner": "stage2_calonly_topk1_seed42_wave1_20260413",
       "mode": "single_gpu_only"
     },
@@ -96,9 +96,9 @@
     "stage1_partial_unfreeze_active": false,
     "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt"
   },
-  "global_step": 3000,
+  "global_step": 7000,
   "train_steps_target": 7000,
-  "progress_ratio": 0.42857142857142855,
+  "progress_ratio": 1.0,
   "whether_full_train_used": true,
   "whether_full_val_used": true,
   "effective_train_sample_count_per_dataset": {
@@ -113,22 +113,22 @@
     "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413",
     "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/best.pt",
     "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/latest.pt",
-    "best_exists": false,
-    "latest_exists": false
+    "best_exists": true,
+    "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 3.02700085095072e-05,
-    "free_rollout_coord_mean_l2": 0.0011106466086385853,
-    "free_rollout_endpoint_l2": 0.001136954303602783,
-    "total_loss_reference": 3.0185054667466046e-05
+    "teacher_forced_coord_loss": 2.9089502183402046e-05,
+    "free_rollout_coord_mean_l2": 0.001160231493576362,
+    "free_rollout_endpoint_l2": 0.001185360129748854,
+    "total_loss_reference": 2.900633566681801e-05
   },
   "best_metric_so_far": {
-    "global_step": 3000,
+    "global_step": 5500,
     "metrics": {
-      "teacher_forced_coord_loss": 3.02700085095072e-05,
-      "free_rollout_coord_mean_l2": 0.0011106466086385853,
-      "free_rollout_endpoint_l2": 0.001136954303602783,
-      "total_loss_reference": 3.0185054667466046e-05,
+      "teacher_forced_coord_loss": 2.9959894559164227e-05,
+      "free_rollout_coord_mean_l2": 0.0006491923910082364,
+      "free_rollout_endpoint_l2": 0.0006753838883778053,
+      "total_loss_reference": 2.9872955285117714e-05,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -138,15 +138,15 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.14864685126515323,
+        "eval_gate_mean": 0.04711326649195926,
         "semantic_input_nonempty_ratio": 1.0,
         "eval_batches": 86
       }
     },
     "rank_key": [
-      0.001136954303602783,
-      0.0011106466086385853,
-      3.02700085095072e-05
+      0.0006753838883778053,
+      0.0006491923910082364,
+      2.9959894559164227e-05
     ]
   }
 }

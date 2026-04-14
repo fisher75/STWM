@@ -96,6 +96,7 @@ def acquire_lease(
     owner: str,
     ttl_seconds: int = 6 * 3600,
     lease_path: str | Path = DEFAULT_LEASE_PATH,
+    allow_shared: bool = False,
 ) -> Dict[str, Any]:
     path = Path(lease_path)
     now = now_utc()
@@ -103,9 +104,10 @@ def acquire_lease(
 
     with _locked_json(path) as payload:
         leases = _cleanup_expired(list(payload.get("leases", [])))
-        for lease in leases:
-            if int(lease.get("gpu_id", -1)) == int(gpu_id):
-                raise RuntimeError(f"gpu {gpu_id} already leased")
+        if not bool(allow_shared):
+            for lease in leases:
+                if int(lease.get("gpu_id", -1)) == int(gpu_id):
+                    raise RuntimeError(f"gpu {gpu_id} already leased")
 
         rec = {
             "lease_id": str(uuid.uuid4()),
@@ -115,6 +117,7 @@ def acquire_lease(
             "pid": int(os.getpid()),
             "acquired_at_utc": _to_iso(now),
             "expires_at_utc": _to_iso(expires),
+            "allow_shared": bool(allow_shared),
         }
         leases.append(rec)
         payload["leases"] = leases

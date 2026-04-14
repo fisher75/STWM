@@ -9,6 +9,8 @@ from typing import Any, Dict, List, Tuple
 import json
 import os
 import shlex
+import shutil
+import signal
 import subprocess
 import time
 import traceback
@@ -33,7 +35,7 @@ from stwm.tools.run_tracewm_stage2_semantic_objective_redesign_v2_20260410 impor
     _tmux_windows,
 )
 from stwm.tools.run_tracewm_stage2_semantic_objective_redesign_v7_20260413 import _gpu_headroom_ok
-from stwm.infra.gpu_lease import acquire_lease, is_gpu_leased
+from stwm.infra.gpu_lease import acquire_lease, list_active_leases
 from stwm.infra.gpu_telemetry import snapshot_gpu_telemetry
 
 
@@ -48,20 +50,32 @@ FULL_SAVE_EVERY = 500
 FULL_EVAL_MAX_BATCHES = 0
 FULL_MAX_TRAIN_PER_DATASET = -1
 FULL_MAX_VAL_PER_DATASET = -1
-CONCURRENT_RUNTIME_NUM_WORKERS = 2
-CONCURRENT_RUNTIME_PIN_MEMORY = False
-CONCURRENT_RUNTIME_PERSISTENT_WORKERS = False
-CONCURRENT_RUNTIME_PREFETCH_FACTOR = 2
-STRICT_GPU_SAMPLE_COUNT = 4
-STRICT_GPU_INTERVAL_SEC = 0.5
-STRICT_GPU_MAX_UTIL = 25.0
-STRICT_GPU_MAX_MEM_UTIL = 10.0
-STRICT_GPU_MAX_USED_MEM_GB = 40.0
-STRICT_GPU_MAX_ACTIVE_COMPUTE_PROCESSES = 1
+CONCURRENT_RUNTIME_NUM_WORKERS = 8
+CONCURRENT_RUNTIME_PIN_MEMORY = True
+CONCURRENT_RUNTIME_PERSISTENT_WORKERS = True
+CONCURRENT_RUNTIME_PREFETCH_FACTOR = 4
+GPU_ALLOC_SAMPLE_COUNT = 2
+GPU_ALLOC_INTERVAL_SEC = 0.25
+GPU_MIN_FREE_MEM_GB = 30.0
 
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _apply_process_title_normalization(default_title: str = 'python') -> None:
+    mode = str(os.environ.get('STWM_PROC_TITLE_MODE', 'generic')).strip().lower()
+    if mode != 'generic':
+        return
+    title = str(os.environ.get('STWM_PROC_TITLE', default_title)).strip() or default_title
+    lowered = title.lower()
+    if 'stwm' in lowered or 'tracewm' in lowered or '/home/' in lowered:
+        title = default_title
+    try:
+        import setproctitle  # type: ignore
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
 
 
 def _json_or_empty(path_like: Any) -> Dict[str, Any]:
@@ -80,6 +94,15 @@ def _metric_payload(block: Any) -> Dict[str, Any]:
         return {}
     payload = block.get('metrics', {})
     return payload if isinstance(payload, dict) else {}
+
+
+def _int_or_default(value: Any, default: int) -> int:
+    try:
+        if value is None:
+            return int(default)
+        return int(value)
+    except Exception:
+        return int(default)
 
 
 def _metric_rank_tuple(block: Any) -> Tuple[float, float, float]:
@@ -101,6 +124,20 @@ def _summary_hard_rank(row: Dict[str, Any]) -> Tuple[float, float, float, float,
         _f(sidecar.get('semantic_hard_sidecar_score'), 1e9),
         *_metric_rank_tuple(row.get('best_checkpoint_metric', {})),
         str(row.get('run_name', '')),
+    )
+
+
+def _scientific_artifact_valid(
+    resolved_status: str,
+    best_ckpt_exists: bool,
+    latest_ckpt_exists: bool,
+    raw_json_exists: bool,
+) -> bool:
+    return bool(
+        str(resolved_status).lower() == 'completed'
+        and bool(best_ckpt_exists)
+        and bool(latest_ckpt_exists)
+        and bool(raw_json_exists)
     )
 
 
@@ -176,6 +213,87 @@ def _paths_for(args: Any, meta: Dict[str, Any], run_name: str) -> Dict[str, Path
     }
 
 
+def _rotate_path_if_exists(path: Path) -> str:
+    if not path.exists():
+        return ''
+    stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+    rotated = path.with_name(f'{path.name}.failed_snapshot_{stamp}')
+    path.rename(rotated)
+    return str(rotated)
+
+
+def _reset_run_artifacts(args: Any, meta: Dict[str, Any], run_name: str) -> Dict[str, Any]:
+    paths = _paths_for(args, meta, run_name)
+    output_dir = Path(str(meta.get('output_dir', paths['best'].parent)))
+    rotated_logs: List[str] = []
+    removed_paths: List[str] = []
+    pid_file = Path(str(meta.get('worker_pid_file', '')))
+    if str(pid_file) and pid_file.exists():
+        try:
+            pid = _int_or_default(pid_file.read_text(encoding='utf-8').strip(), -1)
+            if _pid_alive(pid):
+                try:
+                    os.kill(pid, signal.SIGTERM)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+        try:
+            pid_file.unlink()
+            removed_paths.append(str(pid_file))
+        except Exception:
+            pass
+    for key in ['progress', 'final', 'raw', 'launch']:
+        target = paths[key]
+        if target.exists():
+            target.unlink()
+            removed_paths.append(str(target))
+    log_path = Path(str(meta.get('log_path', '')))
+    if str(log_path):
+        rotated = _rotate_path_if_exists(log_path)
+        if rotated:
+            rotated_logs.append(rotated)
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+        removed_paths.append(str(output_dir))
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return {
+        'run_name': str(run_name),
+        'removed_paths': removed_paths,
+        'rotated_logs': rotated_logs,
+    }
+
+
+def _tmux_window_command(args: Any, meta_json: Path, meta: Dict[str, Any]) -> str:
+    run_name = str(meta.get('run_name', ''))
+    log_path = str(meta.get('log_path', ''))
+    pid_path = str(meta.get('worker_pid_file', ''))
+    script_path = Path(args.work_root) / 'code/stwm/tools/run_tracewm_stage2_calibration_only_fullscale_wave1_20260413.py'
+    pythonpath_value = f"{args.work_root}/code:{os.environ.get('PYTHONPATH', '')}"
+    proc_title = str(os.environ.get('STWM_PROC_TITLE', 'python'))
+    proc_title_mode = str(os.environ.get('STWM_PROC_TITLE_MODE', 'generic'))
+    cmd = (
+        f'PYTHONPATH={shlex.quote(pythonpath_value)} '
+        f'STWM_PROC_TITLE={shlex.quote(proc_title)} '
+        f'STWM_PROC_TITLE_MODE={shlex.quote(proc_title_mode)} '
+        f'nohup {shlex.quote(str(args.python_bin))} '
+        f'{shlex.quote(str(script_path))} '
+        f'--mode run-one --meta-json {shlex.quote(str(meta_json))} '
+        f'>> {shlex.quote(log_path)} 2>&1 < /dev/null & '
+        f'echo $! > {shlex.quote(pid_path)}; '
+        f'while kill -0 \"$(cat {shlex.quote(pid_path)})\" 2>/dev/null; do sleep 30; done'
+    )
+    return (
+        "bash -lc "
+        + shlex.quote(
+            f"cd {shlex.quote(str(args.work_root))}; "
+            f"rm -f {shlex.quote(pid_path)}; "
+            f"{cmd}; "
+            f"printf '[%s] tmux_window_exit run_name={run_name} observed_child_exit\\n' \"$(date -Iseconds)\" >> {shlex.quote(log_path)}"
+        )
+    )
+
+
 def _status_for(meta: Dict[str, Any], session_name: str) -> Dict[str, Any]:
     final_path = Path(str(meta.get('final_json', '')))
     progress_path = Path(str(meta.get('progress_json', '')))
@@ -221,7 +339,7 @@ def _latest_block(final_payload: Dict[str, Any], raw_payload: Dict[str, Any], pr
                 return block
             if any(k in block for k in ['free_rollout_endpoint_l2', 'free_rollout_coord_mean_l2', 'teacher_forced_coord_loss']):
                 return {
-                    'global_step': int(payload.get('global_step', -1) or -1),
+                    'global_step': _int_or_default(payload.get('global_step', -1), -1),
                     'metrics': block,
                 }
     return {}
@@ -259,13 +377,13 @@ def _branch_block(final_payload: Dict[str, Any], raw_payload: Dict[str, Any], pr
 
 
 def _gpu_selection_from_payload(final_payload: Dict[str, Any], progress_payload: Dict[str, Any], meta: Dict[str, Any]) -> Tuple[int, str]:
-    final_gpu = int(final_payload.get('selected_gpu_id', meta.get('selected_gpu_id', -1)) or -1)
+    final_gpu = _int_or_default(final_payload.get('selected_gpu_id', meta.get('selected_gpu_id', -1)), -1)
     final_lease = str(final_payload.get('lease_id', meta.get('lease_id', '')) or '')
     if final_gpu >= 0 or final_lease:
         return final_gpu, final_lease
     run_meta = progress_payload.get('run_metadata', {}) if isinstance(progress_payload.get('run_metadata', {}), dict) else {}
     gpu_sel = run_meta.get('gpu_selection', {}) if isinstance(run_meta.get('gpu_selection', {}), dict) else {}
-    gpu_id = int(gpu_sel.get('selected_gpu_id', meta.get('selected_gpu_id', -1)) or -1)
+    gpu_id = _int_or_default(gpu_sel.get('selected_gpu_id', meta.get('selected_gpu_id', -1)), -1)
     lease_id = str(gpu_sel.get('lease_id', meta.get('lease_id', '')) or '')
     return gpu_id, lease_id
 
@@ -291,6 +409,16 @@ def _process_args_lines() -> List[str]:
 def _run_activity_alive(meta: Dict[str, Any]) -> bool:
     run_name = str(meta.get('run_name', '')).strip()
     meta_json = str(meta.get('meta_json', '')).strip()
+    pid_file = str(meta.get('worker_pid_file', '')).strip()
+    if pid_file:
+        try:
+            pid_path = Path(pid_file)
+            if pid_path.exists():
+                pid = _int_or_default(pid_path.read_text(encoding='utf-8').strip(), -1)
+                if _pid_alive(pid):
+                    return True
+        except Exception:
+            pass
     if not run_name and not meta_json:
         return False
     for line in _process_args_lines():
@@ -346,37 +474,35 @@ def _aggregate_gpu_window(samples: List[Dict[str, Any]]) -> Dict[int, Dict[str, 
     return out
 
 
-def _select_clean_gpu_for_calibration(run_name: str, lease_path: str, required_mem_gb: float = 40.0, safety_margin_gb: float = 8.0) -> Dict[str, Any]:
+def _select_clean_gpu_for_calibration(run_name: str, lease_path: str, required_mem_gb: float = GPU_MIN_FREE_MEM_GB, safety_margin_gb: float = 0.0) -> Dict[str, Any]:
     samples: List[Dict[str, Any]] = []
-    for i in range(int(STRICT_GPU_SAMPLE_COUNT)):
+    for i in range(int(GPU_ALLOC_SAMPLE_COUNT)):
         samples.append(snapshot_gpu_telemetry(prefer_nvml=True))
-        if i + 1 < int(STRICT_GPU_SAMPLE_COUNT):
-            time.sleep(float(STRICT_GPU_INTERVAL_SEC))
+        if i + 1 < int(GPU_ALLOC_SAMPLE_COUNT):
+            time.sleep(float(GPU_ALLOC_INTERVAL_SEC))
     aggregated = _aggregate_gpu_window(samples)
+    active_leases = list_active_leases(lease_path=lease_path)
+    lease_count_by_gpu: Dict[int, int] = {}
+    for lease in active_leases:
+        gpu_id = int(lease.get('gpu_id', -1))
+        if gpu_id < 0:
+            continue
+        lease_count_by_gpu[gpu_id] = int(lease_count_by_gpu.get(gpu_id, 0)) + 1
     rows: List[Dict[str, Any]] = []
     candidates: List[Dict[str, Any]] = []
     for gpu_id in sorted(aggregated.keys()):
         row = dict(aggregated[gpu_id])
-        leased = bool(is_gpu_leased(gpu_id=gpu_id, lease_path=lease_path))
-        enough_mem = bool(float(row.get('avg_free_mem_gb', 0.0)) >= (float(required_mem_gb) + float(safety_margin_gb)))
-        cleanish = bool(
-            int(row.get('active_compute_process_count', 0)) <= int(STRICT_GPU_MAX_ACTIVE_COMPUTE_PROCESSES)
-            and float(row.get('avg_gpu_util', 100.0)) <= float(STRICT_GPU_MAX_UTIL)
-            and float(row.get('avg_mem_util', 100.0)) <= float(STRICT_GPU_MAX_MEM_UTIL)
-            and float(row.get('avg_used_mem_gb', 1e9)) <= float(STRICT_GPU_MAX_USED_MEM_GB)
-        )
-        if leased:
-            reason = 'filtered_local_lease'
-        elif not enough_mem:
+        lease_count = int(lease_count_by_gpu.get(gpu_id, 0))
+        enough_mem = bool(float(row.get('avg_free_mem_gb', 0.0)) >= float(required_mem_gb))
+        if not enough_mem:
             reason = 'filtered_insufficient_free_mem'
-        elif not cleanish:
-            reason = 'filtered_dirty_gpu'
         else:
-            reason = 'candidate'
+            reason = 'threshold_candidate'
             candidates.append(row)
-        row['leased'] = bool(leased)
+        row['leased'] = bool(lease_count > 0)
+        row['lease_count'] = int(lease_count)
         row['enough_mem'] = bool(enough_mem)
-        row['cleanish'] = bool(cleanish)
+        row['cleanish'] = None
         row['selected'] = False
         row['selected_reason'] = str(reason)
         row['required_mem_gb'] = float(required_mem_gb)
@@ -385,44 +511,46 @@ def _select_clean_gpu_for_calibration(run_name: str, lease_path: str, required_m
     candidates = sorted(
         candidates,
         key=lambda x: (
-            float(x.get('avg_gpu_util', 0.0)),
-            int(x.get('active_compute_process_count', 0)),
-            float(x.get('avg_mem_util', 0.0)),
-            float(x.get('avg_used_mem_gb', 0.0)),
+            int(lease_count_by_gpu.get(int(x.get('gpu_id', -1)), 0)),
             -float(x.get('avg_free_mem_gb', 0.0)),
+            float(x.get('avg_used_mem_gb', 0.0)),
+            float(x.get('avg_gpu_util', 0.0)),
         ),
     )
     if not candidates:
         raise RuntimeError(
-            f'no_clean_gpu_candidate run={run_name} '
-            f'(need_free_mem>={float(required_mem_gb) + float(safety_margin_gb):.1f}GB, '
-            f'gpu_util<={STRICT_GPU_MAX_UTIL}, mem_util<={STRICT_GPU_MAX_MEM_UTIL}, '
-            f'used_mem<={STRICT_GPU_MAX_USED_MEM_GB}, active_compute_process_count<={STRICT_GPU_MAX_ACTIVE_COMPUTE_PROCESSES})'
+            f'no_threshold_gpu_candidate run={run_name} '
+            f'(need_free_mem>={float(required_mem_gb):.1f}GB)'
         )
     selected_gpu_id = int(candidates[0]['gpu_id'])
     for row in rows:
         if int(row.get('gpu_id', -1)) == selected_gpu_id:
             row['selected'] = True
-            row['selected_reason'] = 'best_rank_after_clean_gpu_filter'
-        elif row.get('selected_reason') == 'candidate':
-            row['selected_reason'] = 'candidate_not_top_rank'
-    lease = acquire_lease(gpu_id=selected_gpu_id, owner=str(run_name), ttl_seconds=12 * 3600, lease_path=str(lease_path))
+            row['selected_reason'] = 'best_rank_after_threshold_filter'
+        elif row.get('selected_reason') == 'threshold_candidate':
+            row['selected_reason'] = 'threshold_candidate_not_top_rank'
+    lease = acquire_lease(
+        gpu_id=selected_gpu_id,
+        owner=str(run_name),
+        ttl_seconds=12 * 3600,
+        lease_path=str(lease_path),
+        allow_shared=True,
+    )
     return {
         'selected_gpu_id': int(selected_gpu_id),
         'lease_id': str(lease.get('lease_id', '')),
         'selector_payload': {
             'generated_at_utc': now_iso(),
-            'mode': 'strict_clean_gpu_selector_for_calibration_wave1',
+            'mode': 'threshold_based_greedy_shared_gpu_selector_for_calibration_wave1',
             'required_mem_gb': float(required_mem_gb),
             'safety_margin_gb': float(safety_margin_gb),
-            'strict_thresholds': {
-                'max_gpu_util': float(STRICT_GPU_MAX_UTIL),
-                'max_mem_util': float(STRICT_GPU_MAX_MEM_UTIL),
-                'max_used_mem_gb': float(STRICT_GPU_MAX_USED_MEM_GB),
-                'max_active_compute_process_count': int(STRICT_GPU_MAX_ACTIVE_COMPUTE_PROCESSES),
+            'policy': {
+                'min_free_mem_gb': float(required_mem_gb),
+                'allow_shared_gpu': True,
+                'greedy_rank': ['lease_count asc', 'avg_free_mem_gb desc', 'avg_used_mem_gb asc', 'avg_gpu_util asc'],
             },
-            'sample_count': int(STRICT_GPU_SAMPLE_COUNT),
-            'sample_interval_sec': float(STRICT_GPU_INTERVAL_SEC),
+            'sample_count': int(GPU_ALLOC_SAMPLE_COUNT),
+            'sample_interval_sec': float(GPU_ALLOC_INTERVAL_SEC),
             'gpus': rows,
             'candidate_ranking': [int(x.get('gpu_id', -1)) for x in candidates],
         },
@@ -438,9 +566,9 @@ def _cleanup_stale_leases(lease_path: str, allowed_prefixes: Tuple[str, ...]) ->
         if not isinstance(lease, dict):
             continue
         owner = str(lease.get('owner', ''))
-        pid = int(lease.get('pid', -1) or -1)
+        pid = _int_or_default(lease.get('pid', -1), -1)
         if owner.startswith(allowed_prefixes) and not _pid_alive(pid):
-            removed.append({'lease_id': str(lease.get('lease_id', '')), 'owner': owner, 'pid': pid, 'gpu_id': int(lease.get('gpu_id', -1) or -1)})
+            removed.append({'lease_id': str(lease.get('lease_id', '')), 'owner': owner, 'pid': pid, 'gpu_id': _int_or_default(lease.get('gpu_id', -1), -1)})
             continue
         kept.append(lease)
     out = {'leases': kept}
@@ -456,23 +584,23 @@ def write_concurrent_runtime_report(args: Any) -> Dict[str, Any]:
         'source': 'stage2_calibration_only_fullscale_wave1_concurrent_runtime',
         'based_on': str(args.stage1_runtime_json),
         'selected_gpu_policy': {
-            'mode': 'single_gpu_only',
-            'selection_rule': ['avg_gpu_util lowest', 'avg_mem_util lowest', 'active_compute_process_count lowest', 'free_mem highest'],
-            'window': {'sample_count': 12, 'sample_interval_sec': 2.0},
-            'memory_filter': {'required_mem_gb': 40.0, 'safety_margin_gb': 8.0},
-            'selected_gpu_id': int(selected_gpu or -1),
+            'mode': 'threshold_shared_gpu',
+            'selection_rule': ['avg_free_mem_gb highest', 'avg_used_mem_gb lowest', 'avg_gpu_util lowest', 'lease_count lowest'],
+            'window': {'sample_count': int(GPU_ALLOC_SAMPLE_COUNT), 'sample_interval_sec': float(GPU_ALLOC_INTERVAL_SEC)},
+            'memory_filter': {'required_mem_gb': float(GPU_MIN_FREE_MEM_GB), 'safety_margin_gb': 0.0},
+            'selected_gpu_id': _int_or_default(selected_gpu, -1),
         },
-        'required_mem_gb': 40.0,
-        'safety_margin_gb': 8.0,
+        'required_mem_gb': float(GPU_MIN_FREE_MEM_GB),
+        'safety_margin_gb': 0.0,
         'recommended_num_workers': int(CONCURRENT_RUNTIME_NUM_WORKERS),
         'recommended_pin_memory': bool(CONCURRENT_RUNTIME_PIN_MEMORY),
         'recommended_persistent_workers': bool(CONCURRENT_RUNTIME_PERSISTENT_WORKERS),
         'recommended_prefetch_factor': int(CONCURRENT_RUNTIME_PREFETCH_FACTOR),
         'single_gpu_only': True,
         'notes': [
-            'wave1 concurrent-safe runtime override for 6 parallel single-GPU runs',
-            'reduced dataloader concurrency to avoid abrupt multi-run termination',
-            'not a scientific variable; runtime stabilization only',
+            'wave1 threshold-based shared-GPU runtime override',
+            'selector no longer waits for perfectly clean GPUs on 192GB B200 cards',
+            'runs may share a GPU when free memory stays above threshold',
         ],
     }
     _write_json(args.concurrent_runtime_report, payload)
@@ -514,7 +642,7 @@ def write_protocol_doc(args: Any) -> None:
             '- calibration_only_definition: readout-side semantic alignment + sparse gating + delayed aux schedule + semantic-hard sidecar',
             '- persistence_mainline_allowed: false',
             '- calibration_families: topk1 / qcap15',
-            '- fullscale_policy: full VSPW+VIPSeg train/val, no sample caps, no DDP retrofit, keep 2 GPUs idle',
+            '- fullscale_policy: full VSPW+VIPSeg train/val, no sample caps, no DDP retrofit, threshold-based shared-GPU greedy allocation',
         f'- concurrent_runtime_override: workers={CONCURRENT_RUNTIME_NUM_WORKERS}, pin_memory={CONCURRENT_RUNTIME_PIN_MEMORY}, persistent_workers={CONCURRENT_RUNTIME_PERSISTENT_WORKERS}, prefetch={CONCURRENT_RUNTIME_PREFETCH_FACTOR}',
             '- partial_unfreeze_branch: gated secondary ablation only after all 6 calibration runs complete',
             '- forbidden: Stage1 retraining; codec/VAE wave0; batch/lr sweep; external-eval expansion; persistence-as-mainline narrative',
@@ -537,6 +665,7 @@ def launch(args: Any) -> Dict[str, Any]:
     val_counts = _dataset_counts(['vspw', 'vipseg'], 'val', args.stage2_contract_json, max_samples=FULL_MAX_VAL_PER_DATASET)
 
     runs: List[Dict[str, Any]] = []
+    cleanup_actions: List[Dict[str, Any]] = []
     meta_dir = _launch_meta_dir(args)
     meta_dir.mkdir(parents=True, exist_ok=True)
     existing_windows = set(_tmux_windows(str(args.tmux_session)))
@@ -584,26 +713,26 @@ def launch(args: Any) -> Dict[str, Any]:
             'semantic_hard_manifest_path': str(args.semantic_hard_manifest_path),
             'work_root': str(args.work_root),
             'python_bin': str(args.python_bin),
+            'worker_pid_file': str(meta_dir / f'{run_name}.pid'),
             'reserve_idle_gpu_count': int(args.reserve_idle_gpu_count),
             'gpu_acquire_timeout_seconds': int(args.gpu_acquire_timeout_seconds),
             'gpu_acquire_retry_seconds': int(args.gpu_acquire_retry_seconds),
         }
         meta_json = meta_dir / f'{run_name}_launch_meta.json'
         meta['meta_json'] = str(meta_json)
+        cleanup_actions.append(_reset_run_artifacts(args=args, meta=meta, run_name=run_name))
+        gpu = _select_clean_gpu_for_calibration(
+            run_name=run_name,
+            lease_path=str(args.shared_lease_path),
+            required_mem_gb=float(GPU_MIN_FREE_MEM_GB),
+            safety_margin_gb=0.0,
+        )
+        meta['selected_gpu_id'] = int(gpu['selected_gpu_id'])
+        meta['lease_id'] = str(gpu['lease_id'])
+        meta['selector_payload'] = gpu.get('selector_payload', {})
         _write_json(meta_json, meta)
         runs.append(meta)
-
-        env = {
-            'PYTHONPATH': f"{args.work_root}/code:{os.environ.get('PYTHONPATH', '')}",
-            'STWM_PROC_TITLE': str(os.environ.get('STWM_PROC_TITLE', 'python')),
-            'STWM_PROC_TITLE_MODE': str(os.environ.get('STWM_PROC_TITLE_MODE', 'generic')),
-        }
-        env_prefix = ' '.join(f"{k}={shlex.quote(v)}" for k, v in env.items())
-        cmd = (
-            f"{env_prefix} {shlex.quote(str(args.python_bin))} "
-            f"{shlex.quote(str(Path(args.work_root) / 'code/stwm/tools/run_tracewm_stage2_calibration_only_fullscale_wave1_20260413.py'))} "
-            f"--mode run-one --meta-json {shlex.quote(str(meta_json))}"
-        )
+        cmd = _tmux_window_command(args=args, meta_json=meta_json, meta=meta)
         if str(meta['window_name']) not in existing_windows:
             subprocess.run(['tmux', 'new-window', '-t', str(args.tmux_session), '-n', str(meta['window_name']), cmd], check=True)
             existing_windows.add(str(meta['window_name']))
@@ -613,8 +742,9 @@ def launch(args: Any) -> Dict[str, Any]:
         'mode': 'stage2_calibration_only_fullscale_wave1_launch',
         'tmux_session': str(args.tmux_session),
         'teacher_backend': 'local_clip_vit_b32_mask_crop_visual_teacher',
-        'policy': 'calibration-only mainline; persistence disabled; keep 2 GPUs idle; Stage1 remains frozen in mainline',
+        'policy': 'calibration-only mainline; persistence disabled; threshold-based shared-GPU greedy allocation; Stage1 remains frozen in mainline',
         'lease_cleanup': lease_cleanup,
+        'cleanup_actions': cleanup_actions,
         'concurrent_runtime_report': str(args.concurrent_runtime_report),
         'concurrent_runtime': concurrent_runtime,
         'runs': runs,
@@ -632,6 +762,9 @@ def run_one(args: Any) -> None:
     log_path = Path(str(meta.get('log_path', '')))
     if str(log_path):
         log_path.parent.mkdir(parents=True, exist_ok=True)
+    final_json_path = Path(str(meta.get('final_json', '')))
+    abort_written = False
+    trainer_proc: subprocess.Popen[str] | None = None
 
     def _append_log(message: str) -> None:
         if not str(log_path):
@@ -640,32 +773,79 @@ def run_one(args: Any) -> None:
             log_fh.write(f"[{now_iso()}] {message}\n")
             log_fh.flush()
 
+    def _write_abort_payload(message: str, *, signal_name: str = '', returncode: int | None = None) -> None:
+        nonlocal abort_written
+        if abort_written:
+            return
+        abort_written = True
+        payload: Dict[str, Any] = {
+            'generated_at_utc': now_iso(),
+            'run_name': str(run_name),
+            'status': 'failed',
+            'selected_gpu_id': int(selected_gpu_id),
+            'lease_id': str(lease_id),
+            'message': str(message),
+        }
+        if signal_name:
+            payload['signal_name'] = str(signal_name)
+        if returncode is not None:
+            payload['returncode'] = int(returncode)
+        try:
+            _write_json(final_json_path, payload)
+        except Exception:
+            pass
+
+    def _signal_handler(signum: int, _frame: Any) -> None:
+        sig_name = ''
+        try:
+            sig_name = signal.Signals(signum).name
+        except Exception:
+            sig_name = str(signum)
+        _append_log(f'run_one_received_signal run_name={run_name} signal={sig_name}')
+        nonlocal trainer_proc
+        if trainer_proc is not None and trainer_proc.poll() is None:
+            try:
+                os.killpg(int(trainer_proc.pid), signal.SIGTERM)
+                _append_log(
+                    f'run_one_forwarded_signal_to_trainer_pg run_name={run_name} '
+                    f'trainer_pid={int(trainer_proc.pid)} signal=SIGTERM'
+                )
+            except Exception as exc:
+                _append_log(
+                    f'run_one_failed_to_forward_signal run_name={run_name} '
+                    f'trainer_pid={int(trainer_proc.pid)} error={exc!r}'
+                )
+        _write_abort_payload(f'run_one_terminated_by_signal_{sig_name}', signal_name=sig_name, returncode=128 + int(signum))
+        raise SystemExit(128 + int(signum))
+
+    # `run-one` is launched under `nohup`; keep SIGHUP ignored so session/window churn
+    # does not abort the worker and its trainer child.
+    try:
+        signal.signal(signal.SIGHUP, signal.SIG_IGN)
+        _append_log(f'run_one_ignoring_signal run_name={run_name} signal=SIGHUP')
+    except Exception:
+        pass
+
+    for sig in [signal.SIGTERM, signal.SIGINT]:
+        try:
+            signal.signal(sig, _signal_handler)
+        except Exception:
+            pass
+
     if selected_gpu_id < 0:
-        acquire_deadline = time.time() + float(meta.get('gpu_acquire_timeout_seconds', 7200))
-        last_gpu_error = ''
-        attempt = 0
-        while True:
-            attempt += 1
-            if not _gpu_headroom_ok(lease_path, int(meta.get('reserve_idle_gpu_count', 2))):
-                last_gpu_error = f"gpu_headroom_blocked reserve_idle_gpu_count={int(meta.get('reserve_idle_gpu_count', 2))}"
-            else:
-                try:
-                    gpu = _select_clean_gpu_for_calibration(run_name=run_name, lease_path=lease_path, required_mem_gb=40.0, safety_margin_gb=8.0)
-                    selected_gpu_id = int(gpu['selected_gpu_id'])
-                    lease_id = str(gpu['lease_id'])
-                    meta['selected_gpu_id'] = int(selected_gpu_id)
-                    meta['lease_id'] = str(lease_id)
-                    meta['selector_payload'] = gpu.get('selector_payload', {})
-                    _write_json(args.meta_json, meta)
-                    _append_log(f"gpu_acquired run_name={run_name} selected_gpu_id={selected_gpu_id} lease_id={lease_id}")
-                    break
-                except Exception as exc:
-                    last_gpu_error = str(exc)
-            if attempt == 1 or attempt % 6 == 0:
-                _append_log(f"waiting_for_clean_gpu run_name={run_name} attempt={attempt} last_error={last_gpu_error}")
-            if time.time() >= acquire_deadline:
-                raise RuntimeError(f'gpu_acquire_timeout run={run_name} last_error={last_gpu_error}')
-            time.sleep(float(meta.get('gpu_acquire_retry_seconds', 20)))
+        gpu = _select_clean_gpu_for_calibration(
+            run_name=run_name,
+            lease_path=lease_path,
+            required_mem_gb=float(GPU_MIN_FREE_MEM_GB),
+            safety_margin_gb=0.0,
+        )
+        selected_gpu_id = int(gpu['selected_gpu_id'])
+        lease_id = str(gpu['lease_id'])
+        meta['selected_gpu_id'] = int(selected_gpu_id)
+        meta['lease_id'] = str(lease_id)
+        meta['selector_payload'] = gpu.get('selector_payload', {})
+        _write_json(args.meta_json, meta)
+        _append_log(f"gpu_acquired_threshold run_name={run_name} selected_gpu_id={selected_gpu_id} lease_id={lease_id}")
     trainer = Path(str(meta['work_root'])) / 'code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py'
     cmd = [
         str(meta['python_bin']), str(trainer),
@@ -746,20 +926,34 @@ def run_one(args: Any) -> None:
             log_fh.write(f"[run-one] run_name={run_name} selected_gpu_id={selected_gpu_id} lease_id={lease_id}\n")
             if isinstance(meta.get('selector_payload', {}), dict):
                 log_fh.write(json.dumps(meta['selector_payload'], ensure_ascii=True) + "\n")
+            log_fh.write(
+                f"[run-one] detached_trainer_policy run_name={run_name} "
+                f"sighup=ignored trainer_start_new_session=true\n"
+            )
             log_fh.flush()
-            proc = subprocess.run([cmd[0], '-u', *cmd[1:]], cwd=str(meta['work_root']), text=True, stdout=log_fh, stderr=subprocess.STDOUT, env=proc_env)
+            trainer_proc = subprocess.Popen(
+                [cmd[0], '-u', *cmd[1:]],
+                cwd=str(meta['work_root']),
+                text=True,
+                stdout=log_fh,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL,
+                env=proc_env,
+                start_new_session=True,
+            )
+            _append_log(
+                f'run_one_spawned_trainer run_name={run_name} '
+                f'trainer_pid={int(trainer_proc.pid)} start_new_session=true'
+            )
+            returncode = trainer_proc.wait()
+        trainer_proc = None
+        proc = subprocess.CompletedProcess(args=[cmd[0], '-u', *cmd[1:]], returncode=returncode)
         if proc.returncode != 0:
             log_tail = log_path.read_text(encoding='utf-8', errors='ignore')[-4000:] if log_path.exists() else ''
-            _write_json(
-                meta['final_json'],
-                {
-                    'generated_at_utc': now_iso(),
-                    'run_name': meta['run_name'],
-                    'status': 'failed',
-                    'returncode': proc.returncode,
-                    'log_tail': log_tail,
-                },
-            )
+            _write_abort_payload(f'trainer_failed_rc_{proc.returncode}', returncode=int(proc.returncode))
+            final_payload = _json_or_empty(final_json_path)
+            final_payload['log_tail'] = log_tail
+            _write_json(final_json_path, final_payload)
             raise RuntimeError(f'trainer failed rc={proc.returncode}')
         raw = _read_json(meta['raw_json'])
         raw.update(
@@ -777,17 +971,12 @@ def run_one(args: Any) -> None:
             }
         )
         _write_json(meta['final_json'], raw)
+        abort_written = True
     except Exception as exc:
-        _write_json(
-            meta['final_json'],
-            {
-                'generated_at_utc': now_iso(),
-                'run_name': str(meta.get('run_name', '')),
-                'status': 'failed',
-                'message': str(exc),
-                'traceback': traceback.format_exc(),
-            },
-        )
+        _write_abort_payload(str(exc))
+        final_payload = _json_or_empty(final_json_path)
+        final_payload['traceback'] = traceback.format_exc()
+        _write_json(final_json_path, final_payload)
         raise
     finally:
         _release_lease_safe(lease_id=lease_id, lease_path=lease_path)
@@ -822,14 +1011,29 @@ def summarize(args: Any) -> Dict[str, Any]:
         running += int(resolved_status == 'running')
         completed += int(resolved_status == 'completed')
         failed += int(resolved_status == 'failed')
+        best_ckpt_exists = bool(paths['best'].exists())
+        latest_ckpt_exists = bool(paths['latest'].exists())
+        sidecar_exists = bool(paths['sidecar'].exists())
+        raw_json_exists = bool(paths['raw'].exists())
+        scientific_result_valid = _scientific_artifact_valid(
+            resolved_status=resolved_status,
+            best_ckpt_exists=best_ckpt_exists,
+            latest_ckpt_exists=latest_ckpt_exists,
+            raw_json_exists=raw_json_exists,
+        )
         best_block = _best_block(final_payload, raw_payload, progress_payload)
         latest_block = _latest_block(final_payload, raw_payload, progress_payload)
         sidecar_block = _sidecar_block(final_payload, raw_payload, progress_payload)
         branch = _branch_block(final_payload, raw_payload, progress_payload)
+        if not scientific_result_valid:
+            best_block = {}
+            latest_block = {}
+            sidecar_block = {}
+            branch = {}
         sidecar_sel = raw_payload.get('sidecar_checkpoint_selection', {}) if isinstance(raw_payload.get('sidecar_checkpoint_selection', {}), dict) else final_payload.get('sidecar_checkpoint_selection', {}) if isinstance(final_payload.get('sidecar_checkpoint_selection', {}), dict) else {}
         if not sidecar_sel and isinstance(progress_payload.get('sidecar_checkpoint_selection', {}), dict):
             sidecar_sel = progress_payload.get('sidecar_checkpoint_selection', {})
-        global_step = int(progress_payload.get('global_step', best_block.get('global_step', -1)) or -1)
+        global_step = _int_or_default(progress_payload.get('global_step', best_block.get('global_step', -1)), -1)
         selected_gpu_id, lease_id = _gpu_selection_from_payload(final_payload, progress_payload, meta)
         run_rows.append(
             {
@@ -840,10 +1044,11 @@ def summarize(args: Any) -> Dict[str, Any]:
                 'global_step': global_step,
                 'final_json_exists': bool(paths['final'].exists()),
                 'progress_json_exists': bool(paths['progress'].exists()),
-                'raw_json_exists': bool(paths['raw'].exists()),
-                'best_ckpt_exists': bool(paths['best'].exists()),
-                'latest_ckpt_exists': bool(paths['latest'].exists()),
-                'sidecar_exists': bool(paths['sidecar'].exists()),
+                'raw_json_exists': raw_json_exists,
+                'best_ckpt_exists': best_ckpt_exists,
+                'latest_ckpt_exists': latest_ckpt_exists,
+                'sidecar_exists': sidecar_exists,
+                'scientific_result_valid': bool(scientific_result_valid),
                 'selected_gpu_id': int(selected_gpu_id),
                 'lease_id': str(lease_id),
                 'batch_size': int(meta.get('batch_size', FULL_BATCH_SIZE)),
@@ -855,14 +1060,35 @@ def summarize(args: Any) -> Dict[str, Any]:
                 'best_checkpoint_metric': best_block,
                 'latest_checkpoint_metric': latest_block,
                 'semantic_hard_sidecar_metric': sidecar_block,
-                'actual_gate_positive_ratio_mean': float(branch.get('actual_gate_positive_ratio_mean', branch.get('eval_gate_mean', 1.0))),
-                'raw_quantile_ratio_mean': float(branch.get('raw_quantile_ratio_mean', 0.0)),
-                'capped_ratio_mean': float(branch.get('capped_ratio_mean', 0.0)),
-                'valuable_pair_ratio_mean': float(branch.get('valuable_pair_ratio_mean', branch.get('high_value_pair_ratio', 0.0))),
+                'actual_gate_positive_ratio_mean': (
+                    float(branch.get('actual_gate_positive_ratio_mean', branch.get('eval_gate_mean', 1.0)))
+                    if scientific_result_valid and isinstance(branch, dict) and branch
+                    else None
+                ),
+                'raw_quantile_ratio_mean': (
+                    float(branch.get('raw_quantile_ratio_mean', 0.0))
+                    if scientific_result_valid and isinstance(branch, dict) and branch
+                    else None
+                ),
+                'capped_ratio_mean': (
+                    float(branch.get('capped_ratio_mean', 0.0))
+                    if scientific_result_valid and isinstance(branch, dict) and branch
+                    else None
+                ),
+                'valuable_pair_ratio_mean': (
+                    float(branch.get('valuable_pair_ratio_mean', branch.get('high_value_pair_ratio', 0.0)))
+                    if scientific_result_valid and isinstance(branch, dict) and branch
+                    else None
+                ),
                 'same_checkpoint_selected': bool(sidecar_sel.get('same_checkpoint_selected', True)),
                 'sidecar_truly_diverged': bool(sidecar_sel.get('sidecar_truly_diverged', False)),
                 'persistence_objective_declared': False,
                 'persistence_objective_effective': False,
+                'artifact_truth_note': (
+                    'valid_completed_run'
+                    if scientific_result_valid
+                    else 'failed_or_incomplete_run_metrics_suppressed_to_avoid_warm_start_or_progress_residue_misread'
+                ),
             }
         )
     completed_rows = [row for row in run_rows if row['status'] == 'completed']
@@ -985,7 +1211,7 @@ def diagnose(args: Any) -> Dict[str, Any]:
     hard_score = _f((hard_best.get('semantic_hard_sidecar_metric', {}) if isinstance(hard_best.get('semantic_hard_sidecar_metric', {}), dict) else {}).get('semantic_hard_sidecar_score'), 1e9)
 
     warm_step = _load_ckpt_step(_resume_ckpt_for_seed(int(overall_best.get('seed', 42))))
-    best_step = int((overall_best.get('best_checkpoint_metric', {}) if isinstance(overall_best.get('best_checkpoint_metric', {}), dict) else {}).get('global_step', -1) or -1)
+    best_step = _int_or_default((overall_best.get('best_checkpoint_metric', {}) if isinstance(overall_best.get('best_checkpoint_metric', {}), dict) else {}).get('global_step', -1), -1)
     true_new_best = bool(best_step > warm_step >= 0)
     improved_vs_cropenc = bool(overall_rank[0] < crop_ep and overall_rank[1] <= crop_coord)
     improved_vs_v7 = bool(overall_rank < v7_best_rank)
@@ -1074,6 +1300,7 @@ def write_results_md(args: Any, summary: Dict[str, Any], diagnosis: Dict[str, An
         '',
         f"- generated_at_utc: {now_iso()}",
         f"- calibration_only_wave1_status: {summary.get('calibration_only_wave1_status', 'unknown')}",
+        '- failed/incomplete runs: metrics suppressed when no valid completed raw+checkpoint artifact exists',
         f"- overall_best_run_name: {diagnosis.get('overall_best_run_name', 'none')}",
         f"- semantic_hard_best_run_name: {diagnosis.get('semantic_hard_best_run_name', 'none')}",
         f"- best_family: {diagnosis.get('best_family', summary.get('best_family', 'none'))}",
@@ -1094,10 +1321,18 @@ def write_results_md(args: Any, summary: Dict[str, Any], diagnosis: Dict[str, An
     for row in summary.get('run_rows', []) if isinstance(summary.get('run_rows', []), list) else []:
         if not isinstance(row, dict):
             continue
-        endpoint = _metric_rank_tuple(row.get('best_checkpoint_metric', {}))[0]
-        hard_score = _f((row.get('semantic_hard_sidecar_metric', {}) if isinstance(row.get('semantic_hard_sidecar_metric', {}), dict) else {}).get('semantic_hard_sidecar_score'), 1e9)
+        scientific_valid = bool(row.get('scientific_result_valid', False))
+        endpoint = _metric_rank_tuple(row.get('best_checkpoint_metric', {}))[0] if scientific_valid else None
+        hard_score = (
+            _f((row.get('semantic_hard_sidecar_metric', {}) if isinstance(row.get('semantic_hard_sidecar_metric', {}), dict) else {}).get('semantic_hard_sidecar_score'), 1e9)
+            if scientific_valid else None
+        )
+        gate_ratio = row.get('actual_gate_positive_ratio_mean', None) if scientific_valid else None
         lines.append(
-            f"| {row.get('run_name', '')} | {row.get('family', '')} | {int(row.get('seed', -1))} | {row.get('status', '')} | {int(row.get('global_step', -1))} | {endpoint:.6f} | {hard_score:.6f} | {float(row.get('actual_gate_positive_ratio_mean', 1.0)):.4f} | {bool(row.get('sidecar_truly_diverged', False))} |"
+            f"| {row.get('run_name', '')} | {row.get('family', '')} | {int(row.get('seed', -1))} | {row.get('status', '')} | {int(row.get('global_step', -1))} | "
+            f"{(f'{endpoint:.6f}' if endpoint is not None else 'n/a')} | "
+            f"{(f'{hard_score:.6f}' if hard_score is not None else 'n/a')} | "
+            f"{(f'{float(gate_ratio):.4f}' if gate_ratio is not None else 'n/a')} | {bool(row.get('sidecar_truly_diverged', False))} |"
         )
     _write_md(args.results_md, lines)
 
@@ -1156,6 +1391,7 @@ def parse_args() -> Any:
 
 
 def main() -> None:
+    _apply_process_title_normalization(default_title='python')
     args = parse_args()
     if args.mode == 'all':
         print(json.dumps(run_all(args), ensure_ascii=True, indent=2))
