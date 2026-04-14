@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-13T16:40:21.938135+00:00",
+  "generated_at_utc": "2026-04-14T08:04:13.370916+00:00",
   "run_name": "stage2_calonly_topk1_seed456_wave1_20260413",
-  "status": "initialized",
+  "status": "completed",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "datasets_bound_for_train": [
     "vspw",
@@ -14,22 +14,22 @@
   "runtime": {
     "source": "recommended_runtime_json",
     "path": "/home/chen034/workspace/stwm/reports/stage2_calibration_only_fullscale_wave1_runtime_20260413.json",
-    "num_workers": 2,
-    "pin_memory": false,
-    "persistent_workers": false,
-    "prefetch_factor": 2,
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
     "single_gpu_only": true,
     "selected_gpu_id_runtime_json": 6,
-    "required_mem_gb": 40.0,
+    "required_mem_gb": 30.0,
     "safety_margin_gb": 8.0
   },
   "run_metadata": {
     "run_name": "stage2_calonly_topk1_seed456_wave1_20260413",
-    "started_at_utc": "2026-04-13T16:40:21.220527+00:00",
-    "cuda_visible_devices": "7",
+    "started_at_utc": "2026-04-14T06:09:23.344931+00:00",
+    "cuda_visible_devices": "5",
     "gpu_selection": {
-      "selected_gpu_id": 7,
-      "lease_id": "9dba7ef4-3524-4899-acce-65490eaaf37a",
+      "selected_gpu_id": 5,
+      "lease_id": "1f970d42-2541-4abf-bc96-3b5e75d7adab",
       "owner": "stage2_calonly_topk1_seed456_wave1_20260413",
       "mode": "single_gpu_only"
     },
@@ -96,9 +96,9 @@
     "stage1_partial_unfreeze_active": false,
     "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/best.pt"
   },
-  "global_step": 10000,
+  "global_step": 14000,
   "train_steps_target": 14000,
-  "progress_ratio": 0.7142857142857143,
+  "progress_ratio": 1.0,
   "whether_full_train_used": true,
   "whether_full_val_used": true,
   "effective_train_sample_count_per_dataset": {
@@ -113,14 +113,14 @@
     "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413",
     "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/best.pt",
     "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/latest.pt",
-    "best_exists": false,
-    "latest_exists": false
+    "best_exists": true,
+    "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 2.9811124511501298e-05,
-    "free_rollout_coord_mean_l2": 0.0005451074948007615,
-    "free_rollout_endpoint_l2": 0.0005719647855659453,
-    "total_loss_reference": 2.9724487963074046e-05
+    "teacher_forced_coord_loss": 2.7801472528280956e-05,
+    "free_rollout_coord_mean_l2": 0.0014121849816183915,
+    "free_rollout_endpoint_l2": 0.0014360077983262588,
+    "total_loss_reference": 2.7723712589757396e-05
   },
   "best_metric_so_far": {
     "global_step": 10000,

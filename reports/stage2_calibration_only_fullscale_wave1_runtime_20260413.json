@@ -1,35 +1,35 @@
 {
-  "generated_at_utc": "2026-04-13T16:39:55.418863+00:00",
+  "generated_at_utc": "2026-04-14T06:09:02.211540+00:00",
   "source": "stage2_calibration_only_fullscale_wave1_concurrent_runtime",
   "based_on": "/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
   "selected_gpu_policy": {
-    "mode": "single_gpu_only",
+    "mode": "threshold_shared_gpu",
     "selection_rule": [
+      "avg_free_mem_gb highest",
+      "avg_used_mem_gb lowest",
       "avg_gpu_util lowest",
-      "avg_mem_util lowest",
-      "active_compute_process_count lowest",
-      "free_mem highest"
+      "lease_count lowest"
     ],
     "window": {
-      "sample_count": 12,
-      "sample_interval_sec": 2.0
+      "sample_count": 2,
+      "sample_interval_sec": 0.25
     },
     "memory_filter": {
-      "required_mem_gb": 40.0,
-      "safety_margin_gb": 8.0
+      "required_mem_gb": 30.0,
+      "safety_margin_gb": 0.0
     },
     "selected_gpu_id": 6
   },
-  "required_mem_gb": 40.0,
-  "safety_margin_gb": 8.0,
-  "recommended_num_workers": 2,
-  "recommended_pin_memory": false,
-  "recommended_persistent_workers": false,
-  "recommended_prefetch_factor": 2,
+  "required_mem_gb": 30.0,
+  "safety_margin_gb": 0.0,
+  "recommended_num_workers": 8,
+  "recommended_pin_memory": true,
+  "recommended_persistent_workers": true,
+  "recommended_prefetch_factor": 4,
   "single_gpu_only": true,
   "notes": [
-    "wave1 concurrent-safe runtime override for 6 parallel single-GPU runs",
-    "reduced dataloader concurrency to avoid abrupt multi-run termination",
-    "not a scientific variable; runtime stabilization only"
+    "wave1 threshold-based shared-GPU runtime override",
+    "selector no longer waits for perfectly clean GPUs on 192GB B200 cards",
+    "runs may share a GPU when free memory stays above threshold"
   ]
 }

@@ -22,7 +22,6 @@ from stwm.tools.run_tracewm_stage2_semantic_objective_redesign_v2_20260410 impor
 )
 from stwm.tools.run_tracewm_stage2_calibration_only_fullscale_wave1_20260413 import (
     _f,
-    _gpu_headroom_ok,
     _metric_rank_tuple,
     _select_clean_gpu_for_calibration,
     _summary_overall_rank,
@@ -39,6 +38,21 @@ RUN_BATCH_SIZE = 8
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _apply_process_title_normalization(default_title: str = 'python') -> None:
+    mode = str(os.environ.get('STWM_PROC_TITLE_MODE', 'generic')).strip().lower()
+    if mode != 'generic':
+        return
+    title = str(os.environ.get('STWM_PROC_TITLE', default_title)).strip() or default_title
+    lowered = title.lower()
+    if 'stwm' in lowered or 'tracewm' in lowered or '/home/' in lowered:
+        title = default_title
+    try:
+        import setproctitle  # type: ignore
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
 
 
 def _json_or_empty(path_like: Any) -> Dict[str, Any]:
@@ -81,16 +95,13 @@ def _run_partial_job(meta: Dict[str, Any]) -> Dict[str, Any]:
         acquire_deadline = time.time() + float(meta.get('gpu_acquire_timeout_seconds', 7200))
         last_gpu_error = ''
         while True:
-            if not _gpu_headroom_ok(lease_path, int(meta.get('reserve_idle_gpu_count', 2))):
-                last_gpu_error = f"gpu_headroom_blocked reserve_idle_gpu_count={int(meta.get('reserve_idle_gpu_count', 2))}"
-            else:
-                try:
-                    gpu = _select_clean_gpu_for_calibration(run_name=run_name, lease_path=lease_path, required_mem_gb=40.0, safety_margin_gb=8.0)
-                    selected_gpu_id = int(gpu['selected_gpu_id'])
-                    lease_id = str(gpu['lease_id'])
-                    break
-                except Exception as exc:
-                    last_gpu_error = str(exc)
+            try:
+                gpu = _select_clean_gpu_for_calibration(run_name=run_name, lease_path=lease_path, required_mem_gb=40.0, safety_margin_gb=8.0)
+                selected_gpu_id = int(gpu['selected_gpu_id'])
+                lease_id = str(gpu['lease_id'])
+                break
+            except Exception as exc:
+                last_gpu_error = str(exc)
             if time.time() >= acquire_deadline:
                 raise RuntimeError(f'gpu_acquire_timeout run={run_name} last_error={last_gpu_error}')
             time.sleep(float(meta.get('gpu_acquire_retry_seconds', 20)))
@@ -353,6 +364,7 @@ def parse_args() -> Any:
 
 
 def main() -> None:
+    _apply_process_title_normalization(default_title='python')
     args = parse_args()
     print(json.dumps(run(args), ensure_ascii=True, indent=2))
 

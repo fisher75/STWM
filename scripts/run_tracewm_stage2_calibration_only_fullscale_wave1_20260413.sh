@@ -13,4 +13,7 @@ PYTHON_BIN="${PYTHON_BIN:-/home/chen034/miniconda3/envs/stwm/bin/python}"
 LOG_PATH="${STWM_ROOT}/logs/stage2_calibration_only_fullscale_wave1_20260413.log"
 mkdir -p "${STWM_ROOT}/logs" "${STWM_ROOT}/tmp"
 
-PYTHONUNBUFFERED=1 "${PYTHON_BIN}" "${STWM_ROOT}/code/stwm/tools/run_tracewm_stage2_calibration_only_fullscale_wave1_20260413.py" --mode all "$@" 2>&1 | tee -a "${LOG_PATH}"
+touch "${LOG_PATH}"
+exec >> "${LOG_PATH}" 2>&1
+echo "[`date -Iseconds`] calibration_only_wave1_run_script_start"
+PYTHONUNBUFFERED=1 "${PYTHON_BIN}" "${STWM_ROOT}/code/stwm/tools/run_tracewm_stage2_calibration_only_fullscale_wave1_20260413.py" --mode all "$@"
