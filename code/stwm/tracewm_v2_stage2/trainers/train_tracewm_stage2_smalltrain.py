@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 from argparse import ArgumentParser
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import json
 import os
 import random
+import re
 import shutil
 
 import numpy as np
@@ -39,6 +41,22 @@ def set_seed(seed: int) -> None:
     torch.cuda.manual_seed_all(seed)
 
 
+def _apply_process_title_normalization() -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode != "generic":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", "python")).strip() or "python"
+    lowered = title.lower()
+    if "stwm" in lowered or "tracewm" in lowered or "/home/" in lowered:
+        title = "python"
+    try:
+        import setproctitle  # type: ignore
+
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
+
+
 def parse_args() -> Any:
     p = ArgumentParser(description="Stage2 small-train trainer on frozen Stage1 backbone")
     p.add_argument(
@@ -66,6 +84,9 @@ def parse_args() -> Any:
     p.add_argument("--max-samples-train", type=int, default=24)
     p.add_argument("--max-samples-val", type=int, default=12)
     p.add_argument("--semantic-patch-radius", type=int, default=12)
+    p.add_argument("--stage1-partial-unfreeze-mode", default="none", choices=["none", "topblock"])
+    p.add_argument("--stage1-partial-unfreeze-layer-count", type=int, default=1)
+    p.add_argument("--stage1-partial-unfreeze-lr-scale", type=float, default=0.10)
 
     p.add_argument("--batch-size", type=int, default=2)
     p.add_argument("--lr", type=float, default=1e-4)
@@ -368,6 +389,27 @@ def _load_frozen_stage1_backbone(args: Any, device: torch.device) -> Tuple[Trace
         p.requires_grad = False
     model.eval()
 
+    partial_mode = str(getattr(args, "stage1_partial_unfreeze_mode", "none")).strip().lower()
+    partial_layers = max(int(getattr(args, "stage1_partial_unfreeze_layer_count", 1) or 1), 1)
+    unfrozen_param_names: List[str] = []
+    unfrozen_layer_indices: List[int] = []
+    if partial_mode == "topblock":
+        layer_ids = sorted(
+            {
+                int(match.group(1))
+                for name, _ in model.named_parameters()
+                for match in [re.search(r"backbone\.layers\.(\d+)\.", str(name))]
+                if match is not None
+            }
+        )
+        if layer_ids:
+            unfrozen_layer_indices = layer_ids[-partial_layers:]
+            prefixes = tuple([f"backbone.layers.{idx}." for idx in unfrozen_layer_indices] + ["norm."])
+            for name, param in model.named_parameters():
+                if str(name).startswith(prefixes):
+                    param.requires_grad = True
+                    unfrozen_param_names.append(str(name))
+
     meta = {
         "checkpoint_path": str(args.stage1_backbone_checkpoint),
         "model_preset": preset,
@@ -375,6 +417,10 @@ def _load_frozen_stage1_backbone(args: Any, device: torch.device) -> Tuple[Trace
         "unexpected_keys": list(unexpected),
         "parameter_count": int(sum(x.numel() for x in model.parameters())),
         "trainable_parameter_count": int(sum(x.numel() for x in model.parameters() if x.requires_grad)),
+        "partial_unfreeze_mode": partial_mode,
+        "partial_unfreeze_layer_count": int(partial_layers),
+        "partial_unfreeze_layer_indices": unfrozen_layer_indices,
+        "partial_unfreeze_param_names": unfrozen_param_names,
     }
     return model, meta
 
@@ -444,12 +490,14 @@ def _teacher_forced_predict(
     batch: Dict[str, Any],
     obs_len: int,
     semantic_source_mainline: str,
+    allow_stage1_grad: bool = False,
 ) -> Dict[str, Any]:
     full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
     shifted = _prepare_shifted(full_state)
     token_mask = batch["token_mask"]
 
-    with torch.no_grad():
+    grad_ctx = nullcontext() if bool(allow_stage1_grad) else torch.no_grad()
+    with grad_ctx:
         stage1_out = stage1_model(shifted, token_mask=token_mask)
 
     sem_enc = semantic_encoder(
@@ -486,6 +534,7 @@ def _free_rollout_predict(
     obs_len: int,
     fut_len: int,
     semantic_source_mainline: str,
+    allow_stage1_grad: bool = False,
 ) -> Dict[str, Any]:
     token_mask = batch["token_mask"]
     obs_state = batch["obs_state"]
@@ -506,7 +555,8 @@ def _free_rollout_predict(
 
     for step in range(int(fut_len)):
         shifted = _prepare_shifted(state_seq)
-        with torch.no_grad():
+        grad_ctx = nullcontext() if bool(allow_stage1_grad) else torch.no_grad()
+        with grad_ctx:
             stage1_out = stage1_model(shifted, token_mask=token_mask)
 
         fused_hidden, aux = semantic_fusion(stage1_out["hidden"], sem_enc, token_mask=token_mask)
@@ -2429,6 +2479,7 @@ def _checkpoint_payload(
     semantic_rescue_heads: SemanticRescueAuxHeads | None,
     optimizer: torch.optim.Optimizer,
     run_metadata: Dict[str, Any],
+    stage1_model: TraceCausalTransformer | None = None,
 ) -> Dict[str, Any]:
     payload = {
         "run_name": str(args.run_name),
@@ -2444,10 +2495,18 @@ def _checkpoint_payload(
     }
     if semantic_rescue_heads is not None:
         payload["semantic_rescue_heads_state_dict"] = semantic_rescue_heads.state_dict()
+    if stage1_model is not None and any(bool(p.requires_grad) for p in stage1_model.parameters()):
+        payload["stage1_model_state_dict"] = stage1_model.state_dict()
+        payload["stage1_partial_unfreeze_config"] = {
+            "mode": str(getattr(args, "stage1_partial_unfreeze_mode", "none")),
+            "layer_count": int(getattr(args, "stage1_partial_unfreeze_layer_count", 0) or 0),
+            "lr_scale": float(getattr(args, "stage1_partial_unfreeze_lr_scale", 0.0) or 0.0),
+        }
     return payload
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     args = parse_args()
     set_seed(int(args.seed))
 
@@ -2589,6 +2648,7 @@ def main() -> None:
         ).to(device)
 
     trainable_params: List[torch.nn.Parameter] = []
+    stage1_trainable_params: List[torch.nn.Parameter] = [p for p in stage1_model.parameters() if p.requires_grad]
     modules_for_training: List[torch.nn.Module] = [semantic_encoder, semantic_fusion, readout_head]
     if semantic_rescue_heads is not None:
         modules_for_training.append(semantic_rescue_heads)
@@ -2598,12 +2658,21 @@ def main() -> None:
     pre_frozen_parameter_count = int(stage1_meta.get("parameter_count", 0))
     pre_stage1_trainable_parameter_count = int(stage1_meta.get("trainable_parameter_count", 0))
     pre_trainable_parameter_count = int(sum(p.numel() for p in trainable_params))
+    total_trainable_parameter_count = int(pre_trainable_parameter_count + sum(p.numel() for p in stage1_trainable_params))
 
     print(f"[stage2-smalltrain] pre_frozen_parameter_count={pre_frozen_parameter_count}")
     print(f"[stage2-smalltrain] pre_stage1_trainable_parameter_count={pre_stage1_trainable_parameter_count}")
     print(f"[stage2-smalltrain] pre_stage2_trainable_parameter_count={pre_trainable_parameter_count}")
 
-    optimizer = torch.optim.AdamW(trainable_params, lr=float(args.lr), weight_decay=float(args.weight_decay))
+    optimizer_param_groups: List[Dict[str, Any]] = []
+    if trainable_params:
+        optimizer_param_groups.append({"params": trainable_params, "lr": float(args.lr)})
+    if stage1_trainable_params:
+        optimizer_param_groups.append({
+            "params": stage1_trainable_params,
+            "lr": float(args.lr) * float(args.stage1_partial_unfreeze_lr_scale),
+        })
+    optimizer = torch.optim.AdamW(optimizer_param_groups, lr=float(args.lr), weight_decay=float(args.weight_decay))
 
     gpu_selection = {}
     try:
@@ -2675,6 +2744,10 @@ def main() -> None:
         "skip_resume_optimizer": bool(args.skip_resume_optimizer),
         "resume_optimizer_loaded": False,
         "resume_optimizer_skip_reason": "",
+        "stage1_partial_unfreeze_mode": str(args.stage1_partial_unfreeze_mode),
+        "stage1_partial_unfreeze_layer_count": int(args.stage1_partial_unfreeze_layer_count),
+        "stage1_partial_unfreeze_lr_scale": float(args.stage1_partial_unfreeze_lr_scale),
+        "stage1_partial_unfreeze_active": bool(pre_stage1_trainable_parameter_count > 0),
     }
 
     resolved_resume = _resolve_resume_path(
@@ -2693,6 +2766,8 @@ def main() -> None:
         semantic_encoder.load_state_dict(payload.get("semantic_encoder_state_dict", {}))
         semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}))
         readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
+        if isinstance(payload.get("stage1_model_state_dict", None), dict):
+            stage1_model.load_state_dict(payload["stage1_model_state_dict"], strict=False)
         if semantic_rescue_heads is not None and isinstance(payload.get("semantic_rescue_heads_state_dict", None), dict):
             semantic_rescue_heads.load_state_dict(payload["semantic_rescue_heads_state_dict"])
         if isinstance(payload.get("optimizer_state_dict", None), dict):
@@ -2825,6 +2900,7 @@ def main() -> None:
             semantic_rescue_heads=semantic_rescue_heads,
             optimizer=optimizer,
             run_metadata=run_metadata,
+            stage1_model=stage1_model,
         )
         _atomic_torch_save(payload, latest_ckpt)
         if save_step:
@@ -2850,6 +2926,7 @@ def main() -> None:
             batch=batch,
             obs_len=int(args.obs_len),
             semantic_source_mainline=str(args.semantic_source_mainline),
+            allow_stage1_grad=bool(pre_stage1_trainable_parameter_count > 0),
         )
 
         main_rollout_reweight_strength = 0.0 if str(rescue_mode).startswith("v2") else float(args.semantic_hard_curriculum_weight)
@@ -3147,7 +3224,7 @@ def main() -> None:
     final_metrics = dict(best_metric_so_far.get("metrics", {})) if isinstance(best_metric_so_far, dict) else {}
     final_metric_triplet = _metric_triplet(final_metrics)
     frozen_count = int(stage1_meta.get("parameter_count", 0))
-    trainable_count = int(sum(p.numel() for p in trainable_params))
+    trainable_count = int(total_trainable_parameter_count)
     stage1_trainable_count = int(stage1_meta.get("trainable_parameter_count", 0))
 
     best_checkpoint_metric = _metric_triplet(
@@ -3163,7 +3240,7 @@ def main() -> None:
     train_split_counts_used = _split_counts_used(train_summary)
     val_split_counts_used = _split_counts_used(val_summary)
 
-    boundary_ok = bool(stage1_trainable_count == 0 and (not stage1_grad_detected_any))
+    boundary_ok = bool((stage1_trainable_count == 0 and (not stage1_grad_detected_any)) or (stage1_trainable_count > 0 and stage1_grad_detected_any))
     run_stable = bool(
         np.isfinite(float(final_metrics.get("teacher_forced_coord_loss", np.inf)))
         and np.isfinite(float(final_metrics.get("free_rollout_coord_mean_l2", np.inf)))
