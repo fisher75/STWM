@@ -1,0 +1,2195 @@
+{
+  "generated_at_utc": "2026-04-15T07:22:46.158692+00:00",
+  "active_run_names": [
+    "stage2_calonly_densegate_seed42_ablate_20260414",
+    "stage2_calonly_noalign_seed42_ablate_20260414",
+    "stage2_calonly_noalign_seed456_ablate_20260414",
+    "stage2_calonly_nodelay_seed42_ablate_20260414",
+    "stage2_calonly_topk1_seed123_longconfirm_20260414",
+    "stage2_calonly_topk1_seed654_longconfirm_20260414",
+    "stage2_final_evidence_closure_20260414"
+  ],
+  "deleted_checkpoint_count": 323,
+  "deleted_checkpoint_bytes": 22361742737,
+  "deleted_checkpoint_human": "20.83 GB",
+  "rows": [
+    {
+      "run_name": "stage1_v2_longtrain_220m_mainline_20260408",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage1_v2_longtrain_220m_mainline_20260408_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": true,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "protected_stage1_frozen_backbone"
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed123_ablate_20260414",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_densegate_seed123_ablate_20260414_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389632392,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389632392,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0008500.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0009000.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0009500.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0010000.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_20260414/step_0012000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed42_ablate_20260414",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_calonly_densegate_seed42_ablate_20260414_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": true,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 5,
+      "candidate_checkpoint_bytes": 243513557,
+      "candidate_checkpoint_human": "232.23 MB",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "active_run_directory"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed123_ablate_20260414",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_noalign_seed123_ablate_20260414_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 328417040,
+      "candidate_checkpoint_human": "313.20 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 328417040,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0008500.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0009000.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0009500.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0010000.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_20260414/step_0012000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_calonly_noalign_seed42_ablate_20260414_final.json",
+      "completed_status": false,
+      "best_exists": false,
+      "latest_exists": true,
+      "active_run": true,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 5,
+      "candidate_checkpoint_bytes": 205253770,
+      "candidate_checkpoint_human": "195.75 MB",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "active_run_directory"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed456_ablate_20260414",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_calonly_noalign_seed456_ablate_20260414_final.json",
+      "completed_status": false,
+      "best_exists": false,
+      "latest_exists": true,
+      "active_run": true,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 5,
+      "candidate_checkpoint_bytes": 205259850,
+      "candidate_checkpoint_human": "195.75 MB",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "active_run_directory"
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed123_ablate_20260414",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_nodelay_seed123_ablate_20260414_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389632392,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389632392,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0008500.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0009000.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0009500.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0010000.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_20260414/step_0012000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed42_ablate_20260414",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_calonly_nodelay_seed42_ablate_20260414_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": true,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 5,
+      "candidate_checkpoint_bytes": 243513365,
+      "candidate_checkpoint_human": "232.23 MB",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "active_run_directory"
+    },
+    {
+      "run_name": "stage2_calonly_qcap15_seed123_wave1_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_qcap15_seed123_wave1_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389632392,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389632392,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0008500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0009000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0009500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0010000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed123_wave1_20260413/step_0012000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_qcap15_seed42_wave1_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_qcap15_seed42_wave1_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389625224,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389625224,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0003500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0004000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0004500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0005000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0005500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0006000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0006500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed42_wave1_20260413/step_0007000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_qcap15_seed456_wave1_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_qcap15_seed456_wave1_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389635400,
+      "candidate_checkpoint_human": "371.59 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389635400,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0012000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0012500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0013000.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0013500.pt",
+        "outputs/checkpoints/stage2_calonly_qcap15_seed456_wave1_20260413/step_0014000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed123_longconfirm_20260414",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_calonly_topk1_seed123_longconfirm_20260414_final.json",
+      "completed_status": false,
+      "best_exists": false,
+      "latest_exists": false,
+      "active_run": true,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [],
+      "skipped_reason_if_any": "active_run_directory"
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_topk1_seed123_wave1_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389632392,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389632392,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0008500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0009000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0009500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0010000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/step_0012000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed321_wave2_20260414",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_topk1_seed321_wave2_20260414_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389625224,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389625224,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0003500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0004000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0004500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0005000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0005500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0006000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0006500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed321_wave2_20260414/step_0007000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_topk1_seed42_wave1_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389625224,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389625224,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0003500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0004000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0004500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0005000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0005500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0006000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0006500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/step_0007000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed456_wave1_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_topk1_seed456_wave1_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389634952,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389634952,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0010500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0011000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0011500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0012000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0012500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0013000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0013500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/step_0014000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed654_longconfirm_20260414",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_calonly_topk1_seed654_longconfirm_20260414_final.json",
+      "completed_status": false,
+      "best_exists": false,
+      "latest_exists": false,
+      "active_run": true,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [],
+      "skipped_reason_if_any": "active_run_directory"
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed654_wave2_20260414",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_topk1_seed654_wave2_20260414_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389625224,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389625224,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0003500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0004000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0004500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0005000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0005500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0006000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0006500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/step_0007000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_calonly_topk1_seed789_wave2_20260414",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_calonly_topk1_seed789_wave2_20260414_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 8,
+      "candidate_checkpoint_bytes": 389625224,
+      "candidate_checkpoint_human": "371.58 MB",
+      "deleted_checkpoint_count": 8,
+      "deleted_checkpoint_bytes": 389625224,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0003500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0004000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0004500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0005000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0005500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0006000.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0006500.pt",
+        "outputs/checkpoints/stage2_calonly_topk1_seed789_wave2_20260414/step_0007000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_core_mainline_train_20260408",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_core_mainline_train_20260408_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 1,
+      "candidate_checkpoint_bytes": 41048770,
+      "candidate_checkpoint_human": "39.15 MB",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_fullscale_core_cropenc_seed123_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_cropenc_seed123_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410459220,
+      "candidate_checkpoint_human": "391.44 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410459220,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed123_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_core_cropenc_seed42_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_cropenc_seed42_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410459220,
+      "candidate_checkpoint_human": "391.44 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410459220,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_core_cropenc_seed456_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_cropenc_seed456_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410459220,
+      "candidate_checkpoint_human": "391.44 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410459220,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_core_cropenc_seed789_wave2_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_cropenc_seed789_wave2_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410459540,
+      "candidate_checkpoint_human": "391.44 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410459540,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_cropenc_seed789_wave2_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_core_legacysem_seed123_wave2_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_legacysem_seed123_wave2_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 380877498,
+      "candidate_checkpoint_human": "363.23 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 380877498,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed123_wave2_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_core_legacysem_seed42_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_legacysem_seed42_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 380877178,
+      "candidate_checkpoint_human": "363.23 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 380877178,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed42_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_core_legacysem_seed456_wave2_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 380877562,
+      "candidate_checkpoint_human": "363.23 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 380877562,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_core_legacysem_seed456_wave2_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410460116,
+      "candidate_checkpoint_human": "391.45 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410460116,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed123_wave2_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_coreplusburst_cropenc_seed42_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_coreplusburst_cropenc_seed42_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410459796,
+      "candidate_checkpoint_human": "391.44 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410459796,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed42_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 10,
+      "candidate_checkpoint_bytes": 410460116,
+      "candidate_checkpoint_human": "391.45 MB",
+      "deleted_checkpoint_count": 10,
+      "deleted_checkpoint_bytes": 410460116,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0001000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0002000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0003000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0004000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0005000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0006000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0007000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0008000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0009000.pt",
+        "outputs/checkpoints/stage2_fullscale_coreplusburst_cropenc_seed456_wave2_20260409/step_0010000.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_fullscale_wave1_preflight_bs2_20260409",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_fullscale_wave1_preflight_bs2_20260409_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_fullscale_wave1_preflight_bs4_20260409",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_fullscale_wave1_preflight_bs4_20260409_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_fullscale_wave1_preflight_bs8_20260409",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_fullscale_wave1_preflight_bs8_20260409_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_partialunfreeze_topblock_seed123_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_partialunfreeze_topblock_seed123_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 4,
+      "candidate_checkpoint_bytes": 4027142148,
+      "candidate_checkpoint_human": "3.75 GB",
+      "deleted_checkpoint_count": 4,
+      "deleted_checkpoint_bytes": 4027142148,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed123_20260413/step_0010600.pt",
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed123_20260413/step_0010800.pt",
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed123_20260413/step_0011000.pt",
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed123_20260413/step_0011200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_partialunfreeze_topblock_seed42_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_partialunfreeze_topblock_seed42_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 4,
+      "candidate_checkpoint_bytes": 4027138564,
+      "candidate_checkpoint_human": "3.75 GB",
+      "deleted_checkpoint_count": 4,
+      "deleted_checkpoint_bytes": 4027138564,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed42_20260413/step_0005600.pt",
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed42_20260413/step_0005800.pt",
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed42_20260413/step_0006000.pt",
+        "outputs/checkpoints/stage2_partialunfreeze_topblock_seed42_20260413/step_0006200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv1_align_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv1_align_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 127962947,
+      "candidate_checkpoint_human": "122.03 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 127962947,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv1_align_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv1_align_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv1_align_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv1_alignhard_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv1_alignhard_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 127963011,
+      "candidate_checkpoint_human": "122.04 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 127963011,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv1_alignhard_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv1_alignhard_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv1_alignhard_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv1_alignpersist_seed123_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv1_alignpersist_seed123_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 127965699,
+      "candidate_checkpoint_human": "122.04 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 127965699,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv1_alignpersist_seed123_20260410/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv1_alignpersist_seed123_20260410/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv1_alignpersist_seed123_20260410/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv1_alignpersist_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv1_alignpersist_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 127963011,
+      "candidate_checkpoint_human": "122.04 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 127963011,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv1_alignpersist_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv1_alignpersist_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv1_alignpersist_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv2_readoutalign_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv2_readoutalign_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 97398498,
+      "candidate_checkpoint_human": "92.89 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 97398498,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv2_readoutalign_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv2_readoutalign_seed42_20260410/step_0003200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv2_readouthard_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv2_readouthard_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 97398498,
+      "candidate_checkpoint_human": "92.89 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 97398498,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv2_readouthard_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv2_readouthard_seed42_20260410/step_0003200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv2_readoutpersist_seed123_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv2_readoutpersist_seed123_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 97400290,
+      "candidate_checkpoint_human": "92.89 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 97400290,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv2_readoutpersist_seed123_20260410/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv2_readoutpersist_seed123_20260410/step_0008200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv2_readoutpersist_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv2_readoutpersist_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 97398562,
+      "candidate_checkpoint_human": "92.89 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 97398562,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv2_readoutpersist_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv2_readoutpersist_seed42_20260410/step_0003200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv3_confalign_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv3_confalign_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146100211,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146100211,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv3_confalign_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv3_confalign_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv3_confalign_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv3_confhardsidecar_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv3_confhardsidecar_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146101491,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146101491,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv3_confhardsidecar_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv3_confhardsidecar_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv3_confhardsidecar_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv3_confpersist_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv3_confpersist_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146100275,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146100275,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv3_confpersist_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv3_confpersist_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv3_confpersist_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv3_confpersistdelay_seed123_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv3_confpersistdelay_seed123_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146103027,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146103027,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv3_confpersistdelay_seed123_20260410/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv3_confpersistdelay_seed123_20260410/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv3_confpersistdelay_seed123_20260410/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv3_confpersistdelay_seed42_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv3_confpersistdelay_seed42_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146100403,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146100403,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv3_confpersistdelay_seed42_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv3_confpersistdelay_seed42_20260410/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv3_confpersistdelay_seed42_20260410/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv4_quantile_align_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv4_quantile_align_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146102643,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146102643,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv4_quantile_align_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv4_quantile_persistdelay_seed123_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv4_quantile_persistdelay_seed123_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146105331,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146105331,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed123_20260411/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv4_quantile_persistdelay_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv4_quantile_persistdelay_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146102835,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146102835,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv4_quantile_persistdelay_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv4_topk_align_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv4_topk_align_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146102643,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146102643,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv4_topk_align_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv4_topk_persistdelay_seed123_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv4_topk_persistdelay_seed123_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146105331,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146105331,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed123_20260411/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv4_topk_persistdelay_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv4_topk_persistdelay_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146102643,
+      "candidate_checkpoint_human": "139.33 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146102643,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv4_topk_persistdelay_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv5_qcap15_persistdelay_seed123_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv5_qcap15_persistdelay_seed123_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106675,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106675,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv5_qcap15_persistdelay_seed123_20260411/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv5_qcap15_persistdelay_seed123_20260411/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv5_qcap15_persistdelay_seed123_20260411/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv5_qcap15_persistdelay_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv5_qcap15_persistdelay_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146103987,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146103987,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv5_qcap15_persistdelay_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv5_qcap15_persistdelay_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv5_qcap15_persistdelay_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv5_qcap25_persistdelay_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv5_qcap25_persistdelay_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146103987,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146103987,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv5_qcap25_persistdelay_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv5_qcap25_persistdelay_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv5_qcap25_persistdelay_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv5_topk1_persistdelay_seed123_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv5_topk1_persistdelay_seed123_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv5_topk1_persistdelay_seed123_20260411/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv5_topk1_persistdelay_seed123_20260411/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv5_topk1_persistdelay_seed123_20260411/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv5_topk1_persistdelay_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv5_topk1_persistdelay_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146103987,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146103987,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv5_topk1_persistdelay_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv5_topk1_persistdelay_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv5_topk1_persistdelay_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv5_topk2_persistdelay_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv5_topk2_persistdelay_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146103987,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146103987,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv5_topk2_persistdelay_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv5_topk2_persistdelay_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv5_topk2_persistdelay_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv6_qcap15_g2_fb0_seed123_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv6_qcap15_g2_fb0_seed123_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146108979,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146108979,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv6_qcap15_g2_fb0_seed123_20260411/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv6_qcap15_g2_fb0_seed123_20260411/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv6_qcap15_g2_fb0_seed123_20260411/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv6_qcap15_g2_fb1_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv6_qcap15_g2_fb1_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv6_qcap15_g2_fb1_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv6_qcap15_g2_fb1_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv6_qcap15_g2_fb1_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv6_qcap25_g2_fb1_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv6_qcap25_g2_fb1_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv6_qcap25_g2_fb1_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv6_qcap25_g2_fb1_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv6_qcap25_g2_fb1_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv6_topk1_g2_fb1_seed123_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv6_topk1_g2_fb1_seed123_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146108979,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146108979,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed123_20260411/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed123_20260411/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed123_20260411/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv6_topk1_g2_fb1_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv6_topk1_g2_fb1_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106291,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106291,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv6_topk1_g2_fb1_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv6_topk2_g2_fb1_seed42_20260411",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv6_topk2_g2_fb1_seed42_20260411_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106291,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106291,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv6_topk2_g2_fb1_seed42_20260411/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv6_topk2_g2_fb1_seed42_20260411/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv6_topk2_g2_fb1_seed42_20260411/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignonly_qcap15_seed123_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignonly_qcap15_seed123_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146109171,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146109171,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignonly_qcap15_seed123_20260413/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_qcap15_seed123_20260413/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_qcap15_seed123_20260413/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignonly_qcap15_seed42_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignonly_qcap15_seed42_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignonly_qcap15_seed42_20260413/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_qcap15_seed42_20260413/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_qcap15_seed42_20260413/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignonly_topk1_seed123_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146108979,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146108979,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed123_20260413/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed123_20260413/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed123_20260413/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignonly_topk1_seed42_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignonly_topk1_seed42_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed42_20260413/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed42_20260413/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignonly_topk1_seed42_20260413/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignpersist_qcap15_seed123_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignpersist_qcap15_seed123_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146109171,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146109171,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed123_20260413/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed123_20260413/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed123_20260413/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignpersist_qcap15_seed42_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignpersist_qcap15_seed42_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed42_20260413/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed42_20260413/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_qcap15_seed42_20260413/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignpersist_topk1_seed123_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignpersist_topk1_seed123_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146109171,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146109171,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed123_20260413/step_0008100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed123_20260413/step_0008200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed123_20260413/step_0008300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semobjv7_alignpersist_topk1_seed42_20260413",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semobjv7_alignpersist_topk1_seed42_20260413_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 3,
+      "candidate_checkpoint_bytes": 146106483,
+      "candidate_checkpoint_human": "139.34 MB",
+      "deleted_checkpoint_count": 3,
+      "deleted_checkpoint_bytes": 146106483,
+      "kept_files": [
+        "best.pt",
+        "best_semantic_hard.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed42_20260413/step_0003100.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed42_20260413/step_0003200.pt",
+        "outputs/checkpoints/stage2_semobjv7_alignpersist_topk1_seed42_20260413/step_0003300.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semrescue_align_seed42_wave0_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semrescue_align_seed42_wave0_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 82188658,
+      "candidate_checkpoint_human": "78.38 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 82188658,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semrescue_align_seed42_wave0_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semrescue_align_seed42_wave0_20260410/step_0003200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semrescue_bootstrapplabel_seed42_wave0_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semrescue_bootstrapplabel_seed42_wave0_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 82212482,
+      "candidate_checkpoint_human": "78.40 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 82212482,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semrescue_bootstrapplabel_seed42_wave0_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semrescue_bootstrapplabel_seed42_wave0_20260410/step_0003200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_semrescue_querypersist_seed42_wave0_20260410",
+      "final_json_exists": true,
+      "final_json_path": "reports/stage2_semrescue_querypersist_seed42_wave0_20260410_final.json",
+      "completed_status": true,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 2,
+      "candidate_checkpoint_bytes": 82155954,
+      "candidate_checkpoint_human": "78.35 MB",
+      "deleted_checkpoint_count": 2,
+      "deleted_checkpoint_bytes": 82155954,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "",
+      "deleted_files": [
+        "outputs/checkpoints/stage2_semrescue_querypersist_seed42_wave0_20260410/step_0003100.pt",
+        "outputs/checkpoints/stage2_semrescue_querypersist_seed42_wave0_20260410/step_0003200.pt"
+      ],
+      "failed_files": []
+    },
+    {
+      "run_name": "stage2_smalltrain_core_20260408",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_smalltrain_core_20260408_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_smalltrain_core_plus_burst_20260408",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_smalltrain_core_plus_burst_20260408_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_smalltrain_cropenc_core_20260408",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_smalltrain_cropenc_core_20260408_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    },
+    {
+      "run_name": "stage2_smalltrain_cropenc_core_plus_burst_20260408",
+      "final_json_exists": false,
+      "final_json_path": "reports/stage2_smalltrain_cropenc_core_plus_burst_20260408_final.json",
+      "completed_status": false,
+      "best_exists": true,
+      "latest_exists": true,
+      "active_run": false,
+      "protected_stage1_backbone": false,
+      "candidate_checkpoint_count": 0,
+      "candidate_checkpoint_bytes": 0,
+      "candidate_checkpoint_human": "0.00 B",
+      "deleted_checkpoint_count": 0,
+      "deleted_checkpoint_bytes": 0,
+      "kept_files": [
+        "best.pt",
+        "latest.pt"
+      ],
+      "skipped_reason_if_any": "final_json_missing_or_not_completed"
+    }
+  ]
+}

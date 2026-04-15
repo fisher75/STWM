@@ -32,8 +32,8 @@
   "v6_relaxed_center_interaction_threshold": 0.1,
   "window_name": "fc_long123",
   "objective_combo": "closure_topk1_seed123_longconfirm",
-  "selected_gpu_id": -1,
-  "lease_id": "",
+  "selected_gpu_id": 3,
+  "lease_id": "0b713a85-8b6b-4c27-81c6-19e254cb4525",
   "dataset_names": [
     "vspw",
     "vipseg"
@@ -83,5 +83,147 @@
   "gpu_acquire_timeout_seconds": 28800,
   "gpu_acquire_retry_seconds": 20,
   "meta_json": "/home/chen034/workspace/stwm/reports/stage2_final_evidence_closure_runs_20260414/stage2_calonly_topk1_seed123_longconfirm_20260414_launch_meta.json",
-  "selector_payload": {}
+  "selector_payload": {
+    "generated_at_utc": "2026-04-15T07:10:57.681509+00:00",
+    "mode": "exclusive_clean_gpu_selector_stage2_calibration_only_finalization_pack",
+    "required_mem_gb": 30.0,
+    "reserve_idle_gpu_count": 2,
+    "policy": {
+      "allow_shared_gpu": false,
+      "leave_idle_gpu_count": 2,
+      "rank": [
+        "avg_free_mem_gb desc",
+        "avg_used_mem_gb asc",
+        "avg_gpu_util asc",
+        "active_compute_process_count asc"
+      ]
+    },
+    "gpus": [
+      {
+        "gpu_id": 0,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-5f162168-f499-f75f-3a6a-48e3e9d09153",
+        "avg_gpu_util": 97.5,
+        "avg_mem_util": 16.0,
+        "avg_free_mem_gb": 7.1494140625,
+        "avg_used_mem_gb": 171.203125,
+        "active_compute_process_count": 1,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "filtered_insufficient_free_mem",
+        "leased": false,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 1,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-5fd644d1-8bc9-eff6-3bb9-896d47a49981",
+        "avg_gpu_util": 0.0,
+        "avg_mem_util": 0.0,
+        "avg_free_mem_gb": 116.3994140625,
+        "avg_used_mem_gb": 61.953125,
+        "active_compute_process_count": 2,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "filtered_existing_lease",
+        "leased": true,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 2,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-9d6c2637-b070-9219-4274-d4194bf46a0e",
+        "avg_gpu_util": 100.0,
+        "avg_mem_util": 54.0,
+        "avg_free_mem_gb": 52.9912109375,
+        "avg_used_mem_gb": 125.3603515625,
+        "active_compute_process_count": 2,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "filtered_existing_lease",
+        "leased": true,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 3,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-b691b142-1426-8107-7d9f-f67ec2d22bd9",
+        "avg_gpu_util": 0.0,
+        "avg_mem_util": 0.0,
+        "avg_free_mem_gb": 176.6279296875,
+        "avg_used_mem_gb": 1.724609375,
+        "active_compute_process_count": 2,
+        "sample_count": 2,
+        "selected": true,
+        "selected_reason": "best_rank_after_exclusive_filter",
+        "leased": false,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 4,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-95bdf5f2-6a9e-730a-2995-77a96176e60f",
+        "avg_gpu_util": 99.0,
+        "avg_mem_util": 68.0,
+        "avg_free_mem_gb": 46.5966796875,
+        "avg_used_mem_gb": 131.755859375,
+        "active_compute_process_count": 2,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "filtered_existing_lease",
+        "leased": true,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 5,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-60a40337-1114-ee46-3365-df237e338b35",
+        "avg_gpu_util": 98.0,
+        "avg_mem_util": 3.0,
+        "avg_free_mem_gb": 146.302734375,
+        "avg_used_mem_gb": 32.048828125,
+        "active_compute_process_count": 4,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "filtered_existing_lease",
+        "leased": true,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 6,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-e55bf6d0-c321-f811-53df-ab6b20f8e31e",
+        "avg_gpu_util": 97.5,
+        "avg_mem_util": 34.5,
+        "avg_free_mem_gb": 55.302734375,
+        "avg_used_mem_gb": 123.048828125,
+        "active_compute_process_count": 3,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "exclusive_candidate_not_top_rank",
+        "leased": false,
+        "required_mem_gb": 30.0
+      },
+      {
+        "gpu_id": 7,
+        "name": "NVIDIA B200",
+        "uuid": "GPU-4f8bae43-556a-42e7-10ea-d9f4c202a494",
+        "avg_gpu_util": 96.5,
+        "avg_mem_util": 22.5,
+        "avg_free_mem_gb": 37.9208984375,
+        "avg_used_mem_gb": 140.431640625,
+        "active_compute_process_count": 1,
+        "sample_count": 2,
+        "selected": false,
+        "selected_reason": "exclusive_candidate_not_top_rank",
+        "leased": false,
+        "required_mem_gb": 30.0
+      }
+    ],
+    "candidate_ranking": [
+      3,
+      6,
+      7
+    ]
+  }
 }
