@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-04-15T07:55:38.164436+00:00",
-  "run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
+  "generated_at_utc": "2026-04-15T10:15:20.176917+00:00",
+  "run_name": "stage2_calonly_topk1_seed654_longconfirm_20260414",
   "status": "completed",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "datasets_bound_for_train": [
@@ -24,19 +24,19 @@
     "safety_margin_gb": 8.0
   },
   "run_metadata": {
-    "run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
-    "started_at_utc": "2026-04-15T06:06:18.551821+00:00",
+    "run_name": "stage2_calonly_topk1_seed654_longconfirm_20260414",
+    "started_at_utc": "2026-04-15T07:56:06.805369+00:00",
     "cuda_visible_devices": "4",
     "gpu_selection": {
       "selected_gpu_id": 4,
-      "lease_id": "7c278440-ef12-423d-8256-d00e0f713840",
-      "owner": "stage2_calonly_noalign_seed42_ablate_20260414",
+      "lease_id": "5736ea0b-3ab1-4bfc-8414-f1f86249876b",
+      "owner": "stage2_calonly_topk1_seed654_longconfirm_20260414",
       "mode": "single_gpu_only"
     },
     "current_mainline_semantic_source": "crop_visual_encoder",
     "legacy_semantic_source": "hand_crafted_stats",
     "semantic_rescue_mode": "v7alignonly",
-    "semantic_rescue_weight": 0.0,
+    "semantic_rescue_weight": 0.00015,
     "semantic_bootstrap_cache_path": "/home/chen034/workspace/stwm/data/processed/stage2_real_bootstrap_cache_20260410/clip_vit_b32_core_trainval_required_subset.jsonl",
     "semantic_bootstrap_target_dim": 512,
     "semantic_alignment_loss_weight": 0.0,
@@ -45,7 +45,7 @@
     "readout_semantic_alignment_loss_weight": 0.0,
     "persistence_contrastive_ranking_loss_weight": 0.0,
     "semantic_aux_subset_weighting_strength": 1.0,
-    "confidence_gated_alignment_loss_weight": 0.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
     "sparse_persistence_contrastive_loss_weight": 0.0,
     "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
     "confidence_gating_margin_threshold": 0.1,
@@ -94,10 +94,10 @@
     "stage1_partial_unfreeze_layer_count": 1,
     "stage1_partial_unfreeze_lr_scale": 0.1,
     "stage1_partial_unfreeze_active": false,
-    "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt"
+    "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt"
   },
-  "global_step": 7000,
-  "train_steps_target": 7000,
+  "global_step": 11000,
+  "train_steps_target": 11000,
   "progress_ratio": 1.0,
   "whether_full_train_used": true,
   "whether_full_val_used": true,
@@ -110,25 +110,25 @@
     "VIPSeg": 343
   },
   "checkpoint_inventory": {
-    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed42_ablate_20260414",
-    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed42_ablate_20260414/best.pt",
-    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed42_ablate_20260414/latest.pt",
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_longconfirm_20260414",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_longconfirm_20260414/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_longconfirm_20260414/latest.pt",
     "best_exists": true,
     "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 3.038235399799305e-05,
-    "free_rollout_coord_mean_l2": 0.0017944196898913767,
-    "free_rollout_endpoint_l2": 0.0018182268512839826,
-    "total_loss_reference": 3.029991942740221e-05
+    "teacher_forced_coord_loss": 2.5157032126022264e-05,
+    "free_rollout_coord_mean_l2": 0.0006561556014907071,
+    "free_rollout_endpoint_l2": 0.0006864951717641487,
+    "total_loss_reference": 2.5084056341684054e-05
   },
   "best_metric_so_far": {
-    "global_step": 6000,
+    "global_step": 11000,
     "metrics": {
-      "teacher_forced_coord_loss": 3.170764937437257e-05,
-      "free_rollout_coord_mean_l2": 0.0010317692311844482,
-      "free_rollout_endpoint_l2": 0.0010625912038115214,
-      "total_loss_reference": 3.1616553576540365e-05,
+      "teacher_forced_coord_loss": 2.5157032126022264e-05,
+      "free_rollout_coord_mean_l2": 0.0006561556014907071,
+      "free_rollout_endpoint_l2": 0.0006864951717641487,
+      "total_loss_reference": 2.5084056341684054e-05,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -138,15 +138,15 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.04344002417353696,
+        "eval_gate_mean": 0.006933672174941315,
         "semantic_input_nonempty_ratio": 1.0,
         "eval_batches": 86
       }
     },
     "rank_key": [
-      0.0010625912038115214,
-      0.0010317692311844482,
-      3.170764937437257e-05
+      0.0006864951717641487,
+      0.0006561556014907071,
+      2.5157032126022264e-05
     ]
   }
 }
