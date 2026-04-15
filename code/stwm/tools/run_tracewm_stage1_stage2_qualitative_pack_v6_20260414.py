@@ -100,6 +100,8 @@ def main() -> None:
         case("stage2_densegate_failure_v6", "VSPW+VIPSeg", ["densegate-failure", "mechanism-ablation"], "Demonstrates sparse topk1 gating is load-bearing relative to dense gating.", method_table, "Dense gating removes selectivity and is kept as a failure/control case."),
         case("stage2_nodelay_failure_v6", "VSPW+VIPSeg", ["nodelay-failure", "mechanism-ablation"], "Demonstrates delayed auxiliary schedule is load-bearing.", method_table, "Immediate auxiliary intervention is a controlled failure condition."),
         case("stage2_longrun_confirmation_v6", "VSPW+VIPSeg", ["longrun", "confirmation"], "Shows whether limited longrun improves or saturates current calibration-only optimum.", method_table, "Use this case to decide whether longrun is a confirmation or no-improvement story."),
+        case("stage2_query_utility_success_v6", "VSPW+VIPSeg", ["query-utility", "success"], "Internal query-conditioned future localization proxy favors calibration-only on the selected panel.", method_table, "Use this case to inspect whether lower future-state error translates into a more useful queryable state."),
+        case("stage2_query_utility_failure_v6", "VSPW+VIPSeg", ["query-utility", "failure"], "Included to inspect where the internal query utility proxy does not provide separation or remains ambiguous.", method_table, "This prevents over-claiming utility and should be reviewed before figure selection."),
     ]
     if isinstance(v5_stage2.get("cases", []), list):
         stage2_cases.extend(v5_stage2.get("cases", [])[:6])
