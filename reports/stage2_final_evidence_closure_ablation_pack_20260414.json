@@ -1,0 +1,237 @@
+{
+  "generated_at_utc": "2026-04-15T06:06:04.064021+00:00",
+  "ablation_pack_status": "4_running_0_completed_0_failed",
+  "running_count": 4,
+  "completed_count": 0,
+  "failed_count": 0,
+  "all_runs_terminal": false,
+  "reference_mainline_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+  "reference_best_checkpoint_metric": {
+    "global_step": 10500,
+    "metrics": {
+      "teacher_forced_coord_loss": 3.014592101484348e-05,
+      "free_rollout_coord_mean_l2": 0.0005033888573908999,
+      "free_rollout_endpoint_l2": 0.0005282461077264041,
+      "total_loss_reference": 3.0058316673588633e-05
+    },
+    "rank_key": [
+      0.0005282461077264041,
+      0.0005033888573908999,
+      3.014592101484348e-05
+    ]
+  },
+  "reference_semantic_hard_sidecar_metric": {
+    "enabled": true,
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed123_wave1_20260413/best_semantic_hard.pt",
+    "exists": true,
+    "global_step": 10500,
+    "semantic_hard_sidecar_score": 0.0001250835310202092,
+    "metrics": {
+      "teacher_forced_coord_loss": 1.6619954051176858e-08,
+      "free_rollout_coord_mean_l2": 0.00012506604290161378,
+      "free_rollout_endpoint_l2": 0.00012509102592817866,
+      "total_loss_reference": 1.6602267294274497e-08
+    },
+    "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+  },
+  "run_rows": [
+    {
+      "run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
+      "track": "ablation",
+      "ablation_name": "noalign",
+      "family": "ablation",
+      "seed": 42,
+      "status": "running",
+      "global_step": -1,
+      "final_json_exists": false,
+      "progress_json_exists": false,
+      "raw_json_exists": false,
+      "best_ckpt_exists": false,
+      "latest_ckpt_exists": false,
+      "sidecar_exists": false,
+      "scientific_result_valid": false,
+      "selected_gpu_id": -1,
+      "lease_id": "",
+      "batch_size": 8,
+      "train_steps": 7000,
+      "eval_interval": 500,
+      "save_every_n_steps": 500,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "best_checkpoint_metric": {},
+      "latest_checkpoint_metric": {},
+      "semantic_hard_sidecar_metric": {},
+      "actual_gate_positive_ratio_mean": null,
+      "valuable_pair_ratio_mean": null,
+      "same_checkpoint_selected": true,
+      "sidecar_truly_diverged": false,
+      "gating_family": "hard_topk_query_gating_v2",
+      "aux_loss_delay_steps": 180,
+      "aux_loss_ramp_steps": 360,
+      "persistence_objective_declared": false,
+      "persistence_objective_effective": false
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed456_ablate_20260414",
+      "track": "ablation",
+      "ablation_name": "noalign",
+      "family": "ablation",
+      "seed": 456,
+      "status": "running",
+      "global_step": -1,
+      "final_json_exists": false,
+      "progress_json_exists": false,
+      "raw_json_exists": false,
+      "best_ckpt_exists": false,
+      "latest_ckpt_exists": false,
+      "sidecar_exists": false,
+      "scientific_result_valid": false,
+      "selected_gpu_id": -1,
+      "lease_id": "",
+      "batch_size": 8,
+      "train_steps": 14000,
+      "eval_interval": 500,
+      "save_every_n_steps": 500,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "best_checkpoint_metric": {},
+      "latest_checkpoint_metric": {},
+      "semantic_hard_sidecar_metric": {},
+      "actual_gate_positive_ratio_mean": null,
+      "valuable_pair_ratio_mean": null,
+      "same_checkpoint_selected": true,
+      "sidecar_truly_diverged": false,
+      "gating_family": "hard_topk_query_gating_v2",
+      "aux_loss_delay_steps": 180,
+      "aux_loss_ramp_steps": 360,
+      "persistence_objective_declared": false,
+      "persistence_objective_effective": false
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed42_ablate_20260414",
+      "track": "ablation",
+      "ablation_name": "densegate",
+      "family": "ablation",
+      "seed": 42,
+      "status": "running",
+      "global_step": -1,
+      "final_json_exists": false,
+      "progress_json_exists": false,
+      "raw_json_exists": false,
+      "best_ckpt_exists": false,
+      "latest_ckpt_exists": false,
+      "sidecar_exists": false,
+      "scientific_result_valid": false,
+      "selected_gpu_id": -1,
+      "lease_id": "",
+      "batch_size": 8,
+      "train_steps": 7000,
+      "eval_interval": 500,
+      "save_every_n_steps": 500,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "best_checkpoint_metric": {},
+      "latest_checkpoint_metric": {},
+      "semantic_hard_sidecar_metric": {},
+      "actual_gate_positive_ratio_mean": null,
+      "valuable_pair_ratio_mean": null,
+      "same_checkpoint_selected": true,
+      "sidecar_truly_diverged": false,
+      "gating_family": "capped_quantile_sparse_gating_v2",
+      "aux_loss_delay_steps": 180,
+      "aux_loss_ramp_steps": 360,
+      "persistence_objective_declared": false,
+      "persistence_objective_effective": false
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed42_ablate_20260414",
+      "track": "ablation",
+      "ablation_name": "nodelay",
+      "family": "ablation",
+      "seed": 42,
+      "status": "running",
+      "global_step": -1,
+      "final_json_exists": false,
+      "progress_json_exists": false,
+      "raw_json_exists": false,
+      "best_ckpt_exists": false,
+      "latest_ckpt_exists": false,
+      "sidecar_exists": false,
+      "scientific_result_valid": false,
+      "selected_gpu_id": -1,
+      "lease_id": "",
+      "batch_size": 8,
+      "train_steps": 7000,
+      "eval_interval": 500,
+      "save_every_n_steps": 500,
+      "effective_train_sample_count_per_dataset": {
+        "VSPW": 2806,
+        "VIPSeg": 2806
+      },
+      "effective_val_sample_count_per_dataset": {
+        "VSPW": 343,
+        "VIPSeg": 343
+      },
+      "best_checkpoint_metric": {},
+      "latest_checkpoint_metric": {},
+      "semantic_hard_sidecar_metric": {},
+      "actual_gate_positive_ratio_mean": null,
+      "valuable_pair_ratio_mean": null,
+      "same_checkpoint_selected": true,
+      "sidecar_truly_diverged": false,
+      "gating_family": "hard_topk_query_gating_v2",
+      "aux_loss_delay_steps": 0,
+      "aux_loss_ramp_steps": 0,
+      "persistence_objective_declared": false,
+      "persistence_objective_effective": false
+    }
+  ],
+  "judgments": {
+    "noalign": {
+      "run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
+      "completed": false,
+      "endpoint_l2": 1000000000.0,
+      "semantic_hard_sidecar_score": 1000000000.0,
+      "gate_ratio": 1.0,
+      "worse_than_reference": false,
+      "expected_direction_observed": false
+    },
+    "densegate": {
+      "run_name": "stage2_calonly_densegate_seed42_ablate_20260414",
+      "completed": false,
+      "endpoint_l2": 1000000000.0,
+      "semantic_hard_sidecar_score": 1000000000.0,
+      "gate_ratio": 1.0,
+      "worse_than_reference": false,
+      "expected_direction_observed": false
+    },
+    "nodelay": {
+      "run_name": "stage2_calonly_nodelay_seed42_ablate_20260414",
+      "completed": false,
+      "endpoint_l2": 1000000000.0,
+      "semantic_hard_sidecar_score": 1000000000.0,
+      "gate_ratio": 1.0,
+      "worse_than_reference": false,
+      "expected_direction_observed": false
+    }
+  },
+  "alignment_sparse_gating_delay_load_bearing": false
+}
