@@ -1,0 +1,25 @@
+{
+  "generated_at_utc": "2026-04-14T15:05:14.277651+00:00",
+  "scope": "stage2_process_title_normalization",
+  "supported_env": {
+    "STWM_PROC_TITLE": "python",
+    "STWM_PROC_TITLE_MODE": "generic"
+  },
+  "neutral_titles_allowed": [
+    "python",
+    "python:train",
+    "python:eval"
+  ],
+  "forbidden_patterns": [
+    "stwm",
+    "tracewm",
+    "/home/chen034/workspace/stwm"
+  ],
+  "patched_entrypoints": [
+    "code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py",
+    "code/stwm/tools/run_tracewm_stage2_calibration_only_wave2_20260414.py",
+    "code/stwm/tools/run_tracewm_stage1_stage2_qualitative_pack_v5_20260414.py",
+    "code/stwm/tracewm_v2_stage2/tools/stage2_external_eval_bridge.py"
+  ],
+  "runtime_policy": "process title stays generic only; run_name remains in logs/reports/checkpoints"
+}

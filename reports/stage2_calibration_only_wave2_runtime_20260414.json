@@ -1,0 +1,19 @@
+{
+  "generated_at_utc": "2026-04-14T15:04:36.231664+00:00",
+  "mode": "stage2_calibration_only_wave2_runtime",
+  "selected_gpu_policy": {
+    "mode": "strict_clean_gpu_selector",
+    "required_mem_gb": 30.0,
+    "reserve_idle_gpu_count": 2
+  },
+  "recommended_num_workers": 8,
+  "recommended_pin_memory": true,
+  "recommended_persistent_workers": true,
+  "recommended_prefetch_factor": 4,
+  "single_gpu_only": true,
+  "notes": [
+    "20260414 finalization pack: 3 wave2 fresh seeds + 3 mechanism ablations",
+    "hard cap: 6 concurrent training tasks, keep 2 GPUs idle",
+    "mainline family fixed to topk1 calibration-only; persistence disabled everywhere"
+  ]
+}

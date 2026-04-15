@@ -1,0 +1,268 @@
+{
+  "generated_at_utc": "2026-04-14T17:25:21.619134+00:00",
+  "round": "stage2_external_eval_completion_20260408",
+  "external_eval_protocol_version": "stage2_external_eval_completion_20260408_v1",
+  "current_stage2_mainline_checkpoint": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt",
+  "secondary_checkpoint_reference": "",
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "frozen_boundary_kept_correct": true,
+  "tap_style_eval_status": "partially_bridged",
+  "tap_style_proxy_bridge_connected": true,
+  "official_evaluator_invoked": true,
+  "official_tapvid_evaluator_connected": true,
+  "official_task_faithfully_instantiated": false,
+  "tap3d_style_eval_status": "not_yet_implemented",
+  "tap3d_missing_components": [
+    "tap3d_aligned_ground_truth_for_current_core_only_vspw_vipseg_eval_binding",
+    "camera_geometry_projection_or_2d_to_3d_lifting_path_for_stage2_bridge",
+    "stage2_rollout_exporter_to_official_tapvid3d_tracks_xyz_visibility_format"
+  ],
+  "external_eval_readiness": "training_ready_but_eval_gap_remains",
+  "exact_blocking_reasons": [
+    "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
+    "current frozen stage2 mainline does not expose a predicted occlusion head; pred_occluded is evaluator-side all-visible adapter output",
+    "current evaluation binding remains VSPW+VIPSeg core-only rather than the official TAP-Vid dataset family",
+    "current frozen stage2 external eval binding is fixed to VSPW+VIPSeg, which does not provide TAPVid-3D aligned XYZ ground truth for the checkpoint under test",
+    "current stage2 dataset/bridge path does not export intrinsics, extrinsics, projection, or lifting utilities needed to convert 2D rollout states into camera-consistent 3D trajectories",
+    "current evaluator-side completion round does not yet include a verified adapter that emits official TAPVid-3D prediction files with tracks_XYZ and visibility for the frozen stage2 checkpoint"
+  ],
+  "next_step_choice": "do_one_targeted_external_eval_fix",
+  "primary_checkpoint_eval": {
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt",
+    "internal_metrics_reference": {
+      "teacher_forced_coord_loss": 2.0978449910558084e-07,
+      "free_rollout_coord_mean_l2": 0.00043840333819389343,
+      "free_rollout_endpoint_l2": 0.00043839031422976404,
+      "total_loss_reference": 2.0978449910558084e-07
+    },
+    "tap_style_eval": {
+      "status": "partially_bridged",
+      "proxy_bridge_connected": true,
+      "official_evaluator_invoked": true,
+      "official_tapvid_evaluator_connected": true,
+      "official_task_faithfully_instantiated": false,
+      "benchmark_native_full_tap_episode": false,
+      "query_time_matches_official_task": false,
+      "pred_visibility_from_model_output": false,
+      "dataset_binding_is_official_tap_dataset_family": false,
+      "bridge_protocol": "stage2_tap_style_completion_v1",
+      "proxy_payload": {
+        "payload_npz": "/home/chen034/workspace/stwm/reports/stage2_aux_external_probe_batch_20260414_assets/calibration_only_wave2_best_proxy.npz",
+        "payload_shapes": {
+          "predicted_tracks_2d": [
+            32,
+            8,
+            1,
+            2
+          ],
+          "gt_tracks_2d": [
+            32,
+            8,
+            1,
+            2
+          ],
+          "visibility_mask": [
+            32,
+            8,
+            1
+          ],
+          "query_points_2d": [
+            32,
+            1,
+            2
+          ]
+        },
+        "coordinate_space": "normalized_xy_in_stage2_state",
+        "gt_occluded_points": 0,
+        "total_points": 256,
+        "tap_style_bridge_metrics": {
+          "free_rollout_coord_mean_l2": 0.00043840333819389343,
+          "free_rollout_endpoint_l2": 0.00043839032878167927,
+          "frames_evaluated": 8,
+          "tokens_per_frame": 1,
+          "samples": 32
+        }
+      },
+      "official_payload_export": {
+        "adapter_version": "stage2_tapvid_adapter_v1",
+        "source_proxy_payload_npz": "/home/chen034/workspace/stwm/reports/stage2_aux_external_probe_batch_20260414_assets/calibration_only_wave2_best_proxy.npz",
+        "output_tap_payload_npz": "/home/chen034/workspace/stwm/reports/stage2_aux_external_probe_batch_20260414_assets/calibration_only_wave2_best_official.npz",
+        "coord_space_input": "normalized_stage2_xy",
+        "coord_space_output": "raster_xy_256",
+        "query_mode_expected_for_eval": "first",
+        "query_time_index": 0,
+        "pred_occlusion_mode": "all_visible",
+        "predicted_visibility_is_model_output": false,
+        "benchmark_native_full_tap_episode": false,
+        "query_time_matches_official_task": false,
+        "adapter_limitations": [
+          "stage2 current rollout exports future-only 2D tracks rather than full official TAP-Vid benchmark episodes",
+          "query point is anchored to the first predicted frame because the frozen stage2 bridge does not export benchmark-native TAP query times",
+          "pred_occluded is synthesized as all-visible because current frozen stage2 mainline does not expose an occlusion prediction head"
+        ],
+        "shapes": {
+          "query_points": [
+            32,
+            1,
+            3
+          ],
+          "gt_occluded": [
+            32,
+            1,
+            8
+          ],
+          "gt_tracks": [
+            32,
+            1,
+            8,
+            2
+          ],
+          "pred_occluded": [
+            32,
+            1,
+            8
+          ],
+          "pred_tracks": [
+            32,
+            1,
+            8,
+            2
+          ]
+        },
+        "counts": {
+          "batch": 32,
+          "queries_per_sample": 1,
+          "frames_per_track": 8,
+          "gt_occluded_points": 0,
+          "total_points": 256
+        }
+      },
+      "official_eval": {
+        "tap_payload_npz": "/home/chen034/workspace/stwm/reports/stage2_aux_external_probe_batch_20260414_assets/calibration_only_wave2_best_official.npz",
+        "tapnet_python": "/home/chen034/workspace/data/.venv_tapvid3d_repair_20260406_py310/bin/python",
+        "query_mode": "first",
+        "returncode": 0,
+        "stdout_tail": "{\"official_tapvid_evaluator_connected\": true, \"tapvid_module_path\": \"/raid/chen034/workspace/data/_repos/tapnet/tapnet/tapvid/evaluation_datasets.py\", \"query_mode\": \"first\", \"metric_means\": {\"occlusion_accuracy\": 1.0, \"pts_within_1\": 1.0, \"jaccard_1\": 1.0, \"pts_within_2\": 1.0, \"jaccard_2\": 1.0, \"pts_within_4\": 1.0, \"jaccard_4\": 1.0, \"pts_within_8\": 1.0, \"jaccard_8\": 1.0, \"pts_within_16\": 1.0, \"jaccard_16\": 1.0, \"average_jaccard\": 1.0, \"average_pts_within_thresh\": 1.0}, \"metric_shapes\": {\"occlusion_accuracy\": [32], \"pts_within_1\": [32], \"jaccard_1\": [32], \"pts_within_2\": [32], \"jaccard_2\": [32], \"pts_within_4\": [32], \"jaccard_4\": [32], \"pts_within_8\": [32], \"jaccard_8\": [32], \"pts_within_16\": [32], \"jaccard_16\": [32], \"average_jaccard\": [32], \"average_pts_within_thresh\": [32]}}\n",
+        "stderr_tail": "2026-04-15 01:25:17.788569: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered\n2026-04-15 01:25:17.788600: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered\n2026-04-15 01:25:17.789956: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered\n2026-04-15 01:25:18.337815: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT\n",
+        "official_evaluator_invoked": true,
+        "official_tapvid_evaluator_connected": true,
+        "tapvid_module_path": "/raid/chen034/workspace/data/_repos/tapnet/tapnet/tapvid/evaluation_datasets.py",
+        "metric_means": {
+          "occlusion_accuracy": 1.0,
+          "pts_within_1": 1.0,
+          "jaccard_1": 1.0,
+          "pts_within_2": 1.0,
+          "jaccard_2": 1.0,
+          "pts_within_4": 1.0,
+          "jaccard_4": 1.0,
+          "pts_within_8": 1.0,
+          "jaccard_8": 1.0,
+          "pts_within_16": 1.0,
+          "jaccard_16": 1.0,
+          "average_jaccard": 1.0,
+          "average_pts_within_thresh": 1.0
+        },
+        "metric_shapes": {
+          "occlusion_accuracy": [
+            32
+          ],
+          "pts_within_1": [
+            32
+          ],
+          "jaccard_1": [
+            32
+          ],
+          "pts_within_2": [
+            32
+          ],
+          "jaccard_2": [
+            32
+          ],
+          "pts_within_4": [
+            32
+          ],
+          "jaccard_4": [
+            32
+          ],
+          "pts_within_8": [
+            32
+          ],
+          "jaccard_8": [
+            32
+          ],
+          "pts_within_16": [
+            32
+          ],
+          "jaccard_16": [
+            32
+          ],
+          "average_jaccard": [
+            32
+          ],
+          "average_pts_within_thresh": [
+            32
+          ]
+        }
+      },
+      "exact_blocking_reason": "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
+      "exact_blocking_reasons": [
+        "current frozen stage2 bridge exports future-only core-eval trajectories rather than benchmark-native full TAP-Vid episodes",
+        "current frozen stage2 mainline does not expose a predicted occlusion head; pred_occluded is evaluator-side all-visible adapter output",
+        "current evaluation binding remains VSPW+VIPSeg core-only rather than the official TAP-Vid dataset family"
+      ],
+      "exact_missing_component": "benchmark-native TAP query sampler over full observed video horizon",
+      "exact_missing_components": [
+        "benchmark-native TAP query sampler over full observed video horizon",
+        "model-produced occlusion predictions for TAP-style metrics",
+        "official TAP-Vid dataset binding for the frozen stage2 core mainline"
+      ]
+    },
+    "legacy_semantic_source": "hand_crafted_stats",
+    "eval_batches": 4
+  },
+  "secondary_checkpoint_eval": null,
+  "tap3d_completion": {
+    "status": "not_yet_implemented",
+    "official_tapvid3d_evaluator_connected": false,
+    "runtime_probe": {
+      "tapnet_python": "/home/chen034/workspace/data/.venv_tapvid3d_repair_20260406_py310/bin/python",
+      "returncode": 0,
+      "stdout_tail": "{\"official_tapvid3d_metric_importable\": true, \"tapvid3d_module_path\": \"/raid/chen034/workspace/data/_repos/tapnet/tapnet/tapvid3d/evaluation/metrics.py\"}\n",
+      "stderr_tail": "2026-04-15 01:25:20.196123: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered\n2026-04-15 01:25:20.196154: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered\n2026-04-15 01:25:20.197447: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered\n2026-04-15 01:25:20.745188: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT\n",
+      "official_tapvid3d_metric_importable": true,
+      "tapvid3d_module_path": "/raid/chen034/workspace/data/_repos/tapnet/tapnet/tapvid3d/evaluation/metrics.py"
+    },
+    "reference_dataset_probe": {
+      "dataset_root": "/home/chen034/workspace/data/tapvid3d/minival_dataset",
+      "dataset_root_exists": true,
+      "npz_count_by_source": {
+        "adt": 50,
+        "pstudio": 50,
+        "drivetrack": 50
+      },
+      "total_npz_files": 150
+    },
+    "aligned_3d_gt_for_current_binding": false,
+    "camera_geometry_projection_or_lifting_path_available": false,
+    "verified_exporter_to_tracks_xyz_visibility": false,
+    "current_stage2_checkpoint_payload_has_3d_tracks": false,
+    "current_stage2_checkpoint_payload_has_camera_geometry": false,
+    "exact_blocking_reason": "current frozen stage2 external eval binding is fixed to VSPW+VIPSeg, which does not provide TAPVid-3D aligned XYZ ground truth for the checkpoint under test",
+    "exact_blocking_reasons": [
+      "current frozen stage2 external eval binding is fixed to VSPW+VIPSeg, which does not provide TAPVid-3D aligned XYZ ground truth for the checkpoint under test",
+      "current stage2 dataset/bridge path does not export intrinsics, extrinsics, projection, or lifting utilities needed to convert 2D rollout states into camera-consistent 3D trajectories",
+      "current evaluator-side completion round does not yet include a verified adapter that emits official TAPVid-3D prediction files with tracks_XYZ and visibility for the frozen stage2 checkpoint"
+    ],
+    "missing_component": "tap3d_aligned_ground_truth_for_current_core_only_vspw_vipseg_eval_binding",
+    "missing_component_list": [
+      "tap3d_aligned_ground_truth_for_current_core_only_vspw_vipseg_eval_binding",
+      "camera_geometry_projection_or_2d_to_3d_lifting_path_for_stage2_bridge",
+      "stage2_rollout_exporter_to_official_tapvid3d_tracks_xyz_visibility_format"
+    ]
+  },
+  "best_vs_latest_reference": null
+}

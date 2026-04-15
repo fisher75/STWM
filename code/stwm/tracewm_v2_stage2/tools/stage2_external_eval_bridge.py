@@ -51,6 +51,21 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _apply_process_title_normalization(default_title: str = 'python:eval') -> None:
+    mode = str(os.environ.get('STWM_PROC_TITLE_MODE', 'generic')).strip().lower()
+    if mode != 'generic':
+        return
+    title = str(os.environ.get('STWM_PROC_TITLE', default_title)).strip() or default_title
+    lowered = title.lower()
+    if 'stwm' in lowered or 'tracewm' in lowered or '/home/' in lowered:
+        title = default_title
+    try:
+        import setproctitle  # type: ignore
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
+
+
 def _env_or_default(env_name: str, default: str) -> str:
     val = str(os.environ.get(env_name, "")).strip()
     if val:
@@ -751,6 +766,7 @@ def _write_md(path: str | Path, payload: Dict[str, Any]) -> None:
 
 
 def main() -> None:
+    _apply_process_title_normalization(default_title='python:eval')
     args = parse_args()
 
     final_payload = _read_json(args.core_mainline_final_json)
