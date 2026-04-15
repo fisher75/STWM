@@ -1,0 +1,817 @@
+{
+  "generated_at_utc": "2026-04-15T16:15:36.522658+00:00",
+  "pack_version": "v6",
+  "ready_for_human_figure_selection": true,
+  "utility_eval_source": "/home/chen034/workspace/stwm/reports/stage2_future_query_utility_eval_v2_20260414.json",
+  "utility_eval_improved": true,
+  "cases": [
+    {
+      "case_id": "stage2_calibration_clear_win_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "calibration-only",
+        "semantic-hard"
+      ],
+      "why_selected": "Calibration-only is current frozen mainline candidate with six-seed support.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Use this case to illustrate selective readout-side semantic calibration."
+    },
+    {
+      "case_id": "stage2_legacysem_win_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "legacysem-win",
+        "baseline-comparison"
+      ],
+      "why_selected": "Included to avoid one-sided cherry-picking against legacy semantic statistics.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Shows where static/legacy semantics can remain competitive."
+    },
+    {
+      "case_id": "stage2_cropenc_win_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "cropenc-win",
+        "baseline-comparison"
+      ],
+      "why_selected": "Included to compare against the original crop visual encoder baseline.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Shows where plain cropenc remains close despite weaker final evidence."
+    },
+    {
+      "case_id": "stage2_noalign_failure_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "noalign-failure",
+        "mechanism-ablation"
+      ],
+      "why_selected": "Demonstrates semantic alignment/calibration head is load-bearing.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "No-align degradation supports the mechanism ablation story."
+    },
+    {
+      "case_id": "stage2_densegate_failure_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "densegate-failure",
+        "mechanism-ablation"
+      ],
+      "why_selected": "Demonstrates sparse topk1 gating is load-bearing relative to dense gating.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Dense gating removes selectivity and is kept as a failure/control case."
+    },
+    {
+      "case_id": "stage2_nodelay_failure_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "nodelay-failure",
+        "mechanism-ablation"
+      ],
+      "why_selected": "Demonstrates delayed auxiliary schedule is load-bearing.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Immediate auxiliary intervention is a controlled failure condition."
+    },
+    {
+      "case_id": "stage2_longrun_confirmation_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "longrun",
+        "confirmation"
+      ],
+      "why_selected": "Shows whether limited longrun improves or saturates current calibration-only optimum.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Use this case to decide whether longrun is a confirmation or no-improvement story."
+    },
+    {
+      "case_id": "stage2_query_utility_success_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "query-utility",
+        "success"
+      ],
+      "why_selected": "Internal query-conditioned future localization proxy favors calibration-only on the selected panel.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "Use this case to inspect whether lower future-state error translates into a more useful queryable state."
+    },
+    {
+      "case_id": "stage2_query_utility_failure_v6",
+      "dataset_source": "VSPW+VIPSeg",
+      "subset_tags": [
+        "query-utility",
+        "failure"
+      ],
+      "why_selected": "Included to inspect where the internal query utility proxy does not provide separation or remains ambiguous.",
+      "compared_methods": [
+        "calibration_only_best",
+        "longrun_best",
+        "noalign_ablation",
+        "densegate_ablation",
+        "nodelay_ablation"
+      ],
+      "metric_table": {
+        "calibration_only_best": {
+          "run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0001250835310202092
+        },
+        "longrun_best": {
+          "run_name": "stage2_calonly_topk1_seed123_longconfirm_v2_20260414",
+          "endpoint_l2": 0.0005282461077264041,
+          "coord_l2": 0.0005033888573908999,
+          "semantic_hard_score": 0.0003507210270095712
+        },
+        "noalign_ablation": {
+          "run_name": "stage2_calonly_noalign_seed789_ablate_v2_20260414",
+          "endpoint_l2": 0.0006035856830306438,
+          "coord_l2": 0.0005790868031781482,
+          "semantic_hard_score": 0.00019305245025465502
+        },
+        "densegate_ablation": {
+          "run_name": "stage2_calonly_densegate_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005959717398332894,
+          "coord_l2": 0.0005701843839384474,
+          "semantic_hard_score": 0.0001631009204384799
+        },
+        "nodelay_ablation": {
+          "run_name": "stage2_calonly_nodelay_seed321_ablate_v2_20260414",
+          "endpoint_l2": 0.0005965024961223799,
+          "coord_l2": 0.0005707555213256172,
+          "semantic_hard_score": 0.0001632974526355377
+        }
+      },
+      "qualitative_interpretation": "This prevents over-claiming utility and should be reviewed before figure selection."
+    },
+    {
+      "case_id": "stage2v5_000",
+      "group": "calibration_only_positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1477_GkuOGCQiUlk",
+      "dataset_index": 17,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "calibration-only beats baseline envelope on semantic-hard clips",
+      "qualitative_interpretation": "alignment/calibration branch appears genuinely helpful here",
+      "best_calibration_key": "calibration_only_wave1",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1477_GkuOGCQiUlk/origin/00000618.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v5_20260414/stage2/calibration_only_positive_cases_stage2v5_000.png",
+      "metrics": {
+        "cropenc_baseline": {
+          "free_rollout_endpoint_l2": 0.00801072083413601,
+          "free_rollout_coord_mean_l2": 0.010621403343975544
+        },
+        "legacysem_baseline": {
+          "free_rollout_endpoint_l2": 0.007121735718101263,
+          "free_rollout_coord_mean_l2": 0.005681196227669716
+        },
+        "v7_alignment_only": {
+          "free_rollout_endpoint_l2": 0.0009319460950791836,
+          "free_rollout_coord_mean_l2": 0.0015492165694013238
+        },
+        "calibration_only_wave1": {
+          "free_rollout_endpoint_l2": 0.0007398728630505502,
+          "free_rollout_coord_mean_l2": 0.0008784579113125801
+        },
+        "calibration_only_wave2": {
+          "free_rollout_endpoint_l2": 0.0033768462017178535,
+          "free_rollout_coord_mean_l2": 0.005526786670088768
+        },
+        "noalign_ablation": {
+          "free_rollout_endpoint_l2": 0.002528990851715207,
+          "free_rollout_coord_mean_l2": 0.002654390875250101
+        },
+        "densegate_ablation": {
+          "free_rollout_endpoint_l2": 0.003579620737582445,
+          "free_rollout_coord_mean_l2": 0.003230307251214981
+        },
+        "nodelay_ablation": {
+          "free_rollout_endpoint_l2": 0.00023347274691332132,
+          "free_rollout_coord_mean_l2": 0.0004481150535866618
+        }
+      },
+      "method_runs": {
+        "cropenc_baseline": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "legacysem_baseline": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "v7_alignment_only": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+        "calibration_only_wave1": "stage2_calonly_topk1_seed123_wave1_20260413",
+        "calibration_only_wave2": "stage2_calonly_topk1_seed654_wave2_20260414",
+        "noalign_ablation": "stage2_calonly_noalign_seed123_ablate_20260414",
+        "densegate_ablation": "stage2_calonly_densegate_seed123_ablate_20260414",
+        "nodelay_ablation": "stage2_calonly_nodelay_seed123_ablate_20260414"
+      }
+    },
+    {
+      "case_id": "stage2v5_001",
+      "group": "calibration_only_positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1202_hdkz6av8Sxc",
+      "dataset_index": 31,
+      "subset_tags": [
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "calibration-only beats baseline envelope on semantic-hard clips",
+      "qualitative_interpretation": "alignment/calibration branch appears genuinely helpful here",
+      "best_calibration_key": "calibration_only_wave1",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1202_hdkz6av8Sxc/origin/00001487.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v5_20260414/stage2/calibration_only_positive_cases_stage2v5_001.png",
+      "metrics": {
+        "cropenc_baseline": {
+          "free_rollout_endpoint_l2": 0.03135421872138977,
+          "free_rollout_coord_mean_l2": 0.011426440440118313
+        },
+        "legacysem_baseline": {
+          "free_rollout_endpoint_l2": 0.0072234878316521645,
+          "free_rollout_coord_mean_l2": 0.006049086339771748
+        },
+        "v7_alignment_only": {
+          "free_rollout_endpoint_l2": 0.0036266734823584557,
+          "free_rollout_coord_mean_l2": 0.0037804199382662773
+        },
+        "calibration_only_wave1": {
+          "free_rollout_endpoint_l2": 0.0009262533276341856,
+          "free_rollout_coord_mean_l2": 0.0010796640999615192
+        },
+        "calibration_only_wave2": {
+          "free_rollout_endpoint_l2": 0.004527430981397629,
+          "free_rollout_coord_mean_l2": 0.005247615277767181
+        },
+        "noalign_ablation": {
+          "free_rollout_endpoint_l2": 0.0014249292435124516,
+          "free_rollout_coord_mean_l2": 0.0013106189435347915
+        },
+        "densegate_ablation": {
+          "free_rollout_endpoint_l2": 0.0008666376234032214,
+          "free_rollout_coord_mean_l2": 0.002061136532574892
+        },
+        "nodelay_ablation": {
+          "free_rollout_endpoint_l2": 0.0013206314761191607,
+          "free_rollout_coord_mean_l2": 0.0010735774412751198
+        }
+      },
+      "method_runs": {
+        "cropenc_baseline": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "legacysem_baseline": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "v7_alignment_only": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+        "calibration_only_wave1": "stage2_calonly_topk1_seed123_wave1_20260413",
+        "calibration_only_wave2": "stage2_calonly_topk1_seed654_wave2_20260414",
+        "noalign_ablation": "stage2_calonly_noalign_seed123_ablate_20260414",
+        "densegate_ablation": "stage2_calonly_densegate_seed123_ablate_20260414",
+        "nodelay_ablation": "stage2_calonly_nodelay_seed123_ablate_20260414"
+      }
+    },
+    {
+      "case_id": "stage2v5_002",
+      "group": "calibration_only_positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "1655_scluLCGBtFI",
+      "dataset_index": 18,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "calibration-only beats baseline envelope on semantic-hard clips",
+      "qualitative_interpretation": "alignment/calibration branch appears genuinely helpful here",
+      "best_calibration_key": "calibration_only_wave1",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1655_scluLCGBtFI/origin/00005988.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v5_20260414/stage2/calibration_only_positive_cases_stage2v5_002.png",
+      "metrics": {
+        "cropenc_baseline": {
+          "free_rollout_endpoint_l2": 0.008181248791515827,
+          "free_rollout_coord_mean_l2": 0.0049696387723088264
+        },
+        "legacysem_baseline": {
+          "free_rollout_endpoint_l2": 0.006438252981752157,
+          "free_rollout_coord_mean_l2": 0.005983725190162659
+        },
+        "v7_alignment_only": {
+          "free_rollout_endpoint_l2": 0.0034423081669956446,
+          "free_rollout_coord_mean_l2": 0.003544535953551531
+        },
+        "calibration_only_wave1": {
+          "free_rollout_endpoint_l2": 0.0008119703852571547,
+          "free_rollout_coord_mean_l2": 0.0008292993297800422
+        },
+        "calibration_only_wave2": {
+          "free_rollout_endpoint_l2": 0.0027904226444661617,
+          "free_rollout_coord_mean_l2": 0.003413179889321327
+        },
+        "noalign_ablation": {
+          "free_rollout_endpoint_l2": 0.002537583699449897,
+          "free_rollout_coord_mean_l2": 0.002521319780498743
+        },
+        "densegate_ablation": {
+          "free_rollout_endpoint_l2": 0.0007606811705045402,
+          "free_rollout_coord_mean_l2": 0.0013622449478134513
+        },
+        "nodelay_ablation": {
+          "free_rollout_endpoint_l2": 0.0007973155588842928,
+          "free_rollout_coord_mean_l2": 0.0005524531006813049
+        }
+      },
+      "method_runs": {
+        "cropenc_baseline": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "legacysem_baseline": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "v7_alignment_only": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+        "calibration_only_wave1": "stage2_calonly_topk1_seed123_wave1_20260413",
+        "calibration_only_wave2": "stage2_calonly_topk1_seed654_wave2_20260414",
+        "noalign_ablation": "stage2_calonly_noalign_seed123_ablate_20260414",
+        "densegate_ablation": "stage2_calonly_densegate_seed123_ablate_20260414",
+        "nodelay_ablation": "stage2_calonly_nodelay_seed123_ablate_20260414"
+      }
+    },
+    {
+      "case_id": "stage2v5_003",
+      "group": "calibration_only_positive_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "2056_r5M69R4-YBw",
+      "dataset_index": 13,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "calibration-only beats baseline envelope on semantic-hard clips",
+      "qualitative_interpretation": "alignment/calibration branch appears genuinely helpful here",
+      "best_calibration_key": "calibration_only_wave1",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/2056_r5M69R4-YBw/origin/00001683.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v5_20260414/stage2/calibration_only_positive_cases_stage2v5_003.png",
+      "metrics": {
+        "cropenc_baseline": {
+          "free_rollout_endpoint_l2": 0.005561955738812685,
+          "free_rollout_coord_mean_l2": 0.007571630645543337
+        },
+        "legacysem_baseline": {
+          "free_rollout_endpoint_l2": 0.035130616277456284,
+          "free_rollout_coord_mean_l2": 0.009276960976421833
+        },
+        "v7_alignment_only": {
+          "free_rollout_endpoint_l2": 0.0041278391145169735,
+          "free_rollout_coord_mean_l2": 0.004093565512448549
+        },
+        "calibration_only_wave1": {
+          "free_rollout_endpoint_l2": 0.00027326526469551027,
+          "free_rollout_coord_mean_l2": 0.0004634010256268084
+        },
+        "calibration_only_wave2": {
+          "free_rollout_endpoint_l2": 0.0038610505871474743,
+          "free_rollout_coord_mean_l2": 0.005125224124640226
+        },
+        "noalign_ablation": {
+          "free_rollout_endpoint_l2": 0.0029458447825163603,
+          "free_rollout_coord_mean_l2": 0.0027449748013168573
+        },
+        "densegate_ablation": {
+          "free_rollout_endpoint_l2": 0.0012085555354133248,
+          "free_rollout_coord_mean_l2": 0.001238879980519414
+        },
+        "nodelay_ablation": {
+          "free_rollout_endpoint_l2": 0.0006513915141113102,
+          "free_rollout_coord_mean_l2": 0.0008589511271566153
+        }
+      },
+      "method_runs": {
+        "cropenc_baseline": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "legacysem_baseline": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "v7_alignment_only": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+        "calibration_only_wave1": "stage2_calonly_topk1_seed123_wave1_20260413",
+        "calibration_only_wave2": "stage2_calonly_topk1_seed654_wave2_20260414",
+        "noalign_ablation": "stage2_calonly_noalign_seed123_ablate_20260414",
+        "densegate_ablation": "stage2_calonly_densegate_seed123_ablate_20260414",
+        "nodelay_ablation": "stage2_calonly_nodelay_seed123_ablate_20260414"
+      }
+    },
+    {
+      "case_id": "stage2v5_004",
+      "group": "legacysem_win_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "93_qZmq-lc8lAg",
+      "dataset_index": 7,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area"
+      ],
+      "why_selected": "legacy semantics still wins on this clip",
+      "qualitative_interpretation": "hand-crafted semantic stats remain stronger on this failure mode",
+      "best_calibration_key": "calibration_only_wave1",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/93_qZmq-lc8lAg/origin/00004667.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v5_20260414/stage2/legacysem_win_cases_stage2v5_004.png",
+      "metrics": {
+        "cropenc_baseline": {
+          "free_rollout_endpoint_l2": 0.00617512222379446,
+          "free_rollout_coord_mean_l2": 0.006006449460983276
+        },
+        "legacysem_baseline": {
+          "free_rollout_endpoint_l2": 0.04535530135035515,
+          "free_rollout_coord_mean_l2": 0.00942186452448368
+        },
+        "v7_alignment_only": {
+          "free_rollout_endpoint_l2": 0.005328318104147911,
+          "free_rollout_coord_mean_l2": 0.0033341513480991125
+        },
+        "calibration_only_wave1": {
+          "free_rollout_endpoint_l2": 0.00154979364015162,
+          "free_rollout_coord_mean_l2": 0.0013202955015003681
+        },
+        "calibration_only_wave2": {
+          "free_rollout_endpoint_l2": 0.003194742137566209,
+          "free_rollout_coord_mean_l2": 0.008266165852546692
+        },
+        "noalign_ablation": {
+          "free_rollout_endpoint_l2": 0.0021992959082126617,
+          "free_rollout_coord_mean_l2": 0.002210595179349184
+        },
+        "densegate_ablation": {
+          "free_rollout_endpoint_l2": 0.0010484918020665646,
+          "free_rollout_coord_mean_l2": 0.0014325021766126156
+        },
+        "nodelay_ablation": {
+          "free_rollout_endpoint_l2": 0.0007696299580857158,
+          "free_rollout_coord_mean_l2": 0.0006591675337404013
+        }
+      },
+      "method_runs": {
+        "cropenc_baseline": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "legacysem_baseline": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "v7_alignment_only": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+        "calibration_only_wave1": "stage2_calonly_topk1_seed123_wave1_20260413",
+        "calibration_only_wave2": "stage2_calonly_topk1_seed654_wave2_20260414",
+        "noalign_ablation": "stage2_calonly_noalign_seed123_ablate_20260414",
+        "densegate_ablation": "stage2_calonly_densegate_seed123_ablate_20260414",
+        "nodelay_ablation": "stage2_calonly_nodelay_seed123_ablate_20260414"
+      }
+    },
+    {
+      "case_id": "stage2v5_005",
+      "group": "legacysem_win_cases",
+      "dataset_source": "VSPW",
+      "clip_id": "2056_r5M69R4-YBw",
+      "dataset_index": 13,
+      "subset_tags": [
+        "occlusion_reappearance",
+        "crossing_or_interaction_ambiguity",
+        "small_object_or_low_area",
+        "appearance_change_or_semantic_shift"
+      ],
+      "why_selected": "legacy semantics still wins on this clip",
+      "qualitative_interpretation": "hand-crafted semantic stats remain stronger on this failure mode",
+      "best_calibration_key": "calibration_only_wave1",
+      "semantic_frame_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/2056_r5M69R4-YBw/origin/00001683.jpg",
+      "render_path": "/home/chen034/workspace/stwm/outputs/visualizations/stage1_stage2_qualitative_pack_v5_20260414/stage2/legacysem_win_cases_stage2v5_005.png",
+      "metrics": {
+        "cropenc_baseline": {
+          "free_rollout_endpoint_l2": 0.005561955738812685,
+          "free_rollout_coord_mean_l2": 0.007571630645543337
+        },
+        "legacysem_baseline": {
+          "free_rollout_endpoint_l2": 0.035130616277456284,
+          "free_rollout_coord_mean_l2": 0.009276960976421833
+        },
+        "v7_alignment_only": {
+          "free_rollout_endpoint_l2": 0.0041278391145169735,
+          "free_rollout_coord_mean_l2": 0.004093565512448549
+        },
+        "calibration_only_wave1": {
+          "free_rollout_endpoint_l2": 0.00027326526469551027,
+          "free_rollout_coord_mean_l2": 0.0004634010256268084
+        },
+        "calibration_only_wave2": {
+          "free_rollout_endpoint_l2": 0.0038610505871474743,
+          "free_rollout_coord_mean_l2": 0.005125224124640226
+        },
+        "noalign_ablation": {
+          "free_rollout_endpoint_l2": 0.0029458447825163603,
+          "free_rollout_coord_mean_l2": 0.0027449748013168573
+        },
+        "densegate_ablation": {
+          "free_rollout_endpoint_l2": 0.0012085555354133248,
+          "free_rollout_coord_mean_l2": 0.001238879980519414
+        },
+        "nodelay_ablation": {
+          "free_rollout_endpoint_l2": 0.0006513915141113102,
+          "free_rollout_coord_mean_l2": 0.0008589511271566153
+        }
+      },
+      "method_runs": {
+        "cropenc_baseline": "stage2_fullscale_core_cropenc_seed456_20260409",
+        "legacysem_baseline": "stage2_fullscale_core_legacysem_seed456_wave2_20260409",
+        "v7_alignment_only": "stage2_semobjv7_alignonly_topk1_seed123_20260413",
+        "calibration_only_wave1": "stage2_calonly_topk1_seed123_wave1_20260413",
+        "calibration_only_wave2": "stage2_calonly_topk1_seed654_wave2_20260414",
+        "noalign_ablation": "stage2_calonly_noalign_seed123_ablate_20260414",
+        "densegate_ablation": "stage2_calonly_densegate_seed123_ablate_20260414",
+        "nodelay_ablation": "stage2_calonly_nodelay_seed123_ablate_20260414"
+      }
+    }
+  ]
+}
