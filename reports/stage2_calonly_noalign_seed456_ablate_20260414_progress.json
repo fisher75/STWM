@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-15T07:15:08.315306+00:00",
+  "generated_at_utc": "2026-04-15T07:55:51.182484+00:00",
   "run_name": "stage2_calonly_noalign_seed456_ablate_20260414",
-  "status": "running",
+  "status": "completed",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "datasets_bound_for_train": [
     "vspw",
@@ -96,9 +96,9 @@
     "stage1_partial_unfreeze_active": false,
     "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed456_20260409/best.pt"
   },
-  "global_step": 12500,
+  "global_step": 14000,
   "train_steps_target": 14000,
-  "progress_ratio": 0.8928571428571429,
+  "progress_ratio": 1.0,
   "whether_full_train_used": true,
   "whether_full_val_used": true,
   "effective_train_sample_count_per_dataset": {
@@ -113,14 +113,14 @@
     "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed456_ablate_20260414",
     "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed456_ablate_20260414/best.pt",
     "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed456_ablate_20260414/latest.pt",
-    "best_exists": false,
+    "best_exists": true,
     "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 0.00013825004051830456,
-    "free_rollout_coord_mean_l2": 0.010850096137721754,
-    "free_rollout_endpoint_l2": 0.010854818600259787,
-    "total_loss_reference": 0.00013817224494549771
+    "teacher_forced_coord_loss": 0.00012398708271305281,
+    "free_rollout_coord_mean_l2": 0.010252599172706853,
+    "free_rollout_endpoint_l2": 0.010256566357073909,
+    "total_loss_reference": 0.00012391619088174234
   },
   "best_metric_so_far": {
     "global_step": 10000,

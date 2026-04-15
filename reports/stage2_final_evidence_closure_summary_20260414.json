@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-04-15T07:26:08.624657+00:00",
-  "stage2_final_evidence_closure_status": "6_running_0_completed_0_failed",
-  "running_count": 6,
-  "completed_count": 0,
-  "failed_count": 0,
-  "all_runs_terminal": false,
+  "generated_at_utc": "2026-04-15T09:16:16.369639+00:00",
+  "stage2_final_evidence_closure_status": "0_running_5_completed_1_failed",
+  "running_count": 0,
+  "completed_count": 5,
+  "failed_count": 1,
+  "all_runs_terminal": true,
   "run_rows": [
     {
       "run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
@@ -12,15 +12,15 @@
       "ablation_name": "noalign",
       "family": "ablation",
       "seed": 42,
-      "status": "running",
-      "global_step": 5500,
-      "final_json_exists": false,
+      "status": "completed",
+      "global_step": 7000,
+      "final_json_exists": true,
       "progress_json_exists": true,
-      "raw_json_exists": false,
-      "best_ckpt_exists": false,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
       "latest_ckpt_exists": true,
       "sidecar_exists": true,
-      "scientific_result_valid": false,
+      "scientific_result_valid": true,
       "selected_gpu_id": 4,
       "lease_id": "7c278440-ef12-423d-8256-d00e0f713840",
       "batch_size": 8,
@@ -35,11 +35,50 @@
         "VSPW": 343,
         "VIPSeg": 343
       },
-      "best_checkpoint_metric": {},
-      "latest_checkpoint_metric": {},
-      "semantic_hard_sidecar_metric": {},
-      "actual_gate_positive_ratio_mean": null,
-      "valuable_pair_ratio_mean": null,
+      "best_checkpoint_metric": {
+        "global_step": 6000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.170764937437257e-05,
+          "free_rollout_coord_mean_l2": 0.0010317692311844482,
+          "free_rollout_endpoint_l2": 0.0010625912038115214,
+          "total_loss_reference": 3.1616553576540365e-05
+        },
+        "rank_key": [
+          0.0010625912038115214,
+          0.0010317692311844482,
+          3.170764937437257e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 7000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.038235399799305e-05,
+          "free_rollout_coord_mean_l2": 0.0017944196898913767,
+          "free_rollout_endpoint_l2": 0.0018182268512839826,
+          "total_loss_reference": 3.029991942740221e-05
+        },
+        "rank_key": [
+          0.0018182268512839826,
+          0.0017944196898913767,
+          3.038235399799305e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed42_ablate_20260414/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 6000,
+        "semantic_hard_sidecar_score": 0.0005896999882772947,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.842703557520275e-07,
+          "free_rollout_coord_mean_l2": 0.0005896827206015587,
+          "free_rollout_endpoint_l2": 0.0005897073887097529,
+          "total_loss_reference": 3.8304641520880977e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": 0.0,
+      "valuable_pair_ratio_mean": 0.0,
       "same_checkpoint_selected": true,
       "sidecar_truly_diverged": false,
       "gating_family": "hard_topk_query_gating_v2",
@@ -54,15 +93,15 @@
       "ablation_name": "noalign",
       "family": "ablation",
       "seed": 456,
-      "status": "running",
-      "global_step": 12500,
-      "final_json_exists": false,
+      "status": "completed",
+      "global_step": 14000,
+      "final_json_exists": true,
       "progress_json_exists": true,
-      "raw_json_exists": false,
-      "best_ckpt_exists": false,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
       "latest_ckpt_exists": true,
       "sidecar_exists": true,
-      "scientific_result_valid": false,
+      "scientific_result_valid": true,
       "selected_gpu_id": 1,
       "lease_id": "1bc3bf1b-7931-406a-853b-849a4166b64b",
       "batch_size": 8,
@@ -77,13 +116,52 @@
         "VSPW": 343,
         "VIPSeg": 343
       },
-      "best_checkpoint_metric": {},
-      "latest_checkpoint_metric": {},
-      "semantic_hard_sidecar_metric": {},
-      "actual_gate_positive_ratio_mean": null,
-      "valuable_pair_ratio_mean": null,
-      "same_checkpoint_selected": true,
-      "sidecar_truly_diverged": false,
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9811124511501298e-05,
+          "free_rollout_coord_mean_l2": 0.0005451074948007615,
+          "free_rollout_endpoint_l2": 0.0005719647855659453,
+          "total_loss_reference": 2.9724487963074046e-05
+        },
+        "rank_key": [
+          0.0005719647855659453,
+          0.0005451074948007615,
+          2.9811124511501298e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 14000,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00012398708271305281,
+          "free_rollout_coord_mean_l2": 0.010252599172706853,
+          "free_rollout_endpoint_l2": 0.010256566357073909,
+          "total_loss_reference": 0.00012391619088174234
+        },
+        "rank_key": [
+          0.010256566357073909,
+          0.010252599172706853,
+          0.00012398708271305281
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed456_ablate_20260414/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11500,
+        "semantic_hard_sidecar_score": 0.0006439749366388871,
+        "metrics": {
+          "teacher_forced_coord_loss": 4.2264124926870676e-07,
+          "free_rollout_coord_mean_l2": 0.0006439183026743241,
+          "free_rollout_endpoint_l2": 0.0006439992083379856,
+          "total_loss_reference": 4.2373070527901293e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": 0.0,
+      "valuable_pair_ratio_mean": 0.0,
+      "same_checkpoint_selected": false,
+      "sidecar_truly_diverged": true,
       "gating_family": "hard_topk_query_gating_v2",
       "aux_loss_delay_steps": 180,
       "aux_loss_ramp_steps": 360,
@@ -96,15 +174,15 @@
       "ablation_name": "densegate",
       "family": "ablation",
       "seed": 42,
-      "status": "running",
-      "global_step": 5500,
-      "final_json_exists": false,
+      "status": "completed",
+      "global_step": 7000,
+      "final_json_exists": true,
       "progress_json_exists": true,
-      "raw_json_exists": false,
+      "raw_json_exists": true,
       "best_ckpt_exists": true,
       "latest_ckpt_exists": true,
       "sidecar_exists": true,
-      "scientific_result_valid": false,
+      "scientific_result_valid": true,
       "selected_gpu_id": 2,
       "lease_id": "edb88df5-5243-4ca5-b349-69a6c0e5b29d",
       "batch_size": 8,
@@ -119,11 +197,50 @@
         "VSPW": 343,
         "VIPSeg": 343
       },
-      "best_checkpoint_metric": {},
-      "latest_checkpoint_metric": {},
-      "semantic_hard_sidecar_metric": {},
-      "actual_gate_positive_ratio_mean": null,
-      "valuable_pair_ratio_mean": null,
+      "best_checkpoint_metric": {
+        "global_step": 5500,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9965023141846185e-05,
+          "free_rollout_coord_mean_l2": 0.0006500226389494543,
+          "free_rollout_endpoint_l2": 0.0006762215565230274,
+          "total_loss_reference": 2.9878071604950628e-05
+        },
+        "rank_key": [
+          0.0006762215565230274,
+          0.0006500226389494543,
+          2.9965023141846185e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 7000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9084621346277233e-05,
+          "free_rollout_coord_mean_l2": 0.0011536005793448875,
+          "free_rollout_endpoint_l2": 0.0011787098939679888,
+          "total_loss_reference": 2.9001445638012354e-05
+        },
+        "rank_key": [
+          0.0011787098939679888,
+          0.0011536005793448875,
+          2.9084621346277233e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed42_ablate_20260414/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 5500,
+        "semantic_hard_sidecar_score": 0.00025119756390221224,
+        "metrics": {
+          "teacher_forced_coord_loss": 8.125039349019622e-08,
+          "free_rollout_coord_mean_l2": 0.0002512240734619972,
+          "free_rollout_endpoint_l2": 0.00025118620266230445,
+          "total_loss_reference": 7.991312998001376e-08
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": 1.0,
+      "valuable_pair_ratio_mean": 0.0,
       "same_checkpoint_selected": true,
       "sidecar_truly_diverged": false,
       "gating_family": "capped_quantile_sparse_gating_v2",
@@ -138,15 +255,15 @@
       "ablation_name": "nodelay",
       "family": "ablation",
       "seed": 42,
-      "status": "running",
-      "global_step": 5500,
-      "final_json_exists": false,
+      "status": "completed",
+      "global_step": 7000,
+      "final_json_exists": true,
       "progress_json_exists": true,
-      "raw_json_exists": false,
+      "raw_json_exists": true,
       "best_ckpt_exists": true,
       "latest_ckpt_exists": true,
       "sidecar_exists": true,
-      "scientific_result_valid": false,
+      "scientific_result_valid": true,
       "selected_gpu_id": 5,
       "lease_id": "9a2db588-3e69-47ae-83e8-7870e35a7d77",
       "batch_size": 8,
@@ -161,11 +278,50 @@
         "VSPW": 343,
         "VIPSeg": 343
       },
-      "best_checkpoint_metric": {},
-      "latest_checkpoint_metric": {},
-      "semantic_hard_sidecar_metric": {},
-      "actual_gate_positive_ratio_mean": null,
-      "valuable_pair_ratio_mean": null,
+      "best_checkpoint_metric": {
+        "global_step": 5500,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9961606281494027e-05,
+          "free_rollout_coord_mean_l2": 0.0006371984362151507,
+          "free_rollout_endpoint_l2": 0.0006633374345171165,
+          "total_loss_reference": 2.987464429029116e-05
+        },
+        "rank_key": [
+          0.0006633374345171165,
+          0.0006371984362151507,
+          2.9961606281494027e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 7000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9102896792143943e-05,
+          "free_rollout_coord_mean_l2": 0.001089163625181134,
+          "free_rollout_endpoint_l2": 0.0011161982605190344,
+          "total_loss_reference": 2.9019287997003142e-05
+        },
+        "rank_key": [
+          0.0011161982605190344,
+          0.001089163625181134,
+          2.9102896792143943e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed42_ablate_20260414/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 5500,
+        "semantic_hard_sidecar_score": 0.00023556061608430282,
+        "metrics": {
+          "teacher_forced_coord_loss": 7.632008101282759e-08,
+          "free_rollout_coord_mean_l2": 0.0002355517294162359,
+          "free_rollout_endpoint_l2": 0.00023556442465633154,
+          "total_loss_reference": 7.502736565356827e-08
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": 0.125,
+      "valuable_pair_ratio_mean": 0.0,
       "same_checkpoint_selected": true,
       "sidecar_truly_diverged": false,
       "gating_family": "hard_topk_query_gating_v2",
@@ -180,15 +336,15 @@
       "ablation_name": "none",
       "family": "topk1",
       "seed": 123,
-      "status": "running",
-      "global_step": 11000,
-      "final_json_exists": false,
+      "status": "completed",
+      "global_step": 14500,
+      "final_json_exists": true,
       "progress_json_exists": true,
-      "raw_json_exists": false,
-      "best_ckpt_exists": false,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
       "latest_ckpt_exists": true,
       "sidecar_exists": true,
-      "scientific_result_valid": false,
+      "scientific_result_valid": true,
       "selected_gpu_id": 3,
       "lease_id": "0b713a85-8b6b-4c27-81c6-19e254cb4525",
       "batch_size": 8,
@@ -203,13 +359,52 @@
         "VSPW": 343,
         "VIPSeg": 343
       },
-      "best_checkpoint_metric": {},
-      "latest_checkpoint_metric": {},
-      "semantic_hard_sidecar_metric": {},
-      "actual_gate_positive_ratio_mean": null,
-      "valuable_pair_ratio_mean": null,
-      "same_checkpoint_selected": true,
-      "sidecar_truly_diverged": false,
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 14500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.287885569604677e-05,
+          "free_rollout_coord_mean_l2": 0.0026836798637670956,
+          "free_rollout_endpoint_l2": 0.00271283111021835,
+          "total_loss_reference": 3.280106186012258e-05
+        },
+        "rank_key": [
+          0.00271283111021835,
+          0.0026836798637670956,
+          3.287885569604677e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed123_longconfirm_20260414/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 14000,
+        "semantic_hard_sidecar_score": 0.0003496467822398513,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.368170457611156e-07,
+          "free_rollout_coord_mean_l2": 0.0003496652994400416,
+          "free_rollout_endpoint_l2": 0.0003496388462969126,
+          "total_loss_reference": 1.378724221012817e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": 0.125,
+      "valuable_pair_ratio_mean": 0.0,
+      "same_checkpoint_selected": false,
+      "sidecar_truly_diverged": true,
       "gating_family": "hard_topk_query_gating_v2",
       "aux_loss_delay_steps": 180,
       "aux_loss_ramp_steps": 360,
@@ -222,17 +417,17 @@
       "ablation_name": "none",
       "family": "topk1",
       "seed": 654,
-      "status": "running",
-      "global_step": -1,
-      "final_json_exists": false,
-      "progress_json_exists": false,
+      "status": "failed",
+      "global_step": 9500,
+      "final_json_exists": true,
+      "progress_json_exists": true,
       "raw_json_exists": false,
       "best_ckpt_exists": false,
-      "latest_ckpt_exists": false,
-      "sidecar_exists": false,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
       "scientific_result_valid": false,
-      "selected_gpu_id": -1,
-      "lease_id": "",
+      "selected_gpu_id": 1,
+      "lease_id": "91acf516-7f48-4db1-821c-644a49d5c2e3",
       "batch_size": 8,
       "train_steps": 11000,
       "eval_interval": 500,
@@ -259,8 +454,8 @@
       "persistence_objective_effective": false
     }
   ],
-  "overall_best_run_name": "none",
-  "semantic_hard_best_run_name": "none",
+  "overall_best_run_name": "stage2_calonly_topk1_seed123_longconfirm_20260414",
+  "semantic_hard_best_run_name": "stage2_calonly_nodelay_seed42_ablate_20260414",
   "previous_final_pack_summary": "/home/chen034/workspace/stwm/reports/stage2_calibration_only_final_pack_summary_20260414.json",
   "previous_final_pack_diagnosis": "/home/chen034/workspace/stwm/reports/stage2_calibration_only_final_pack_diagnosis_20260414.json"
 }
