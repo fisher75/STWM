@@ -81,6 +81,7 @@ def _spec_base(run_name: str, seed: int, ablation_name: str, window_name: str, r
         "run_name": run_name,
         "seed": int(seed),
         "ablation_name": ablation_name,
+        "objective_combo": f"closure_{ablation_name}_seed{int(seed)}",
         "track": "ablation_fix",
         "family": "calibration_only_ablation_fix",
         "objective_family": "calibration_only_mechanism_ablation_fix",
@@ -147,6 +148,10 @@ def _run_specs() -> List[Dict[str, Any]]:
                 spec["aux_loss_ramp_steps"] = 0
             specs.append(spec)
     return specs
+
+
+def _run_spec_map() -> Dict[str, Dict[str, Any]]:
+    return {str(spec["run_name"]): spec for spec in _run_specs()}
 
 
 def _meta_dir(args: Any) -> Path:
@@ -224,6 +229,105 @@ def _reset_real_run_artifacts(args: Any, run_name: str) -> Dict[str, Any]:
     return {"run_name": run_name, "deleted": deleted}
 
 
+def _common_launch_context(args: Any) -> Dict[str, Any]:
+    lease_cleanup = base._cleanup_stale_leases(str(args.shared_lease_path), allowed_prefixes=("stage2_calonly_",))
+    if subprocess.run(["tmux", "has-session", "-t", str(args.tmux_session)], capture_output=True).returncode != 0:
+        subprocess.run(["tmux", "new-session", "-d", "-s", str(args.tmux_session), "bash"], check=True)
+    existing_windows = set(base._tmux_windows(str(args.tmux_session)))
+    anchor_args = base._load_ckpt_args(base._resume_ckpt_for_seed(42))
+    obs_len = int(anchor_args.get("obs_len", 8) or 8)
+    fut_len = int(anchor_args.get("fut_len", 8) or 8)
+    max_tokens = int(anchor_args.get("max_tokens", 64) or 64)
+    crop_size = int(anchor_args.get("semantic_crop_size", 64) or 64)
+    train_counts = base._dataset_counts(["vspw", "vipseg"], "train", args.stage2_contract_json, max_samples=MAX_TRAIN)
+    val_counts = base._dataset_counts(["vspw", "vipseg"], "val", args.stage2_contract_json, max_samples=MAX_VAL)
+    meta_dir = _meta_dir(args)
+    meta_dir.mkdir(parents=True, exist_ok=True)
+    return {
+        "lease_cleanup": lease_cleanup,
+        "existing_windows": existing_windows,
+        "obs_len": obs_len,
+        "fut_len": fut_len,
+        "max_tokens": max_tokens,
+        "crop_size": crop_size,
+        "train_counts": train_counts,
+        "val_counts": val_counts,
+        "meta_dir": meta_dir,
+    }
+
+
+def _build_launch_meta(args: Any, spec: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, Any]:
+    run_name = str(spec["run_name"])
+    resume_from = _resume_ckpt_for_seed(int(spec["seed"]))
+    resume_step = base._load_ckpt_step(resume_from)
+    out_dir = Path(args.work_root) / "outputs/checkpoints" / run_name
+    meta = {
+        **spec,
+        "selected_gpu_id": -1,
+        "lease_id": "",
+        "dataset_names": ["vspw", "vipseg"],
+        "obs_len": int(ctx["obs_len"]),
+        "fut_len": int(ctx["fut_len"]),
+        "max_tokens": int(ctx["max_tokens"]),
+        "semantic_crop_size": int(ctx["crop_size"]),
+        "semantic_source_mainline": "crop_visual_encoder",
+        "legacy_semantic_source": "hand_crafted_stats",
+        "batch_size": BATCH_SIZE,
+        "resume_from": str(resume_from),
+        "resume_global_step": int(resume_step),
+        "additional_train_steps": EXTRA_STEPS,
+        "train_steps": int(resume_step + EXTRA_STEPS),
+        "eval_interval": EVAL_INTERVAL,
+        "eval_max_batches": EVAL_MAX_BATCHES,
+        "save_every_n_steps": SAVE_EVERY,
+        "max_samples_train": MAX_TRAIN,
+        "max_samples_val": MAX_VAL,
+        "effective_train_sample_count_per_dataset": ctx["train_counts"],
+        "effective_val_sample_count_per_dataset": ctx["val_counts"],
+        "semantic_bootstrap_target_dim": 512,
+        "semantic_hard_curriculum_weight": 0.0,
+        "semantic_aux_subset_weighting_strength": 1.0,
+        "output_dir": str(out_dir),
+        "raw_json": str(_paths_for_run(args, run_name)["raw"]),
+        "progress_json": str(_paths_for_run(args, run_name)["progress"]),
+        "final_json": str(_paths_for_run(args, run_name)["final"]),
+        "log_path": str(_paths_for_run(args, run_name)["log"]),
+        "stage2_contract_json": str(args.stage2_contract_json),
+        "stage1_runtime_json": str(args.runtime_json),
+        "stage1_best_ckpt": str(args.stage1_best_ckpt),
+        "shared_lease_path": str(args.shared_lease_path),
+        "bootstrap_cache_jsonl": str(args.bootstrap_cache_jsonl),
+        "semantic_hard_manifest_path": str(args.semantic_hard_manifest_path),
+        "work_root": str(args.work_root),
+        "python_bin": str(args.python_bin),
+        "worker_pid_file": str(Path(ctx["meta_dir"]) / f"{run_name}.pid"),
+        "gpu_acquire_timeout_seconds": int(args.gpu_acquire_timeout_seconds),
+        "gpu_acquire_retry_seconds": int(args.gpu_acquire_retry_seconds),
+        "selector_payload": {},
+    }
+    meta_json = Path(ctx["meta_dir"]) / f"{run_name}_launch_meta.json"
+    meta["meta_json"] = str(meta_json)
+    return meta
+
+
+def _write_and_launch_meta(args: Any, meta: Dict[str, Any], existing_windows: set[str]) -> Dict[str, Any]:
+    run_name = str(meta["run_name"])
+    meta_json = Path(str(meta["meta_json"]))
+    _write_json(meta_json, meta)
+    cmd = _tmux_window_command(args=args, meta_json=meta_json, meta=meta)
+    if str(meta["window_name"]) in existing_windows:
+        subprocess.run(["tmux", "kill-window", "-t", f"{args.tmux_session}:{meta['window_name']}"], check=False)
+        existing_windows.discard(str(meta["window_name"]))
+    subprocess.run(["tmux", "new-window", "-t", str(args.tmux_session), "-n", str(meta["window_name"]), cmd], check=True)
+    existing_windows.add(str(meta["window_name"]))
+    return {
+        "run_name": run_name,
+        "mode": "real_train",
+        "resume_from": str(meta["resume_from"]),
+        "resume_global_step": int(meta["resume_global_step"]),
+    }
+
+
 def _alias_equivalent_run(args: Any, spec: Dict[str, Any]) -> Dict[str, Any]:
     source_run = str(spec.get("reuse_source_run_name", ""))
     if not source_run:
@@ -279,19 +383,7 @@ def _tmux_window_command(args: Any, meta_json: Path, meta: Dict[str, Any]) -> st
 
 def launch(args: Any) -> Dict[str, Any]:
     _append_log("launch_start")
-    lease_cleanup = base._cleanup_stale_leases(str(args.shared_lease_path), allowed_prefixes=("stage2_calonly_",))
-    if subprocess.run(["tmux", "has-session", "-t", str(args.tmux_session)], capture_output=True).returncode != 0:
-        subprocess.run(["tmux", "new-session", "-d", "-s", str(args.tmux_session), "bash"], check=True)
-    existing_windows = set(base._tmux_windows(str(args.tmux_session)))
-    anchor_args = base._load_ckpt_args(base._resume_ckpt_for_seed(42))
-    obs_len = int(anchor_args.get("obs_len", 8) or 8)
-    fut_len = int(anchor_args.get("fut_len", 8) or 8)
-    max_tokens = int(anchor_args.get("max_tokens", 64) or 64)
-    crop_size = int(anchor_args.get("semantic_crop_size", 64) or 64)
-    train_counts = base._dataset_counts(["vspw", "vipseg"], "train", args.stage2_contract_json, max_samples=MAX_TRAIN)
-    val_counts = base._dataset_counts(["vspw", "vipseg"], "val", args.stage2_contract_json, max_samples=MAX_VAL)
-    meta_dir = _meta_dir(args)
-    meta_dir.mkdir(parents=True, exist_ok=True)
+    ctx = _common_launch_context(args)
 
     actions: List[Dict[str, Any]] = []
     runs: List[Dict[str, Any]] = []
@@ -302,67 +394,14 @@ def launch(args: Any) -> Dict[str, Any]:
             runs.append({"run_name": run_name, "mode": "reused_equivalent", "source_run_name": str(spec["reuse_source_run_name"])})
             continue
         actions.append(_reset_real_run_artifacts(args, run_name))
-        resume_from = _resume_ckpt_for_seed(int(spec["seed"]))
-        resume_step = base._load_ckpt_step(resume_from)
-        out_dir = Path(args.work_root) / "outputs/checkpoints" / run_name
-        meta = {
-            **spec,
-            "selected_gpu_id": -1,
-            "lease_id": "",
-            "dataset_names": ["vspw", "vipseg"],
-            "obs_len": obs_len,
-            "fut_len": fut_len,
-            "max_tokens": max_tokens,
-            "semantic_crop_size": crop_size,
-            "semantic_source_mainline": "crop_visual_encoder",
-            "legacy_semantic_source": "hand_crafted_stats",
-            "batch_size": BATCH_SIZE,
-            "resume_from": str(resume_from),
-            "resume_global_step": int(resume_step),
-            "additional_train_steps": EXTRA_STEPS,
-            "train_steps": int(resume_step + EXTRA_STEPS),
-            "eval_interval": EVAL_INTERVAL,
-            "eval_max_batches": EVAL_MAX_BATCHES,
-            "save_every_n_steps": SAVE_EVERY,
-            "max_samples_train": MAX_TRAIN,
-            "max_samples_val": MAX_VAL,
-            "effective_train_sample_count_per_dataset": train_counts,
-            "effective_val_sample_count_per_dataset": val_counts,
-            "semantic_bootstrap_target_dim": 512,
-            "semantic_hard_curriculum_weight": 0.0,
-            "semantic_aux_subset_weighting_strength": 1.0,
-            "output_dir": str(out_dir),
-            "raw_json": str(_paths_for_run(args, run_name)["raw"]),
-            "progress_json": str(_paths_for_run(args, run_name)["progress"]),
-            "final_json": str(_paths_for_run(args, run_name)["final"]),
-            "log_path": str(_paths_for_run(args, run_name)["log"]),
-            "stage2_contract_json": str(args.stage2_contract_json),
-            "stage1_runtime_json": str(args.runtime_json),
-            "stage1_best_ckpt": str(args.stage1_best_ckpt),
-            "shared_lease_path": str(args.shared_lease_path),
-            "bootstrap_cache_jsonl": str(args.bootstrap_cache_jsonl),
-            "semantic_hard_manifest_path": str(args.semantic_hard_manifest_path),
-            "work_root": str(args.work_root),
-            "python_bin": str(args.python_bin),
-            "worker_pid_file": str(meta_dir / f"{run_name}.pid"),
-            "gpu_acquire_timeout_seconds": int(args.gpu_acquire_timeout_seconds),
-            "gpu_acquire_retry_seconds": int(args.gpu_acquire_retry_seconds),
-            "selector_payload": {},
-        }
-        meta_json = meta_dir / f"{run_name}_launch_meta.json"
-        meta["meta_json"] = str(meta_json)
-        _write_json(meta_json, meta)
-        runs.append({"run_name": run_name, "mode": "real_train", "resume_from": str(resume_from), "resume_global_step": int(resume_step)})
-        cmd = _tmux_window_command(args=args, meta_json=meta_json, meta=meta)
-        if str(meta["window_name"]) not in existing_windows:
-            subprocess.run(["tmux", "new-window", "-t", str(args.tmux_session), "-n", str(meta["window_name"]), cmd], check=True)
-            existing_windows.add(str(meta["window_name"]))
+        meta = _build_launch_meta(args, spec, ctx)
+        runs.append(_write_and_launch_meta(args, meta, ctx["existing_windows"]))
     payload = {
         "generated_at_utc": now_iso(),
         "tmux_session": str(args.tmux_session),
         "teacher_backend": BOOTSTRAP_BACKEND,
         "policy": "reuse exact-equivalent completed ablations when present; real-train only missing 20260415 fix runs; persistence disabled",
-        "lease_cleanup": lease_cleanup,
+        "lease_cleanup": ctx["lease_cleanup"],
         "actions": actions,
         "runs": runs,
         "reused_equivalent_count": int(sum(1 for x in runs if x["mode"] == "reused_equivalent")),
@@ -378,6 +417,9 @@ def run_one(args: Any) -> None:
     run_name = str(meta.get("run_name", ""))
     if not run_name:
         raise RuntimeError("meta missing run_name")
+    if not str(meta.get("objective_combo", "")).strip():
+        meta["objective_combo"] = f"closure_{str(meta.get('ablation_name', 'unknown'))}_seed{int(meta.get('seed', -1))}"
+        _write_json(args.meta_json, meta)
     selected_gpu_id = int(meta.get("selected_gpu_id", -1))
     lease_id = str(meta.get("lease_id", ""))
     if selected_gpu_id < 0:
@@ -606,10 +648,47 @@ def run_all(args: Any) -> Dict[str, Any]:
     return {"launch": launch_payload, "summary": summarize(args), "diagnosis": diag, "timeout": True}
 
 
+def rerun_selected(args: Any) -> Dict[str, Any]:
+    requested = [x.strip() for x in str(args.rerun_run_names).split(",") if x.strip()]
+    if not requested:
+        raise RuntimeError("rerun_selected requires --rerun-run-names")
+    spec_map = _run_spec_map()
+    unknown = [name for name in requested if name not in spec_map]
+    if unknown:
+        raise RuntimeError(f"unknown rerun run names: {unknown}")
+    ctx = _common_launch_context(args)
+    actions: List[Dict[str, Any]] = []
+    runs: List[Dict[str, Any]] = []
+    for run_name in requested:
+        spec = spec_map[run_name]
+        if str(spec.get("reuse_source_run_name", "")).strip():
+            raise RuntimeError(f"refusing to rerun reused-equivalent completed run: {run_name}")
+        actions.append(_reset_real_run_artifacts(args, run_name))
+        meta = _build_launch_meta(args, spec, ctx)
+        runs.append(_write_and_launch_meta(args, meta, ctx["existing_windows"]))
+    payload = {
+        "generated_at_utc": now_iso(),
+        "tmux_session": str(args.tmux_session),
+        "teacher_backend": BOOTSTRAP_BACKEND,
+        "policy": "rerun only explicitly requested failed real-train runs; completed equivalent runs untouched",
+        "lease_cleanup": ctx["lease_cleanup"],
+        "actions": actions,
+        "runs": runs,
+        "reused_equivalent_count": 0,
+        "real_train_count": len(runs),
+        "rerun_selected_only": True,
+        "rerun_run_names": requested,
+    }
+    _write_json(args.launch_report, payload)
+    _append_log(f"rerun_selected_complete count={len(runs)} runs={requested}")
+    return payload
+
+
 def parse_args() -> Any:
     parser = ArgumentParser()
-    parser.add_argument("--mode", default="all", choices=["all", "launch", "run-one", "summarize", "diagnose"])
+    parser.add_argument("--mode", default="all", choices=["all", "launch", "run-one", "summarize", "diagnose", "rerun-selected"])
     parser.add_argument("--meta-json", default="")
+    parser.add_argument("--rerun-run-names", default="")
     parser.add_argument("--work-root", default=str(ROOT))
     parser.add_argument("--python-bin", default=base._python_bin_default())
     parser.add_argument("--tmux-session", default=SESSION)
@@ -644,6 +723,8 @@ def main() -> None:
         print(json.dumps(summarize(args), ensure_ascii=True, indent=2))
     elif args.mode == "diagnose":
         print(json.dumps(diagnose(args), ensure_ascii=True, indent=2))
+    elif args.mode == "rerun-selected":
+        print(json.dumps(rerun_selected(args), ensure_ascii=True, indent=2))
 
 
 if __name__ == "__main__":
