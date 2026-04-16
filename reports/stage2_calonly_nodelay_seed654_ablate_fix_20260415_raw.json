@@ -1,0 +1,1344 @@
+{
+  "generated_at_utc": "2026-04-15T19:28:59.996033+00:00",
+  "run_name": "stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+  "objective": "Stage2 training run on frozen Stage1 220m backbone",
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "legacy_semantic_source": "hand_crafted_stats",
+  "stage2_contract_path": "/raid/chen034/workspace/stwm/reports/stage2_bootstrap_data_contract_20260408.json",
+  "stage2_data_binding": {
+    "core": [
+      "VSPW",
+      "VIPSeg"
+    ],
+    "optional_extension": [
+      "BURST"
+    ],
+    "excluded": [
+      {
+        "dataset_name": "TAO",
+        "reason": "access_ready"
+      },
+      {
+        "dataset_name": "VISOR",
+        "reason": "manual_gate"
+      }
+    ],
+    "run_datasets": [
+      "vspw",
+      "vipseg"
+    ]
+  },
+  "datasets_bound_for_train": [
+    "vspw",
+    "vipseg"
+  ],
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/raid/chen034/workspace/stwm/reports/stage2_calibration_only_wave2_runtime_20260414.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": -1,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0
+  },
+  "run_metadata": {
+    "run_name": "stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+    "started_at_utc": "2026-04-15T17:38:58.952383+00:00",
+    "cuda_visible_devices": "4",
+    "gpu_selection": {
+      "selected_gpu_id": 4,
+      "lease_id": "91602703-b795-4050-bfaf-c1d9ed0cefd1",
+      "owner": "stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+      "mode": "single_gpu_only"
+    },
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "semantic_rescue_mode": "v7alignonly",
+    "semantic_rescue_weight": 0.00015,
+    "semantic_bootstrap_cache_path": "/raid/chen034/workspace/stwm/data/processed/stage2_real_bootstrap_cache_20260410/clip_vit_b32_core_trainval_required_subset.jsonl",
+    "semantic_bootstrap_target_dim": 512,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 1.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
+    "sparse_persistence_contrastive_loss_weight": 0.0,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 0,
+    "aux_loss_ramp_steps": 0,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "hard_topk_query_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.85,
+    "v6_max_affected_ratio": 0.15,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 0,
+    "v6_hard_negative_cap": 0,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 0,
+    "v6_two_level_pair_mining_enabled": false,
+    "v6_relaxed_motion_threshold": 0.08,
+    "v6_relaxed_area_jump_threshold": 0.06,
+    "v6_relaxed_small_query_threshold": 0.2,
+    "v6_relaxed_appearance_shift_threshold": 0.25,
+    "v6_relaxed_center_interaction_threshold": 0.1,
+    "semantic_hard_sidecar_enabled": true,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_bootstrap_cache_item_count": 384,
+    "skip_resume_optimizer": true,
+    "resume_optimizer_loaded": false,
+    "resume_optimizer_skip_reason": "explicit_skip_resume_optimizer",
+    "stage1_partial_unfreeze_mode": "none",
+    "stage1_partial_unfreeze_layer_count": 1,
+    "stage1_partial_unfreeze_lr_scale": 0.1,
+    "stage1_partial_unfreeze_active": false,
+    "resumed_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt"
+  },
+  "training_budget": {
+    "train_steps_target": 11000,
+    "train_steps_completed": 11000,
+    "optimizer_steps_this_invocation": 4000,
+    "batch_size": 8,
+    "eval_interval": 500,
+    "eval_max_batches": 0,
+    "save_every_n_steps": 500
+  },
+  "dataset_summary": {
+    "train": {
+      "VSPW": {
+        "sample_count": 2806,
+        "source_count_before_limit": 2806,
+        "requested_max_samples_per_dataset": -1,
+        "full_dataset_used": true,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 2806,
+        "source_count_before_limit": 2806,
+        "requested_max_samples_per_dataset": -1,
+        "full_dataset_used": true,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      }
+    },
+    "val": {
+      "VSPW": {
+        "sample_count": 343,
+        "source_count_before_limit": 343,
+        "requested_max_samples_per_dataset": -1,
+        "full_dataset_used": true,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 343,
+        "source_count_before_limit": 343,
+        "requested_max_samples_per_dataset": -1,
+        "full_dataset_used": true,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      }
+    }
+  },
+  "whether_full_train_used": true,
+  "whether_full_val_used": true,
+  "effective_train_sample_count_per_dataset": {
+    "VSPW": 2806,
+    "VIPSeg": 2806
+  },
+  "effective_val_sample_count_per_dataset": {
+    "VSPW": 343,
+    "VIPSeg": 343
+  },
+  "core_dataset_inputs": {
+    "ready": true,
+    "details": {
+      "VSPW": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 2806,
+        "val_sample_count": 343,
+        "ready": true
+      },
+      "VIPSEG": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 2806,
+        "val_sample_count": 343,
+        "ready": true
+      }
+    }
+  },
+  "stage1_backbone": {
+    "load_success": true,
+    "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "model_preset": "prototype_220m",
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "parameter_count": 207615754,
+    "trainable_parameter_count": 0,
+    "partial_unfreeze_mode": "none",
+    "partial_unfreeze_layer_count": 1,
+    "partial_unfreeze_layer_indices": [],
+    "partial_unfreeze_param_names": []
+  },
+  "parameter_count_frozen": 207615754,
+  "parameter_count_trainable": 4189060,
+  "freeze_trainable_boundary": {
+    "stage1_trainable_parameter_count": 0,
+    "semantic_trainable_parameter_count": 4189060,
+    "stage1_grad_detected_after_backward": false,
+    "semantic_grad_norm_latest": 0.0465860749620751,
+    "boundary_ok": true
+  },
+  "semantic_branch_metrics": {
+    "train_gate_mean": 0.010773409740882926,
+    "train_semantic_input_nonempty_ratio": 1.0,
+    "semantic_crop_size": 64,
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "legacy_semantic_feature_dim": 10,
+    "semantic_rescue_mode": "v7alignonly",
+    "semantic_rescue_weight": 0.00015,
+    "semantic_bootstrap_target_dim": 512,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 1.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
+    "sparse_persistence_contrastive_loss_weight": 0.0,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 0,
+    "aux_loss_ramp_steps": 0,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "hard_topk_query_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.85,
+    "v6_max_affected_ratio": 0.15,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 0,
+    "v6_hard_negative_cap": 0,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 0,
+    "v6_two_level_pair_mining_enabled": false,
+    "v6_relaxed_motion_threshold": 0.08,
+    "v6_relaxed_area_jump_threshold": 0.06,
+    "v6_relaxed_small_query_threshold": 0.2,
+    "v6_relaxed_appearance_shift_threshold": 0.25,
+    "v6_relaxed_center_interaction_threshold": 0.1,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_rescue_loss_mean": 0.06350512720266124,
+    "semantic_alignment_loss_mean": 0.0,
+    "query_persistence_consistency_loss_mean": 0.0,
+    "readout_semantic_alignment_loss_mean": 0.06350512720266124,
+    "persistence_contrastive_or_ranking_loss_mean": 0.0,
+    "confidence_gated_alignment_loss_mean": 0.06350512720266124,
+    "sparse_persistence_contrastive_loss_mean": 0.0,
+    "confidence_gated_affected_sample_ratio_mean": 0.125,
+    "low_confidence_sample_ratio_mean": 1.0,
+    "effective_pair_coverage_ratio_mean": 0.0,
+    "positive_pair_count_mean": 0.0,
+    "hard_negative_count_mean": 0.0,
+    "actual_gate_positive_ratio_mean": 0.125,
+    "activated_query_count_mean": 1.0,
+    "activated_query_ratio_mean": 0.125,
+    "per_batch_sparsity_mean": 0.125,
+    "per_batch_sparsity_std_mean": 0.0,
+    "raw_quantile_ratio_mean": 0.125,
+    "capped_ratio_mean": 0.125,
+    "valuable_pair_ratio_mean": 0.0,
+    "fallback_trigger_rate_mean": 0.0,
+    "guaranteed_pair_count_mean": 0.0,
+    "strict_pair_ratio_mean": 0.0,
+    "fallback_pair_ratio_mean": 0.0,
+    "sparse_gate_selected_ratio_mean": 0.125,
+    "high_value_pair_ratio_mean": 0.0,
+    "high_value_pair_count_mean": 0.0,
+    "persistence_candidate_pair_count_mean": 0.0,
+    "aux_schedule_scale_mean": 1.0,
+    "final_effective_aux_weight_mean": 0.00015,
+    "final_effective_aux_weight": 0.00015,
+    "semantic_bootstrap_cache_hit_ratio_mean": 0.0455,
+    "semantic_hard_sample_weight_mean": 1.0,
+    "semantic_bootstrap_cache_item_count": 384
+  },
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "teacher_forced_coord_loss",
+    "total_loss_usage": "reference_only"
+  },
+  "comparison_sorting": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "teacher_forced_coord_loss",
+    "total_loss_usage": "reference_only"
+  },
+  "teacher_forced_coord_loss": 2.514080963161259e-05,
+  "free_rollout_coord_mean_l2": 0.0006556247964972472,
+  "free_rollout_endpoint_l2": 0.0006859571743062792,
+  "best_checkpoint_metric": {
+    "global_step": 11000,
+    "metrics": {
+      "teacher_forced_coord_loss": 2.514080963161259e-05,
+      "free_rollout_coord_mean_l2": 0.0006556247964972472,
+      "free_rollout_endpoint_l2": 0.0006859571743062792,
+      "total_loss_reference": 2.5067880528054925e-05
+    },
+    "rank_key": [
+      0.0006859571743062792,
+      0.0006556247964972472,
+      2.514080963161259e-05
+    ]
+  },
+  "latest_checkpoint_metric": {
+    "global_step": 11000,
+    "metrics": {
+      "teacher_forced_coord_loss": 2.514080963161259e-05,
+      "free_rollout_coord_mean_l2": 0.0006556247964972472,
+      "free_rollout_endpoint_l2": 0.0006859571743062792,
+      "total_loss_reference": 2.5067880528054925e-05
+    },
+    "rank_key": [
+      0.0006859571743062792,
+      0.0006556247964972472,
+      2.514080963161259e-05
+    ]
+  },
+  "semantic_hard_sidecar_metric": {
+    "enabled": true,
+    "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/best_semantic_hard.pt",
+    "exists": true,
+    "global_step": 11000,
+    "semantic_hard_sidecar_score": 0.0001921019249727042,
+    "metrics": {
+      "teacher_forced_coord_loss": 6.332586093111996e-08,
+      "free_rollout_coord_mean_l2": 0.0001920826377896353,
+      "free_rollout_endpoint_l2": 0.00019211019090830514,
+      "total_loss_reference": 6.226743813897428e-08
+    },
+    "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+  },
+  "sidecar_checkpoint_selection": {
+    "overall_best_checkpoint": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/best.pt",
+    "semantic_hard_best_checkpoint": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/best_semantic_hard.pt",
+    "overall_best_global_step": 11000,
+    "semantic_hard_best_global_step": 11000,
+    "same_checkpoint_selected": true,
+    "sidecar_truly_diverged": false
+  },
+  "overall_vs_semantic_hard_best_delta": {
+    "same_step": true,
+    "endpoint_l2_delta": -0.0004938469833979741,
+    "coord_mean_l2_delta": -0.0004635421587076119,
+    "semantic_hard_sidecar_score_delta": -0.0004847555359908654
+  },
+  "train_split_counts_used": {
+    "VSPW": 2806,
+    "VIPSeg": 2806
+  },
+  "val_split_counts_used": {
+    "VSPW": 343,
+    "VIPSeg": 343
+  },
+  "train_split_total_count_used": 5612,
+  "val_split_total_count_used": 686,
+  "frozen_parameter_count": 207615754,
+  "trainable_parameter_count": 4189060,
+  "boundary_ok": true,
+  "training_progress": {
+    "optimizer_steps": 4000,
+    "effective_batch": 8,
+    "epochs_completed": 5.702066999287242,
+    "eval_interval": 500,
+    "save_every_n_steps": 500
+  },
+  "final_metrics": {
+    "teacher_forced_coord_loss": 2.514080963161259e-05,
+    "free_rollout_coord_mean_l2": 0.0006556247964972472,
+    "free_rollout_endpoint_l2": 0.0006859571743062792,
+    "total_loss_reference": 2.5067880528054925e-05,
+    "tapvid_style_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "tapvid3d_limited_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "semantic_branch_metrics": {
+      "eval_gate_mean": 0.006930402117283191,
+      "semantic_input_nonempty_ratio": 1.0,
+      "eval_batches": 86
+    }
+  },
+  "best_metric_so_far": {
+    "global_step": 11000,
+    "metrics": {
+      "teacher_forced_coord_loss": 2.514080963161259e-05,
+      "free_rollout_coord_mean_l2": 0.0006556247964972472,
+      "free_rollout_endpoint_l2": 0.0006859571743062792,
+      "total_loss_reference": 2.5067880528054925e-05,
+      "tapvid_style_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "tapvid3d_limited_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "semantic_branch_metrics": {
+        "eval_gate_mean": 0.006930402117283191,
+        "semantic_input_nonempty_ratio": 1.0,
+        "eval_batches": 86
+      }
+    },
+    "rank_key": [
+      0.0006859571743062792,
+      0.0006556247964972472,
+      2.514080963161259e-05
+    ]
+  },
+  "eval_history": [
+    {
+      "global_step": 1000,
+      "metrics": {
+        "teacher_forced_coord_loss": 7.269212835415405e-05,
+        "free_rollout_coord_mean_l2": 0.007109660622677372,
+        "free_rollout_endpoint_l2": 0.007114655677631019,
+        "total_loss_reference": 7.26172043065416e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.17717083716808363,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.007114655677631019,
+        0.007109660622677372,
+        7.269212835415405e-05
+      ]
+    },
+    {
+      "global_step": 2000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.5308251233047497e-05,
+        "free_rollout_coord_mean_l2": 0.002900034216376505,
+        "free_rollout_endpoint_l2": 0.0029253532061945245,
+        "total_loss_reference": 3.522842128531497e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.1679561178005019,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0029253532061945245,
+        0.002900034216376505,
+        3.5308251233047497e-05
+      ]
+    },
+    {
+      "global_step": 3000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.02700085095072e-05,
+        "free_rollout_coord_mean_l2": 0.0011106466086385853,
+        "free_rollout_endpoint_l2": 0.001136954303602783,
+        "total_loss_reference": 3.0185054667466046e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.14864685126515323,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.001136954303602783,
+        0.0011106466086385853,
+        3.02700085095072e-05
+      ]
+    },
+    {
+      "global_step": 3500,
+      "metrics": {
+        "teacher_forced_coord_loss": 6.287134135055081e-05,
+        "free_rollout_coord_mean_l2": 0.0057116005048373,
+        "free_rollout_endpoint_l2": 0.005739290560473506,
+        "total_loss_reference": 6.277509104155226e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.07086977674517521,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.005739290560473506,
+        0.0057116005048373,
+        6.287134135055081e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 2.933619133471392e-05,
+          "free_rollout_coord_mean_l2": 0.005320757723007447,
+          "free_rollout_endpoint_l2": 0.005320681020235404,
+          "total_loss_reference": 2.9376009842962957e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.07080278247594833,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.005320704031067017
+      }
+    },
+    {
+      "global_step": 4000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.431304310429461e-05,
+        "free_rollout_coord_mean_l2": 0.0029551170809797227,
+        "free_rollout_endpoint_l2": 0.002978043011647619,
+        "total_loss_reference": 3.423369060667112e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.06674153920869495,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.002978043011647619,
+        0.0029551170809797227,
+        3.431304310429461e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.982424495687995e-06,
+          "free_rollout_coord_mean_l2": 0.0026360076780502614,
+          "free_rollout_endpoint_l2": 0.0026360627454824937,
+          "total_loss_reference": 6.990217752900208e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.06674732565879822,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0026360462252528237
+      }
+    },
+    {
+      "global_step": 4500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.0293362769343227e-05,
+        "free_rollout_coord_mean_l2": 0.0011440791134008426,
+        "free_rollout_endpoint_l2": 0.0011693637942998471,
+        "total_loss_reference": 3.020716753966088e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.06181220225123472,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0011693637942998471,
+        0.0011440791134008426,
+        3.0293362769343227e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.207800279065477e-07,
+          "free_rollout_coord_mean_l2": 0.0007678374695854309,
+          "free_rollout_endpoint_l2": 0.0007679438313994652,
+          "total_loss_reference": 6.203455541253789e-07,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.06183627173304558,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0007679119228552549
+      }
+    },
+    {
+      "global_step": 5000,
+      "metrics": {
+        "teacher_forced_coord_loss": 8.136925564837199e-05,
+        "free_rollout_coord_mean_l2": 0.007968723926008964,
+        "free_rollout_endpoint_l2": 0.007975225285260392,
+        "total_loss_reference": 8.13005772215547e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.052385414582352303,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.007975225285260392,
+        0.007968723926008964,
+        8.136925564837199e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.0474900051187244e-05,
+          "free_rollout_coord_mean_l2": 0.007754135781373733,
+          "free_rollout_endpoint_l2": 0.007754215731834754,
+          "total_loss_reference": 6.058582512196154e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.052385924756526946,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.007754191746696447
+      }
+    },
+    {
+      "global_step": 5500,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.8571028534082362e-05,
+        "free_rollout_coord_mean_l2": 0.0011290137047822379,
+        "free_rollout_endpoint_l2": 0.0011563239308242461,
+        "total_loss_reference": 2.8489445500800094e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.045013019641818,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0011563239308242461,
+        0.0011290137047822379,
+        2.8571028534082362e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.232331566608105e-07,
+          "free_rollout_coord_mean_l2": 0.0007336881035604539,
+          "free_rollout_endpoint_l2": 0.0007336788619749057,
+          "total_loss_reference": 6.306095770014508e-07,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.045003941655158995,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0007336816344505701
+      }
+    },
+    {
+      "global_step": 6000,
+      "metrics": {
+        "teacher_forced_coord_loss": 6.487881477549536e-05,
+        "free_rollout_coord_mean_l2": 0.006125487050492284,
+        "free_rollout_endpoint_l2": 0.006153149530291557,
+        "total_loss_reference": 6.478959473264863e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.03963588555018569,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.006153149530291557,
+        0.006125487050492284,
+        6.487881477549536e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.3395430550743374e-05,
+          "free_rollout_coord_mean_l2": 0.005774151056240766,
+          "free_rollout_endpoint_l2": 0.005774155545693178,
+          "total_loss_reference": 3.335790315759368e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.03965072482824326,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.005774154198857454
+      }
+    },
+    {
+      "global_step": 6500,
+      "metrics": {
+        "teacher_forced_coord_loss": 4.2211621774122274e-05,
+        "free_rollout_coord_mean_l2": 0.003505882948267738,
+        "free_rollout_endpoint_l2": 0.003532024046118336,
+        "total_loss_reference": 4.2118069602512934e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.03430105858417445,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.003532024046118336,
+        0.003505882948267738,
+        4.2211621774122274e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 9.942572759404682e-06,
+          "free_rollout_coord_mean_l2": 0.0031510341721467483,
+          "free_rollout_endpoint_l2": 0.0031509422338925875,
+          "total_loss_reference": 9.938601579051465e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.034309865534305574,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.003150969815368836
+      }
+    },
+    {
+      "global_step": 7000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.9368732985764384e-05,
+        "free_rollout_coord_mean_l2": 0.0008163629537556896,
+        "free_rollout_endpoint_l2": 0.000843271106731353,
+        "total_loss_reference": 2.9283847811678847e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.028392137396474216,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.000843271106731353,
+        0.0008163629537556896,
+        2.9368732985764384e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 1.972789155283513e-07,
+          "free_rollout_coord_mean_l2": 0.00042372916896755877,
+          "free_rollout_endpoint_l2": 0.00042371781399616826,
+          "total_loss_reference": 1.9571328095935315e-07,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.028382543474435806,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0004237212204875854
+      }
+    },
+    {
+      "global_step": 7500,
+      "metrics": {
+        "teacher_forced_coord_loss": 7.188710219120884e-05,
+        "free_rollout_coord_mean_l2": 0.00657572950244645,
+        "free_rollout_endpoint_l2": 0.006602071562331203,
+        "total_loss_reference": 7.179375029937906e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.012730958449199449,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.006602071562331203,
+        0.00657572950244645,
+        7.188710219120884e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.9739135013988766e-05,
+          "free_rollout_coord_mean_l2": 0.0062952761848767596,
+          "free_rollout_endpoint_l2": 0.006295215816069872,
+          "total_loss_reference": 3.977518645115197e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.0126549132168293,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.006295233926711939
+      }
+    },
+    {
+      "global_step": 8000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.712312477798121e-05,
+        "free_rollout_coord_mean_l2": 0.0029928879595141717,
+        "free_rollout_endpoint_l2": 0.003020314885297948,
+        "total_loss_reference": 3.703807582031343e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.011525714802447446,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.003020314885297948,
+        0.0029928879595141717,
+        3.712312477798121e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.973590830173821e-06,
+          "free_rollout_coord_mean_l2": 0.0026265491182223344,
+          "free_rollout_endpoint_l2": 0.0026264458130567502,
+          "total_loss_reference": 6.980188572924817e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.011479751206934452,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0026264768046064253
+      }
+    },
+    {
+      "global_step": 8500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.163545230462853e-05,
+        "free_rollout_coord_mean_l2": 0.0020447481483351383,
+        "free_rollout_endpoint_l2": 0.002069443614974227,
+        "total_loss_reference": 3.155205773552108e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.009849933799096319,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.002069443614974227,
+        0.0020447481483351383,
+        3.163545230462853e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 2.7848800994270746e-06,
+          "free_rollout_coord_mean_l2": 0.0016673969773527903,
+          "free_rollout_endpoint_l2": 0.0016673835806357556,
+          "total_loss_reference": 2.7851648610521806e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.009832105226814747,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0016673875996508658
+      }
+    },
+    {
+      "global_step": 9000,
+      "metrics": {
+        "teacher_forced_coord_loss": 4.599050013679378e-05,
+        "free_rollout_coord_mean_l2": 0.004159929570212482,
+        "free_rollout_endpoint_l2": 0.004187619191412501,
+        "total_loss_reference": 4.590117908074442e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.008470770480587732,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.004187619191412501,
+        0.004159929570212482,
+        4.599050013679378e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 1.4471091279306282e-05,
+          "free_rollout_coord_mean_l2": 0.003797545169408505,
+          "free_rollout_endpoint_l2": 0.0037974313570138737,
+          "total_loss_reference": 1.4458212899626232e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.008458667621016502,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.003797465500732263
+      }
+    },
+    {
+      "global_step": 9500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.1330535946162375e-05,
+        "free_rollout_coord_mean_l2": 0.00280662722961635,
+        "free_rollout_endpoint_l2": 0.0028278990010608736,
+        "total_loss_reference": 3.125627457594355e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.008249106979387444,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0028278990010608736,
+        0.00280662722961635,
+        3.1330535946162375e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.132385094996351e-06,
+          "free_rollout_coord_mean_l2": 0.0024650668104489646,
+          "free_rollout_endpoint_l2": 0.0024651413640150656,
+          "total_loss_reference": 6.1334789279499095e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.00821576900780201,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.002465118997945235
+      }
+    },
+    {
+      "global_step": 10000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.919549588816694e-05,
+        "free_rollout_coord_mean_l2": 0.0013523587194046022,
+        "free_rollout_endpoint_l2": 0.0013793750622638286,
+        "total_loss_reference": 2.911398531341018e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.007712606059084105,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0013793750622638286,
+        0.0013523587194046022,
+        2.919549588816694e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 9.667709001895184e-07,
+          "free_rollout_coord_mean_l2": 0.0009613705751223442,
+          "free_rollout_endpoint_l2": 0.0009613014065111295,
+          "total_loss_reference": 9.65500055372104e-07,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.007687320467084646,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0009613221570944939
+      }
+    },
+    {
+      "global_step": 10500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.560798389331605e-05,
+        "free_rollout_coord_mean_l2": 0.0023709404507635634,
+        "free_rollout_endpoint_l2": 0.0023999331999602714,
+        "total_loss_reference": 3.551615236574435e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.007195218769443589,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0023999331999602714,
+        0.0023709404507635634,
+        3.560798389331605e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.8053145451554788e-06,
+          "free_rollout_coord_mean_l2": 0.0019414695457388193,
+          "free_rollout_endpoint_l2": 0.0019413788014879594,
+          "total_loss_reference": 3.816839398496086e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.007172826118767262,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0019414060247632172
+      }
+    },
+    {
+      "global_step": 11000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.514080963161259e-05,
+        "free_rollout_coord_mean_l2": 0.0006556247964972472,
+        "free_rollout_endpoint_l2": 0.0006859571743062792,
+        "total_loss_reference": 2.5067880528054925e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.006930402117283191,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0006859571743062792,
+        0.0006556247964972472,
+        2.514080963161259e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 6.332586093111996e-08,
+          "free_rollout_coord_mean_l2": 0.0001920826377896353,
+          "free_rollout_endpoint_l2": 0.00019211019090830514,
+          "total_loss_reference": 6.226743813897428e-08,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.006888505164533853,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0001921019249727042
+      }
+    }
+  ],
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+    "best": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/best.pt",
+    "latest": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/latest.pt",
+    "best_semantic_hard": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/best_semantic_hard.pt",
+    "step_checkpoints": [
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0007500.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0008000.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0008500.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0009000.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0009500.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0010000.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0010500.pt",
+      "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_20260415/step_0011000.pt"
+    ],
+    "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt",
+    "auto_resume_latest": false
+  },
+  "run_stable": true
+}

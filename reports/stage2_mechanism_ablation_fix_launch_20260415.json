@@ -1,0 +1,144 @@
+{
+  "generated_at_utc": "2026-04-15T17:38:41.955589+00:00",
+  "tmux_session": "tracewm_stage2_top_tier_closure_20260415",
+  "teacher_backend": "local_clip_vit_b32_mask_crop_visual_teacher",
+  "policy": "reuse exact-equivalent completed ablations when present; real-train only missing 20260415 fix runs; persistence disabled",
+  "lease_cleanup": {
+    "removed_count": 0,
+    "removed": [],
+    "kept_count": 0
+  },
+  "actions": [
+    {
+      "run_name": "stage2_calonly_noalign_seed42_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_noalign_seed42_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed42_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed123_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_noalign_seed123_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed456_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_noalign_seed456_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed456_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed654_ablate_fix_20260415",
+      "deleted": []
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed42_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_densegate_seed42_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed42_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed123_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_densegate_seed123_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed456_ablate_fix_20260415",
+      "deleted": []
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed654_ablate_fix_20260415",
+      "deleted": []
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed42_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_nodelay_seed42_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed42_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed123_ablate_fix_20260415",
+      "reused": true,
+      "source_run_name": "stage2_calonly_nodelay_seed123_ablate_20260414",
+      "aliased_checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed123_ablate_fix_20260415"
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed456_ablate_fix_20260415",
+      "deleted": []
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+      "deleted": []
+    }
+  ],
+  "runs": [
+    {
+      "run_name": "stage2_calonly_noalign_seed42_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_noalign_seed42_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed123_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_noalign_seed123_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed456_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_noalign_seed456_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed654_ablate_fix_20260415",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt",
+      "resume_global_step": 7000
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed42_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_densegate_seed42_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed123_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_densegate_seed123_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed456_ablate_fix_20260415",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/best.pt",
+      "resume_global_step": 10000
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed654_ablate_fix_20260415",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt",
+      "resume_global_step": 7000
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed42_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_nodelay_seed42_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed123_ablate_fix_20260415",
+      "mode": "reused_equivalent",
+      "source_run_name": "stage2_calonly_nodelay_seed123_ablate_20260414"
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed456_ablate_fix_20260415",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/best.pt",
+      "resume_global_step": 10000
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed654_wave2_20260414/best.pt",
+      "resume_global_step": 7000
+    }
+  ],
+  "reused_equivalent_count": 7,
+  "real_train_count": 5
+}

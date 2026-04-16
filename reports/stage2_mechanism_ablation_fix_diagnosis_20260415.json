@@ -1,0 +1,197 @@
+{
+  "generated_at_utc": "2026-04-15T19:30:48.061471+00:00",
+  "all_runs_terminal": true,
+  "alignment_load_bearing_cross_seed": false,
+  "sparse_gating_load_bearing_cross_seed": false,
+  "delayed_schedule_load_bearing_cross_seed": false,
+  "families": {
+    "noalign": {
+      "judgments": [
+        {
+          "run_name": "stage2_calonly_noalign_seed42_ablate_fix_20260415",
+          "seed": 42,
+          "reference_run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
+          "reference_endpoint_l2": 0.0006753838883778053,
+          "reference_semantic_hard_sidecar_score": 0.00024996074215055274,
+          "endpoint_l2": 0.0010625912038115214,
+          "semantic_hard_sidecar_score": 0.0005896999882772947,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_noalign_seed123_ablate_fix_20260415",
+          "seed": 123,
+          "reference_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "reference_endpoint_l2": 0.0005282461077264041,
+          "reference_semantic_hard_sidecar_score": 0.0001250835310202092,
+          "endpoint_l2": 0.0005372556576569111,
+          "semantic_hard_sidecar_score": 0.00011720334087164165,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": true,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_noalign_seed456_ablate_fix_20260415",
+          "seed": 456,
+          "reference_run_name": "stage2_calonly_topk1_seed456_wave1_20260413",
+          "reference_endpoint_l2": 0.0005719647855659453,
+          "reference_semantic_hard_sidecar_score": 0.0005124877881593047,
+          "endpoint_l2": 0.0005719647855659453,
+          "semantic_hard_sidecar_score": 0.0006439749366388871,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_noalign_seed654_ablate_fix_20260415",
+          "seed": 654,
+          "reference_run_name": "stage2_calonly_topk1_seed654_wave2_20260414",
+          "reference_endpoint_l2": 0.000843271106731353,
+          "reference_semantic_hard_sidecar_score": 0.0004237212204875854,
+          "endpoint_l2": 1000000000.0,
+          "semantic_hard_sidecar_score": 1000000000.0,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": false
+        }
+      ],
+      "anomalies": [
+        {
+          "run_name": "stage2_calonly_noalign_seed123_ablate_fix_20260415",
+          "seed": 123,
+          "reference_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "reference_endpoint_l2": 0.0005282461077264041,
+          "reference_semantic_hard_sidecar_score": 0.0001250835310202092,
+          "endpoint_l2": 0.0005372556576569111,
+          "semantic_hard_sidecar_score": 0.00011720334087164165,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": true,
+          "reused_equivalent": true
+        }
+      ],
+      "cross_seed_support": false
+    },
+    "densegate": {
+      "judgments": [
+        {
+          "run_name": "stage2_calonly_densegate_seed42_ablate_fix_20260415",
+          "seed": 42,
+          "reference_run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
+          "reference_endpoint_l2": 0.0006753838883778053,
+          "reference_semantic_hard_sidecar_score": 0.00024996074215055274,
+          "endpoint_l2": 0.0006762215565230274,
+          "semantic_hard_sidecar_score": 0.00025119756390221224,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_densegate_seed123_ablate_fix_20260415",
+          "seed": 123,
+          "reference_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "reference_endpoint_l2": 0.0005282461077264041,
+          "reference_semantic_hard_sidecar_score": 0.0001250835310202092,
+          "endpoint_l2": 0.0005349495980017017,
+          "semantic_hard_sidecar_score": 0.00012971017202243016,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_densegate_seed456_ablate_fix_20260415",
+          "seed": 456,
+          "reference_run_name": "stage2_calonly_topk1_seed456_wave1_20260413",
+          "reference_endpoint_l2": 0.0005719647855659453,
+          "reference_semantic_hard_sidecar_score": 0.0005124877881593047,
+          "endpoint_l2": 1000000000.0,
+          "semantic_hard_sidecar_score": 1000000000.0,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": false
+        },
+        {
+          "run_name": "stage2_calonly_densegate_seed654_ablate_fix_20260415",
+          "seed": 654,
+          "reference_run_name": "stage2_calonly_topk1_seed654_wave2_20260414",
+          "reference_endpoint_l2": 0.000843271106731353,
+          "reference_semantic_hard_sidecar_score": 0.0004237212204875854,
+          "endpoint_l2": 1000000000.0,
+          "semantic_hard_sidecar_score": 1000000000.0,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": false
+        }
+      ],
+      "anomalies": [],
+      "cross_seed_support": false
+    },
+    "nodelay": {
+      "judgments": [
+        {
+          "run_name": "stage2_calonly_nodelay_seed42_ablate_fix_20260415",
+          "seed": 42,
+          "reference_run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
+          "reference_endpoint_l2": 0.0006753838883778053,
+          "reference_semantic_hard_sidecar_score": 0.00024996074215055274,
+          "endpoint_l2": 0.0006633374345171165,
+          "semantic_hard_sidecar_score": 0.00023556061608430282,
+          "degraded_vs_reference": false,
+          "anomaly_better_than_reference": true,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_nodelay_seed123_ablate_fix_20260415",
+          "seed": 123,
+          "reference_run_name": "stage2_calonly_topk1_seed123_wave1_20260413",
+          "reference_endpoint_l2": 0.0005282461077264041,
+          "reference_semantic_hard_sidecar_score": 0.0001250835310202092,
+          "endpoint_l2": 0.0005697351530786202,
+          "semantic_hard_sidecar_score": 0.0001546227808993978,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": true
+        },
+        {
+          "run_name": "stage2_calonly_nodelay_seed456_ablate_fix_20260415",
+          "seed": 456,
+          "reference_run_name": "stage2_calonly_topk1_seed456_wave1_20260413",
+          "reference_endpoint_l2": 0.0005719647855659453,
+          "reference_semantic_hard_sidecar_score": 0.0005124877881593047,
+          "endpoint_l2": 1000000000.0,
+          "semantic_hard_sidecar_score": 1000000000.0,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": false
+        },
+        {
+          "run_name": "stage2_calonly_nodelay_seed654_ablate_fix_20260415",
+          "seed": 654,
+          "reference_run_name": "stage2_calonly_topk1_seed654_wave2_20260414",
+          "reference_endpoint_l2": 0.000843271106731353,
+          "reference_semantic_hard_sidecar_score": 0.0004237212204875854,
+          "endpoint_l2": 1000000000.0,
+          "semantic_hard_sidecar_score": 1000000000.0,
+          "degraded_vs_reference": true,
+          "anomaly_better_than_reference": false,
+          "reused_equivalent": false
+        }
+      ],
+      "anomalies": [
+        {
+          "run_name": "stage2_calonly_nodelay_seed42_ablate_fix_20260415",
+          "seed": 42,
+          "reference_run_name": "stage2_calonly_topk1_seed42_wave1_20260413",
+          "reference_endpoint_l2": 0.0006753838883778053,
+          "reference_semantic_hard_sidecar_score": 0.00024996074215055274,
+          "endpoint_l2": 0.0006633374345171165,
+          "semantic_hard_sidecar_score": 0.00023556061608430282,
+          "degraded_vs_reference": false,
+          "anomaly_better_than_reference": true,
+          "reused_equivalent": true
+        }
+      ],
+      "cross_seed_support": false
+    }
+  }
+}
