@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-15T19:27:46.229287+00:00",
+  "generated_at_utc": "2026-04-16T07:13:44.241981+00:00",
   "run_name": "stage2_calonly_densegate_seed654_ablate_fix_20260415",
   "status": "completed",
   "current_mainline_semantic_source": "crop_visual_encoder",
@@ -25,11 +25,11 @@
   },
   "run_metadata": {
     "run_name": "stage2_calonly_densegate_seed654_ablate_fix_20260415",
-    "started_at_utc": "2026-04-15T17:38:58.824554+00:00",
-    "cuda_visible_devices": "3",
+    "started_at_utc": "2026-04-16T05:07:22.040769+00:00",
+    "cuda_visible_devices": "4",
     "gpu_selection": {
-      "selected_gpu_id": 3,
-      "lease_id": "7a0a3989-ba6e-4b9f-8a6a-38699ccce482",
+      "selected_gpu_id": 4,
+      "lease_id": "7533574d-ddf6-49fa-a676-d5ea5cd2998d",
       "owner": "stage2_calonly_densegate_seed654_ablate_fix_20260415",
       "mode": "single_gpu_only"
     },
@@ -117,18 +117,18 @@
     "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 2.514571015502822e-05,
-    "free_rollout_coord_mean_l2": 0.0006561692471992029,
-    "free_rollout_endpoint_l2": 0.0006864754978293124,
-    "total_loss_reference": 2.5072767392497752e-05
+    "teacher_forced_coord_loss": 2.5150322979130828e-05,
+    "free_rollout_coord_mean_l2": 0.0006563205720989832,
+    "free_rollout_endpoint_l2": 0.0006866392812897986,
+    "total_loss_reference": 2.507736659187568e-05
   },
   "best_metric_so_far": {
     "global_step": 11000,
     "metrics": {
-      "teacher_forced_coord_loss": 2.514571015502822e-05,
-      "free_rollout_coord_mean_l2": 0.0006561692471992029,
-      "free_rollout_endpoint_l2": 0.0006864754978293124,
-      "total_loss_reference": 2.5072767392497752e-05,
+      "teacher_forced_coord_loss": 2.5150322979130828e-05,
+      "free_rollout_coord_mean_l2": 0.0006563205720989832,
+      "free_rollout_endpoint_l2": 0.0006866392812897986,
+      "total_loss_reference": 2.507736659187568e-05,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -138,15 +138,15 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.006935845172509204,
+        "eval_gate_mean": 0.006935674735063384,
         "semantic_input_nonempty_ratio": 1.0,
         "eval_batches": 86
       }
     },
     "rank_key": [
-      0.0006864754978293124,
-      0.0006561692471992029,
-      2.514571015502822e-05
+      0.0006866392812897986,
+      0.0006563205720989832,
+      2.5150322979130828e-05
     ]
   }
 }
