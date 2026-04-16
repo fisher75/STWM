@@ -68,6 +68,7 @@ def parse_args() -> Any:
         default="/home/chen034/workspace/stwm/reports/stage1_v2_recommended_runtime_20260408.json",
     )
     p.add_argument("--use-recommended-runtime", action="store_true")
+    p.add_argument("--predecode-cache-path", default="")
 
     p.add_argument(
         "--stage1-backbone-checkpoint",
@@ -103,6 +104,8 @@ def parse_args() -> Any:
     p.add_argument("--semantic-source-mainline", default="crop_visual_encoder")
     p.add_argument("--legacy-semantic-source", default="hand_crafted_stats")
     p.add_argument("--semantic-crop-size", type=int, default=64)
+    p.add_argument("--local-temporal-window", type=int, default=1)
+    p.add_argument("--local-temporal-fuse-weight", type=float, default=0.5)
     p.add_argument(
         "--semantic-rescue-mode",
         default="none",
@@ -448,6 +451,9 @@ def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool) 
         "semantic_mask_crop",
         "semantic_crop_valid",
         "semantic_mask_crop_valid",
+        "semantic_rgb_crop_temporal",
+        "semantic_mask_crop_temporal",
+        "semantic_temporal_valid",
     ]:
         out[k] = batch[k].to(device, non_blocking=non_blocking)
     return out
@@ -504,6 +510,9 @@ def _teacher_forced_predict(
         batch.get("semantic_features"),
         semantic_rgb_crop=batch.get("semantic_rgb_crop"),
         semantic_mask_crop=batch.get("semantic_mask_crop"),
+        semantic_rgb_crop_temporal=batch.get("semantic_rgb_crop_temporal"),
+        semantic_mask_crop_temporal=batch.get("semantic_mask_crop_temporal"),
+        semantic_temporal_valid=batch.get("semantic_temporal_valid"),
         source_mode=str(semantic_source_mainline),
     )
     fused_hidden, aux = semantic_fusion(stage1_out["hidden"], sem_enc, token_mask=token_mask)
@@ -549,6 +558,9 @@ def _free_rollout_predict(
         batch.get("semantic_features"),
         semantic_rgb_crop=batch.get("semantic_rgb_crop"),
         semantic_mask_crop=batch.get("semantic_mask_crop"),
+        semantic_rgb_crop_temporal=batch.get("semantic_rgb_crop_temporal"),
+        semantic_mask_crop_temporal=batch.get("semantic_mask_crop_temporal"),
+        semantic_temporal_valid=batch.get("semantic_temporal_valid"),
         source_mode=str(semantic_source_mainline),
     )
     gate_vals: List[float] = []
@@ -2564,6 +2576,8 @@ def main() -> None:
         semantic_patch_radius=int(args.semantic_patch_radius),
         semantic_crop_size=int(args.semantic_crop_size),
         semantic_source_mainline=str(args.semantic_source_mainline),
+        semantic_temporal_window=int(args.local_temporal_window),
+        predecode_cache_path=str(args.predecode_cache_path),
     )
     val_cfg = Stage2SemanticDatasetConfig(
         dataset_names=[str(x) for x in args.dataset_names],
@@ -2576,6 +2590,8 @@ def main() -> None:
         semantic_patch_radius=int(args.semantic_patch_radius),
         semantic_crop_size=int(args.semantic_crop_size),
         semantic_source_mainline=str(args.semantic_source_mainline),
+        semantic_temporal_window=int(args.local_temporal_window),
+        predecode_cache_path=str(args.predecode_cache_path),
     )
 
     train_ds = Stage2SemanticDataset(train_cfg)
@@ -2625,6 +2641,8 @@ def main() -> None:
             dropout=0.1,
             mainline_source=str(args.semantic_source_mainline),
             legacy_source=str(args.legacy_semantic_source),
+            local_temporal_window=int(args.local_temporal_window),
+            local_temporal_fuse_weight=float(args.local_temporal_fuse_weight),
         )
     ).to(device)
     fusion_hidden_dim = int(stage1_model.config.d_model)
@@ -2763,7 +2781,14 @@ def main() -> None:
     eval_history: List[Dict[str, Any]] = []
     if resolved_resume:
         payload = _safe_load_checkpoint(resolved_resume, device=device)
-        semantic_encoder.load_state_dict(payload.get("semantic_encoder_state_dict", {}))
+        semantic_encoder_missing, semantic_encoder_unexpected = semantic_encoder.load_state_dict(
+            payload.get("semantic_encoder_state_dict", {}),
+            strict=False,
+        )
+        if semantic_encoder_missing:
+            run_metadata["semantic_encoder_resume_missing_keys"] = list(semantic_encoder_missing)
+        if semantic_encoder_unexpected:
+            run_metadata["semantic_encoder_resume_unexpected_keys"] = list(semantic_encoder_unexpected)
         semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}))
         readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
         if isinstance(payload.get("stage1_model_state_dict", None), dict):
@@ -2853,6 +2878,8 @@ def main() -> None:
                 semantic_patch_radius=int(args.semantic_patch_radius),
                 semantic_crop_size=int(args.semantic_crop_size),
                 semantic_source_mainline=str(args.semantic_source_mainline),
+                semantic_temporal_window=int(args.local_temporal_window),
+                predecode_cache_path=str(args.predecode_cache_path),
             )
             hard_ds_full = Stage2SemanticDataset(hard_cfg)
             hard_subset = torch.utils.data.Subset(hard_ds_full, hard_indices)

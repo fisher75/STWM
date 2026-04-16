@@ -1,0 +1,498 @@
+{
+  "generated_at_utc": "2026-04-16T17:30:27.129306+00:00",
+  "mechanism_ablation_fix_v3_status": "0_running_8_completed_0_failed",
+  "running_count": 0,
+  "completed_count": 8,
+  "failed_count": 0,
+  "all_runs_terminal": true,
+  "run_rows": [
+    {
+      "run_name": "stage2_calonly_noalign_seed654_ablate_fix_v3_20260416",
+      "seed": 654,
+      "ablation_name": "noalign",
+      "track": "ablation_fix_v3",
+      "confirm_target_run_name": "",
+      "status": "completed",
+      "global_step": 11000,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 7,
+      "lease_id": "26402746-d7be-451e-8ea9-f26b44703861",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 9500,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.995894420574857e-05,
+          "free_rollout_coord_mean_l2": 0.000726381246015462,
+          "free_rollout_endpoint_l2": 0.0007566796714486147,
+          "total_loss_reference": 2.98723812491465e-05
+        },
+        "rank_key": [
+          0.0007566796714486147,
+          0.000726381246015462,
+          2.995894420574857e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00017077241216123691,
+          "free_rollout_coord_mean_l2": 0.011640186712102362,
+          "free_rollout_endpoint_l2": 0.011673059575151077,
+          "total_loss_reference": 0.00017063683954738948
+        },
+        "rank_key": [
+          0.011673059575151077,
+          0.011640186712102362,
+          0.00017077241216123691
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed654_ablate_fix_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 9500,
+        "semantic_hard_sidecar_score": 0.00031463549030610384,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.188462073141403e-07,
+          "free_rollout_coord_mean_l2": 0.0003147026679168145,
+          "free_rollout_endpoint_l2": 0.0003146066999015136,
+          "total_loss_reference": 1.1842383003113355e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed456_ablate_fix_v3_20260416",
+      "seed": 456,
+      "ablation_name": "densegate",
+      "track": "ablation_fix_v3",
+      "confirm_target_run_name": "",
+      "status": "completed",
+      "global_step": 14000,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 5,
+      "lease_id": "95739c8b-9375-46fa-b7e6-06c9a4a512d6",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9811124511501298e-05,
+          "free_rollout_coord_mean_l2": 0.0005451074948007615,
+          "free_rollout_endpoint_l2": 0.0005719647855659453,
+          "total_loss_reference": 2.9724487963074046e-05
+        },
+        "rank_key": [
+          0.0005719647855659453,
+          0.0005451074948007615,
+          2.9811124511501298e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 14000,
+        "metrics": {
+          "teacher_forced_coord_loss": 4.5100902622964766e-05,
+          "free_rollout_coord_mean_l2": 0.004178723616324604,
+          "free_rollout_endpoint_l2": 0.004203781423107354,
+          "total_loss_reference": 4.501313359532803e-05
+        },
+        "rank_key": [
+          0.004203781423107354,
+          0.004178723616324604,
+          4.5100902622964766e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed456_ablate_fix_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 12500,
+        "semantic_hard_sidecar_score": 0.00016815998227311633,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.193286874811281e-08,
+          "free_rollout_coord_mean_l2": 0.0001681779708283452,
+          "free_rollout_endpoint_l2": 0.00016815227289230397,
+          "total_loss_reference": 3.2072597733190375e-08
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed654_ablate_fix_v3_20260416",
+      "seed": 654,
+      "ablation_name": "densegate",
+      "track": "ablation_fix_v3",
+      "confirm_target_run_name": "",
+      "status": "completed",
+      "global_step": 11000,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 6,
+      "lease_id": "a7df7737-92d6-445e-8f1f-177cb7800079",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 7000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9368732985764384e-05,
+          "free_rollout_coord_mean_l2": 0.0008163629537556896,
+          "free_rollout_endpoint_l2": 0.000843271106731353,
+          "total_loss_reference": 2.9283847811678847e-05
+        },
+        "rank_key": [
+          0.000843271106731353,
+          0.0008163629537556896,
+          2.9368732985764384e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.000895423875092e-05,
+          "free_rollout_coord_mean_l2": 0.0009378999174347164,
+          "free_rollout_endpoint_l2": 0.0009695236535835197,
+          "total_loss_reference": 2.9923175519930805e-05
+        },
+        "rank_key": [
+          0.0009695236535835197,
+          0.0009378999174347164,
+          3.000895423875092e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed654_ablate_fix_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 10500,
+        "semantic_hard_sidecar_score": 0.0005090848697970311,
+        "metrics": {
+          "teacher_forced_coord_loss": 4.270610466287158e-07,
+          "free_rollout_coord_mean_l2": 0.0005090454450020423,
+          "free_rollout_endpoint_l2": 0.0005091017661377406,
+          "total_loss_reference": 4.22680545852927e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed456_ablate_fix_v3_20260416",
+      "seed": 456,
+      "ablation_name": "nodelay",
+      "track": "ablation_fix_v3",
+      "confirm_target_run_name": "",
+      "status": "completed",
+      "global_step": 14000,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 2,
+      "lease_id": "1092f29f-c9e9-46af-8377-986ae6a06590",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9811124511501298e-05,
+          "free_rollout_coord_mean_l2": 0.0005451074948007615,
+          "free_rollout_endpoint_l2": 0.0005719647855659453,
+          "total_loss_reference": 2.9724487963074046e-05
+        },
+        "rank_key": [
+          0.0005719647855659453,
+          0.0005451074948007615,
+          2.9811124511501298e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 14000,
+        "metrics": {
+          "teacher_forced_coord_loss": 4.5018992469487874e-05,
+          "free_rollout_coord_mean_l2": 0.004165331246575705,
+          "free_rollout_endpoint_l2": 0.004190405013457853,
+          "total_loss_reference": 4.493114205573409e-05
+        },
+        "rank_key": [
+          0.004190405013457853,
+          0.004165331246575705,
+          4.5018992469487874e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed456_ablate_fix_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 12500,
+        "semantic_hard_sidecar_score": 0.00011721726503963463,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.590880188837801e-08,
+          "free_rollout_coord_mean_l2": 0.00011725458674705945,
+          "free_rollout_endpoint_l2": 0.00011720127002216685,
+          "total_loss_reference": 1.5983641787897796e-08
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed654_ablate_fix_v3_20260416",
+      "seed": 654,
+      "ablation_name": "nodelay",
+      "track": "ablation_fix_v3",
+      "confirm_target_run_name": "",
+      "status": "completed",
+      "global_step": 11000,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 2,
+      "lease_id": "c6528800-e937-424c-b31e-04ec1da3ee83",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 7000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9368732985764384e-05,
+          "free_rollout_coord_mean_l2": 0.0008163629537556896,
+          "free_rollout_endpoint_l2": 0.000843271106731353,
+          "total_loss_reference": 2.9283847811678847e-05
+        },
+        "rank_key": [
+          0.000843271106731353,
+          0.0008163629537556896,
+          2.9368732985764384e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9384728963634808e-05,
+          "free_rollout_coord_mean_l2": 0.000963897874331748,
+          "free_rollout_endpoint_l2": 0.000995031461926074,
+          "total_loss_reference": 2.930056181244624e-05
+        },
+        "rank_key": [
+          0.000995031461926074,
+          0.000963897874331748,
+          2.9384728963634808e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed654_ablate_fix_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 10500,
+        "semantic_hard_sidecar_score": 0.0004966272787453654,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.898956650188596e-07,
+          "free_rollout_coord_mean_l2": 0.0004966507773273266,
+          "free_rollout_endpoint_l2": 0.0004966172079245249,
+          "total_loss_reference": 3.8704271503320343e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_noalign_seed123_ablate_confirm_v3_20260416",
+      "seed": 123,
+      "ablation_name": "noalign",
+      "track": "ablation_confirm_v3",
+      "confirm_target_run_name": "stage2_calonly_noalign_seed123_ablate_fix_20260415",
+      "status": "completed",
+      "global_step": 14500,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 7,
+      "lease_id": "12b08e5a-4f6f-4acc-93d0-50b829c01615",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 14500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.34322434973092e-05,
+          "free_rollout_coord_mean_l2": 0.0017938379479338668,
+          "free_rollout_endpoint_l2": 0.0018234860196807382,
+          "total_loss_reference": 3.334109621211906e-05
+        },
+        "rank_key": [
+          0.0018234860196807382,
+          0.0017938379479338668,
+          3.34322434973092e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_noalign_seed123_ablate_confirm_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 13000,
+        "semantic_hard_sidecar_score": 0.0002960017264390794,
+        "metrics": {
+          "teacher_forced_coord_loss": 1.2812647480878252e-07,
+          "free_rollout_coord_mean_l2": 0.0002959566369939309,
+          "free_rollout_endpoint_l2": 0.0002960210504870002,
+          "total_loss_reference": 1.3173705966096349e-07
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_nodelay_seed42_ablate_confirm_v3_20260416",
+      "seed": 42,
+      "ablation_name": "nodelay",
+      "track": "ablation_confirm_v3",
+      "confirm_target_run_name": "stage2_calonly_nodelay_seed42_ablate_fix_20260415",
+      "status": "completed",
+      "global_step": 9500,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 4,
+      "lease_id": "05474b41-00f2-4a9a-9e44-bf049f2dd205",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 9000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.8309068810317754e-05,
+          "free_rollout_coord_mean_l2": 0.0006171552032984402,
+          "free_rollout_endpoint_l2": 0.0006423262058235922,
+          "total_loss_reference": 2.822695688466523e-05
+        },
+        "rank_key": [
+          0.0006423262058235922,
+          0.0006171552032984402,
+          2.8309068810317754e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 9500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.0288881304467323e-05,
+          "free_rollout_coord_mean_l2": 0.002263560456715242,
+          "free_rollout_endpoint_l2": 0.0022851370489523465,
+          "total_loss_reference": 3.0211564939934252e-05
+        },
+        "rank_key": [
+          0.0022851370489523465,
+          0.002263560456715242,
+          3.0288881304467323e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed42_ablate_confirm_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 9000,
+        "semantic_hard_sidecar_score": 0.00022128680422424504,
+        "metrics": {
+          "teacher_forced_coord_loss": 6.65425261558994e-08,
+          "free_rollout_coord_mean_l2": 0.00022130574768361374,
+          "free_rollout_endpoint_l2": 0.00022127868559880135,
+          "total_loss_reference": 6.567013812741607e-08
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    },
+    {
+      "run_name": "stage2_calonly_densegate_seed123_ablate_confirm_v3_20260416",
+      "seed": 123,
+      "ablation_name": "densegate",
+      "track": "ablation_confirm_v3",
+      "confirm_target_run_name": "stage2_calonly_densegate_seed123_ablate_fix_20260415",
+      "status": "completed",
+      "global_step": 14500,
+      "final_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 1,
+      "lease_id": "b33748af-c96b-4789-b83a-3f24e7019ee2",
+      "batch_size": 8,
+      "train_steps": 0,
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 14500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.3261610410816334e-05,
+          "free_rollout_coord_mean_l2": 0.003172426682736714,
+          "free_rollout_endpoint_l2": 0.003197167761102536,
+          "total_loss_reference": 3.318807606309176e-05
+        },
+        "rank_key": [
+          0.003197167761102536,
+          0.003172426682736714,
+          3.3261610410816334e-05
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed123_ablate_confirm_v3_20260416/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11500,
+        "semantic_hard_sidecar_score": 0.00016616197117866997,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9586214640613225e-08,
+          "free_rollout_coord_mean_l2": 0.00016614249071631677,
+          "free_rollout_endpoint_l2": 0.0001661703199482499,
+          "total_loss_reference": 2.9447918947766993e-08
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "actual_gate_positive_ratio_mean": null
+    }
+  ]
+}
