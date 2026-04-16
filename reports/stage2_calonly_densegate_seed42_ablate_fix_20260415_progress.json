@@ -1,0 +1,155 @@
+{
+  "generated_at_utc": "2026-04-15T07:58:56.835558+00:00",
+  "run_name": "stage2_calonly_densegate_seed42_ablate_fix_20260415",
+  "status": "completed",
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "datasets_bound_for_train": [
+    "vspw",
+    "vipseg"
+  ],
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "runtime": {
+    "source": "recommended_runtime_json",
+    "path": "/home/chen034/workspace/stwm/reports/stage2_final_evidence_closure_runtime_20260414.json",
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4,
+    "single_gpu_only": true,
+    "selected_gpu_id_runtime_json": -1,
+    "required_mem_gb": 40.0,
+    "safety_margin_gb": 8.0
+  },
+  "run_metadata": {
+    "run_name": "stage2_calonly_densegate_seed42_ablate_20260414",
+    "started_at_utc": "2026-04-15T06:06:22.708893+00:00",
+    "cuda_visible_devices": "2",
+    "gpu_selection": {
+      "selected_gpu_id": 2,
+      "lease_id": "edb88df5-5243-4ca5-b349-69a6c0e5b29d",
+      "owner": "stage2_calonly_densegate_seed42_ablate_20260414",
+      "mode": "single_gpu_only"
+    },
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "semantic_rescue_mode": "v7alignonly",
+    "semantic_rescue_weight": 0.00015,
+    "semantic_bootstrap_cache_path": "/home/chen034/workspace/stwm/data/processed/stage2_real_bootstrap_cache_20260410/clip_vit_b32_core_trainval_required_subset.jsonl",
+    "semantic_bootstrap_target_dim": 512,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 1.0,
+    "confidence_gated_alignment_loss_weight": 1.0,
+    "sparse_persistence_contrastive_loss_weight": 0.0,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 180,
+    "aux_loss_ramp_steps": 360,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "capped_quantile_sparse_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.0,
+    "v6_max_affected_ratio": 1.0,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 0,
+    "v6_hard_negative_cap": 0,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 0,
+    "v6_two_level_pair_mining_enabled": false,
+    "v6_relaxed_motion_threshold": 0.08,
+    "v6_relaxed_area_jump_threshold": 0.06,
+    "v6_relaxed_small_query_threshold": 0.2,
+    "v6_relaxed_appearance_shift_threshold": 0.25,
+    "v6_relaxed_center_interaction_threshold": 0.1,
+    "semantic_hard_sidecar_enabled": true,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_bootstrap_cache_item_count": 384,
+    "skip_resume_optimizer": true,
+    "resume_optimizer_loaded": false,
+    "resume_optimizer_skip_reason": "explicit_skip_resume_optimizer",
+    "stage1_partial_unfreeze_mode": "none",
+    "stage1_partial_unfreeze_layer_count": 1,
+    "stage1_partial_unfreeze_lr_scale": 0.1,
+    "stage1_partial_unfreeze_active": false,
+    "resumed_from": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_cropenc_seed42_20260409/best.pt"
+  },
+  "global_step": 7000,
+  "train_steps_target": 7000,
+  "progress_ratio": 1.0,
+  "whether_full_train_used": true,
+  "whether_full_val_used": true,
+  "effective_train_sample_count_per_dataset": {
+    "VSPW": 2806,
+    "VIPSeg": 2806
+  },
+  "effective_val_sample_count_per_dataset": {
+    "VSPW": 343,
+    "VIPSeg": 343
+  },
+  "checkpoint_inventory": {
+    "checkpoint_dir": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed42_ablate_20260414",
+    "best": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed42_ablate_20260414/best.pt",
+    "latest": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_densegate_seed42_ablate_20260414/latest.pt",
+    "best_exists": true,
+    "latest_exists": true
+  },
+  "latest_eval_metrics": {
+    "teacher_forced_coord_loss": 2.9084621346277233e-05,
+    "free_rollout_coord_mean_l2": 0.0011536005793448875,
+    "free_rollout_endpoint_l2": 0.0011787098939679888,
+    "total_loss_reference": 2.9001445638012354e-05
+  },
+  "best_metric_so_far": {
+    "global_step": 5500,
+    "metrics": {
+      "teacher_forced_coord_loss": 2.9965023141846185e-05,
+      "free_rollout_coord_mean_l2": 0.0006500226389494543,
+      "free_rollout_endpoint_l2": 0.0006762215565230274,
+      "total_loss_reference": 2.9878071604950628e-05,
+      "tapvid_style_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "tapvid3d_limited_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "semantic_branch_metrics": {
+        "eval_gate_mean": 0.04712027354642402,
+        "semantic_input_nonempty_ratio": 1.0,
+        "eval_batches": 86
+      }
+    },
+    "rank_key": [
+      0.0006762215565230274,
+      0.0006500226389494543,
+      2.9965023141846185e-05
+    ]
+  },
+  "reused_equivalent_source_run_name": "stage2_calonly_densegate_seed42_ablate_20260414",
+  "reused_equivalent_artifacts": true,
+  "ablation_fix_date_tag": "20260415"
+}
