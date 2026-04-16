@@ -31,6 +31,8 @@ class Stage2SemanticDatasetConfig:
     semantic_crop_size: int = DEFAULT_SEMANTIC_CROP_SIZE
     semantic_source_mainline: str = "crop_visual_encoder"
     semantic_frame_index: int = 0
+    semantic_temporal_window: int = 1
+    predecode_cache_path: str = ""
 
 
 def _safe_json(path: str | Path) -> Dict[str, Any]:
@@ -94,6 +96,11 @@ def _temporal_indices(frame_count: int, total_steps: int) -> List[int]:
         return [0 for _ in range(max(total_steps, 1))]
     idx = np.linspace(0, frame_count - 1, num=max(total_steps, 1), dtype=np.int64)
     return [int(x) for x in idx.tolist()]
+
+
+def _cache_key(dataset_name: str, split: str, clip_id: str) -> str:
+    safe_clip = str(clip_id).replace("/", "__")
+    return f"{str(dataset_name)}::{str(split)}::{safe_clip}"
 
 
 def _safe_crop_bounds(cx: float, cy: float, radius: int, width: int, height: int) -> Tuple[int, int, int, int]:
@@ -283,6 +290,15 @@ class Stage2SemanticDataset(Dataset):
         requested = [_norm_name(x) for x in cfg.dataset_names]
         self.entries: List[Dict[str, Any]] = []
         self.dataset_summary: Dict[str, Dict[str, Any]] = {}
+        self.predecode_index: Dict[str, str] = {}
+        cache_root = str(cfg.predecode_cache_path).strip()
+        if cache_root:
+            cache_root_path = Path(cache_root)
+            index_path = cache_root_path if cache_root_path.suffix.lower() == ".json" else cache_root_path / "index.json"
+            if index_path.exists():
+                payload = _safe_json(index_path)
+                raw_entries = payload.get("entries", {}) if isinstance(payload.get("entries", {}), dict) else {}
+                self.predecode_index = {str(k): str(v) for k, v in raw_entries.items()}
 
         for name in requested:
             rec = by_name.get(name)
@@ -392,6 +408,75 @@ class Stage2SemanticDataset(Dataset):
 
     def __getitem__(self, index: int) -> Dict[str, Any]:
         entry = self.entries[index]
+        cache_key = _cache_key(str(entry.get("dataset_name", "")), str(self.cfg.split), str(entry.get("clip_id", "")))
+        cache_path = self.predecode_index.get(cache_key, "")
+        if cache_path:
+            cp = Path(cache_path)
+            if cp.exists():
+                try:
+                    with np.load(cp, allow_pickle=True) as payload:
+                        meta_obj = payload["meta_json"].tolist()
+                        source_summary_obj = payload["semantic_source_summary_json"].tolist()
+                        rgb_temporal = payload["semantic_rgb_crop_temporal"]
+                        mask_temporal = payload["semantic_mask_crop_temporal"]
+                        valid_temporal = payload["semantic_temporal_valid"]
+                        target_window = max(int(self.cfg.semantic_temporal_window), 1)
+                        if rgb_temporal.ndim == 4:
+                            rgb_temporal = rgb_temporal[None, ...]
+                        if mask_temporal.ndim == 4:
+                            mask_temporal = mask_temporal[None, ...]
+                        if valid_temporal.ndim == 1:
+                            valid_temporal = valid_temporal[None, ...]
+                        current_window = int(rgb_temporal.shape[1])
+                        if current_window > target_window:
+                            rgb_temporal = rgb_temporal[:, :target_window, ...]
+                            mask_temporal = mask_temporal[:, :target_window, ...]
+                            valid_temporal = valid_temporal[:, :target_window, ...]
+                        elif current_window < target_window:
+                            pad_rgb = np.zeros(
+                                (int(rgb_temporal.shape[0]), target_window - current_window, int(rgb_temporal.shape[2]), int(rgb_temporal.shape[3]), int(rgb_temporal.shape[4])),
+                                dtype=rgb_temporal.dtype,
+                            )
+                            pad_mask = np.zeros(
+                                (int(mask_temporal.shape[0]), target_window - current_window, int(mask_temporal.shape[2]), int(mask_temporal.shape[3]), int(mask_temporal.shape[4])),
+                                dtype=mask_temporal.dtype,
+                            )
+                            pad_valid = np.zeros(
+                                (int(valid_temporal.shape[0]), target_window - current_window),
+                                dtype=valid_temporal.dtype,
+                            )
+                            rgb_temporal = np.concatenate([rgb_temporal, pad_rgb], axis=1)
+                            mask_temporal = np.concatenate([mask_temporal, pad_mask], axis=1)
+                            valid_temporal = np.concatenate([valid_temporal, pad_valid], axis=1)
+                        return {
+                            "obs_state": torch.from_numpy(payload["obs_state"]).to(torch.float32),
+                            "fut_state": torch.from_numpy(payload["fut_state"]).to(torch.float32),
+                            "obs_valid": torch.from_numpy(payload["obs_valid"]).to(torch.bool),
+                            "fut_valid": torch.from_numpy(payload["fut_valid"]).to(torch.bool),
+                            "point_ids": torch.from_numpy(payload["point_ids"]).to(torch.long),
+                            "meta": dict(meta_obj if isinstance(meta_obj, dict) else {}),
+                            "semantic_features": torch.from_numpy(payload["semantic_features"]).to(torch.float32),
+                            "semantic_boxes": torch.from_numpy(payload["semantic_boxes"]).to(torch.float32),
+                            "semantic_mask": torch.from_numpy(payload["semantic_mask"]).to(torch.bool),
+                            "semantic_rgb_crop": torch.from_numpy(payload["semantic_rgb_crop"]).to(torch.float32),
+                            "semantic_mask_crop": torch.from_numpy(payload["semantic_mask_crop"]).to(torch.float32),
+                            "semantic_crop_valid": torch.from_numpy(payload["semantic_crop_valid"]).to(torch.bool),
+                            "semantic_mask_crop_valid": torch.from_numpy(payload["semantic_mask_crop_valid"]).to(torch.bool),
+                            "semantic_rgb_crop_temporal": torch.from_numpy(rgb_temporal).to(torch.float32),
+                            "semantic_mask_crop_temporal": torch.from_numpy(mask_temporal).to(torch.float32),
+                            "semantic_temporal_valid": torch.from_numpy(valid_temporal).to(torch.bool),
+                            "semantic_frame_path": str(payload["semantic_frame_path"].tolist()),
+                            "semantic_mask_path": str(payload["semantic_mask_path"].tolist()),
+                            "semantic_source_mode": "object_region_or_mask_crop_visual_state",
+                            "current_mainline_semantic_source": str(self.cfg.semantic_source_mainline),
+                            "legacy_semantic_source": "hand_crafted_stats",
+                            "semantic_source_summary": dict(source_summary_obj if isinstance(source_summary_obj, dict) else {}),
+                        }
+                except Exception:
+                    try:
+                        cp.unlink()
+                    except Exception:
+                        pass
         frame_paths = [str(x) for x in entry["frame_paths"]]
         mask_paths = [str(x) for x in entry["mask_paths"]]
 
@@ -410,6 +495,9 @@ class Stage2SemanticDataset(Dataset):
         sem_mask_path = ""
         sem_mask_used = False
         sem_fg_ratio = 0.0
+        temporal_rgb_crops: List[np.ndarray] = []
+        temporal_mask_crops: List[np.ndarray] = []
+        temporal_valid_flags: List[bool] = []
 
         for step_i, src_i in enumerate(indices):
             frame_path = frame_paths[src_i]
@@ -439,6 +527,20 @@ class Stage2SemanticDataset(Dataset):
                 sem_mask_path = mask_path if mask_path and Path(mask_path).exists() else ""
                 sem_mask_used = bool(used_mask)
                 sem_fg_ratio = float(fg_ratio)
+            if step_i < max(int(self.cfg.semantic_temporal_window), 1):
+                rgb_for_temporal = sem_rgb if step_i == semantic_step and sem_rgb is not None else None
+                if rgb_for_temporal is None:
+                    with Image.open(frame_path) as img_obj:
+                        rgb_for_temporal = np.asarray(img_obj.convert("RGB"), dtype=np.float32) / 255.0
+                rgb_crop_t, mask_crop_t, mask_valid_t = _build_semantic_crops(
+                    rgb=rgb_for_temporal,
+                    mask=mask_arr,
+                    box_xyxy=box,
+                    crop_size=int(self.cfg.semantic_crop_size),
+                )
+                temporal_rgb_crops.append(rgb_crop_t)
+                temporal_mask_crops.append(mask_crop_t)
+                temporal_valid_flags.append(bool(mask_valid_t))
 
         if sem_rgb is None or sem_box is None:
             with Image.open(frame_paths[0]) as fallback:
@@ -460,6 +562,14 @@ class Stage2SemanticDataset(Dataset):
             mask_used=sem_mask_used,
             fg_ratio=sem_fg_ratio,
         )
+        temporal_window = max(int(self.cfg.semantic_temporal_window), 1)
+        while len(temporal_rgb_crops) < temporal_window:
+            temporal_rgb_crops.append(np.zeros_like(semantic_rgb_crop))
+            temporal_mask_crops.append(np.zeros_like(semantic_mask_crop))
+            temporal_valid_flags.append(False)
+        temporal_rgb = np.stack(temporal_rgb_crops[:temporal_window], axis=0).astype(np.float32)
+        temporal_mask = np.stack(temporal_mask_crops[:temporal_window], axis=0).astype(np.float32)
+        temporal_valid = np.asarray(temporal_valid_flags[:temporal_window], dtype=bool)
 
         state = _build_state_from_boxes(boxes=boxes, sizes=sizes)
         valid = np.ones((state.shape[0], 1), dtype=bool)
@@ -489,6 +599,9 @@ class Stage2SemanticDataset(Dataset):
             "semantic_mask_crop": torch.from_numpy(semantic_mask_crop[None, ...]).to(torch.float32),
             "semantic_crop_valid": torch.tensor([True], dtype=torch.bool),
             "semantic_mask_crop_valid": torch.tensor([bool(mask_crop_available)], dtype=torch.bool),
+            "semantic_rgb_crop_temporal": torch.from_numpy(temporal_rgb[None, ...]).to(torch.float32),
+            "semantic_mask_crop_temporal": torch.from_numpy(temporal_mask[None, ...]).to(torch.float32),
+            "semantic_temporal_valid": torch.from_numpy(temporal_valid[None, ...]).to(torch.bool),
             "semantic_frame_path": sem_frame_path,
             "semantic_mask_path": sem_mask_path,
             "semantic_source_mode": "object_region_or_mask_crop_visual_state",
@@ -533,6 +646,10 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
     semantic_mask_crop = torch.zeros((bsz, max_k, 1, crop_h, crop_w), dtype=torch.float32)
     semantic_crop_valid = torch.zeros((bsz, max_k), dtype=torch.bool)
     semantic_mask_crop_valid = torch.zeros((bsz, max_k), dtype=torch.bool)
+    temporal_window = int(batch[0]["semantic_rgb_crop_temporal"].shape[1])
+    semantic_rgb_crop_temporal = torch.zeros((bsz, max_k, temporal_window, 3, crop_h, crop_w), dtype=torch.float32)
+    semantic_mask_crop_temporal = torch.zeros((bsz, max_k, temporal_window, 1, crop_h, crop_w), dtype=torch.float32)
+    semantic_temporal_valid = torch.zeros((bsz, max_k, temporal_window), dtype=torch.bool)
 
     semantic_frame_paths: List[str] = []
     semantic_mask_paths: List[str] = []
@@ -556,6 +673,9 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         semantic_mask_crop[i, :k] = item["semantic_mask_crop"]
         semantic_crop_valid[i, :k] = item["semantic_crop_valid"]
         semantic_mask_crop_valid[i, :k] = item["semantic_mask_crop_valid"]
+        semantic_rgb_crop_temporal[i, :k] = item["semantic_rgb_crop_temporal"]
+        semantic_mask_crop_temporal[i, :k] = item["semantic_mask_crop_temporal"]
+        semantic_temporal_valid[i, :k] = item["semantic_temporal_valid"]
 
         semantic_frame_paths.append(str(item.get("semantic_frame_path", "")))
         semantic_mask_paths.append(str(item.get("semantic_mask_path", "")))
@@ -578,6 +698,9 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         "semantic_mask_crop": semantic_mask_crop,
         "semantic_crop_valid": semantic_crop_valid,
         "semantic_mask_crop_valid": semantic_mask_crop_valid,
+        "semantic_rgb_crop_temporal": semantic_rgb_crop_temporal,
+        "semantic_mask_crop_temporal": semantic_mask_crop_temporal,
+        "semantic_temporal_valid": semantic_temporal_valid,
         "semantic_frame_paths": semantic_frame_paths,
         "semantic_mask_paths": semantic_mask_paths,
         "semantic_source_mode": "object_region_or_mask_crop_visual_state",

@@ -906,6 +906,13 @@ def run_one(args: Any) -> None:
         '--progress-json', str(meta['progress_json']),
         '--seed', str(meta['seed']),
     ]
+    predecode_cache_path = str(meta.get('predecode_cache_path', '') or '')
+    if predecode_cache_path:
+        cmd.extend(['--predecode-cache-path', predecode_cache_path])
+    if 'local_temporal_window' in meta:
+        cmd.extend(['--local-temporal-window', str(meta['local_temporal_window'])])
+    if 'local_temporal_fuse_weight' in meta:
+        cmd.extend(['--local-temporal-fuse-weight', str(meta['local_temporal_fuse_weight'])])
     cmd.append('--v6-two-level-pair-mining-enabled' if bool(meta['v6_two_level_pair_mining_enabled']) else '--no-v6-two-level-pair-mining-enabled')
     try:
         proc_env = os.environ.copy()

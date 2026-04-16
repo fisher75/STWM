@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-16T10:45:45.096053+00:00",
-  "run_name": "stage2_calonly_nodelay_seed456_ablate_fix_v2_20260416",
-  "status": "completed",
+  "generated_at_utc": "2026-04-16T17:50:49.982004+00:00",
+  "run_name": "stage2_localtemp_w5_seed42_20260416",
+  "status": "running",
   "current_mainline_semantic_source": "crop_visual_encoder",
   "datasets_bound_for_train": [
     "vspw",
@@ -13,24 +13,24 @@
   ],
   "runtime": {
     "source": "recommended_runtime_json",
-    "path": "/raid/chen034/workspace/stwm/reports/stage2_calibration_only_wave2_runtime_20260414.json",
-    "num_workers": 8,
+    "path": "/raid/chen034/workspace/stwm/configs/recommended_stage2_runtime_20260416.json",
+    "num_workers": 12,
     "pin_memory": true,
     "persistent_workers": true,
     "prefetch_factor": 4,
     "single_gpu_only": true,
-    "selected_gpu_id_runtime_json": -1,
-    "required_mem_gb": 40.0,
-    "safety_margin_gb": 8.0
+    "selected_gpu_id_runtime_json": 3,
+    "required_mem_gb": 24.0,
+    "safety_margin_gb": 4.0
   },
   "run_metadata": {
-    "run_name": "stage2_calonly_nodelay_seed456_ablate_fix_v2_20260416",
-    "started_at_utc": "2026-04-16T09:12:11.005333+00:00",
-    "cuda_visible_devices": "0",
+    "run_name": "stage2_localtemp_w5_seed42_20260416",
+    "started_at_utc": "2026-04-16T17:05:11.879136+00:00",
+    "cuda_visible_devices": "3",
     "gpu_selection": {
-      "selected_gpu_id": 0,
-      "lease_id": "8d8cfab5-a929-4751-8c0d-f430c80e8813",
-      "owner": "stage2_calonly_nodelay_seed456_ablate_fix_v2_20260416",
+      "selected_gpu_id": 3,
+      "lease_id": "a4513268-821f-4c67-bfc1-985f2b688b5a",
+      "owner": "stage2_localtemp_w5_seed42_20260416",
       "mode": "single_gpu_only"
     },
     "current_mainline_semantic_source": "crop_visual_encoder",
@@ -51,8 +51,8 @@
     "confidence_gating_margin_threshold": 0.1,
     "confidence_gating_temperature": 0.05,
     "semantic_hard_score_threshold": 0.25,
-    "aux_loss_delay_steps": 0,
-    "aux_loss_ramp_steps": 0,
+    "aux_loss_delay_steps": 180,
+    "aux_loss_ramp_steps": 360,
     "v4_sparse_gating_family": "quantile_sparse_gating",
     "v4_gating_quantile": 0.85,
     "v4_topk_token_ratio": 0.2,
@@ -94,13 +94,21 @@
     "stage1_partial_unfreeze_layer_count": 1,
     "stage1_partial_unfreeze_lr_scale": 0.1,
     "stage1_partial_unfreeze_active": false,
-    "resumed_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed456_wave1_20260413/best.pt"
+    "semantic_encoder_resume_missing_keys": [
+      "temporal_mixer.0.weight",
+      "temporal_mixer.0.bias",
+      "temporal_mixer.2.weight",
+      "temporal_mixer.2.bias",
+      "temporal_mixer.3.weight",
+      "temporal_mixer.3.bias"
+    ],
+    "resumed_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_topk1_seed42_wave1_20260413/best.pt"
   },
-  "global_step": 14000,
-  "train_steps_target": 14000,
-  "progress_ratio": 1.0,
-  "whether_full_train_used": true,
-  "whether_full_val_used": true,
+  "global_step": 6750,
+  "train_steps_target": 8000,
+  "progress_ratio": 0.84375,
+  "whether_full_train_used": false,
+  "whether_full_val_used": false,
   "effective_train_sample_count_per_dataset": {
     "VSPW": 2806,
     "VIPSeg": 2806
@@ -110,25 +118,25 @@
     "VIPSeg": 343
   },
   "checkpoint_inventory": {
-    "checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed456_ablate_fix_v2_20260416",
-    "best": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed456_ablate_fix_v2_20260416/best.pt",
-    "latest": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_calonly_nodelay_seed456_ablate_fix_v2_20260416/latest.pt",
+    "checkpoint_dir": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_localtemp_w5_seed42_20260416",
+    "best": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_localtemp_w5_seed42_20260416/best.pt",
+    "latest": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_localtemp_w5_seed42_20260416/latest.pt",
     "best_exists": true,
     "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 2.8355698380851036e-05,
-    "free_rollout_coord_mean_l2": 0.0010080558815346516,
-    "free_rollout_endpoint_l2": 0.0010314587803704138,
-    "total_loss_reference": 2.827436118413812e-05
+    "teacher_forced_coord_loss": 3.473059105063699e-05,
+    "free_rollout_coord_mean_l2": 0.0025381174416392606,
+    "free_rollout_endpoint_l2": 0.0025644646740298578,
+    "total_loss_reference": 3.4642222074178916e-05
   },
   "best_metric_so_far": {
-    "global_step": 10000,
+    "global_step": 5500,
     "metrics": {
-      "teacher_forced_coord_loss": 2.9811124511501298e-05,
-      "free_rollout_coord_mean_l2": 0.0005451074948007615,
-      "free_rollout_endpoint_l2": 0.0005719647855659453,
-      "total_loss_reference": 2.9724487963074046e-05,
+      "teacher_forced_coord_loss": 2.9959894559164227e-05,
+      "free_rollout_coord_mean_l2": 0.0006491923910082364,
+      "free_rollout_endpoint_l2": 0.0006753838883778053,
+      "total_loss_reference": 2.9872955285117714e-05,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -138,15 +146,15 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.01592329573319402,
+        "eval_gate_mean": 0.04711326649195926,
         "semantic_input_nonempty_ratio": 1.0,
         "eval_batches": 86
       }
     },
     "rank_key": [
-      0.0005719647855659453,
-      0.0005451074948007615,
-      2.9811124511501298e-05
+      0.0006753838883778053,
+      0.0006491923910082364,
+      2.9959894559164227e-05
     ]
   }
 }
