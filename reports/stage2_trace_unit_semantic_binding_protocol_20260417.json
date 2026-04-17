@@ -1,0 +1,30 @@
+{
+  "generated_at_utc": "2026-04-17T13:47:06.211000+00:00",
+  "stage1_frozen_backbone": {
+    "status": "frozen",
+    "training_allowed": false,
+    "unfreeze_allowed": false,
+    "backbone_story": "trace-first future-state backbone remains the most stable component"
+  },
+  "current_stage2_state": {
+    "current_reasonable_mainline": "calibration_only",
+    "interpretation": "semantic calibration/readout alignment rather than semanticized trace state",
+    "current_stage2_ready_to_freeze": false,
+    "current_paper_thickness_level": "cvpr_borderline",
+    "future_grounding_usefulness_improved_vs_baselines": false
+  },
+  "tusb_lite_goal": {
+    "grounding_first_mainline": false,
+    "calibration_only_micro_fix": false,
+    "target": "bind semantics to frozen trace units so grounding/identifiability becomes a natural readout of semantic trace state"
+  },
+  "forbidden": [
+    "modify_stage1_weights",
+    "restore_persistence_mainline",
+    "continue_protocol_v4",
+    "continue_qualitative_expansion",
+    "video_or_render_head",
+    "codec_or_vae",
+    "full_architecture_search"
+  ]
+}

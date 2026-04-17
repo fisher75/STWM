@@ -267,6 +267,11 @@ def _build_single_item_batch_v3(item: Dict[str, Any], temporal_window: int = 5) 
     temporal_rgb = np.stack(temporal_rgb_crops[:temporal_window], axis=0).astype(np.float32)
     temporal_mask = np.stack(temporal_mask_crops[:temporal_window], axis=0).astype(np.float32)
     temporal_valid = np.asarray(temporal_valid_flags[:temporal_window], dtype=bool)
+    semantic_instance_id_map = query_mask.astype(np.int64)[None, ...]
+    semantic_instance_id_crop = (semantic_mask_crop > 0.5).astype(np.int64)[None, ...]
+    semantic_instance_id_temporal = (temporal_mask > 0.5).astype(np.int64)
+    semantic_instance_valid = temporal_valid[None, ...]
+    semantic_objectness_score = np.asarray([max(float(sem_fg_ratio), 0.0)], dtype=np.float32)
     sample = {
         "obs_state": torch.from_numpy(obs_state).to(torch.float32),
         "fut_state": torch.from_numpy(fut_state).to(torch.float32),
@@ -289,6 +294,11 @@ def _build_single_item_batch_v3(item: Dict[str, Any], temporal_window: int = 5) 
         "semantic_rgb_crop_temporal": torch.from_numpy(temporal_rgb[None, ...]).to(torch.float32),
         "semantic_mask_crop_temporal": torch.from_numpy(temporal_mask[None, ...]).to(torch.float32),
         "semantic_temporal_valid": torch.from_numpy(temporal_valid[None, ...]).to(torch.bool),
+        "semantic_instance_id_map": torch.from_numpy(semantic_instance_id_map).to(torch.long),
+        "semantic_instance_id_crop": torch.from_numpy(semantic_instance_id_crop[None, ...]).to(torch.long),
+        "semantic_instance_id_temporal": torch.from_numpy(semantic_instance_id_temporal[None, ...]).to(torch.long),
+        "semantic_instance_valid": torch.from_numpy(semantic_instance_valid).to(torch.bool),
+        "semantic_objectness_score": torch.from_numpy(semantic_objectness_score).to(torch.float32),
         "semantic_frame_path": str(frame_paths[query_step]),
         "semantic_mask_path": "",
         "semantic_source_mode": "object_region_or_mask_crop_visual_state",
