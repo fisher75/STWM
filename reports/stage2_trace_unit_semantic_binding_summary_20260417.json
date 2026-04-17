@@ -1,0 +1,413 @@
+{
+  "generated_at_utc": "2026-04-17T14:46:31.924621+00:00",
+  "tusb_status": "0_running_5_completed_0_failed",
+  "running_count": 0,
+  "completed_count": 5,
+  "failed_count": 0,
+  "all_runs_terminal": true,
+  "run_rows": [
+    {
+      "run_name": "stage2_tusb_lite_seed123_20260417",
+      "family": "tusb_lite_main",
+      "ablation_name": "main",
+      "seed": 123,
+      "status": "completed",
+      "global_step": 11700,
+      "final_json_exists": true,
+      "progress_json_exists": true,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 2,
+      "lease_id": "a1f2d3a6-a9a7-498a-ae3f-57f73fc4bb5b",
+      "batch_size": 8,
+      "train_steps": 11700,
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11700,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.009643333735766646,
+          "free_rollout_coord_mean_l2": 0.07390520875924267,
+          "free_rollout_endpoint_l2": 0.07606691709952429,
+          "total_loss_reference": 0.009643333735766646
+        },
+        "rank_key": [
+          0.07606691709952429,
+          0.07390520875924267,
+          0.009643333735766646
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_lite_seed123_20260417/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11200,
+        "semantic_hard_sidecar_score": 0.010404092780290504,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.0001054488664242224,
+          "free_rollout_coord_mean_l2": 0.010230173285190877,
+          "free_rollout_endpoint_l2": 0.010478629706761776,
+          "total_loss_reference": 0.00010719702331698499
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.00189855258373503,
+        "assignment_entropy_mean": 0.014816997282938853,
+        "actual_top2_assignment_ratio_mean": 0.02064453125,
+        "active_unit_count_mean": 1.3241666666666667,
+        "z_dyn_drift_mean": 0.40983561388270423,
+        "z_sem_drift_mean": 0.0024245370005338317,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.004871441550300007,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 8.009503635956132e-05,
+        "unit_semantic_stability_over_time_mean": 0.9999992630094023,
+        "broadcast_residual_norm_mean": 20.604453547795615
+      }
+    },
+    {
+      "run_name": "stage2_tusb_lite_seed42_20260417",
+      "family": "tusb_lite_main",
+      "ablation_name": "main",
+      "seed": 42,
+      "status": "completed",
+      "global_step": 6700,
+      "final_json_exists": true,
+      "progress_json_exists": true,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 3,
+      "lease_id": "4a0b214f-57f5-425d-a677-a4e04700960f",
+      "batch_size": 8,
+      "train_steps": 6700,
+      "best_checkpoint_metric": {
+        "global_step": 5500,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9959894559164227e-05,
+          "free_rollout_coord_mean_l2": 0.0006491923910082364,
+          "free_rollout_endpoint_l2": 0.0006753838883778053,
+          "total_loss_reference": 2.9872955285117714e-05
+        },
+        "rank_key": [
+          0.0006753838883778053,
+          0.0006491923910082364,
+          2.9959894559164227e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 6700,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.010648969771864358,
+          "free_rollout_coord_mean_l2": 0.07515398322721012,
+          "free_rollout_endpoint_l2": 0.07668708890560083,
+          "total_loss_reference": 0.010648969771864358
+        },
+        "rank_key": [
+          0.07668708890560083,
+          0.07515398322721012,
+          0.010648969771864358
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_lite_seed42_20260417/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 6200,
+        "semantic_hard_sidecar_score": 0.02322147331940822,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.000592697519235886,
+          "free_rollout_coord_mean_l2": 0.023196697999269534,
+          "free_rollout_endpoint_l2": 0.023232091313753374,
+          "total_loss_reference": 0.0006025019683875144
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.0012990827014753375,
+        "assignment_entropy_mean": 0.0095815483798674,
+        "actual_top2_assignment_ratio_mean": 0.0150390625,
+        "active_unit_count_mean": 1.035625,
+        "z_dyn_drift_mean": 0.43140232642327464,
+        "z_sem_drift_mean": 0.0020142483815424796,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.0031098832009987124,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 0.0002768544976941456,
+        "unit_semantic_stability_over_time_mean": 0.9999998713117528,
+        "broadcast_residual_norm_mean": 20.863278520901996
+      }
+    },
+    {
+      "run_name": "stage2_tusb_lite_seed456_20260417",
+      "family": "tusb_lite_main",
+      "ablation_name": "main",
+      "seed": 456,
+      "status": "completed",
+      "global_step": 11200,
+      "final_json_exists": true,
+      "progress_json_exists": true,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 4,
+      "lease_id": "1e37a268-a66a-47d4-a724-6b9ba4610a09",
+      "batch_size": 8,
+      "train_steps": 11200,
+      "best_checkpoint_metric": {
+        "global_step": 10000,
+        "metrics": {
+          "teacher_forced_coord_loss": 2.9811124511501298e-05,
+          "free_rollout_coord_mean_l2": 0.0005451074948007615,
+          "free_rollout_endpoint_l2": 0.0005719647855659453,
+          "total_loss_reference": 2.9724487963074046e-05
+        },
+        "rank_key": [
+          0.0005719647855659453,
+          0.0005451074948007615,
+          2.9811124511501298e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11200,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.014379345207998995,
+          "free_rollout_coord_mean_l2": 0.10147216182667762,
+          "free_rollout_endpoint_l2": 0.10292023909278214,
+          "total_loss_reference": 0.014379345207998995
+        },
+        "rank_key": [
+          0.10292023909278214,
+          0.10147216182667762,
+          0.014379345207998995
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_lite_seed456_20260417/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11000,
+        "semantic_hard_sidecar_score": 0.03693610330422719,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.0014785760297225071,
+          "free_rollout_coord_mean_l2": 0.037045883062558294,
+          "free_rollout_endpoint_l2": 0.036889054836371005,
+          "total_loss_reference": 0.001465355430264026
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.0009210326075617559,
+        "assignment_entropy_mean": 0.00585596258397743,
+        "actual_top2_assignment_ratio_mean": 0.0098828125,
+        "active_unit_count_mean": 1.0403125,
+        "z_dyn_drift_mean": 0.46122384285305107,
+        "z_sem_drift_mean": 0.001742741689573097,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.0029258480095708164,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 0.00019056085455910457,
+        "unit_semantic_stability_over_time_mean": 0.9999995999533519,
+        "broadcast_residual_norm_mean": 20.826000164349875
+      }
+    },
+    {
+      "run_name": "stage2_tusb_lite_no_slowsem_seed123_20260417",
+      "family": "tusb_lite_ablation",
+      "ablation_name": "no_slowsem",
+      "seed": 123,
+      "status": "completed",
+      "global_step": 11700,
+      "final_json_exists": true,
+      "progress_json_exists": true,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 1,
+      "lease_id": "e677bb41-dec2-4a68-8331-702fdbc9f4d0",
+      "batch_size": 8,
+      "train_steps": 11700,
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11700,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.009072133656445658,
+          "free_rollout_coord_mean_l2": 0.06861084065167233,
+          "free_rollout_endpoint_l2": 0.07047972330474295,
+          "total_loss_reference": 0.009072133656445658
+        },
+        "rank_key": [
+          0.07047972330474295,
+          0.06861084065167233,
+          0.009072133656445658
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_lite_no_slowsem_seed123_20260417/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11400,
+        "semantic_hard_sidecar_score": 0.015183784946417197,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00022815026713009828,
+          "free_rollout_coord_mean_l2": 0.015219726050511384,
+          "free_rollout_endpoint_l2": 0.015168381616091117,
+          "total_loss_reference": 0.00022807561908848583
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.0015479175714483517,
+        "assignment_entropy_mean": 0.011947181384418097,
+        "actual_top2_assignment_ratio_mean": 0.0172265625,
+        "active_unit_count_mean": 1.37125,
+        "z_dyn_drift_mean": 0.41751197000673196,
+        "z_sem_drift_mean": 0.06084780314092387,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.11750782898450711,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 0.00013913909498162032,
+        "unit_semantic_stability_over_time_mean": 0.9999170131735544,
+        "broadcast_residual_norm_mean": 21.481577467918395
+      }
+    },
+    {
+      "run_name": "stage2_tusb_lite_no_handshake_seed123_20260417",
+      "family": "tusb_lite_ablation",
+      "ablation_name": "no_handshake",
+      "seed": 123,
+      "status": "completed",
+      "global_step": 11700,
+      "final_json_exists": true,
+      "progress_json_exists": true,
+      "raw_json_exists": true,
+      "best_ckpt_exists": true,
+      "latest_ckpt_exists": true,
+      "sidecar_exists": true,
+      "scientific_result_valid": true,
+      "selected_gpu_id": 5,
+      "lease_id": "88d3842d-dd21-4b23-8a31-5970a46b24e1",
+      "batch_size": 8,
+      "train_steps": 11700,
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11700,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.01735429363907315,
+          "free_rollout_coord_mean_l2": 0.11803703254554421,
+          "free_rollout_endpoint_l2": 0.11986266460735351,
+          "total_loss_reference": 0.01735429363907315
+        },
+        "rank_key": [
+          0.11986266460735351,
+          0.11803703254554421,
+          0.01735429363907315
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_lite_no_handshake_seed123_20260417/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11200,
+        "semantic_hard_sidecar_score": 0.01042199841676614,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.00016196256201976957,
+          "free_rollout_coord_mean_l2": 0.010349559096189646,
+          "free_rollout_endpoint_l2": 0.010453043839870354,
+          "total_loss_reference": 0.00015955504350131377
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 0,
+        "trace_unit_loss_mean": 0.0018234931869111884,
+        "assignment_entropy_mean": 0.013740395339386851,
+        "actual_top2_assignment_ratio_mean": 0.018274739583333335,
+        "active_unit_count_mean": 1.29375,
+        "z_dyn_drift_mean": 0.40780196023361154,
+        "z_sem_drift_mean": 0.002528902758598639,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.005174723187965241,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 7.578915244119837e-05,
+        "unit_semantic_stability_over_time_mean": 0.9999991922966333,
+        "broadcast_residual_norm_mean": 20.212107995351154
+      }
+    }
+  ],
+  "best_tusb_run_name": "stage2_tusb_lite_seed123_20260417",
+  "teacher_backend": "local_clip_vit_b32_mask_crop_visual_teacher",
+  "next_step_choice_internal": "ready_for_tusb_diagnosis"
+}

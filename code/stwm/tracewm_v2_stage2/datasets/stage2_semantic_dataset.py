@@ -131,6 +131,49 @@ def _load_mask(path: str) -> np.ndarray | None:
     return arr
 
 
+def _dominant_positive_instance_id(id_map: np.ndarray | None) -> int:
+    if id_map is None:
+        return 0
+    flat = np.asarray(id_map, dtype=np.int64)
+    flat = flat[flat > 0]
+    if flat.size <= 0:
+        return 0
+    values, counts = np.unique(flat, return_counts=True)
+    return int(values[int(np.argmax(counts))])
+
+
+def _instance_mask_from_id_map(id_map: np.ndarray | None, instance_id: int) -> np.ndarray | None:
+    if id_map is None or int(instance_id) <= 0:
+        return None
+    mask = (np.asarray(id_map, dtype=np.int64) == int(instance_id))
+    if not np.any(mask):
+        return None
+    return mask.astype(np.uint8) * 255
+
+
+def _build_instance_id_crop(
+    id_map: np.ndarray | None,
+    box_xyxy: np.ndarray,
+    crop_size: int,
+) -> np.ndarray:
+    if id_map is None or id_map.ndim != 2:
+        return np.zeros((1, int(crop_size), int(crop_size)), dtype=np.int64)
+    h, w = id_map.shape
+    x0 = max(0, min(int(float(box_xyxy[0])), w - 1))
+    y0 = max(0, min(int(float(box_xyxy[1])), h - 1))
+    x1 = max(x0 + 1, min(int(float(box_xyxy[2])), w))
+    y1 = max(y0 + 1, min(int(float(box_xyxy[3])), h))
+    patch = np.asarray(id_map[y0:y1, x0:x1], dtype=np.int32)
+    if patch.size == 0:
+        patch = np.zeros((1, 1), dtype=np.int32)
+    id_img = Image.fromarray(patch, mode="I")
+    id_resized = np.asarray(
+        id_img.resize((int(crop_size), int(crop_size)), resample=Image.NEAREST),
+        dtype=np.int64,
+    )
+    return id_resized[None, ...]
+
+
 def _box_from_mask_or_center(mask: np.ndarray | None, width: int, height: int, radius: int) -> Tuple[np.ndarray, bool, float]:
     if mask is not None and mask.shape[0] == height and mask.shape[1] == width:
         fg = mask > 0
@@ -408,6 +451,8 @@ class Stage2SemanticDataset(Dataset):
 
     def __getitem__(self, index: int) -> Dict[str, Any]:
         entry = self.entries[index]
+        dataset_name = str(entry.get("dataset_name", ""))
+        true_instance_aware = bool(str(dataset_name).strip().upper() == "VIPSEG")
         cache_key = _cache_key(str(entry.get("dataset_name", "")), str(self.cfg.split), str(entry.get("clip_id", "")))
         cache_path = self.predecode_index.get(cache_key, "")
         if cache_path:
@@ -415,6 +460,14 @@ class Stage2SemanticDataset(Dataset):
             if cp.exists():
                 try:
                     with np.load(cp, allow_pickle=True) as payload:
+                        required_instance_keys = {
+                            "semantic_instance_id_crop",
+                            "semantic_instance_id_temporal",
+                            "semantic_instance_valid",
+                            "semantic_objectness_score",
+                        }
+                        if not required_instance_keys.issubset(set(payload.files)):
+                            raise KeyError("instance_aware_fields_missing_in_predecode_cache")
                         meta_obj = payload["meta_json"].tolist()
                         source_summary_obj = payload["semantic_source_summary_json"].tolist()
                         rgb_temporal = payload["semantic_rgb_crop_temporal"]
@@ -465,6 +518,13 @@ class Stage2SemanticDataset(Dataset):
                             "semantic_rgb_crop_temporal": torch.from_numpy(rgb_temporal).to(torch.float32),
                             "semantic_mask_crop_temporal": torch.from_numpy(mask_temporal).to(torch.float32),
                             "semantic_temporal_valid": torch.from_numpy(valid_temporal).to(torch.bool),
+                            "semantic_instance_id_map": torch.from_numpy(
+                                payload["semantic_instance_id_map"] if "semantic_instance_id_map" in payload.files else np.zeros((1, 1), dtype=np.int64)
+                            ).to(torch.long),
+                            "semantic_instance_id_crop": torch.from_numpy(payload["semantic_instance_id_crop"]).to(torch.long),
+                            "semantic_instance_id_temporal": torch.from_numpy(payload["semantic_instance_id_temporal"]).to(torch.long),
+                            "semantic_instance_valid": torch.from_numpy(payload["semantic_instance_valid"]).to(torch.bool),
+                            "semantic_objectness_score": torch.from_numpy(payload["semantic_objectness_score"]).to(torch.float32),
                             "semantic_frame_path": str(payload["semantic_frame_path"].tolist()),
                             "semantic_mask_path": str(payload["semantic_mask_path"].tolist()),
                             "semantic_source_mode": "object_region_or_mask_crop_visual_state",
@@ -472,6 +532,8 @@ class Stage2SemanticDataset(Dataset):
                             "legacy_semantic_source": "hand_crafted_stats",
                             "semantic_source_summary": dict(source_summary_obj if isinstance(source_summary_obj, dict) else {}),
                         }
+                except KeyError:
+                    pass
                 except Exception:
                     try:
                         cp.unlink()
@@ -491,13 +553,20 @@ class Stage2SemanticDataset(Dataset):
         sem_rgb = None
         sem_mask = None
         sem_box = None
+        sem_instance_id_map = None
+        sem_instance_crop = None
+        sem_instance_valid = False
         sem_frame_path = ""
         sem_mask_path = ""
         sem_mask_used = False
         sem_fg_ratio = 0.0
+        semantic_objectness_score = 0.0
         temporal_rgb_crops: List[np.ndarray] = []
         temporal_mask_crops: List[np.ndarray] = []
         temporal_valid_flags: List[bool] = []
+        temporal_instance_crops: List[np.ndarray] = []
+        temporal_instance_valid_flags: List[bool] = []
+        target_instance_id = 0
 
         for step_i, src_i in enumerate(indices):
             frame_path = frame_paths[src_i]
@@ -510,8 +579,13 @@ class Stage2SemanticDataset(Dataset):
                     sem_rgb = np.asarray(img, dtype=np.float32) / 255.0
 
             mask_arr = _load_mask(mask_path)
+            raw_instance_map = np.asarray(mask_arr, dtype=np.int64) if mask_arr is not None else None
+            if true_instance_aware and step_i == semantic_step:
+                target_instance_id = _dominant_positive_instance_id(raw_instance_map)
+            instance_mask_arr = _instance_mask_from_id_map(raw_instance_map, target_instance_id) if true_instance_aware else None
+            effective_mask = instance_mask_arr if instance_mask_arr is not None else mask_arr
             box, used_mask, fg_ratio = _box_from_mask_or_center(
-                mask=mask_arr,
+                mask=effective_mask,
                 width=w,
                 height=h,
                 radius=int(self.cfg.semantic_patch_radius),
@@ -521,12 +595,20 @@ class Stage2SemanticDataset(Dataset):
             sizes.append((w, h))
 
             if step_i == semantic_step:
-                sem_mask = mask_arr
+                sem_mask = effective_mask
                 sem_box = box
+                sem_instance_id_map = raw_instance_map if true_instance_aware else None
+                sem_instance_crop = _build_instance_id_crop(
+                    sem_instance_id_map if true_instance_aware else None,
+                    box_xyxy=box,
+                    crop_size=int(self.cfg.semantic_crop_size),
+                )
+                sem_instance_valid = bool(true_instance_aware and target_instance_id > 0 and instance_mask_arr is not None)
                 sem_frame_path = frame_path
                 sem_mask_path = mask_path if mask_path and Path(mask_path).exists() else ""
                 sem_mask_used = bool(used_mask)
                 sem_fg_ratio = float(fg_ratio)
+                semantic_objectness_score = float(fg_ratio if sem_instance_valid else fg_ratio)
             if step_i < max(int(self.cfg.semantic_temporal_window), 1):
                 rgb_for_temporal = sem_rgb if step_i == semantic_step and sem_rgb is not None else None
                 if rgb_for_temporal is None:
@@ -534,13 +616,21 @@ class Stage2SemanticDataset(Dataset):
                         rgb_for_temporal = np.asarray(img_obj.convert("RGB"), dtype=np.float32) / 255.0
                 rgb_crop_t, mask_crop_t, mask_valid_t = _build_semantic_crops(
                     rgb=rgb_for_temporal,
-                    mask=mask_arr,
+                    mask=effective_mask,
                     box_xyxy=box,
                     crop_size=int(self.cfg.semantic_crop_size),
                 )
                 temporal_rgb_crops.append(rgb_crop_t)
                 temporal_mask_crops.append(mask_crop_t)
                 temporal_valid_flags.append(bool(mask_valid_t))
+                temporal_instance_crops.append(
+                    _build_instance_id_crop(
+                        raw_instance_map if true_instance_aware else None,
+                        box_xyxy=box,
+                        crop_size=int(self.cfg.semantic_crop_size),
+                    )
+                )
+                temporal_instance_valid_flags.append(bool(true_instance_aware and target_instance_id > 0 and instance_mask_arr is not None))
 
         if sem_rgb is None or sem_box is None:
             with Image.open(frame_paths[0]) as fallback:
@@ -567,9 +657,13 @@ class Stage2SemanticDataset(Dataset):
             temporal_rgb_crops.append(np.zeros_like(semantic_rgb_crop))
             temporal_mask_crops.append(np.zeros_like(semantic_mask_crop))
             temporal_valid_flags.append(False)
+            temporal_instance_crops.append(np.zeros((1, int(self.cfg.semantic_crop_size), int(self.cfg.semantic_crop_size)), dtype=np.int64))
+            temporal_instance_valid_flags.append(False)
         temporal_rgb = np.stack(temporal_rgb_crops[:temporal_window], axis=0).astype(np.float32)
         temporal_mask = np.stack(temporal_mask_crops[:temporal_window], axis=0).astype(np.float32)
         temporal_valid = np.asarray(temporal_valid_flags[:temporal_window], dtype=bool)
+        temporal_instance = np.stack(temporal_instance_crops[:temporal_window], axis=0).astype(np.int64)
+        temporal_instance_valid = np.asarray(temporal_instance_valid_flags[:temporal_window], dtype=bool)
 
         state = _build_state_from_boxes(boxes=boxes, sizes=sizes)
         valid = np.ones((state.shape[0], 1), dtype=bool)
@@ -602,6 +696,15 @@ class Stage2SemanticDataset(Dataset):
             "semantic_rgb_crop_temporal": torch.from_numpy(temporal_rgb[None, ...]).to(torch.float32),
             "semantic_mask_crop_temporal": torch.from_numpy(temporal_mask[None, ...]).to(torch.float32),
             "semantic_temporal_valid": torch.from_numpy(temporal_valid[None, ...]).to(torch.bool),
+            "semantic_instance_id_map": torch.from_numpy(
+                np.asarray(sem_instance_id_map, dtype=np.int64) if isinstance(sem_instance_id_map, np.ndarray) else np.zeros((1, 1), dtype=np.int64)
+            ).to(torch.long),
+            "semantic_instance_id_crop": torch.from_numpy(
+                (sem_instance_crop if isinstance(sem_instance_crop, np.ndarray) else np.zeros((1, int(self.cfg.semantic_crop_size), int(self.cfg.semantic_crop_size)), dtype=np.int64))[None, ...]
+            ).to(torch.long),
+            "semantic_instance_id_temporal": torch.from_numpy(temporal_instance[None, ...]).to(torch.long),
+            "semantic_instance_valid": torch.from_numpy(temporal_instance_valid[None, ...]).to(torch.bool),
+            "semantic_objectness_score": torch.tensor([float(semantic_objectness_score)], dtype=torch.float32),
             "semantic_frame_path": sem_frame_path,
             "semantic_mask_path": sem_mask_path,
             "semantic_source_mode": "object_region_or_mask_crop_visual_state",
@@ -611,6 +714,8 @@ class Stage2SemanticDataset(Dataset):
                 "mask_crop_used_tokens": int(1 if sem_mask_used else 0),
                 "region_crop_used_tokens": int(0 if sem_mask_used else 1),
                 "mask_available": bool(sem_mask_path),
+                "instance_aware_source": "true_instance_id" if bool(sem_instance_valid) else ("fallback_null" if str(dataset_name).strip().upper() == "VSPW" else "fallback_binary_or_none"),
+                "target_instance_id": int(target_instance_id),
                 "semantic_crop_size": int(self.cfg.semantic_crop_size),
                 "current_mainline_semantic_source": str(self.cfg.semantic_source_mainline),
                 "legacy_semantic_source": "hand_crafted_stats",
@@ -650,10 +755,15 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
     semantic_rgb_crop_temporal = torch.zeros((bsz, max_k, temporal_window, 3, crop_h, crop_w), dtype=torch.float32)
     semantic_mask_crop_temporal = torch.zeros((bsz, max_k, temporal_window, 1, crop_h, crop_w), dtype=torch.float32)
     semantic_temporal_valid = torch.zeros((bsz, max_k, temporal_window), dtype=torch.bool)
+    semantic_instance_id_crop = torch.zeros((bsz, max_k, 1, crop_h, crop_w), dtype=torch.long)
+    semantic_instance_id_temporal = torch.zeros((bsz, max_k, temporal_window, 1, crop_h, crop_w), dtype=torch.long)
+    semantic_instance_valid = torch.zeros((bsz, max_k, temporal_window), dtype=torch.bool)
+    semantic_objectness_score = torch.zeros((bsz, max_k), dtype=torch.float32)
 
     semantic_frame_paths: List[str] = []
     semantic_mask_paths: List[str] = []
     semantic_source_summaries: List[Dict[str, Any]] = []
+    semantic_instance_id_map: List[torch.Tensor] = []
     meta: List[Dict[str, Any]] = []
 
     for i, item in enumerate(batch):
@@ -676,10 +786,15 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         semantic_rgb_crop_temporal[i, :k] = item["semantic_rgb_crop_temporal"]
         semantic_mask_crop_temporal[i, :k] = item["semantic_mask_crop_temporal"]
         semantic_temporal_valid[i, :k] = item["semantic_temporal_valid"]
+        semantic_instance_id_crop[i, :k] = item["semantic_instance_id_crop"]
+        semantic_instance_id_temporal[i, :k] = item["semantic_instance_id_temporal"]
+        semantic_instance_valid[i, :k] = item["semantic_instance_valid"]
+        semantic_objectness_score[i, :k] = item["semantic_objectness_score"]
 
         semantic_frame_paths.append(str(item.get("semantic_frame_path", "")))
         semantic_mask_paths.append(str(item.get("semantic_mask_path", "")))
         semantic_source_summaries.append(dict(item.get("semantic_source_summary", {})))
+        semantic_instance_id_map.append(item.get("semantic_instance_id_map"))
         meta.append(dict(item.get("meta", {})))
 
     return {
@@ -701,6 +816,11 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         "semantic_rgb_crop_temporal": semantic_rgb_crop_temporal,
         "semantic_mask_crop_temporal": semantic_mask_crop_temporal,
         "semantic_temporal_valid": semantic_temporal_valid,
+        "semantic_instance_id_map": semantic_instance_id_map,
+        "semantic_instance_id_crop": semantic_instance_id_crop,
+        "semantic_instance_id_temporal": semantic_instance_id_temporal,
+        "semantic_instance_valid": semantic_instance_valid,
+        "semantic_objectness_score": semantic_objectness_score,
         "semantic_frame_paths": semantic_frame_paths,
         "semantic_mask_paths": semantic_mask_paths,
         "semantic_source_mode": "object_region_or_mask_crop_visual_state",
