@@ -1,0 +1,38 @@
+{
+  "generated_at_utc": "2026-04-17T19:03:48.849793+00:00",
+  "stage1_frozen_backbone": {
+    "status": "frozen",
+    "training_allowed": false,
+    "unfreeze_allowed": false,
+    "backbone_story": "trace-first future-state backbone remains the stable untouchable core"
+  },
+  "current_tusb_lite_state": {
+    "already_landed": true,
+    "freeze_ready_mainline": false,
+    "key_blockers": [
+      "protocol_v3_eval_path_likely_blind_to_tusb",
+      "dataset_training_body_still_single_entity",
+      "instance_aware_real_signal_not_used_in_main_training_body",
+      "active_units_collapsed_near_single_unit",
+      "20260416_predecode_cache_incompatible_with_instance_aware_fields"
+    ]
+  },
+  "current_stage2_state": {
+    "current_reasonable_mainline": "calibration_only",
+    "interpretation": "semantic calibration/readout alignment rather than semanticized trace state"
+  },
+  "repair_goal": {
+    "grounding_first_mainline": false,
+    "continue_calibration_only_micro_fix": false,
+    "target": "repair evaluation blindness, move dataset to multi-entity samples, inject real instance-aware supervision, deepen TUSB without abandoning the current story"
+  },
+  "forbidden": [
+    "modify_stage1_weights",
+    "restore_persistence_mainline",
+    "continue_protocol_v4",
+    "continue_large_qualitative_expansion",
+    "video_or_render_head",
+    "codec_or_vae",
+    "full_architecture_search"
+  ]
+}

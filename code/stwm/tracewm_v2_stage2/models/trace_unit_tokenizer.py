@@ -13,6 +13,7 @@ class TraceUnitTokenizerConfig:
     hidden_dim: int = 1152
     semantic_dim: int = 256
     state_dim: int = 8
+    teacher_prior_dim: int = 512
     unit_dim: int = 384
     unit_count: int = 16
     slot_iters: int = 3
@@ -27,7 +28,7 @@ class TraceUnitTokenizer(nn.Module):
         self.cfg = cfg
         prior_dim = 4
         self.input_proj = nn.Linear(
-            int(cfg.hidden_dim) + int(cfg.semantic_dim) + int(cfg.state_dim) + prior_dim,
+            int(cfg.hidden_dim) + int(cfg.semantic_dim) + int(cfg.state_dim) + int(cfg.teacher_prior_dim) + prior_dim,
             int(cfg.unit_dim),
         )
         self.unit_queries = nn.Parameter(
@@ -60,6 +61,7 @@ class TraceUnitTokenizer(nn.Module):
         token_mask: torch.Tensor,
         semantic_objectness_score: torch.Tensor | None = None,
         semantic_instance_valid: torch.Tensor | None = None,
+        semantic_teacher_prior: torch.Tensor | None = None,
     ) -> Dict[str, torch.Tensor | Dict[str, float]]:
         if backbone_hidden.ndim != 4:
             raise ValueError(f"backbone_hidden must be [B,T,K,H], got {tuple(backbone_hidden.shape)}")
@@ -72,6 +74,35 @@ class TraceUnitTokenizer(nn.Module):
 
         bsz, t_len, k_len, _ = backbone_hidden.shape
         semantic_expanded = semantic_tokens[:, None, :, :].expand(bsz, t_len, k_len, semantic_tokens.shape[-1])
+        if int(self.cfg.teacher_prior_dim) <= 0:
+            teacher_prior = torch.zeros((bsz, t_len, k_len, 0), device=backbone_hidden.device, dtype=backbone_hidden.dtype)
+        elif isinstance(semantic_teacher_prior, torch.Tensor):
+            teacher_prior = semantic_teacher_prior.to(device=backbone_hidden.device, dtype=backbone_hidden.dtype)
+            if teacher_prior.ndim != 3:
+                raise ValueError(
+                    f"semantic_teacher_prior must be [B,K,P], got {tuple(teacher_prior.shape)}"
+                )
+            if teacher_prior.shape[0] != bsz or teacher_prior.shape[1] != k_len:
+                raise ValueError(
+                    f"semantic_teacher_prior mismatch: prior={tuple(teacher_prior.shape)} expected={(bsz, k_len)}"
+                )
+            if teacher_prior.shape[-1] != int(self.cfg.teacher_prior_dim):
+                if teacher_prior.shape[-1] > int(self.cfg.teacher_prior_dim):
+                    teacher_prior = teacher_prior[..., : int(self.cfg.teacher_prior_dim)]
+                else:
+                    pad = torch.zeros(
+                        (*teacher_prior.shape[:-1], int(self.cfg.teacher_prior_dim) - int(teacher_prior.shape[-1])),
+                        device=teacher_prior.device,
+                        dtype=teacher_prior.dtype,
+                    )
+                    teacher_prior = torch.cat([teacher_prior, pad], dim=-1)
+            teacher_prior = teacher_prior[:, None, :, :].expand(bsz, t_len, k_len, teacher_prior.shape[-1])
+        else:
+            teacher_prior = torch.zeros(
+                (bsz, t_len, k_len, int(self.cfg.teacher_prior_dim)),
+                device=backbone_hidden.device,
+                dtype=backbone_hidden.dtype,
+            )
         time_norm = torch.linspace(
             0.0,
             1.0,
@@ -104,7 +135,7 @@ class TraceUnitTokenizer(nn.Module):
 
         priors = torch.cat([objectness, instance_valid, time_norm, 1.0 - time_norm], dim=-1)
         token_features = self.input_proj(
-            torch.cat([backbone_hidden, semantic_expanded, state_seq, priors], dim=-1)
+            torch.cat([backbone_hidden, semantic_expanded, state_seq, teacher_prior, priors], dim=-1)
         )
 
         units = self.unit_queries[None, :, :].expand(bsz, -1, -1)

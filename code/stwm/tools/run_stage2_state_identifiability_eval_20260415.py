@@ -28,6 +28,13 @@ from stwm.tracewm_v2_stage2.datasets.stage2_semantic_dataset import (
 )
 from stwm.tracewm_v2_stage2.models.semantic_encoder import SemanticEncoder, SemanticEncoderConfig
 from stwm.tracewm_v2_stage2.models.semantic_fusion import SemanticFusion, SemanticFusionConfig
+from stwm.tracewm_v2_stage2.models.trace_unit_broadcast import TraceUnitBroadcast, TraceUnitBroadcastConfig
+from stwm.tracewm_v2_stage2.models.trace_unit_factorized_state import (
+    TraceUnitFactorizedState,
+    TraceUnitFactorizedStateConfig,
+)
+from stwm.tracewm_v2_stage2.models.trace_unit_handshake import TraceUnitHandshake, TraceUnitHandshakeConfig
+from stwm.tracewm_v2_stage2.models.trace_unit_tokenizer import TraceUnitTokenizer, TraceUnitTokenizerConfig
 from stwm.tracewm_v2_stage2.trainers import train_tracewm_stage2_smalltrain as trainer
 
 
@@ -153,6 +160,12 @@ class LoadedMethod:
     semantic_encoder: Any | None
     semantic_fusion: Any | None
     readout_head: Any | None
+    stage2_structure_mode: str = "calibration_only"
+    trace_unit_disable_instance_path: bool = False
+    trace_unit_tokenizer: Any | None = None
+    trace_unit_factorized_state: Any | None = None
+    trace_unit_handshake: Any | None = None
+    trace_unit_broadcast: Any | None = None
 
 
 def _load_stage1_model(checkpoint_path: Path, device: torch.device) -> Tuple[Any, Dict[str, Any]]:
@@ -182,6 +195,8 @@ def _load_stage2_method(spec: MethodSpec, device: torch.device) -> LoadedMethod:
     semantic_embed_dim = int(ckpt_args.get("semantic_embed_dim", 256))
     semantic_source_mainline = str(ckpt_args.get("semantic_source_mainline", "crop_visual_encoder"))
     legacy_source = str(ckpt_args.get("legacy_semantic_source", "hand_crafted_stats"))
+    structure_mode = str(ckpt_args.get("stage2_structure_mode", "calibration_only")).strip().lower()
+    trace_unit_disable_instance_path = bool(ckpt_args.get("trace_unit_disable_instance_path", False))
     semantic_encoder = SemanticEncoder(
         SemanticEncoderConfig(
             input_dim=10,
@@ -203,6 +218,67 @@ def _load_stage2_method(spec: MethodSpec, device: torch.device) -> LoadedMethod:
     semantic_encoder.load_state_dict(payload.get("semantic_encoder_state_dict", {}), strict=False)
     semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}), strict=False)
     readout_head.load_state_dict(payload.get("readout_head_state_dict", {}), strict=False)
+    trace_unit_tokenizer = None
+    trace_unit_factorized_state = None
+    trace_unit_handshake = None
+    trace_unit_broadcast = None
+    has_tusb = any(
+        isinstance(payload.get(key, None), dict)
+        for key in [
+            "trace_unit_tokenizer_state_dict",
+            "trace_unit_factorized_state_state_dict",
+            "trace_unit_handshake_state_dict",
+            "trace_unit_broadcast_state_dict",
+        ]
+    )
+    if structure_mode == "trace_unit_semantic_binding" or has_tusb:
+        trace_unit_tokenizer = TraceUnitTokenizer(
+            TraceUnitTokenizerConfig(
+                hidden_dim=hidden_dim,
+                semantic_dim=semantic_embed_dim,
+                state_dim=8,
+                teacher_prior_dim=int(ckpt_args.get("trace_unit_teacher_prior_dim", 512)),
+                unit_dim=int(ckpt_args.get("trace_unit_dim", 384)),
+                unit_count=int(ckpt_args.get("trace_unit_count", 16)),
+                slot_iters=int(ckpt_args.get("trace_unit_slot_iters", 3)),
+                assignment_topk=int(ckpt_args.get("trace_unit_assignment_topk", 2)),
+                assignment_temperature=float(ckpt_args.get("trace_unit_assignment_temperature", 0.70)),
+                use_instance_prior_bias=bool(ckpt_args.get("trace_unit_use_instance_prior_bias", False)),
+            )
+        ).to(device)
+        trace_unit_factorized_state = TraceUnitFactorizedState(
+            TraceUnitFactorizedStateConfig(
+                unit_dim=int(ckpt_args.get("trace_unit_dim", 384)),
+                dyn_update=str(ckpt_args.get("trace_unit_dyn_update", "gru")),
+                sem_update=str(ckpt_args.get("trace_unit_sem_update", "gated_ema")),
+                sem_alpha_min=float(ckpt_args.get("trace_unit_sem_alpha_min", 0.02)),
+                sem_alpha_max=float(ckpt_args.get("trace_unit_sem_alpha_max", 0.12)),
+            )
+        ).to(device)
+        trace_unit_handshake = TraceUnitHandshake(
+            TraceUnitHandshakeConfig(
+                unit_dim=int(ckpt_args.get("trace_unit_dim", 384)),
+                handshake_dim=int(ckpt_args.get("trace_unit_handshake_dim", 128)),
+                layers=int(ckpt_args.get("trace_unit_handshake_layers", 1)),
+                writeback=str(ckpt_args.get("trace_unit_handshake_writeback", "dyn_only")),
+            )
+        ).to(device)
+        trace_unit_broadcast = TraceUnitBroadcast(
+            TraceUnitBroadcastConfig(
+                hidden_dim=hidden_dim,
+                unit_dim=int(ckpt_args.get("trace_unit_dim", 384)),
+                residual_weight=float(ckpt_args.get("trace_unit_broadcast_residual_weight", 0.35)),
+                stopgrad_semantic=bool(ckpt_args.get("trace_unit_broadcast_stopgrad_semantic", False)),
+            )
+        ).to(device)
+        trace_unit_tokenizer.load_state_dict(payload.get("trace_unit_tokenizer_state_dict", {}), strict=False)
+        trace_unit_factorized_state.load_state_dict(payload.get("trace_unit_factorized_state_state_dict", {}), strict=False)
+        trace_unit_handshake.load_state_dict(payload.get("trace_unit_handshake_state_dict", {}), strict=False)
+        trace_unit_broadcast.load_state_dict(payload.get("trace_unit_broadcast_state_dict", {}), strict=False)
+        trace_unit_tokenizer.eval()
+        trace_unit_factorized_state.eval()
+        trace_unit_handshake.eval()
+        trace_unit_broadcast.eval()
     stage1_model.eval()
     semantic_encoder.eval()
     semantic_fusion.eval()
@@ -217,6 +293,12 @@ def _load_stage2_method(spec: MethodSpec, device: torch.device) -> LoadedMethod:
         semantic_encoder=semantic_encoder,
         semantic_fusion=semantic_fusion,
         readout_head=readout_head,
+        stage2_structure_mode=structure_mode,
+        trace_unit_disable_instance_path=trace_unit_disable_instance_path,
+        trace_unit_tokenizer=trace_unit_tokenizer,
+        trace_unit_factorized_state=trace_unit_factorized_state,
+        trace_unit_handshake=trace_unit_handshake,
+        trace_unit_broadcast=trace_unit_broadcast,
     )
 
 
@@ -238,7 +320,16 @@ def _load_method(spec: MethodSpec, device: torch.device) -> LoadedMethod:
 
 
 def _release_method(method: LoadedMethod) -> None:
-    for attr_name in ["readout_head", "semantic_fusion", "semantic_encoder", "stage1_model"]:
+    for attr_name in [
+        "trace_unit_broadcast",
+        "trace_unit_handshake",
+        "trace_unit_factorized_state",
+        "trace_unit_tokenizer",
+        "readout_head",
+        "semantic_fusion",
+        "semantic_encoder",
+        "stage1_model",
+    ]:
         mod = getattr(method, attr_name, None)
         if mod is None:
             continue
@@ -483,6 +574,12 @@ def _stage2_free_rollout_predict(method: LoadedMethod, batch: Dict[str, Any], de
             semantic_encoder=method.semantic_encoder,
             semantic_fusion=method.semantic_fusion,
             readout_head=method.readout_head,
+            structure_mode=str(method.stage2_structure_mode),
+            trace_unit_tokenizer=method.trace_unit_tokenizer,
+            trace_unit_factorized_state=method.trace_unit_factorized_state,
+            trace_unit_handshake=method.trace_unit_handshake,
+            trace_unit_broadcast=method.trace_unit_broadcast,
+            trace_unit_disable_instance_path=bool(method.trace_unit_disable_instance_path),
             batch=moved,
             obs_len=OBS_LEN,
             fut_len=FUT_LEN,
