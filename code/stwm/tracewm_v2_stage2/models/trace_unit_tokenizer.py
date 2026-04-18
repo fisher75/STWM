@@ -59,8 +59,11 @@ class TraceUnitTokenizer(nn.Module):
         state_seq: torch.Tensor,
         semantic_tokens: torch.Tensor,
         token_mask: torch.Tensor,
+        state_valid_mask: torch.Tensor | None = None,
         semantic_objectness_score: torch.Tensor | None = None,
         semantic_instance_valid: torch.Tensor | None = None,
+        semantic_entity_dominant_instance_id: torch.Tensor | None = None,
+        semantic_entity_true_instance_confidence: torch.Tensor | None = None,
         semantic_teacher_prior: torch.Tensor | None = None,
     ) -> Dict[str, torch.Tensor | Dict[str, float]]:
         if backbone_hidden.ndim != 4:
@@ -132,8 +135,23 @@ class TraceUnitTokenizer(nn.Module):
         else:
             instance_valid = torch.zeros((bsz, t_len, k_len, 1), device=backbone_hidden.device, dtype=backbone_hidden.dtype)
         token_valid = token_mask[:, None, :].expand(bsz, t_len, k_len)
+        if isinstance(state_valid_mask, torch.Tensor):
+            valid_mask = state_valid_mask.to(device=backbone_hidden.device, dtype=torch.bool)
+            if valid_mask.shape[:3] == (bsz, t_len, k_len):
+                token_valid = token_valid & valid_mask
 
-        priors = torch.cat([objectness, instance_valid, time_norm, 1.0 - time_norm], dim=-1)
+        instance_confidence = (
+            semantic_entity_true_instance_confidence[:, None, :, None].expand(bsz, t_len, k_len, 1)
+            if isinstance(semantic_entity_true_instance_confidence, torch.Tensor)
+            else torch.zeros((bsz, t_len, k_len, 1), device=backbone_hidden.device, dtype=backbone_hidden.dtype)
+        )
+        dominant_id_present = (
+            (semantic_entity_dominant_instance_id[:, None, :] > 0).to(backbone_hidden.dtype)[..., None].expand(bsz, t_len, k_len, 1)
+            if isinstance(semantic_entity_dominant_instance_id, torch.Tensor)
+            else torch.zeros((bsz, t_len, k_len, 1), device=backbone_hidden.device, dtype=backbone_hidden.dtype)
+        )
+        instance_prior = torch.maximum(instance_valid, instance_confidence)
+        priors = torch.cat([objectness, instance_prior, time_norm, 1.0 - time_norm], dim=-1)
         token_features = self.input_proj(
             torch.cat([backbone_hidden, semantic_expanded, state_seq, teacher_prior, priors], dim=-1)
         )
@@ -141,7 +159,7 @@ class TraceUnitTokenizer(nn.Module):
         units = self.unit_queries[None, :, :].expand(bsz, -1, -1)
         bias = 0.0
         if bool(self.cfg.use_instance_prior_bias):
-            bias = 0.10 * (objectness[..., 0] + instance_valid[..., 0])
+            bias = 0.10 * (objectness[..., 0] + instance_prior[..., 0] + 0.50 * dominant_id_present[..., 0])
 
         assignment = torch.zeros((bsz, t_len, k_len, int(self.cfg.unit_count)), device=token_features.device, dtype=token_features.dtype)
         for _ in range(max(int(self.cfg.slot_iters), 1)):

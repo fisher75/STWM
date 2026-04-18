@@ -58,6 +58,21 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _apply_process_title_normalization(default_title: str = "python") -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode != "generic":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", default_title)).strip() or default_title
+    lowered = title.lower()
+    if "stwm" in lowered or "tracewm" in lowered or "/home/" in lowered or "/raid/" in lowered:
+        title = default_title
+    try:
+        import setproctitle  # type: ignore
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
+
+
 def read_json(path: str | Path) -> Dict[str, Any]:
     p = Path(path)
     if not p.exists():
@@ -609,6 +624,20 @@ def _build_single_item_batch(item: Dict[str, Any]) -> Tuple[Dict[str, Any], np.n
         "semantic_mask_crop": torch.from_numpy(semantic_mask_crop[None, ...]).to(torch.float32),
         "semantic_crop_valid": torch.tensor([True], dtype=torch.bool),
         "semantic_mask_crop_valid": torch.tensor([bool(mask_crop_available)], dtype=torch.bool),
+        "semantic_rgb_crop_temporal": torch.from_numpy(semantic_rgb_crop[None, None, ...]).to(torch.float32),
+        "semantic_mask_crop_temporal": torch.from_numpy(semantic_mask_crop[None, None, ...]).to(torch.float32),
+        "semantic_temporal_valid": torch.tensor([[True]], dtype=torch.bool),
+        "semantic_instance_id_map": torch.from_numpy(query_mask.astype(np.int64)[None, ...]).to(torch.long),
+        "semantic_instance_id_crop": torch.from_numpy((semantic_mask_crop > 0.5).astype(np.int64)[None, None, ...]).to(torch.long),
+        "semantic_instance_id_temporal": torch.from_numpy((semantic_mask_crop > 0.5).astype(np.int64)[None, None, ...]).to(torch.long),
+        "semantic_instance_valid": torch.tensor([[True]], dtype=torch.bool),
+        "semantic_objectness_score": torch.tensor([max(float(sem_fg_ratio), 0.0)], dtype=torch.float32),
+        "semantic_entity_dominant_instance_id": torch.tensor([1], dtype=torch.long),
+        "semantic_entity_instance_overlap_score_over_time": torch.tensor([[1.0]], dtype=torch.float32),
+        "semantic_entity_true_instance_confidence": torch.tensor([1.0], dtype=torch.float32),
+        "semantic_teacher_prior": torch.zeros((1, 512), dtype=torch.float32),
+        "entity_boxes_over_time": torch.from_numpy(np.asarray(boxes, dtype=np.float32)[:, None, :]).to(torch.float32),
+        "entity_masks_over_time": [],
         "semantic_frame_path": str(frame_paths[query_step]),
         "semantic_mask_path": "",
         "semantic_source_mode": "object_region_or_mask_crop_visual_state",
@@ -744,6 +773,7 @@ def parse_args() -> Any:
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     args = parse_args()
     protocol = read_json(args.protocol_json)
     items = protocol.get("items", []) if isinstance(protocol.get("items", []), list) else []

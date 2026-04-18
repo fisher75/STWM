@@ -266,6 +266,50 @@ def _instance_density_counts(
     }
 
 
+def _compute_entity_instance_binding_stats(
+    *,
+    dominant_hint: int,
+    instance_crop: np.ndarray,
+    instance_temporal: np.ndarray,
+    temporal_valid: np.ndarray,
+    true_instance_aware: bool,
+    instance_source: str,
+) -> Dict[str, Any]:
+    temporal_ids = np.asarray(instance_temporal, dtype=np.int64)
+    temporal_valid_arr = np.asarray(temporal_valid, dtype=bool)
+    valid_steps = temporal_ids[temporal_valid_arr] if temporal_ids.ndim >= 4 else np.zeros((0,), dtype=np.int64)
+    dominant_id = int(dominant_hint) if bool(true_instance_aware) and str(instance_source) == "true_instance_id" else 0
+    if dominant_id <= 0:
+        valid_positive = valid_steps[valid_steps > 0]
+        if valid_positive.size > 0:
+            values, counts = np.unique(valid_positive, return_counts=True)
+            dominant_id = int(values[int(np.argmax(counts))])
+        else:
+            dominant_id = _dominant_positive_instance_id(np.asarray(instance_crop[0], dtype=np.int64) if instance_crop.ndim >= 3 else None)
+    overlap = np.zeros((int(temporal_ids.shape[0]),), dtype=np.float32)
+    if dominant_id > 0 and temporal_ids.ndim >= 4:
+        for step_i in range(int(temporal_ids.shape[0])):
+            if not bool(temporal_valid_arr[step_i]):
+                continue
+            crop_ids = np.asarray(temporal_ids[step_i, 0], dtype=np.int64)
+            positive = crop_ids[crop_ids > 0]
+            if positive.size <= 0:
+                overlap[step_i] = 0.0
+            else:
+                overlap[step_i] = float(np.mean(positive == int(dominant_id)))
+    valid_overlap = overlap[temporal_valid_arr]
+    confidence = 0.0
+    if bool(true_instance_aware) and str(instance_source) == "true_instance_id" and dominant_id > 0 and valid_overlap.size > 0:
+        coverage = float(np.mean(temporal_valid_arr.astype(np.float32)))
+        confidence = float(np.clip(valid_overlap.mean() * max(min(coverage * 2.0, 1.0), 0.0), 0.0, 1.0))
+    return {
+        "dominant_instance_id": int(dominant_id if confidence > 0.0 else 0),
+        "instance_overlap_score_over_time": overlap.astype(np.float32),
+        "true_instance_confidence": float(confidence),
+        "has_true_instance_signal": bool(confidence > 0.0 and dominant_id > 0),
+    }
+
+
 def _entity_mask_for_dataset(
     *,
     dataset_name: str,
@@ -582,6 +626,9 @@ class Stage2SemanticDataset(Dataset):
                             "semantic_instance_id_temporal",
                             "semantic_instance_valid",
                             "semantic_objectness_score",
+                            "semantic_entity_dominant_instance_id",
+                            "semantic_entity_instance_overlap_score_over_time",
+                            "semantic_entity_true_instance_confidence",
                         }
                         if not required_instance_keys.issubset(set(payload.files)):
                             raise KeyError("instance_aware_fields_missing_in_predecode_cache")
@@ -699,6 +746,9 @@ class Stage2SemanticDataset(Dataset):
                             "semantic_instance_id_temporal": torch.from_numpy(instance_id_temporal).to(torch.long),
                             "semantic_instance_valid": torch.from_numpy(instance_valid_temporal).to(torch.bool),
                             "semantic_objectness_score": torch.from_numpy(payload["semantic_objectness_score"]).to(torch.float32),
+                            "semantic_entity_dominant_instance_id": torch.from_numpy(payload["semantic_entity_dominant_instance_id"]).to(torch.long),
+                            "semantic_entity_instance_overlap_score_over_time": torch.from_numpy(payload["semantic_entity_instance_overlap_score_over_time"]).to(torch.float32),
+                            "semantic_entity_true_instance_confidence": torch.from_numpy(payload["semantic_entity_true_instance_confidence"]).to(torch.float32),
                             "semantic_teacher_prior": torch.from_numpy(teacher_prior).to(torch.float32),
                             "entity_boxes_over_time": torch.from_numpy(payload["entity_boxes_over_time"]).to(torch.float32),
                             # Full per-entity raw mask sequences are not consumed by the trainer/eval path.
@@ -780,6 +830,9 @@ class Stage2SemanticDataset(Dataset):
         semantic_instance_id_temporal = np.zeros((entity_count, temporal_window, 1, crop_size, crop_size), dtype=np.int64)
         semantic_instance_valid = np.zeros((entity_count, temporal_window), dtype=bool)
         semantic_objectness_score = np.zeros((entity_count,), dtype=np.float32)
+        semantic_entity_dominant_instance_id = np.zeros((entity_count,), dtype=np.int64)
+        semantic_entity_instance_overlap_score_over_time = np.zeros((entity_count, temporal_window), dtype=np.float32)
+        semantic_entity_true_instance_confidence = np.zeros((entity_count,), dtype=np.float32)
         entity_boxes_over_time = np.zeros((total_steps, entity_count, 4), dtype=np.float32)
         entity_masks_over_time: List[List[np.ndarray | None]] = []
         semantic_frame_path = frame_paths[min(max(semantic_step, 0), max(len(frame_paths) - 1, 0))]
@@ -867,6 +920,20 @@ class Stage2SemanticDataset(Dataset):
                 entity_masks_over_time.append(mask_seq)
             state = _build_state_from_boxes(boxes=boxes, sizes=sizes)
             valid_arr = np.asarray(present_flags, dtype=bool)
+            binding_stats = _compute_entity_instance_binding_stats(
+                dominant_hint=int(entity_id),
+                instance_crop=semantic_instance_id_crop[ent_idx],
+                instance_temporal=semantic_instance_id_temporal[ent_idx],
+                temporal_valid=semantic_instance_valid[ent_idx],
+                true_instance_aware=bool(true_instance_aware),
+                instance_source=str(instance_source),
+            )
+            semantic_entity_dominant_instance_id[ent_idx] = int(binding_stats["dominant_instance_id"])
+            semantic_entity_instance_overlap_score_over_time[ent_idx] = np.asarray(
+                binding_stats["instance_overlap_score_over_time"],
+                dtype=np.float32,
+            )
+            semantic_entity_true_instance_confidence[ent_idx] = float(binding_stats["true_instance_confidence"])
             obs_state[:, ent_idx, :] = state[: int(self.cfg.obs_len)]
             fut_state[:, ent_idx, :] = state[int(self.cfg.obs_len) :]
             obs_valid[:, ent_idx] = valid_arr[: int(self.cfg.obs_len)]
@@ -925,6 +992,9 @@ class Stage2SemanticDataset(Dataset):
             "semantic_instance_id_temporal": torch.from_numpy(semantic_instance_id_temporal).to(torch.long),
             "semantic_instance_valid": torch.from_numpy(semantic_instance_valid).to(torch.bool),
             "semantic_objectness_score": torch.from_numpy(semantic_objectness_score).to(torch.float32),
+            "semantic_entity_dominant_instance_id": torch.from_numpy(semantic_entity_dominant_instance_id).to(torch.long),
+            "semantic_entity_instance_overlap_score_over_time": torch.from_numpy(semantic_entity_instance_overlap_score_over_time).to(torch.float32),
+            "semantic_entity_true_instance_confidence": torch.from_numpy(semantic_entity_true_instance_confidence).to(torch.float32),
             "semantic_teacher_prior": torch.from_numpy(teacher_prior).to(torch.float32),
             "entity_boxes_over_time": torch.from_numpy(entity_boxes_over_time).to(torch.float32),
             "entity_masks_over_time": entity_masks_over_time if bool(self.cfg.include_entity_masks_over_time) else [],
@@ -949,6 +1019,37 @@ class Stage2SemanticDataset(Dataset):
                 "fallback_entity_count": int(density_counts["fallback_entity_count"]),
                 "true_instance_ratio": float(
                     float(density_counts["true_instance_entity_count"]) / float(max(entity_count, 1))
+                ),
+                "dominant_instance_id_coverage": float(np.mean(semantic_entity_dominant_instance_id > 0)),
+                "high_conf_true_instance_entity_count": int(np.sum(semantic_entity_true_instance_confidence >= 0.6)),
+                "same_instance_pair_count": int(
+                    sum(
+                        max(int(np.sum(semantic_instance_valid[idx])) - 1, 0)
+                        for idx in range(entity_count)
+                        if semantic_entity_true_instance_confidence[idx] >= 0.6 and semantic_entity_dominant_instance_id[idx] > 0
+                    )
+                ),
+                "different_instance_pair_count": int(
+                    max(
+                        int(
+                            np.sum(
+                                semantic_entity_true_instance_confidence >= 0.6
+                            )
+                        ),
+                        0,
+                    )
+                    * max(
+                        int(
+                            np.sum(
+                                semantic_entity_true_instance_confidence >= 0.6
+                            )
+                        ) - 1,
+                        0,
+                    )
+                    // 2
+                ),
+                "noisy_or_ambiguous_entity_ratio": float(
+                    np.mean((semantic_entity_true_instance_confidence > 0.0) & (semantic_entity_true_instance_confidence < 0.6))
                 ),
             },
         }
@@ -989,6 +1090,9 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
     semantic_instance_id_temporal = torch.zeros((bsz, max_k, temporal_window, 1, crop_h, crop_w), dtype=torch.long)
     semantic_instance_valid = torch.zeros((bsz, max_k, temporal_window), dtype=torch.bool)
     semantic_objectness_score = torch.zeros((bsz, max_k), dtype=torch.float32)
+    semantic_entity_dominant_instance_id = torch.zeros((bsz, max_k), dtype=torch.long)
+    semantic_entity_instance_overlap_score_over_time = torch.zeros((bsz, max_k, temporal_window), dtype=torch.float32)
+    semantic_entity_true_instance_confidence = torch.zeros((bsz, max_k), dtype=torch.float32)
     teacher_prior_dim = int(batch[0].get("semantic_teacher_prior", torch.zeros((1, 512))).shape[-1])
     semantic_teacher_prior = torch.zeros((bsz, max_k, teacher_prior_dim), dtype=torch.float32)
 
@@ -1025,6 +1129,9 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         semantic_instance_id_temporal[i, :k, :item_temporal_window] = item["semantic_instance_id_temporal"]
         semantic_instance_valid[i, :k, :item_temporal_window] = item["semantic_instance_valid"]
         semantic_objectness_score[i, :k] = item["semantic_objectness_score"]
+        semantic_entity_dominant_instance_id[i, :k] = item["semantic_entity_dominant_instance_id"]
+        semantic_entity_instance_overlap_score_over_time[i, :k, :item_temporal_window] = item["semantic_entity_instance_overlap_score_over_time"][:, :item_temporal_window]
+        semantic_entity_true_instance_confidence[i, :k] = item["semantic_entity_true_instance_confidence"]
         semantic_teacher_prior[i, :k] = item["semantic_teacher_prior"]
 
         semantic_frame_paths.append(str(item.get("semantic_frame_path", "")))
@@ -1059,6 +1166,9 @@ def stage2_semantic_collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         "semantic_instance_id_temporal": semantic_instance_id_temporal,
         "semantic_instance_valid": semantic_instance_valid,
         "semantic_objectness_score": semantic_objectness_score,
+        "semantic_entity_dominant_instance_id": semantic_entity_dominant_instance_id,
+        "semantic_entity_instance_overlap_score_over_time": semantic_entity_instance_overlap_score_over_time,
+        "semantic_entity_true_instance_confidence": semantic_entity_true_instance_confidence,
         "semantic_teacher_prior": semantic_teacher_prior,
         "entity_boxes_over_time": entity_boxes_over_time,
         "entity_masks_over_time": entity_masks_over_time,

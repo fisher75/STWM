@@ -300,6 +300,9 @@ def _instance_cache_compatibility(predecode_cache_path: Path) -> Dict[str, Any]:
             "semantic_instance_id_temporal",
             "semantic_instance_valid",
             "semantic_objectness_score",
+            "semantic_entity_dominant_instance_id",
+            "semantic_entity_instance_overlap_score_over_time",
+            "semantic_entity_true_instance_confidence",
         ],
         "missing_keys": [],
         "compatible": False,
@@ -896,6 +899,16 @@ def _append_trace_unit_flags(cmd: List[str], meta: Dict[str, Any]) -> None:
     cmd.extend(["--trace-unit-assignment-temporal-consistency-weight", str(meta["trace_unit_assignment_temporal_consistency_weight"])])
     cmd.extend(["--trace-unit-semantic-inertia-weight", str(meta["trace_unit_semantic_inertia_weight"])])
     cmd.extend(["--trace-unit-instance-consistency-weight", str(meta["trace_unit_instance_consistency_weight"])])
+    if "trace_unit_instance_binding_weight" in meta:
+        cmd.extend(["--trace-unit-instance-binding-weight", str(meta["trace_unit_instance_binding_weight"])])
+    if "trace_unit_interinstance_repulse_weight" in meta:
+        cmd.extend(["--trace-unit-interinstance-repulse-weight", str(meta["trace_unit_interinstance_repulse_weight"])])
+    if "trace_unit_unit_purity_weight" in meta:
+        cmd.extend(["--trace-unit-unit-purity-weight", str(meta["trace_unit_unit_purity_weight"])])
+    if "trace_unit_instance_id_source" in meta:
+        cmd.extend(["--trace-unit-instance-id-source", str(meta["trace_unit_instance_id_source"])])
+    if "trace_unit_instance_conf_threshold" in meta:
+        cmd.extend(["--trace-unit-instance-conf-threshold", str(meta["trace_unit_instance_conf_threshold"])])
     cmd.extend(["--trace-unit-dynsem-decorrelation-weight", str(meta["trace_unit_dynsem_decorrelation_weight"])])
     cmd.extend(["--trace-unit-utilization-weight", str(meta["trace_unit_utilization_weight"])])
     cmd.extend(["--trace-unit-min-active-target", str(meta["trace_unit_min_active_target"])])

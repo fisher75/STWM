@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import importlib.util
 import json
+import os
 
 import numpy as np
 from PIL import Image
@@ -21,6 +22,21 @@ def _repo_root() -> Path:
 
 
 ROOT = _repo_root()
+
+
+def _apply_process_title_normalization(default_title: str = "python") -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode != "generic":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", default_title)).strip() or default_title
+    lowered = title.lower()
+    if "stwm" in lowered or "tracewm" in lowered or "/home/" in lowered or "/raid/" in lowered:
+        title = default_title
+    try:
+        import setproctitle  # type: ignore
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
 
 
 def now_iso() -> str:
@@ -90,6 +106,7 @@ def parse_args() -> Any:
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     args = parse_args()
     predecode_root = Path(args.predecode_cache_root)
     teacher_root = Path(args.teacher_cache_root)

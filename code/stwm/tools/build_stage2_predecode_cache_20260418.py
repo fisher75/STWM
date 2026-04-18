@@ -96,6 +96,9 @@ def _sample_to_numpy(sample: Dict[str, Any]) -> Dict[str, Any]:
         "semantic_instance_id_temporal": sample["semantic_instance_id_temporal"].numpy(),
         "semantic_instance_valid": sample["semantic_instance_valid"].numpy(),
         "semantic_objectness_score": sample["semantic_objectness_score"].numpy(),
+        "semantic_entity_dominant_instance_id": sample["semantic_entity_dominant_instance_id"].numpy(),
+        "semantic_entity_instance_overlap_score_over_time": sample["semantic_entity_instance_overlap_score_over_time"].numpy(),
+        "semantic_entity_true_instance_confidence": sample["semantic_entity_true_instance_confidence"].numpy(),
         "semantic_teacher_prior": sample["semantic_teacher_prior"].numpy(),
         "entity_boxes_over_time": sample["entity_boxes_over_time"].numpy(),
         "entity_masks_over_time": np.asarray(sample["entity_masks_over_time"], dtype=object),
@@ -145,6 +148,10 @@ def _build_split_cache(
     pending_rows: List[Tuple[int, str, Path, str]] = []
     start = time.perf_counter()
     per_dataset_counts: Dict[str, int] = {}
+    entity_histogram: Dict[str, int] = {}
+    instance_source_counts: Dict[str, int] = {}
+    true_instance_samples = 0
+    total_samples = 0
     for item in dataset.entries:
         ds_name = str(item.get("dataset_name", ""))
         per_dataset_counts[ds_name] = per_dataset_counts.get(ds_name, 0) + 1
@@ -154,6 +161,18 @@ def _build_split_cache(
         entries[key] = str(out_path)
         aggregate_entries[key] = str(out_path)
         if out_path.exists():
+            try:
+                with np.load(out_path, allow_pickle=True) as payload:
+                    meta = dict(payload["meta_json"].item())
+                entity_count = int(meta.get("entity_count", 0))
+                entity_histogram[str(entity_count)] = entity_histogram.get(str(entity_count), 0) + 1
+                source = str(meta.get("instance_source", "unknown"))
+                instance_source_counts[source] = instance_source_counts.get(source, 0) + 1
+                total_samples += 1
+                if bool(meta.get("true_instance_aware", False)):
+                    true_instance_samples += 1
+            except Exception:
+                pass
             reused_existing += 1
             continue
         pending_rows.append((idx, key, out_path, str(entry.get("dataset_name", ""))))
@@ -184,6 +203,14 @@ def _build_split_cache(
     flush_counter = 0
     for (row, sample) in zip(pending_rows, loader):
         _, key, out_path, _ = row
+        meta = dict(sample.get("meta", {}))
+        entity_count = int(meta.get("entity_count", int(sample["point_ids"].shape[0])))
+        entity_histogram[str(entity_count)] = entity_histogram.get(str(entity_count), 0) + 1
+        source = str(meta.get("instance_source", "unknown"))
+        instance_source_counts[source] = instance_source_counts.get(source, 0) + 1
+        total_samples += 1
+        if bool(meta.get("true_instance_aware", False)):
+            true_instance_samples += 1
         np.savez_compressed(out_path, **_sample_to_numpy(sample))
         written += 1
         flush_counter += 1
@@ -214,6 +241,10 @@ def _build_split_cache(
         "per_dataset_counts": per_dataset_counts,
         "duration_sec": float(duration),
         "samples_per_sec": float(max(written, 1) / duration),
+        "entity_count_histogram": entity_histogram,
+        "instance_source_counts": instance_source_counts,
+        "true_instance_samples": int(true_instance_samples),
+        "total_samples": int(total_samples),
     }
 
 
@@ -268,32 +299,12 @@ def main() -> None:
         total_written += int(payload["newly_written_count"])
         total_reused += int(payload["reused_existing_count"])
         total_duration += float(payload["duration_sec"])
-        cfg = Stage2SemanticDatasetConfig(
-            dataset_names=[str(x) for x in args.dataset_names],
-            split=str(split),
-            contract_path=str(args.contract_json),
-            obs_len=8,
-            fut_len=8,
-            max_tokens=64,
-            max_samples_per_dataset=int(args.max_samples_per_dataset),
-            semantic_patch_radius=12,
-            semantic_crop_size=int(args.semantic_crop_size),
-            semantic_source_mainline="crop_visual_encoder",
-            semantic_temporal_window=int(args.semantic_temporal_window),
-            predecode_cache_path=str(cache_root),
-            max_entities_per_sample=int(args.max_entities_per_sample),
-        )
-        ds = Stage2SemanticDataset(cfg)
-        for idx in range(len(ds)):
-            sample = ds[idx]
-            meta = dict(sample.get("meta", {}))
-            entity_count = int(meta.get("entity_count", int(sample["point_ids"].shape[0])))
-            entity_histogram[str(entity_count)] = entity_histogram.get(str(entity_count), 0) + 1
-            source = str(meta.get("instance_source", "unknown"))
-            instance_source_counts[source] = instance_source_counts.get(source, 0) + 1
-            total_samples += 1
-            if bool(meta.get("true_instance_aware", False)):
-                true_instance_samples += 1
+        for key, value in payload.get("entity_count_histogram", {}).items():
+            entity_histogram[str(key)] = entity_histogram.get(str(key), 0) + int(value)
+        for key, value in payload.get("instance_source_counts", {}).items():
+            instance_source_counts[str(key)] = instance_source_counts.get(str(key), 0) + int(value)
+        true_instance_samples += int(payload.get("true_instance_samples", 0))
+        total_samples += int(payload.get("total_samples", 0))
     index_payload = {
         "generated_at_utc": now_iso(),
         "cache_root": str(cache_root),
@@ -309,6 +320,9 @@ def main() -> None:
         "semantic_instance_id_temporal",
         "semantic_instance_valid",
         "semantic_objectness_score",
+        "semantic_entity_dominant_instance_id",
+        "semantic_entity_instance_overlap_score_over_time",
+        "semantic_entity_true_instance_confidence",
         "entity_boxes_over_time",
         "entity_masks_over_time",
     ]
