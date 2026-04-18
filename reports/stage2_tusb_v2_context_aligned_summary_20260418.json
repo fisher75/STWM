@@ -1,0 +1,152 @@
+{
+  "generated_at_utc": "2026-04-18T07:23:37.303560+00:00",
+  "status": "0_running_2_completed_0_failed",
+  "running_count": 0,
+  "completed_count": 2,
+  "failed_count": 0,
+  "all_runs_terminal": true,
+  "run_rows": [
+    {
+      "run_name": "stage2_tusb_v2_ctx_vipseg_upweight_seed123_20260418",
+      "family": "tusb_v2_context_aligned_density",
+      "ablation_name": "vipseg_upweight",
+      "dataset_names": [
+        "vipseg",
+        "vipseg",
+        "vspw"
+      ],
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11100,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.10548179250007726,
+          "free_rollout_coord_mean_l2": 0.28929941223913813,
+          "free_rollout_endpoint_l2": 0.28156213677085645,
+          "total_loss_reference": 0.11166372677932183
+        },
+        "rank_key": [
+          0.28156213677085645,
+          0.28929941223913813,
+          0.10548179250007726
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_ctx_vipseg_upweight_seed123_20260418/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 10600,
+        "semantic_hard_sidecar_score": 0.3082731986052507,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.12354256965557457,
+          "free_rollout_coord_mean_l2": 0.3110172723643871,
+          "free_rollout_endpoint_l2": 0.3070971669941923,
+          "total_loss_reference": 0.12343798726797103
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": -0.12746768109927265,
+        "assignment_entropy_mean": 0.6496785556233303,
+        "actual_top2_assignment_ratio_mean": 0.9872587593058562,
+        "active_unit_count_mean": 5.517708333333333,
+        "z_dyn_drift_mean": 0.44535576495933893,
+        "z_sem_drift_mean": 0.005041518152298801,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.010815691635889003,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 0.02115387704858828,
+        "unit_semantic_stability_over_time_mean": 0.9999992989017042,
+        "broadcast_residual_norm_mean": 14.968178579012553
+      }
+    },
+    {
+      "run_name": "stage2_tusb_v2_ctx_vipseg_only_seed123_20260418",
+      "family": "tusb_v2_context_aligned_density",
+      "ablation_name": "vipseg_only",
+      "dataset_names": [
+        "vipseg"
+      ],
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11100,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.11781696566828975,
+          "free_rollout_coord_mean_l2": 0.3169208879824038,
+          "free_rollout_endpoint_l2": 0.3111418673866673,
+          "total_loss_reference": 0.1187378503382206
+        },
+        "rank_key": [
+          0.3111418673866673,
+          0.3169208879824038,
+          0.11781696566828975
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_ctx_vipseg_only_seed123_20260418/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 10600,
+        "semantic_hard_sidecar_score": 0.2883973908395878,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.1036290806760356,
+          "free_rollout_coord_mean_l2": 0.28835707342167766,
+          "free_rollout_endpoint_l2": 0.28841466973297786,
+          "total_loss_reference": 0.10436725616455078
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": -0.13438609631693302,
+        "assignment_entropy_mean": 0.6543030459116417,
+        "actual_top2_assignment_ratio_mean": 0.9956595524991351,
+        "active_unit_count_mean": 5.800416666666667,
+        "z_dyn_drift_mean": 0.47528096156022076,
+        "z_sem_drift_mean": 0.006141549697894718,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.012673427498832475,
+        "same_instance_within_unit_consistency_mean": 0.0,
+        "different_instance_between_unit_separation_mean": 0.034726817451749714,
+        "unit_semantic_stability_over_time_mean": 0.9999993595015332,
+        "broadcast_residual_norm_mean": 14.190351481437682
+      }
+    }
+  ]
+}

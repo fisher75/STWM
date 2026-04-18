@@ -420,13 +420,17 @@ def _select_eval_device(args: Any) -> Tuple[torch.device, Dict[str, Any]]:
     }
 
 
-def _extract_target_masks(item: Dict[str, Any]) -> Tuple[List[np.ndarray | None], List[Tuple[int, int]], Dict[str, np.ndarray], np.ndarray]:
-    if str(item.get("dataset", "")) == "VIPSeg":
+def _extract_entity_masks(
+    item: Dict[str, Any],
+    entity_id: str | int | None = None,
+) -> Tuple[List[np.ndarray | None], List[Tuple[int, int]], Dict[str, np.ndarray], np.ndarray]:
+    dataset = str(item.get("dataset", "")).strip().upper()
+    if dataset == "VIPSEG":
         final_masks: Dict[str, np.ndarray] = {}
         target_masks: List[np.ndarray | None] = []
         sizes: List[Tuple[int, int]] = []
         selected_mask_paths = [Path(x) for x in item.get("selected_mask_paths", [])]
-        target_id = int(item.get("target_id", -1))
+        target_id = int(item.get("target_id", -1) if entity_id is None else entity_id)
         future_step = int(item.get("future_step", FUT_LEN + OBS_LEN - 1))
         for step_i, mask_path in enumerate(selected_mask_paths):
             arr = _vipseg_mask(mask_path)
@@ -449,7 +453,7 @@ def _extract_target_masks(item: Dict[str, Any]) -> Tuple[List[np.ndarray | None]
     segs = seq.get("segmentations", []) if isinstance(seq.get("segmentations", []), list) else []
     height = int((item.get("image_size") or {}).get("height", seq.get("height", 0)))
     width = int((item.get("image_size") or {}).get("width", seq.get("width", 0)))
-    target_id = str(item.get("target_id", ""))
+    target_id = str(item.get("target_id", "") if entity_id is None else entity_id)
     selected_indices = [int(x) for x in item.get("selected_frame_indices", [])]
     future_step = int(item.get("future_step", FUT_LEN + OBS_LEN - 1))
     target_masks: List[np.ndarray | None] = []
@@ -475,6 +479,70 @@ def _extract_target_masks(item: Dict[str, Any]) -> Tuple[List[np.ndarray | None]
         raise RuntimeError(f"future target mask missing for {item.get('protocol_item_id')}")
     sizes = [(int(width), int(height)) for _ in selected_indices]
     return target_masks, sizes, final_masks, target_future
+
+
+def _extract_target_masks(item: Dict[str, Any]) -> Tuple[List[np.ndarray | None], List[Tuple[int, int]], Dict[str, np.ndarray], np.ndarray]:
+    return _extract_entity_masks(item=item, entity_id=None)
+
+
+def _protocol_observed_context_candidate_ids(item: Dict[str, Any], max_context_entities: int = 8) -> List[str]:
+    max_context = max(int(max_context_entities), 1)
+    dataset = str(item.get("dataset", "")).strip().upper()
+    query_step = int(item.get("query_step", 0))
+    target_id = str(item.get("target_id", ""))
+    scored: Dict[str, Tuple[int, float]] = {}
+
+    if dataset == "VIPSEG":
+        selected_mask_paths = [Path(x) for x in item.get("selected_mask_paths", [])]
+        obs_paths = selected_mask_paths[: min(OBS_LEN, len(selected_mask_paths))]
+        for step_i, mask_path in enumerate(obs_paths):
+            arr = _vipseg_mask(mask_path)
+            for cand in [int(x) for x in np.unique(arr).tolist() if int(x) >= 125]:
+                area = float((arr == cand).mean())
+                key = str(int(cand))
+                prev_presence, prev_area = scored.get(key, (0, 0.0))
+                scored[key] = (prev_presence + 1, prev_area + area + (10.0 if step_i == query_step else 0.0))
+    else:
+        annotation_file = Path(str(item.get("burst_annotation_file", "")))
+        seq_map = _burst_seq_map(annotation_file)
+        seq = seq_map.get((str(item.get("burst_dataset_name", "")), str(item.get("burst_seq_name", ""))), {})
+        segs = seq.get("segmentations", []) if isinstance(seq.get("segmentations", []), list) else []
+        selected_indices = [int(x) for x in item.get("selected_frame_indices", [])][:OBS_LEN]
+        height = int((item.get("image_size") or {}).get("height", seq.get("height", 0)))
+        width = int((item.get("image_size") or {}).get("width", seq.get("width", 0)))
+        denom = max(float(height * width), 1.0)
+        for step_i, global_idx in enumerate(selected_indices):
+            seg = segs[global_idx] if global_idx < len(segs) and isinstance(segs[global_idx], dict) else {}
+            for cand_id, cand_payload in seg.items():
+                if not isinstance(cand_payload, dict):
+                    continue
+                cand_rle = str(cand_payload.get("rle", ""))
+                if not cand_rle:
+                    continue
+                cand_mask = _burst_mask(cand_rle, height=height, width=width)
+                if not np.any(cand_mask):
+                    continue
+                area = float(cand_mask.sum() / denom)
+                key = str(cand_id)
+                prev_presence, prev_area = scored.get(key, (0, 0.0))
+                scored[key] = (prev_presence + 1, prev_area + area + (10.0 if step_i == query_step else 0.0))
+
+    ordered = [target_id]
+    extras = [
+        cand_id
+        for cand_id, _ in sorted(
+            scored.items(),
+            key=lambda kv: (
+                0 if str(kv[0]) == target_id else 1,
+                -int(kv[1][0]),
+                -float(kv[1][1]),
+                str(kv[0]),
+            ),
+        )
+        if str(cand_id) != target_id
+    ]
+    ordered.extend(extras[: max_context - 1])
+    return [str(x) for x in ordered[:max_context]]
 
 
 def _build_single_item_batch(item: Dict[str, Any]) -> Tuple[Dict[str, Any], np.ndarray, Dict[str, np.ndarray]]:

@@ -3311,6 +3311,10 @@ def main() -> None:
     trace_unit_diff_instance_separation_history: List[float] = []
     trace_unit_semantic_stability_history: List[float] = []
     trace_unit_broadcast_norm_history: List[float] = []
+    true_instance_entity_count_history: List[float] = []
+    pseudo_entity_count_history: List[float] = []
+    fallback_entity_count_history: List[float] = []
+    true_instance_ratio_per_batch_history: List[float] = []
     semantic_nonempty_count = 0
     optimizer_steps_this_run = 0
     best_semantic_hard_metric: Dict[str, Any] | None = None
@@ -3402,6 +3406,36 @@ def main() -> None:
         except StopIteration:
             train_iter = iter(train_loader)
             raw_batch = next(train_iter)
+
+        meta_rows = raw_batch.get("meta", []) if isinstance(raw_batch, dict) else []
+        batch_true_count = 0.0
+        batch_pseudo_count = 0.0
+        batch_fallback_count = 0.0
+        batch_entity_total = 0.0
+        for meta_row in meta_rows if isinstance(meta_rows, list) else []:
+            if not isinstance(meta_row, dict):
+                continue
+            batch_true_count += float(meta_row.get("true_instance_entity_count", 0.0) or 0.0)
+            batch_pseudo_count += float(meta_row.get("pseudo_entity_count", 0.0) or 0.0)
+            batch_fallback_count += float(meta_row.get("fallback_entity_count", 0.0) or 0.0)
+            batch_entity_total += float(meta_row.get("entity_count", 0.0) or 0.0)
+        batch_true_ratio = float(batch_true_count / max(batch_entity_total, 1.0))
+        true_instance_entity_count_history.append(float(batch_true_count))
+        pseudo_entity_count_history.append(float(batch_pseudo_count))
+        fallback_entity_count_history.append(float(batch_fallback_count))
+        true_instance_ratio_per_batch_history.append(float(batch_true_ratio))
+        run_metadata["true_instance_entity_count_mean_so_far"] = float(
+            sum(true_instance_entity_count_history) / max(len(true_instance_entity_count_history), 1)
+        )
+        run_metadata["pseudo_entity_count_mean_so_far"] = float(
+            sum(pseudo_entity_count_history) / max(len(pseudo_entity_count_history), 1)
+        )
+        run_metadata["fallback_entity_count_mean_so_far"] = float(
+            sum(fallback_entity_count_history) / max(len(fallback_entity_count_history), 1)
+        )
+        run_metadata["true_instance_ratio_per_batch_mean_so_far"] = float(
+            sum(true_instance_ratio_per_batch_history) / max(len(true_instance_ratio_per_batch_history), 1)
+        )
 
         batch = _to_device(raw_batch, device=device, non_blocking=bool(pin_memory and device.type == "cuda"))
         tf_out = _teacher_forced_predict(
@@ -3987,6 +4021,12 @@ def main() -> None:
             "different_instance_between_unit_separation_mean": float(sum(trace_unit_diff_instance_separation_history) / max(len(trace_unit_diff_instance_separation_history), 1)),
             "unit_semantic_stability_over_time_mean": float(sum(trace_unit_semantic_stability_history) / max(len(trace_unit_semantic_stability_history), 1)),
             "broadcast_residual_norm_mean": float(sum(trace_unit_broadcast_norm_history) / max(len(trace_unit_broadcast_norm_history), 1)),
+        },
+        "instance_aware_density": {
+            "true_instance_entity_count_mean": float(sum(true_instance_entity_count_history) / max(len(true_instance_entity_count_history), 1)),
+            "pseudo_entity_count_mean": float(sum(pseudo_entity_count_history) / max(len(pseudo_entity_count_history), 1)),
+            "fallback_entity_count_mean": float(sum(fallback_entity_count_history) / max(len(fallback_entity_count_history), 1)),
+            "true_instance_ratio_per_batch_mean": float(sum(true_instance_ratio_per_batch_history) / max(len(true_instance_ratio_per_batch_history), 1)),
         },
         "selection_policy": {
             "primary": "free_rollout_endpoint_l2",

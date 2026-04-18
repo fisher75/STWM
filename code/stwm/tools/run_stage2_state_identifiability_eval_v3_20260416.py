@@ -24,6 +24,13 @@ def _select_eval_device_v3(args: Any) -> Tuple[torch.device, Dict[str, Any]]:
         if not torch.cuda.is_available():
             return torch.device("cpu"), {"mode": "forced_cuda_fallback_cpu", "selected_gpu_id": -1, "lease_id": ""}
         return torch.device("cuda:0"), {"mode": "forced_cuda0", "selected_gpu_id": 0, "lease_id": ""}
+    if requested.startswith("cuda:"):
+        if not torch.cuda.is_available():
+            return torch.device("cpu"), {"mode": "forced_explicit_cuda_fallback_cpu", "selected_gpu_id": -1, "lease_id": ""}
+        gpu_id = int(requested.split(":", 1)[1])
+        if gpu_id < 0 or gpu_id >= torch.cuda.device_count():
+            raise RuntimeError(f"requested cuda device out of range: {requested}")
+        return torch.device(f"cuda:{gpu_id}"), {"mode": "forced_explicit_cuda", "selected_gpu_id": gpu_id, "lease_id": ""}
     if requested != "auto":
         raise RuntimeError(f"unsupported device mode: {requested}")
     if not torch.cuda.is_available():
@@ -196,9 +203,13 @@ def parse_args() -> Any:
     return parser.parse_args()
 
 
-def _build_single_item_batch_v3(item: Dict[str, Any], temporal_window: int = 5) -> Tuple[Dict[str, Any], np.ndarray, Dict[str, np.ndarray]]:
+def _build_single_item_batch_v3(
+    item: Dict[str, Any],
+    temporal_window: int = 5,
+    target_id: str | int | None = None,
+) -> Tuple[Dict[str, Any], np.ndarray, Dict[str, np.ndarray]]:
     frame_paths = [Path(x) for x in item.get("selected_frame_paths", [])]
-    target_masks, sizes, future_masks, target_future_mask = prev._extract_target_masks(item)
+    target_masks, sizes, future_masks, target_future_mask = prev._extract_entity_masks(item, entity_id=target_id)
     boxes: List[np.ndarray] = []
     present: List[bool] = []
     last_box = None
@@ -315,6 +326,216 @@ def _build_single_item_batch_v3(item: Dict[str, Any], temporal_window: int = 5) 
             "legacy_semantic_source": "hand_crafted_stats",
             "legacy_semantic_feature_dim": 10,
             "temporal_window": int(temporal_window),
+        },
+    }
+    return prev.stage2_semantic_collate_fn([sample]), target_future_mask, future_masks
+
+
+def _build_context_preserving_item_batch_v3(
+    item: Dict[str, Any],
+    temporal_window: int = 5,
+    max_context_entities: int = 8,
+) -> Tuple[Dict[str, Any], np.ndarray, Dict[str, np.ndarray]]:
+    frame_paths = [Path(x) for x in item.get("selected_frame_paths", [])]
+    entity_ids = prev._protocol_observed_context_candidate_ids(item, max_context_entities=max_context_entities)
+    if not entity_ids:
+        return _build_single_item_batch_v3(item=item, temporal_window=temporal_window)
+
+    target_id = str(item.get("target_id", ""))
+    if str(entity_ids[0]) != target_id:
+        entity_ids = [target_id] + [str(x) for x in entity_ids if str(x) != target_id]
+    entity_ids = [str(x) for x in entity_ids[: max(int(max_context_entities), 1)]]
+
+    query_step = int(item.get("query_step", 0))
+    temporal_window = max(int(temporal_window), 1)
+    query_rgbs: Dict[int, np.ndarray] = {}
+    for step in range(min(prev.OBS_LEN, temporal_window, len(frame_paths))):
+        with prev.Image.open(frame_paths[step]) as img:
+            query_rgbs[step] = np.asarray(img.convert("RGB"), dtype=np.float32) / 255.0
+    if query_step not in query_rgbs:
+        with prev.Image.open(frame_paths[query_step]) as img:
+            query_rgbs[query_step] = np.asarray(img.convert("RGB"), dtype=np.float32) / 255.0
+
+    obs_states: List[np.ndarray] = []
+    fut_states: List[np.ndarray] = []
+    obs_valids: List[np.ndarray] = []
+    fut_valids: List[np.ndarray] = []
+    semantic_features: List[np.ndarray] = []
+    semantic_boxes: List[np.ndarray] = []
+    semantic_masks: List[bool] = []
+    semantic_rgb_crops: List[np.ndarray] = []
+    semantic_mask_crops: List[np.ndarray] = []
+    semantic_crop_valids: List[bool] = []
+    semantic_mask_crop_valids: List[bool] = []
+    semantic_rgb_crop_temporals: List[np.ndarray] = []
+    semantic_mask_crop_temporals: List[np.ndarray] = []
+    semantic_temporal_valids: List[np.ndarray] = []
+    semantic_instance_id_crops: List[np.ndarray] = []
+    semantic_instance_id_temporals: List[np.ndarray] = []
+    semantic_instance_valids: List[np.ndarray] = []
+    semantic_objectness_scores: List[np.ndarray] = []
+    semantic_teacher_priors: List[np.ndarray] = []
+    entity_boxes_over_time: List[np.ndarray] = []
+    entity_masks_over_time: List[List[np.ndarray | None]] = []
+    query_instance_id_map: np.ndarray | None = None
+
+    target_future_mask: np.ndarray | None = None
+    future_masks: Dict[str, np.ndarray] = {}
+    context_entity_indices: List[int] = []
+
+    for entity_idx, entity_id in enumerate(entity_ids):
+        target_masks, sizes, future_masks_local, target_future_mask_local = prev._extract_entity_masks(item, entity_id=entity_id)
+        if entity_idx == 0:
+            target_future_mask = target_future_mask_local
+            future_masks = future_masks_local
+
+        boxes: List[np.ndarray] = []
+        present: List[bool] = []
+        last_box = None
+        for (width, height), mask in zip(sizes, target_masks):
+            if mask is not None and np.any(mask):
+                box, _, _ = prev._box_from_mask_or_center(mask.astype(np.uint8), width=width, height=height, radius=12)
+                last_box = box
+                present.append(True)
+                boxes.append(box)
+            else:
+                fallback = last_box if last_box is not None else prev._box_from_mask_or_center(None, width=width, height=height, radius=12)[0]
+                boxes.append(np.asarray(fallback, dtype=np.float32))
+                present.append(False)
+        state = prev._build_state_from_boxes(boxes=boxes, sizes=sizes)
+        obs_states.append(state[:prev.OBS_LEN])
+        fut_states.append(state[prev.OBS_LEN:])
+        obs_valids.append(np.asarray(present[:prev.OBS_LEN], dtype=bool))
+        fut_valids.append(np.asarray(present[prev.OBS_LEN:], dtype=bool))
+
+        semantic_step = query_step
+        if target_masks[semantic_step] is None:
+            for alt_step in range(min(prev.OBS_LEN, len(target_masks))):
+                if target_masks[alt_step] is not None and np.any(target_masks[alt_step]):
+                    semantic_step = alt_step
+                    break
+        rgb_ref = query_rgbs.get(semantic_step)
+        if rgb_ref is None:
+            with prev.Image.open(frame_paths[semantic_step]) as img:
+                rgb_ref = np.asarray(img.convert("RGB"), dtype=np.float32) / 255.0
+                query_rgbs[semantic_step] = rgb_ref
+        mask_ref = target_masks[semantic_step]
+        box_ref = boxes[semantic_step]
+        sem_box, sem_mask_used, sem_fg_ratio = prev._box_from_mask_or_center(
+            mask=mask_ref.astype(np.uint8) if isinstance(mask_ref, np.ndarray) else None,
+            width=int(rgb_ref.shape[1]),
+            height=int(rgb_ref.shape[0]),
+            radius=12,
+        )
+        rgb_crop, mask_crop, mask_crop_available = prev._build_semantic_crops(
+            rgb=rgb_ref,
+            mask=mask_ref.astype(np.uint8) if isinstance(mask_ref, np.ndarray) else None,
+            box_xyxy=sem_box,
+            crop_size=64,
+        )
+        semantic_rgb_crops.append(rgb_crop)
+        semantic_mask_crops.append(mask_crop)
+        semantic_crop_valids.append(True)
+        semantic_mask_crop_valids.append(bool(mask_crop_available))
+        semantic_features.append(
+            prev._semantic_feature(
+                rgb=rgb_ref,
+                mask=mask_ref.astype(np.uint8) if isinstance(mask_ref, np.ndarray) else None,
+                box_xyxy=sem_box,
+                mask_used=bool(sem_mask_used),
+                fg_ratio=float(sem_fg_ratio),
+            )
+        )
+        semantic_boxes.append(np.asarray(sem_box, dtype=np.float32))
+        semantic_masks.append(True)
+        semantic_objectness_scores.append(np.asarray([max(float(sem_fg_ratio), 0.0)], dtype=np.float32))
+        semantic_teacher_priors.append(np.zeros((512,), dtype=np.float32))
+        if entity_idx > 0:
+            context_entity_indices.append(int(entity_idx))
+
+        temporal_rgb_crops: List[np.ndarray] = []
+        temporal_mask_crops: List[np.ndarray] = []
+        temporal_valid_flags: List[bool] = []
+        instance_temporal: List[np.ndarray] = []
+        for obs_idx in range(min(prev.OBS_LEN, temporal_window, len(frame_paths))):
+            rgb_t = query_rgbs.get(obs_idx)
+            if rgb_t is None:
+                with prev.Image.open(frame_paths[obs_idx]) as img:
+                    rgb_t = np.asarray(img.convert("RGB"), dtype=np.float32) / 255.0
+                    query_rgbs[obs_idx] = rgb_t
+            mask_t = target_masks[obs_idx]
+            box_t = boxes[obs_idx]
+            rgb_crop_t, mask_crop_t, mask_valid_t = prev._build_semantic_crops(
+                rgb=rgb_t,
+                mask=mask_t.astype(np.uint8) if isinstance(mask_t, np.ndarray) else None,
+                box_xyxy=box_t,
+                crop_size=64,
+            )
+            temporal_rgb_crops.append(rgb_crop_t)
+            temporal_mask_crops.append(mask_crop_t)
+            temporal_valid_flags.append(bool(mask_valid_t))
+            instance_temporal.append((mask_crop_t > 0.5).astype(np.int64))
+        while len(temporal_rgb_crops) < temporal_window:
+            temporal_rgb_crops.append(np.zeros_like(semantic_rgb_crops[-1]))
+            temporal_mask_crops.append(np.zeros_like(semantic_mask_crops[-1]))
+            temporal_valid_flags.append(False)
+            instance_temporal.append(np.zeros_like(semantic_mask_crops[-1], dtype=np.int64))
+        semantic_rgb_crop_temporals.append(np.stack(temporal_rgb_crops[:temporal_window], axis=0).astype(np.float32))
+        semantic_mask_crop_temporals.append(np.stack(temporal_mask_crops[:temporal_window], axis=0).astype(np.float32))
+        semantic_temporal_valids.append(np.asarray(temporal_valid_flags[:temporal_window], dtype=bool))
+        semantic_instance_id_crops.append((semantic_mask_crops[-1] > 0.5).astype(np.int64))
+        semantic_instance_id_temporals.append(np.stack(instance_temporal[:temporal_window], axis=0).astype(np.int64))
+        semantic_instance_valids.append(np.asarray(temporal_valid_flags[:temporal_window], dtype=bool))
+        entity_boxes_over_time.append(np.stack(boxes, axis=0).astype(np.float32))
+        entity_masks_over_time.append(target_masks)
+
+    if target_future_mask is None:
+        raise RuntimeError(f"context-preserving eval failed to resolve target future mask for {item.get('protocol_item_id')}")
+
+    sample = {
+        "obs_state": torch.from_numpy(np.stack(obs_states, axis=1)).to(torch.float32),
+        "fut_state": torch.from_numpy(np.stack(fut_states, axis=1)).to(torch.float32),
+        "obs_valid": torch.from_numpy(np.stack(obs_valids, axis=1)).to(torch.bool),
+        "fut_valid": torch.from_numpy(np.stack(fut_valids, axis=1)).to(torch.bool),
+        "point_ids": torch.arange(len(entity_ids), dtype=torch.long),
+        "meta": {
+            "dataset": str(item.get("dataset", "")),
+            "clip_id": str(item.get("clip_id", "")),
+            "target_id": str(item.get("target_id", "")),
+            "subset_tags": list(item.get("subset_tags", [])),
+            "target_entity_index": 0,
+            "context_entity_indices": context_entity_indices,
+            "protocol_eval_context_entity_count": int(len(entity_ids)),
+            "protocol_eval_mode": "context_preserving",
+        },
+        "semantic_features": torch.from_numpy(np.stack(semantic_features, axis=0)).to(torch.float32),
+        "semantic_boxes": torch.from_numpy(np.stack(semantic_boxes, axis=0)).to(torch.float32),
+        "semantic_mask": torch.tensor(semantic_masks, dtype=torch.bool),
+        "semantic_rgb_crop": torch.from_numpy(np.stack(semantic_rgb_crops, axis=0)).to(torch.float32),
+        "semantic_mask_crop": torch.from_numpy(np.stack(semantic_mask_crops, axis=0)).to(torch.float32),
+        "semantic_crop_valid": torch.tensor(semantic_crop_valids, dtype=torch.bool),
+        "semantic_mask_crop_valid": torch.tensor(semantic_mask_crop_valids, dtype=torch.bool),
+        "semantic_rgb_crop_temporal": torch.from_numpy(np.stack(semantic_rgb_crop_temporals, axis=0)).to(torch.float32),
+        "semantic_mask_crop_temporal": torch.from_numpy(np.stack(semantic_mask_crop_temporals, axis=0)).to(torch.float32),
+        "semantic_temporal_valid": torch.from_numpy(np.stack(semantic_temporal_valids, axis=0)).to(torch.bool),
+        "semantic_instance_id_map": torch.zeros((1, 1), dtype=torch.long) if query_instance_id_map is None else torch.from_numpy(query_instance_id_map).to(torch.long),
+        "semantic_instance_id_crop": torch.from_numpy(np.stack(semantic_instance_id_crops, axis=0)).to(torch.long),
+        "semantic_instance_id_temporal": torch.from_numpy(np.stack(semantic_instance_id_temporals, axis=0)).to(torch.long),
+        "semantic_instance_valid": torch.from_numpy(np.stack(semantic_instance_valids, axis=0)).to(torch.bool),
+        "semantic_objectness_score": torch.from_numpy(np.concatenate(semantic_objectness_scores, axis=0)).to(torch.float32),
+        "semantic_teacher_prior": torch.from_numpy(np.stack(semantic_teacher_priors, axis=0)).to(torch.float32),
+        "semantic_frame_path": str(frame_paths[query_step]),
+        "semantic_mask_path": "",
+        "entity_boxes_over_time": torch.from_numpy(np.stack(entity_boxes_over_time, axis=0)).to(torch.float32),
+        "entity_masks_over_time": entity_masks_over_time,
+        "semantic_source_mode": "object_region_or_mask_crop_visual_state",
+        "current_mainline_semantic_source": "crop_visual_encoder",
+        "legacy_semantic_source": "hand_crafted_stats",
+        "semantic_source_summary": {
+            "mask_available": True,
+            "semantic_crop_size": 64,
+            "temporal_window": int(temporal_window),
+            "protocol_eval_context_entity_count": int(len(entity_ids)),
         },
     }
     return prev.stage2_semantic_collate_fn([sample]), target_future_mask, future_masks

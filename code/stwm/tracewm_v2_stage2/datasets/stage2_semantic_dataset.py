@@ -239,6 +239,33 @@ def _select_entity_ids_for_sample(
     return [int(x) for x in labels[:max_entities]], "fallback_label_region"
 
 
+def _instance_density_counts(
+    *,
+    true_instance_aware: bool,
+    instance_source: str,
+    entity_count: int,
+) -> Dict[str, int]:
+    count = max(int(entity_count), 0)
+    source = str(instance_source).strip().lower()
+    if bool(true_instance_aware) and source == "true_instance_id":
+        return {
+            "true_instance_entity_count": int(count),
+            "pseudo_entity_count": 0,
+            "fallback_entity_count": 0,
+        }
+    if source in {"pseudo_semantic_region", "fallback_label_region"}:
+        return {
+            "true_instance_entity_count": 0,
+            "pseudo_entity_count": int(count),
+            "fallback_entity_count": 0,
+        }
+    return {
+        "true_instance_entity_count": 0,
+        "pseudo_entity_count": 0,
+        "fallback_entity_count": int(count),
+    }
+
+
 def _entity_mask_for_dataset(
     *,
     dataset_name: str,
@@ -635,13 +662,24 @@ class Stage2SemanticDataset(Dataset):
                                 (int(payload["point_ids"].shape[0]), 512),
                                 dtype=np.float32,
                             )
+                        meta_cached = dict(meta_obj if isinstance(meta_obj, dict) else {})
+                        entity_count = int(meta_cached.get("entity_count", int(payload["point_ids"].shape[0])))
+                        density_counts = _instance_density_counts(
+                            true_instance_aware=bool(meta_cached.get("true_instance_aware", False)),
+                            instance_source=str(meta_cached.get("instance_source", "unknown")),
+                            entity_count=int(entity_count),
+                        )
+                        meta_cached.update(density_counts)
+                        meta_cached["true_instance_ratio"] = float(
+                            float(density_counts["true_instance_entity_count"]) / float(max(entity_count, 1))
+                        )
                         return {
                             "obs_state": torch.from_numpy(payload["obs_state"]).to(torch.float32),
                             "fut_state": torch.from_numpy(payload["fut_state"]).to(torch.float32),
                             "obs_valid": torch.from_numpy(payload["obs_valid"]).to(torch.bool),
                             "fut_valid": torch.from_numpy(payload["fut_valid"]).to(torch.bool),
                             "point_ids": torch.from_numpy(payload["point_ids"]).to(torch.long),
-                            "meta": dict(meta_obj if isinstance(meta_obj, dict) else {}),
+                            "meta": meta_cached,
                             "semantic_features": torch.from_numpy(payload["semantic_features"]).to(torch.float32),
                             "semantic_boxes": torch.from_numpy(payload["semantic_boxes"]).to(torch.float32),
                             "semantic_mask": torch.from_numpy(payload["semantic_mask"]).to(torch.bool),
@@ -719,6 +757,11 @@ class Stage2SemanticDataset(Dataset):
         temporal_window = max(int(self.cfg.semantic_temporal_window), 1)
         total_steps = int(self.cfg.obs_len) + int(self.cfg.fut_len)
         entity_count = min(len(entity_ids), max(int(self.cfg.max_entities_per_sample), 1))
+        density_counts = _instance_density_counts(
+            true_instance_aware=bool(true_instance_aware),
+            instance_source=str(instance_source),
+            entity_count=int(entity_count),
+        )
         obs_state = np.zeros((int(self.cfg.obs_len), entity_count, STATE_DIM), dtype=np.float32)
         fut_state = np.zeros((int(self.cfg.fut_len), entity_count, STATE_DIM), dtype=np.float32)
         obs_valid = np.zeros((int(self.cfg.obs_len), entity_count), dtype=bool)
@@ -856,6 +899,12 @@ class Stage2SemanticDataset(Dataset):
                 "entity_count": int(entity_count),
                 "instance_source": str(instance_source),
                 "true_instance_aware": bool(true_instance_aware),
+                "true_instance_entity_count": int(density_counts["true_instance_entity_count"]),
+                "pseudo_entity_count": int(density_counts["pseudo_entity_count"]),
+                "fallback_entity_count": int(density_counts["fallback_entity_count"]),
+                "true_instance_ratio": float(
+                    float(density_counts["true_instance_entity_count"]) / float(max(entity_count, 1))
+                ),
             },
             "semantic_features": torch.from_numpy(semantic_features).to(torch.float32),
             "semantic_boxes": torch.from_numpy(semantic_boxes).to(torch.float32),
@@ -895,6 +944,12 @@ class Stage2SemanticDataset(Dataset):
                 "legacy_semantic_source": "hand_crafted_stats",
                 "legacy_semantic_feature_dim": int(SEMANTIC_FEATURE_DIM),
                 "entity_count": int(entity_count),
+                "true_instance_entity_count": int(density_counts["true_instance_entity_count"]),
+                "pseudo_entity_count": int(density_counts["pseudo_entity_count"]),
+                "fallback_entity_count": int(density_counts["fallback_entity_count"]),
+                "true_instance_ratio": float(
+                    float(density_counts["true_instance_entity_count"]) / float(max(entity_count, 1))
+                ),
             },
         }
         return sample
