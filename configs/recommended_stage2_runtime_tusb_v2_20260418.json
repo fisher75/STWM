@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-04-17T19:03:48.866789+00:00",
+  "mode": "stage2_runtime_pipeline_tusb_v2_compatible",
+  "selected_gpu_policy": {
+    "mode": "shared_gpu_selector",
+    "selected_gpu_id": 3
+  },
+  "recommended_num_workers": 4,
+  "recommended_pin_memory": true,
+  "recommended_persistent_workers": true,
+  "recommended_prefetch_factor": 2,
+  "required_mem_gb": 24.0,
+  "safety_margin_gb": 4.0,
+  "single_gpu_only": true,
+  "notes": [
+    "TUSB-v2 multi-entity samples caused host-side oversubscription under the 20260416 12-worker runtime",
+    "this runtime intentionally trades peak single-run throughput for stable multi-run progress",
+    "exact blocking reason for old runtime: 4 concurrent TUSB-v2 runs with num_workers=12 stalled before first eval/save boundary"
+  ]
+}

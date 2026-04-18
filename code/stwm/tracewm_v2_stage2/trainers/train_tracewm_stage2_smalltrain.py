@@ -123,6 +123,8 @@ def parse_args() -> Any:
     p.add_argument("--semantic-crop-size", type=int, default=64)
     p.add_argument("--local-temporal-window", type=int, default=1)
     p.add_argument("--local-temporal-fuse-weight", type=float, default=0.5)
+    p.add_argument("--max-entities-per-sample", type=int, default=8)
+    p.add_argument("--teacher-semantic-cache-path", default="")
     p.add_argument(
         "--stage2-structure-mode",
         default="calibration_only",
@@ -134,6 +136,8 @@ def parse_args() -> Any:
     p.add_argument("--trace-unit-assignment-topk", type=int, default=2)
     p.add_argument("--trace-unit-assignment-temperature", type=float, default=0.7)
     p.add_argument("--trace-unit-use-instance-prior-bias", action="store_true")
+    p.add_argument("--trace-unit-disable-instance-path", action="store_true")
+    p.add_argument("--trace-unit-teacher-prior-dim", type=int, default=512)
     p.add_argument("--trace-unit-dyn-update", default="gru", choices=["gru"])
     p.add_argument("--trace-unit-sem-update", default="gated_ema", choices=["gated_ema"])
     p.add_argument("--trace-unit-sem-alpha-min", type=float, default=0.02)
@@ -149,6 +153,11 @@ def parse_args() -> Any:
     p.add_argument("--trace-unit-semantic-inertia-weight", type=float, default=0.05)
     p.add_argument("--trace-unit-instance-consistency-weight", type=float, default=0.10)
     p.add_argument("--trace-unit-dynsem-decorrelation-weight", type=float, default=0.005)
+    p.add_argument("--trace-unit-utilization-weight", type=float, default=0.03)
+    p.add_argument("--trace-unit-min-active-target", type=float, default=4.0)
+    p.add_argument("--trace-unit-diversity-weight", type=float, default=0.03)
+    p.add_argument("--trace-unit-top2-floor-weight", type=float, default=0.02)
+    p.add_argument("--trace-unit-top2-mass-floor", type=float, default=0.10)
     p.add_argument(
         "--semantic-rescue-mode",
         default="none",
@@ -501,6 +510,7 @@ def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool) 
         "semantic_instance_id_temporal",
         "semantic_instance_valid",
         "semantic_objectness_score",
+        "semantic_teacher_prior",
     ]:
         out[k] = batch[k].to(device, non_blocking=non_blocking)
     return out
@@ -545,6 +555,7 @@ def _teacher_forced_predict(
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
     trace_unit_handshake: TraceUnitHandshake | None,
     trace_unit_broadcast: TraceUnitBroadcast | None,
+    trace_unit_disable_instance_path: bool,
     batch: Dict[str, Any],
     obs_len: int,
     semantic_source_mainline: str,
@@ -579,6 +590,7 @@ def _teacher_forced_predict(
         semantic_tokens=sem_enc,
         batch=batch,
         obs_len=int(obs_len),
+        disable_instance_path=bool(trace_unit_disable_instance_path),
     )
     pred_coord = readout_head(enhanced_hidden[:, int(obs_len) :])
 
@@ -609,6 +621,7 @@ def _free_rollout_predict(
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
     trace_unit_handshake: TraceUnitHandshake | None,
     trace_unit_broadcast: TraceUnitBroadcast | None,
+    trace_unit_disable_instance_path: bool,
     batch: Dict[str, Any],
     obs_len: int,
     fut_len: int,
@@ -653,6 +666,7 @@ def _free_rollout_predict(
             semantic_tokens=sem_enc,
             batch=batch,
             obs_len=int(obs_len),
+            disable_instance_path=bool(trace_unit_disable_instance_path),
         )
         gate_vals.append(float(aux.get("gate_mean", 0.0)))
 
@@ -673,6 +687,7 @@ def _free_rollout_predict(
         "target_coord": target_coord,
         "valid_mask": valid_mask,
         "gate_mean": float(sum(gate_vals) / max(len(gate_vals), 1)),
+        "future_hidden": enhanced_hidden[:, int(obs_len) :],
     }
 
 
@@ -688,19 +703,24 @@ def _apply_trace_unit_binding(
     semantic_tokens: torch.Tensor,
     batch: Dict[str, Any],
     obs_len: int,
+    disable_instance_path: bool,
 ) -> Tuple[torch.Tensor, Dict[str, Any]]:
     if str(structure_mode).strip().lower() != "trace_unit_semantic_binding":
         return fused_hidden, {}
     if tokenizer is None or factorized_state is None or handshake is None or broadcast is None:
         return fused_hidden, {}
 
+    semantic_instance_valid = batch.get("semantic_instance_valid")
+    if bool(disable_instance_path) and isinstance(semantic_instance_valid, torch.Tensor):
+        semantic_instance_valid = torch.zeros_like(semantic_instance_valid)
     tokenized = tokenizer(
         backbone_hidden=fused_hidden,
         state_seq=state_seq,
         semantic_tokens=semantic_tokens,
         token_mask=batch["token_mask"],
         semantic_objectness_score=batch.get("semantic_objectness_score"),
-        semantic_instance_valid=batch.get("semantic_instance_valid"),
+        semantic_instance_valid=semantic_instance_valid,
+        semantic_teacher_prior=batch.get("semantic_teacher_prior"),
     )
     fact = factorized_state(
         token_features=tokenized["token_features"],
@@ -742,6 +762,11 @@ def _trace_unit_regularization_loss(
     semantic_inertia_weight: float,
     instance_consistency_weight: float,
     dynsem_decorrelation_weight: float,
+    utilization_weight: float,
+    min_active_target: float,
+    diversity_weight: float,
+    top2_floor_weight: float,
+    top2_mass_floor: float,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     zero = batch["fut_state"].sum() * 0.0
     if str(structure_mode).strip().lower() != "trace_unit_semantic_binding" or not trace_unit_aux:
@@ -757,6 +782,7 @@ def _trace_unit_regularization_loss(
             "different_instance_between_unit_separation": 0.0,
             "unit_semantic_stability_over_time": 0.0,
             "broadcast_residual_norm_mean": 0.0,
+            "unit_utilization_mean": 0.0,
         }
 
     assignment = trace_unit_aux["assignment"]
@@ -772,6 +798,14 @@ def _trace_unit_regularization_loss(
     entropy = -(obs_assignment.clamp_min(1e-8) * obs_assignment.clamp_min(1e-8).log()).sum(dim=-1)
     entropy = torch.where(obs_valid, entropy, torch.zeros_like(entropy))
     entropy_loss = entropy.sum() / obs_valid.float().sum().clamp_min(1.0)
+    token_count = obs_valid.float().sum(dim=(1, 2)).clamp_min(1.0)
+    per_sample_unit_mass = obs_assignment.sum(dim=(1, 2)) / token_count[:, None]
+    active_unit_count = (per_sample_unit_mass > 1e-3).float().sum(dim=-1)
+    utilization_mean = float(active_unit_count.detach().mean().cpu().item())
+    unit_mass_norm = per_sample_unit_mass / per_sample_unit_mass.sum(dim=-1, keepdim=True).clamp_min(1e-6)
+    unit_util_entropy = -(unit_mass_norm.clamp_min(1e-8) * unit_mass_norm.clamp_min(1e-8).log()).sum(dim=-1)
+    unit_utilization_loss = -unit_util_entropy.mean()
+    min_active_loss = torch.relu(torch.as_tensor(float(min_active_target), device=device, dtype=active_unit_count.dtype) - active_unit_count).mean()
 
     temporal_consistency_loss = zero
     if obs_assignment.shape[1] >= 2:
@@ -836,6 +870,19 @@ def _trace_unit_regularization_loss(
     if float(dynsem_decorrelation_weight) > 0.0:
         weighted_terms.append(float(dynsem_decorrelation_weight) * decorrelation)
         weight_sum += float(dynsem_decorrelation_weight)
+    if float(utilization_weight) > 0.0:
+        weighted_terms.append(float(utilization_weight) * (unit_utilization_loss + min_active_loss))
+        weight_sum += float(utilization_weight)
+    if float(diversity_weight) > 0.0:
+        weighted_terms.append(float(diversity_weight) * min_active_loss)
+        weight_sum += float(diversity_weight)
+    top2_vals = torch.topk(obs_assignment, k=min(2, obs_assignment.shape[-1]), dim=-1, largest=True, sorted=True).values
+    secondary_mass = top2_vals[..., 1] if top2_vals.shape[-1] > 1 else torch.zeros_like(entropy)
+    top2_floor_loss = torch.relu(torch.as_tensor(float(top2_mass_floor), device=device, dtype=secondary_mass.dtype) - secondary_mass)
+    top2_floor_loss = (top2_floor_loss * obs_valid.float()).sum() / obs_valid.float().sum().clamp_min(1.0)
+    if float(top2_floor_weight) > 0.0:
+        weighted_terms.append(float(top2_floor_weight) * top2_floor_loss)
+        weight_sum += float(top2_floor_weight)
     total = sum(weighted_terms) / max(float(weight_sum), 1e-6) if weighted_terms else zero
 
     tokenizer_metrics = trace_unit_aux.get("tokenizer_metrics", {}) if isinstance(trace_unit_aux.get("tokenizer_metrics", {}), dict) else {}
@@ -853,6 +900,7 @@ def _trace_unit_regularization_loss(
         "different_instance_between_unit_separation": float(diff_instance_separation),
         "unit_semantic_stability_over_time": float(factorized_metrics.get("unit_semantic_stability_over_time", 0.0)),
         "broadcast_residual_norm_mean": float(broadcast_metrics.get("broadcast_residual_norm_mean", 0.0)),
+        "unit_utilization_mean": float(utilization_mean),
     }
 
 
@@ -867,6 +915,7 @@ def _evaluate(
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
     trace_unit_handshake: TraceUnitHandshake | None,
     trace_unit_broadcast: TraceUnitBroadcast | None,
+    trace_unit_disable_instance_path: bool,
     loader: DataLoader,
     device: torch.device,
     pin_memory: bool,
@@ -906,6 +955,7 @@ def _evaluate(
                 trace_unit_factorized_state=trace_unit_factorized_state,
                 trace_unit_handshake=trace_unit_handshake,
                 trace_unit_broadcast=trace_unit_broadcast,
+                trace_unit_disable_instance_path=bool(trace_unit_disable_instance_path),
                 batch=batch,
                 obs_len=int(obs_len),
                 semantic_source_mainline=str(semantic_source_mainline),
@@ -920,6 +970,7 @@ def _evaluate(
                 trace_unit_factorized_state=trace_unit_factorized_state,
                 trace_unit_handshake=trace_unit_handshake,
                 trace_unit_broadcast=trace_unit_broadcast,
+                trace_unit_disable_instance_path=bool(trace_unit_disable_instance_path),
                 batch=batch,
                 obs_len=int(obs_len),
                 fut_len=int(fut_len),
@@ -2867,6 +2918,8 @@ def main() -> None:
         semantic_source_mainline=str(args.semantic_source_mainline),
         semantic_temporal_window=int(args.local_temporal_window),
         predecode_cache_path=str(args.predecode_cache_path),
+        teacher_semantic_cache_path=str(args.teacher_semantic_cache_path),
+        max_entities_per_sample=int(args.max_entities_per_sample),
     )
     val_cfg = Stage2SemanticDatasetConfig(
         dataset_names=[str(x) for x in args.dataset_names],
@@ -2881,6 +2934,8 @@ def main() -> None:
         semantic_source_mainline=str(args.semantic_source_mainline),
         semantic_temporal_window=int(args.local_temporal_window),
         predecode_cache_path=str(args.predecode_cache_path),
+        teacher_semantic_cache_path=str(args.teacher_semantic_cache_path),
+        max_entities_per_sample=int(args.max_entities_per_sample),
     )
 
     train_ds = Stage2SemanticDataset(train_cfg)
@@ -2954,6 +3009,7 @@ def main() -> None:
                 hidden_dim=int(fusion_hidden_dim),
                 semantic_dim=int(args.semantic_embed_dim),
                 state_dim=STATE_DIM,
+                teacher_prior_dim=int(args.trace_unit_teacher_prior_dim),
                 unit_dim=int(args.trace_unit_dim),
                 unit_count=int(args.trace_unit_count),
                 slot_iters=int(args.trace_unit_slot_iters),
@@ -3115,6 +3171,8 @@ def main() -> None:
         "trace_unit_assignment_topk": int(args.trace_unit_assignment_topk),
         "trace_unit_assignment_temperature": float(args.trace_unit_assignment_temperature),
         "trace_unit_use_instance_prior_bias": bool(args.trace_unit_use_instance_prior_bias),
+        "trace_unit_disable_instance_path": bool(args.trace_unit_disable_instance_path),
+        "trace_unit_teacher_prior_dim": int(args.trace_unit_teacher_prior_dim),
         "trace_unit_sem_alpha_min": float(args.trace_unit_sem_alpha_min),
         "trace_unit_sem_alpha_max": float(args.trace_unit_sem_alpha_max),
         "trace_unit_handshake_dim": int(args.trace_unit_handshake_dim),
@@ -3126,6 +3184,13 @@ def main() -> None:
         "trace_unit_semantic_inertia_weight": float(args.trace_unit_semantic_inertia_weight),
         "trace_unit_instance_consistency_weight": float(args.trace_unit_instance_consistency_weight),
         "trace_unit_dynsem_decorrelation_weight": float(args.trace_unit_dynsem_decorrelation_weight),
+        "trace_unit_utilization_weight": float(args.trace_unit_utilization_weight),
+        "trace_unit_min_active_target": float(args.trace_unit_min_active_target),
+        "trace_unit_diversity_weight": float(args.trace_unit_diversity_weight),
+        "trace_unit_top2_floor_weight": float(args.trace_unit_top2_floor_weight),
+        "trace_unit_top2_mass_floor": float(args.trace_unit_top2_mass_floor),
+        "teacher_semantic_cache_path": str(args.teacher_semantic_cache_path),
+        "max_entities_per_sample": int(args.max_entities_per_sample),
     }
 
     resolved_resume = _resolve_resume_path(
@@ -3267,6 +3332,8 @@ def main() -> None:
                 semantic_source_mainline=str(args.semantic_source_mainline),
                 semantic_temporal_window=int(args.local_temporal_window),
                 predecode_cache_path=str(args.predecode_cache_path),
+                teacher_semantic_cache_path=str(args.teacher_semantic_cache_path),
+                max_entities_per_sample=int(args.max_entities_per_sample),
             )
             hard_ds_full = Stage2SemanticDataset(hard_cfg)
             hard_subset = torch.utils.data.Subset(hard_ds_full, hard_indices)
@@ -3282,6 +3349,7 @@ def main() -> None:
     target_steps = int(args.train_steps)
     eval_interval = int(args.eval_interval)
     save_every = int(args.save_every_n_steps)
+    progress_heartbeat_every = int(min(max(eval_interval, 1), 50))
 
     _write_progress_snapshot(
         progress_json,
@@ -3346,6 +3414,7 @@ def main() -> None:
             trace_unit_factorized_state=trace_unit_factorized_state,
             trace_unit_handshake=trace_unit_handshake,
             trace_unit_broadcast=trace_unit_broadcast,
+            trace_unit_disable_instance_path=bool(args.trace_unit_disable_instance_path),
             batch=batch,
             obs_len=int(args.obs_len),
             semantic_source_mainline=str(args.semantic_source_mainline),
@@ -3427,6 +3496,11 @@ def main() -> None:
             semantic_inertia_weight=float(args.trace_unit_semantic_inertia_weight),
             instance_consistency_weight=float(args.trace_unit_instance_consistency_weight),
             dynsem_decorrelation_weight=float(args.trace_unit_dynsem_decorrelation_weight),
+            utilization_weight=float(args.trace_unit_utilization_weight),
+            min_active_target=float(args.trace_unit_min_active_target),
+            diversity_weight=float(args.trace_unit_diversity_weight),
+            top2_floor_weight=float(args.trace_unit_top2_floor_weight),
+            top2_mass_floor=float(args.trace_unit_top2_mass_floor),
         )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = (
@@ -3508,6 +3582,26 @@ def main() -> None:
         trace_unit_broadcast_norm_history.append(float(trace_unit_info.get("broadcast_residual_norm_mean", 0.0)))
         semantic_nonempty_count += 1 if bool(tf_out["semantic_input_nonempty"]) else 0
 
+        if global_step % progress_heartbeat_every == 0:
+            _write_progress_snapshot(
+                progress_json,
+                _build_progress_payload(
+                    args=args,
+                    status="running",
+                    global_step=int(global_step),
+                    target_steps=int(target_steps),
+                    train_summary=train_summary,
+                    val_summary=val_summary,
+                    run_metadata=run_metadata,
+                    runtime_meta=runtime_meta,
+                    checkpoint_dir=output_dir,
+                    best_ckpt=best_ckpt,
+                    latest_ckpt=latest_ckpt,
+                    eval_history=eval_history,
+                    best_metric_so_far=best_metric_so_far,
+                ),
+            )
+
         should_eval = bool(eval_interval > 0 and global_step % eval_interval == 0)
         if global_step == target_steps:
             should_eval = True
@@ -3523,6 +3617,7 @@ def main() -> None:
                 trace_unit_factorized_state=trace_unit_factorized_state,
                 trace_unit_handshake=trace_unit_handshake,
                 trace_unit_broadcast=trace_unit_broadcast,
+                trace_unit_disable_instance_path=bool(args.trace_unit_disable_instance_path),
                 loader=val_loader,
                 device=device,
                 pin_memory=bool(pin_memory),
@@ -3543,6 +3638,7 @@ def main() -> None:
                     trace_unit_factorized_state=trace_unit_factorized_state,
                     trace_unit_handshake=trace_unit_handshake,
                     trace_unit_broadcast=trace_unit_broadcast,
+                    trace_unit_disable_instance_path=bool(args.trace_unit_disable_instance_path),
                     loader=semantic_hard_loader,
                     device=device,
                     pin_memory=bool(pin_memory),
@@ -3652,6 +3748,7 @@ def main() -> None:
             trace_unit_factorized_state=trace_unit_factorized_state,
             trace_unit_handshake=trace_unit_handshake,
             trace_unit_broadcast=trace_unit_broadcast,
+            trace_unit_disable_instance_path=bool(args.trace_unit_disable_instance_path),
             loader=val_loader,
             device=device,
             pin_memory=bool(pin_memory),

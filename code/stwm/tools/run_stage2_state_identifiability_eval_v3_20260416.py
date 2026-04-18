@@ -272,6 +272,7 @@ def _build_single_item_batch_v3(item: Dict[str, Any], temporal_window: int = 5) 
     semantic_instance_id_temporal = (temporal_mask > 0.5).astype(np.int64)
     semantic_instance_valid = temporal_valid[None, ...]
     semantic_objectness_score = np.asarray([max(float(sem_fg_ratio), 0.0)], dtype=np.float32)
+    semantic_teacher_prior = np.zeros((1, 512), dtype=np.float32)
     sample = {
         "obs_state": torch.from_numpy(obs_state).to(torch.float32),
         "fut_state": torch.from_numpy(fut_state).to(torch.float32),
@@ -299,6 +300,7 @@ def _build_single_item_batch_v3(item: Dict[str, Any], temporal_window: int = 5) 
         "semantic_instance_id_temporal": torch.from_numpy(semantic_instance_id_temporal[None, ...]).to(torch.long),
         "semantic_instance_valid": torch.from_numpy(semantic_instance_valid).to(torch.bool),
         "semantic_objectness_score": torch.from_numpy(semantic_objectness_score).to(torch.float32),
+        "semantic_teacher_prior": torch.from_numpy(semantic_teacher_prior).to(torch.float32),
         "semantic_frame_path": str(frame_paths[query_step]),
         "semantic_mask_path": "",
         "semantic_source_mode": "object_region_or_mask_crop_visual_state",
