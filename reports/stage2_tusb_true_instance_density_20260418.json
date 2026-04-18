@@ -1,0 +1,57 @@
+{
+  "generated_at_utc": "2026-04-18T06:25:36.704988+00:00",
+  "baseline_mixed": {
+    "dataset_names": [
+      "vspw",
+      "vipseg"
+    ],
+    "split": "train",
+    "sample_count": 64,
+    "true_instance_entity_count_mean": 2.96875,
+    "pseudo_entity_count_mean": 3.359375,
+    "fallback_entity_count_mean": 0.0,
+    "entity_count_mean": 6.328125,
+    "true_instance_ratio_mean": 0.5,
+    "instance_source_counts": {
+      "true_instance_id": 32,
+      "pseudo_semantic_region": 32
+    },
+    "vipseg_true_instance_continuity_coverage_ratio": 1.0
+  },
+  "vipseg_upweighted": {
+    "dataset_names": [
+      "vipseg",
+      "vipseg",
+      "vspw"
+    ],
+    "split": "train",
+    "sample_count": 96,
+    "true_instance_entity_count_mean": 3.9583333333333335,
+    "pseudo_entity_count_mean": 2.2395833333333335,
+    "fallback_entity_count_mean": 0.0,
+    "entity_count_mean": 6.197916666666667,
+    "true_instance_ratio_mean": 0.6666666666666666,
+    "instance_source_counts": {
+      "true_instance_id": 64,
+      "pseudo_semantic_region": 32
+    },
+    "vipseg_true_instance_continuity_coverage_ratio": 1.0
+  },
+  "vipseg_only": {
+    "dataset_names": [
+      "vipseg"
+    ],
+    "split": "train",
+    "sample_count": 32,
+    "true_instance_entity_count_mean": 5.9375,
+    "pseudo_entity_count_mean": 0.0,
+    "fallback_entity_count_mean": 0.0,
+    "entity_count_mean": 5.9375,
+    "true_instance_ratio_mean": 1.0,
+    "instance_source_counts": {
+      "true_instance_id": 32
+    },
+    "vipseg_true_instance_continuity_coverage_ratio": 1.0
+  },
+  "instance_aware_real_signal_used_if_upweighted": true
+}

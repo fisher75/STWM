@@ -1027,6 +1027,7 @@ def run_one(args: Any) -> None:
             pass
 
     trainer_path = Path(str(meta["work_root"])) / "code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py"
+    dataset_names = [str(x) for x in meta.get("dataset_names", ["vspw", "vipseg"])]
     cmd = [
         str(meta["python_bin"]),
         str(trainer_path),
@@ -1034,7 +1035,7 @@ def run_one(args: Any) -> None:
         "--recommended-runtime-json", str(meta["runtime_json"]),
         "--use-recommended-runtime",
         "--stage1-backbone-checkpoint", str(meta["stage1_best_ckpt"]),
-        "--dataset-names", "vspw", "vipseg",
+        "--dataset-names", *dataset_names,
         "--train-split", "train",
         "--val-split", "val",
         "--obs-len", str(meta["obs_len"]),

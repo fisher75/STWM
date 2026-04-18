@@ -1,0 +1,365 @@
+{
+  "generated_at_utc": "2026-04-18T07:23:36.159826+00:00",
+  "protocol_eval_context_entity_count_mean": 6.341176470588235,
+  "run_rows": [
+    {
+      "logical_name": "current_tusb_v2_main",
+      "run_name": "stage2_tusb_v2_seed123_20260418",
+      "alignment_scope": "context_eval_existing_rows",
+      "checkpoint_rows": [
+        {
+          "name": "current_tusb_v2_best_pt",
+          "run_name": "stage2_tusb_v2_seed123_20260418",
+          "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed123_20260418/best.pt",
+          "panels": {
+            "full_identifiability_panel": {
+              "count": 85,
+              "query_future_top1_acc": 0.1411764705882353,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20393356848675706,
+              "future_mask_iou_at_top1": 0.1417044951021178,
+              "hard_subset_top1_acc": 0.1411764705882353
+            },
+            "hard_subsets": {
+              "count": 85,
+              "query_future_top1_acc": 0.1411764705882353,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20393356848675706,
+              "future_mask_iou_at_top1": 0.1417044951021178,
+              "hard_subset_top1_acc": 0.1411764705882353
+            },
+            "occlusion_reappearance": {
+              "count": 47,
+              "query_future_top1_acc": 0.10638297872340426,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.224496955188375,
+              "future_mask_iou_at_top1": 0.10658966369025442,
+              "hard_subset_top1_acc": 0.10638297872340426
+            },
+            "crossing_ambiguity": {
+              "count": 68,
+              "query_future_top1_acc": 0.1323529411764706,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.19586014496801823,
+              "future_mask_iou_at_top1": 0.13295583315708462,
+              "hard_subset_top1_acc": 0.1323529411764706
+            },
+            "small_object": {
+              "count": 81,
+              "query_future_top1_acc": 0.13580246913580246,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20413020818993466,
+              "future_mask_iou_at_top1": 0.1362884419728422,
+              "hard_subset_top1_acc": 0.13580246913580246
+            },
+            "appearance_change": {
+              "count": 51,
+              "query_future_top1_acc": 0.17647058823529413,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20659043176105454,
+              "future_mask_iou_at_top1": 0.17696908491172894,
+              "hard_subset_top1_acc": 0.17647058823529413
+            },
+            "long_gap_persistence": {
+              "count": 19,
+              "query_future_top1_acc": 0.05263157894736842,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.2603297593258245,
+              "future_mask_iou_at_top1": 0.052894362471600787,
+              "hard_subset_top1_acc": 0.05263157894736842
+            }
+          },
+          "query_future_top1_acc": 0.1411764705882353,
+          "query_future_hit_rate": 0.0,
+          "query_future_localization_error": 0.20393356848675706,
+          "future_mask_iou_at_top1": 0.1417044951021178,
+          "hard_subset_top1_acc": 0.1411764705882353,
+          "ambiguity_top1_acc": 0.1323529411764706,
+          "small_object_top1_acc": 0.13580246913580246,
+          "appearance_change_top1_acc": 0.17647058823529413
+        },
+        {
+          "name": "current_tusb_v2_best_semantic_hard",
+          "run_name": "stage2_tusb_v2_seed123_20260418",
+          "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed123_20260418/best_semantic_hard.pt",
+          "panels": {
+            "full_identifiability_panel": {
+              "count": 85,
+              "query_future_top1_acc": 0.10588235294117647,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.21273014488585823,
+              "future_mask_iou_at_top1": 0.10647140421723518,
+              "hard_subset_top1_acc": 0.10588235294117647
+            },
+            "hard_subsets": {
+              "count": 85,
+              "query_future_top1_acc": 0.10588235294117647,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.21273014488585823,
+              "future_mask_iou_at_top1": 0.10647140421723518,
+              "hard_subset_top1_acc": 0.10588235294117647
+            },
+            "occlusion_reappearance": {
+              "count": 47,
+              "query_future_top1_acc": 0.0851063829787234,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.22576098238748088,
+              "future_mask_iou_at_top1": 0.08559645831822356,
+              "hard_subset_top1_acc": 0.0851063829787234
+            },
+            "crossing_ambiguity": {
+              "count": 68,
+              "query_future_top1_acc": 0.10294117647058823,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20545076887641303,
+              "future_mask_iou_at_top1": 0.10342004476631149,
+              "hard_subset_top1_acc": 0.10294117647058823
+            },
+            "small_object": {
+              "count": 81,
+              "query_future_top1_acc": 0.09876543209876543,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.21266640875159867,
+              "future_mask_iou_at_top1": 0.0993154453652493,
+              "hard_subset_top1_acc": 0.09876543209876543
+            },
+            "appearance_change": {
+              "count": 51,
+              "query_future_top1_acc": 0.13725490196078433,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.22147855565003507,
+              "future_mask_iou_at_top1": 0.13785510990751282,
+              "hard_subset_top1_acc": 0.13725490196078433
+            },
+            "long_gap_persistence": {
+              "count": 19,
+              "query_future_top1_acc": 0.05263157894736842,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.28264749062906397,
+              "future_mask_iou_at_top1": 0.052894362471600787,
+              "hard_subset_top1_acc": 0.05263157894736842
+            }
+          },
+          "query_future_top1_acc": 0.10588235294117647,
+          "query_future_hit_rate": 0.0,
+          "query_future_localization_error": 0.21273014488585823,
+          "future_mask_iou_at_top1": 0.10647140421723518,
+          "hard_subset_top1_acc": 0.10588235294117647,
+          "ambiguity_top1_acc": 0.10294117647058823,
+          "small_object_top1_acc": 0.09876543209876543,
+          "appearance_change_top1_acc": 0.13725490196078433
+        }
+      ],
+      "latest_rollout_sanity": {
+        "global_step": 11500,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.09021633748694967,
+          "free_rollout_coord_mean_l2": 0.27327906549899433,
+          "free_rollout_endpoint_l2": 0.26189393263596755,
+          "total_loss_reference": 0.0939213465899229
+        },
+        "rank_key": [
+          0.26189393263596755,
+          0.27327906549899433,
+          0.09021633748694967
+        ]
+      },
+      "rollout_best_checkpoint": "best.pt",
+      "protocol_best_checkpoint": "best.pt",
+      "rollout_best_and_protocol_best_match": true
+    },
+    {
+      "logical_name": "vipseg_upweighted",
+      "run_name": "stage2_tusb_v2_ctx_vipseg_upweight_seed123_20260418",
+      "alignment_scope": "best_pt_context_eval_only",
+      "checkpoint_rows": [
+        {
+          "name": "vipseg_upweighted_tusb_v2",
+          "run_name": "stage2_tusb_v2_ctx_vipseg_upweight_seed123_20260418",
+          "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_ctx_vipseg_upweight_seed123_20260418/best.pt",
+          "panels": {
+            "full_identifiability_panel": {
+              "count": 85,
+              "query_future_top1_acc": 0.1411764705882353,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20393356848675706,
+              "future_mask_iou_at_top1": 0.1417044951021178,
+              "hard_subset_top1_acc": 0.1411764705882353
+            },
+            "hard_subsets": {
+              "count": 85,
+              "query_future_top1_acc": 0.1411764705882353,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20393356848675706,
+              "future_mask_iou_at_top1": 0.1417044951021178,
+              "hard_subset_top1_acc": 0.1411764705882353
+            },
+            "occlusion_reappearance": {
+              "count": 47,
+              "query_future_top1_acc": 0.10638297872340426,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.224496955188375,
+              "future_mask_iou_at_top1": 0.10658966369025442,
+              "hard_subset_top1_acc": 0.10638297872340426
+            },
+            "crossing_ambiguity": {
+              "count": 68,
+              "query_future_top1_acc": 0.1323529411764706,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.19586014496801823,
+              "future_mask_iou_at_top1": 0.13295583315708462,
+              "hard_subset_top1_acc": 0.1323529411764706
+            },
+            "small_object": {
+              "count": 81,
+              "query_future_top1_acc": 0.13580246913580246,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20413020818993466,
+              "future_mask_iou_at_top1": 0.1362884419728422,
+              "hard_subset_top1_acc": 0.13580246913580246
+            },
+            "appearance_change": {
+              "count": 51,
+              "query_future_top1_acc": 0.17647058823529413,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20659043176105454,
+              "future_mask_iou_at_top1": 0.17696908491172894,
+              "hard_subset_top1_acc": 0.17647058823529413
+            },
+            "long_gap_persistence": {
+              "count": 19,
+              "query_future_top1_acc": 0.05263157894736842,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.2603297593258245,
+              "future_mask_iou_at_top1": 0.052894362471600787,
+              "hard_subset_top1_acc": 0.05263157894736842
+            }
+          },
+          "query_future_top1_acc": 0.1411764705882353,
+          "query_future_hit_rate": 0.0,
+          "query_future_localization_error": 0.20393356848675706,
+          "future_mask_iou_at_top1": 0.1417044951021178,
+          "hard_subset_top1_acc": 0.1411764705882353,
+          "ambiguity_top1_acc": 0.1323529411764706,
+          "small_object_top1_acc": 0.13580246913580246,
+          "appearance_change_top1_acc": 0.17647058823529413
+        }
+      ],
+      "rollout_best_checkpoint": "best.pt",
+      "protocol_best_checkpoint": "best.pt",
+      "rollout_best_and_protocol_best_match": true
+    },
+    {
+      "logical_name": "vipseg_only",
+      "run_name": "stage2_tusb_v2_ctx_vipseg_only_seed123_20260418",
+      "alignment_scope": "best_pt_context_eval_only",
+      "checkpoint_rows": [
+        {
+          "name": "vipseg_only_tusb_v2",
+          "run_name": "stage2_tusb_v2_ctx_vipseg_only_seed123_20260418",
+          "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_ctx_vipseg_only_seed123_20260418/best.pt",
+          "panels": {
+            "full_identifiability_panel": {
+              "count": 85,
+              "query_future_top1_acc": 0.1411764705882353,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20393356848675706,
+              "future_mask_iou_at_top1": 0.1417044951021178,
+              "hard_subset_top1_acc": 0.1411764705882353
+            },
+            "hard_subsets": {
+              "count": 85,
+              "query_future_top1_acc": 0.1411764705882353,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20393356848675706,
+              "future_mask_iou_at_top1": 0.1417044951021178,
+              "hard_subset_top1_acc": 0.1411764705882353
+            },
+            "occlusion_reappearance": {
+              "count": 47,
+              "query_future_top1_acc": 0.10638297872340426,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.224496955188375,
+              "future_mask_iou_at_top1": 0.10658966369025442,
+              "hard_subset_top1_acc": 0.10638297872340426
+            },
+            "crossing_ambiguity": {
+              "count": 68,
+              "query_future_top1_acc": 0.1323529411764706,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.19586014496801823,
+              "future_mask_iou_at_top1": 0.13295583315708462,
+              "hard_subset_top1_acc": 0.1323529411764706
+            },
+            "small_object": {
+              "count": 81,
+              "query_future_top1_acc": 0.13580246913580246,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20413020818993466,
+              "future_mask_iou_at_top1": 0.1362884419728422,
+              "hard_subset_top1_acc": 0.13580246913580246
+            },
+            "appearance_change": {
+              "count": 51,
+              "query_future_top1_acc": 0.17647058823529413,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.20659043176105454,
+              "future_mask_iou_at_top1": 0.17696908491172894,
+              "hard_subset_top1_acc": 0.17647058823529413
+            },
+            "long_gap_persistence": {
+              "count": 19,
+              "query_future_top1_acc": 0.05263157894736842,
+              "query_future_hit_rate": 0.0,
+              "query_future_localization_error": 0.2603297593258245,
+              "future_mask_iou_at_top1": 0.052894362471600787,
+              "hard_subset_top1_acc": 0.05263157894736842
+            }
+          },
+          "query_future_top1_acc": 0.1411764705882353,
+          "query_future_hit_rate": 0.0,
+          "query_future_localization_error": 0.20393356848675706,
+          "future_mask_iou_at_top1": 0.1417044951021178,
+          "hard_subset_top1_acc": 0.1411764705882353,
+          "ambiguity_top1_acc": 0.1323529411764706,
+          "small_object_top1_acc": 0.13580246913580246,
+          "appearance_change_top1_acc": 0.17647058823529413
+        }
+      ],
+      "rollout_best_checkpoint": "best.pt",
+      "protocol_best_checkpoint": "best.pt",
+      "rollout_best_and_protocol_best_match": true
+    },
+    {
+      "logical_name": "no_instance_path",
+      "run_name": "stage2_tusb_v2_no_instance_path_seed123_20260418",
+      "alignment_scope": "not_re_evaluated_in_context_round",
+      "checkpoint_rows": [],
+      "rollout_best_checkpoint": "best.pt",
+      "protocol_best_checkpoint": "best.pt_unverified",
+      "rollout_best_and_protocol_best_match": null
+    },
+    {
+      "logical_name": "no_teacher_prior",
+      "run_name": "stage2_tusb_v2_no_teacher_prior_seed123_20260418",
+      "alignment_scope": "not_re_evaluated_in_context_round",
+      "checkpoint_rows": [],
+      "rollout_best_checkpoint": "best.pt",
+      "protocol_best_checkpoint": "best.pt_unverified",
+      "rollout_best_and_protocol_best_match": null
+    },
+    {
+      "logical_name": "no_anticollapse",
+      "run_name": "stage2_tusb_v2_no_anticollapse_seed123_20260418",
+      "alignment_scope": "not_re_evaluated_in_context_round",
+      "checkpoint_rows": [],
+      "rollout_best_checkpoint": "best.pt",
+      "protocol_best_checkpoint": "best.pt_unverified",
+      "rollout_best_and_protocol_best_match": null
+    }
+  ],
+  "best_tusb_v2_checkpoint_choice": "best.pt",
+  "best_semantic_hard_more_aligned_with_protocol": false,
+  "should_continue_using_best_pt_as_only_public_checkpoint": true,
+  "notes": "Context-aligned repair used existing context-preserving eval rows for current main and context-density variants; key ablations remained rollout-best-only in this round."
+}
