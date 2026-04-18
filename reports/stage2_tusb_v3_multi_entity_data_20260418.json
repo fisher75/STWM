@@ -1,0 +1,36 @@
+{
+  "generated_at_utc": "2026-04-18T08:46:00.325441+00:00",
+  "dataset_names": [
+    "vspw",
+    "vipseg"
+  ],
+  "max_entities_per_sample": 8,
+  "sample_count": 256,
+  "entity_count_histogram": {
+    "3": 21,
+    "8": 96,
+    "5": 18,
+    "2": 19,
+    "7": 21,
+    "6": 35,
+    "4": 21,
+    "1": 25
+  },
+  "multi_entity_sample_coverage_ratio": 0.90234375,
+  "vipseg_true_instance_continuity_coverage_ratio": 0.5,
+  "instance_source_counts": {
+    "pseudo_semantic_region": 128,
+    "true_instance_id": 110,
+    "fallback_single_region": 18
+  },
+  "dataset_instance_awareness": {
+    "VIPSeg": {
+      "true_instance_aware": true,
+      "mode": "panoptic_instance_id"
+    },
+    "VSPW": {
+      "true_instance_aware": false,
+      "mode": "pseudo_or_null_component"
+    }
+  }
+}

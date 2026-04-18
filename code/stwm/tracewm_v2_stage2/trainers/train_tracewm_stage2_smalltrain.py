@@ -152,6 +152,11 @@ def parse_args() -> Any:
     p.add_argument("--trace-unit-assignment-temporal-consistency-weight", type=float, default=0.05)
     p.add_argument("--trace-unit-semantic-inertia-weight", type=float, default=0.05)
     p.add_argument("--trace-unit-instance-consistency-weight", type=float, default=0.10)
+    p.add_argument("--trace-unit-instance-binding-weight", type=float, default=0.10)
+    p.add_argument("--trace-unit-interinstance-repulse-weight", type=float, default=0.05)
+    p.add_argument("--trace-unit-unit-purity-weight", type=float, default=0.03)
+    p.add_argument("--trace-unit-instance-id-source", default="dominant_id", choices=["dominant_id", "temporal_overlap"])
+    p.add_argument("--trace-unit-instance-conf-threshold", type=float, default=0.6)
     p.add_argument("--trace-unit-dynsem-decorrelation-weight", type=float, default=0.005)
     p.add_argument("--trace-unit-utilization-weight", type=float, default=0.03)
     p.add_argument("--trace-unit-min-active-target", type=float, default=4.0)
@@ -510,6 +515,9 @@ def _to_device(batch: Dict[str, Any], device: torch.device, non_blocking: bool) 
         "semantic_instance_id_temporal",
         "semantic_instance_valid",
         "semantic_objectness_score",
+        "semantic_entity_dominant_instance_id",
+        "semantic_entity_instance_overlap_score_over_time",
+        "semantic_entity_true_instance_confidence",
         "semantic_teacher_prior",
     ]:
         out[k] = batch[k].to(device, non_blocking=non_blocking)
@@ -713,13 +721,32 @@ def _apply_trace_unit_binding(
     semantic_instance_valid = batch.get("semantic_instance_valid")
     if bool(disable_instance_path) and isinstance(semantic_instance_valid, torch.Tensor):
         semantic_instance_valid = torch.zeros_like(semantic_instance_valid)
+    semantic_entity_dominant_instance_id = batch.get("semantic_entity_dominant_instance_id")
+    semantic_entity_true_instance_confidence = batch.get("semantic_entity_true_instance_confidence")
+    if bool(disable_instance_path) and isinstance(semantic_entity_dominant_instance_id, torch.Tensor):
+        semantic_entity_dominant_instance_id = torch.zeros_like(semantic_entity_dominant_instance_id)
+    if bool(disable_instance_path) and isinstance(semantic_entity_true_instance_confidence, torch.Tensor):
+        semantic_entity_true_instance_confidence = torch.zeros_like(semantic_entity_true_instance_confidence)
+    state_valid_mask = None
+    obs_valid = batch.get("obs_valid")
+    fut_valid = batch.get("fut_valid")
+    if isinstance(obs_valid, torch.Tensor) and obs_valid.ndim == 3:
+        if isinstance(fut_valid, torch.Tensor) and fut_valid.ndim == 3:
+            full_valid = torch.cat([obs_valid, fut_valid], dim=1)
+        else:
+            future_steps = max(int(state_seq.shape[1]) - int(obs_valid.shape[1]), 0)
+            full_valid = torch.cat([obs_valid, batch["token_mask"][:, None, :].expand(obs_valid.shape[0], future_steps, obs_valid.shape[-1])], dim=1)
+        state_valid_mask = full_valid[:, : state_seq.shape[1]]
     tokenized = tokenizer(
         backbone_hidden=fused_hidden,
         state_seq=state_seq,
         semantic_tokens=semantic_tokens,
         token_mask=batch["token_mask"],
+        state_valid_mask=state_valid_mask,
         semantic_objectness_score=batch.get("semantic_objectness_score"),
         semantic_instance_valid=semantic_instance_valid,
+        semantic_entity_dominant_instance_id=semantic_entity_dominant_instance_id,
+        semantic_entity_true_instance_confidence=semantic_entity_true_instance_confidence,
         semantic_teacher_prior=batch.get("semantic_teacher_prior"),
     )
     fact = factorized_state(
@@ -761,6 +788,10 @@ def _trace_unit_regularization_loss(
     assignment_temporal_consistency_weight: float,
     semantic_inertia_weight: float,
     instance_consistency_weight: float,
+    instance_binding_weight: float,
+    interinstance_repulse_weight: float,
+    unit_purity_weight: float,
+    instance_conf_threshold: float,
     dynsem_decorrelation_weight: float,
     utilization_weight: float,
     min_active_target: float,
@@ -780,9 +811,16 @@ def _trace_unit_regularization_loss(
             "z_sem_to_z_dyn_drift_ratio": 0.0,
             "same_instance_within_unit_consistency": 0.0,
             "different_instance_between_unit_separation": 0.0,
+            "same_instance_dominant_unit_match_rate": 0.0,
+            "same_instance_assignment_cosine": 0.0,
+            "different_instance_dominant_unit_collision_rate": 0.0,
+            "unit_purity_by_instance_id": 0.0,
+            "unit_track_stability_over_time": 0.0,
+            "target_entity_to_dominant_unit_consistency": 0.0,
             "unit_semantic_stability_over_time": 0.0,
             "broadcast_residual_norm_mean": 0.0,
             "unit_utilization_mean": 0.0,
+            "true_instance_ratio_per_batch": 0.0,
         }
 
     assignment = trace_unit_aux["assignment"]
@@ -826,32 +864,110 @@ def _trace_unit_regularization_loss(
     sem_norm = torch.nn.functional.normalize(obs_z_sem, dim=-1)
     decorrelation = ((dyn_norm * sem_norm).sum(dim=-1) ** 2).mean()
 
-    instance_consistency_metric = 0.0
+    same_instance_match_rate = 0.0
+    same_instance_assignment_cosine = 0.0
+    diff_instance_collision_rate = 0.0
+    unit_purity_metric = 0.0
+    unit_track_stability = 0.0
+    target_entity_unit_consistency = 0.0
+    true_instance_ratio_per_batch = 0.0
     instance_consistency_loss = zero
-    instance_valid = batch.get("semantic_instance_valid")
-    if isinstance(instance_valid, torch.Tensor):
-        instance_valid = instance_valid.to(device=device, dtype=torch.bool)
-        if instance_valid.ndim == 3:
-            steps = min(obs_len, int(instance_valid.shape[-1]))
-            inst_valid = instance_valid[:, :, :steps].permute(0, 2, 1)
-            if steps >= 2:
-                pair_valid = inst_valid[:, 1:] & inst_valid[:, :-1] & obs_valid[:, 1:steps] & obs_valid[:, : steps - 1]
-                if bool(pair_valid.any().item()):
-                    assign_t = obs_assignment[:, 1:steps]
-                    assign_prev = obs_assignment[:, : steps - 1]
-                    cos = torch.nn.functional.cosine_similarity(assign_t, assign_prev, dim=-1)
-                    instance_consistency_metric = float(
-                        (cos * pair_valid.float()).sum().detach().cpu().item() / pair_valid.float().sum().clamp_min(1.0).detach().cpu().item()
-                    )
-                    instance_consistency_loss = (1.0 - cos).mul(pair_valid.float()).sum() / pair_valid.float().sum().clamp_min(1.0)
+    interinstance_repulse_loss = zero
+    unit_purity_loss = zero
+    diff_instance_separation = 0.0
+    instance_consistency_metric = 0.0
+
+    dominant_ids = batch.get("semantic_entity_dominant_instance_id")
+    instance_conf = batch.get("semantic_entity_true_instance_confidence")
+    obs_entity_valid = batch.get("obs_valid")
+    if isinstance(dominant_ids, torch.Tensor) and isinstance(instance_conf, torch.Tensor) and isinstance(obs_entity_valid, torch.Tensor):
+        dominant_ids = dominant_ids.to(device=device, dtype=torch.long)
+        instance_conf = instance_conf.to(device=device, dtype=obs_assignment.dtype)
+        obs_entity_valid = obs_entity_valid[:, :obs_len].to(device=device, dtype=torch.bool)
+        confident_entities = (dominant_ids > 0) & (instance_conf >= float(instance_conf_threshold))
+        true_instance_ratio_per_batch = float(confident_entities.float().mean().detach().cpu().item())
+        dominant_units = obs_assignment.argmax(dim=-1)
+
+        same_pair_mask = (
+            confident_entities[:, None, :]
+            & obs_entity_valid
+            & torch.cat([obs_entity_valid[:, 1:], torch.zeros_like(obs_entity_valid[:, :1])], dim=1)
+        )[:, :-1, :]
+        if bool(same_pair_mask.any().item()):
+            assign_t = obs_assignment[:, 1:obs_len]
+            assign_prev = obs_assignment[:, : obs_len - 1]
+            cos = torch.nn.functional.cosine_similarity(assign_t, assign_prev, dim=-1)
+            instance_consistency_loss = (1.0 - cos).mul(same_pair_mask.float()).sum() / same_pair_mask.float().sum().clamp_min(1.0)
+            same_instance_assignment_cosine = float(
+                (cos * same_pair_mask.float()).sum().detach().cpu().item() / same_pair_mask.float().sum().clamp_min(1.0).detach().cpu().item()
+            )
+            match = (dominant_units[:, 1:obs_len] == dominant_units[:, : obs_len - 1]).float()
+            same_instance_match_rate = float(
+                (match * same_pair_mask.float()).sum().detach().cpu().item() / same_pair_mask.float().sum().clamp_min(1.0).detach().cpu().item()
+            )
+        instance_consistency_metric = same_instance_assignment_cosine
+
+        pair_cos_terms = []
+        pair_collisions = []
+        purity_vals = []
+        entity_consistency_vals = []
+        for b_idx in range(int(obs_assignment.shape[0])):
+            valid_entity_ids = dominant_ids[b_idx]
+            for t_idx in range(int(obs_assignment.shape[1])):
+                valid_here = obs_entity_valid[b_idx, t_idx] & confident_entities[b_idx]
+                active_idx = torch.nonzero(valid_here, as_tuple=False).flatten()
+                if active_idx.numel() >= 2:
+                    for i_pos in range(int(active_idx.numel())):
+                        for j_pos in range(i_pos + 1, int(active_idx.numel())):
+                            i = int(active_idx[i_pos].item())
+                            j = int(active_idx[j_pos].item())
+                            if int(valid_entity_ids[i].item()) == int(valid_entity_ids[j].item()):
+                                continue
+                            ai = obs_assignment[b_idx, t_idx, i]
+                            aj = obs_assignment[b_idx, t_idx, j]
+                            cos_ij = torch.nn.functional.cosine_similarity(ai[None, :], aj[None, :], dim=-1)[0]
+                            pair_cos_terms.append(cos_ij)
+                            pair_collisions.append(float(int(dominant_units[b_idx, t_idx, i].item()) == int(dominant_units[b_idx, t_idx, j].item())))
+                    mass = obs_assignment[b_idx, t_idx, active_idx]
+                    ids = valid_entity_ids[active_idx]
+                    for unit_idx in range(int(mass.shape[-1])):
+                        weights = mass[:, unit_idx]
+                        denom = float(weights.sum().detach().cpu().item())
+                        if denom <= 1e-6:
+                            continue
+                        unique_ids = torch.unique(ids)
+                        best_mass = 0.0
+                        for instance_id in unique_ids.tolist():
+                            best_mass = max(best_mass, float(weights[(ids == int(instance_id))].sum().detach().cpu().item()))
+                        purity_vals.append(best_mass / max(denom, 1e-6))
+            for ent_idx in range(int(obs_assignment.shape[2])):
+                if not bool(confident_entities[b_idx, ent_idx].item()):
+                    continue
+                valid_steps = torch.nonzero(obs_entity_valid[b_idx, :, ent_idx], as_tuple=False).flatten()
+                if valid_steps.numel() < 2:
+                    continue
+                ent_units = dominant_units[b_idx, valid_steps, ent_idx]
+                values, counts = torch.unique(ent_units, return_counts=True)
+                if counts.numel() > 0:
+                    entity_consistency_vals.append(float(counts.max().detach().cpu().item() / max(int(valid_steps.numel()), 1)))
+
+        if pair_cos_terms:
+            pair_cos_tensor = torch.stack(pair_cos_terms)
+            interinstance_repulse_loss = torch.relu(pair_cos_tensor - 0.35).mean()
+            diff_instance_separation = float((1.0 - pair_cos_tensor).mean().detach().cpu().item())
+            diff_instance_collision_rate = float(sum(pair_collisions) / max(len(pair_collisions), 1))
+        if purity_vals:
+            unit_purity_metric = float(sum(purity_vals) / max(len(purity_vals), 1))
+            unit_purity_loss = torch.as_tensor(1.0 - unit_purity_metric, device=device, dtype=obs_assignment.dtype)
+        if entity_consistency_vals:
+            target_entity_unit_consistency = float(sum(entity_consistency_vals) / max(len(entity_consistency_vals), 1))
+            unit_track_stability = float(target_entity_unit_consistency)
 
     global_sem = torch.nn.functional.normalize(obs_z_sem.mean(dim=(1, 2)), dim=-1)
     if global_sem.shape[0] >= 2:
         pair_i, pair_j = torch.triu_indices(global_sem.shape[0], global_sem.shape[0], offset=1, device=device)
         separation = 1.0 - (global_sem[pair_i] * global_sem[pair_j]).sum(dim=-1)
-        diff_instance_separation = float(separation.mean().detach().cpu().item())
-    else:
-        diff_instance_separation = 0.0
+        diff_instance_separation = max(float(diff_instance_separation), float(separation.mean().detach().cpu().item()))
 
     weighted_terms = []
     weight_sum = 0.0
@@ -864,9 +980,16 @@ def _trace_unit_regularization_loss(
     if float(semantic_inertia_weight) > 0.0:
         weighted_terms.append(float(semantic_inertia_weight) * semantic_inertia_loss)
         weight_sum += float(semantic_inertia_weight)
-    if float(instance_consistency_weight) > 0.0:
-        weighted_terms.append(float(instance_consistency_weight) * instance_consistency_loss)
-        weight_sum += float(instance_consistency_weight)
+    effective_instance_binding_weight = float(instance_binding_weight) if float(instance_binding_weight) > 0.0 else float(instance_consistency_weight)
+    if float(effective_instance_binding_weight) > 0.0:
+        weighted_terms.append(float(effective_instance_binding_weight) * instance_consistency_loss)
+        weight_sum += float(effective_instance_binding_weight)
+    if float(interinstance_repulse_weight) > 0.0:
+        weighted_terms.append(float(interinstance_repulse_weight) * interinstance_repulse_loss)
+        weight_sum += float(interinstance_repulse_weight)
+    if float(unit_purity_weight) > 0.0:
+        weighted_terms.append(float(unit_purity_weight) * unit_purity_loss)
+        weight_sum += float(unit_purity_weight)
     if float(dynsem_decorrelation_weight) > 0.0:
         weighted_terms.append(float(dynsem_decorrelation_weight) * decorrelation)
         weight_sum += float(dynsem_decorrelation_weight)
@@ -897,10 +1020,17 @@ def _trace_unit_regularization_loss(
         "z_sem_drift_mean": float(factorized_metrics.get("z_sem_drift_mean", 0.0)),
         "z_sem_to_z_dyn_drift_ratio": float(factorized_metrics.get("z_sem_to_z_dyn_drift_ratio", 0.0)),
         "same_instance_within_unit_consistency": float(instance_consistency_metric),
+        "same_instance_dominant_unit_match_rate": float(same_instance_match_rate),
+        "same_instance_assignment_cosine": float(same_instance_assignment_cosine),
+        "different_instance_dominant_unit_collision_rate": float(diff_instance_collision_rate),
+        "unit_purity_by_instance_id": float(unit_purity_metric),
+        "unit_track_stability_over_time": float(unit_track_stability),
+        "target_entity_to_dominant_unit_consistency": float(target_entity_unit_consistency),
         "different_instance_between_unit_separation": float(diff_instance_separation),
         "unit_semantic_stability_over_time": float(factorized_metrics.get("unit_semantic_stability_over_time", 0.0)),
         "broadcast_residual_norm_mean": float(broadcast_metrics.get("broadcast_residual_norm_mean", 0.0)),
         "unit_utilization_mean": float(utilization_mean),
+        "true_instance_ratio_per_batch": float(true_instance_ratio_per_batch),
     }
 
 
@@ -3180,11 +3310,16 @@ def main() -> None:
         "trace_unit_broadcast_residual_weight": float(args.trace_unit_broadcast_residual_weight),
         "trace_unit_broadcast_stopgrad_semantic": bool(args.trace_unit_broadcast_stopgrad_semantic),
         "trace_unit_assignment_sparsity_weight": float(args.trace_unit_assignment_sparsity_weight),
-        "trace_unit_assignment_temporal_consistency_weight": float(args.trace_unit_assignment_temporal_consistency_weight),
-        "trace_unit_semantic_inertia_weight": float(args.trace_unit_semantic_inertia_weight),
-        "trace_unit_instance_consistency_weight": float(args.trace_unit_instance_consistency_weight),
-        "trace_unit_dynsem_decorrelation_weight": float(args.trace_unit_dynsem_decorrelation_weight),
-        "trace_unit_utilization_weight": float(args.trace_unit_utilization_weight),
+            "trace_unit_assignment_temporal_consistency_weight": float(args.trace_unit_assignment_temporal_consistency_weight),
+            "trace_unit_semantic_inertia_weight": float(args.trace_unit_semantic_inertia_weight),
+            "trace_unit_instance_consistency_weight": float(args.trace_unit_instance_consistency_weight),
+            "trace_unit_instance_binding_weight": float(args.trace_unit_instance_binding_weight),
+            "trace_unit_interinstance_repulse_weight": float(args.trace_unit_interinstance_repulse_weight),
+            "trace_unit_unit_purity_weight": float(args.trace_unit_unit_purity_weight),
+            "trace_unit_instance_id_source": str(args.trace_unit_instance_id_source),
+            "trace_unit_instance_conf_threshold": float(args.trace_unit_instance_conf_threshold),
+            "trace_unit_dynsem_decorrelation_weight": float(args.trace_unit_dynsem_decorrelation_weight),
+            "trace_unit_utilization_weight": float(args.trace_unit_utilization_weight),
         "trace_unit_min_active_target": float(args.trace_unit_min_active_target),
         "trace_unit_diversity_weight": float(args.trace_unit_diversity_weight),
         "trace_unit_top2_floor_weight": float(args.trace_unit_top2_floor_weight),
@@ -3308,7 +3443,13 @@ def main() -> None:
     trace_unit_z_sem_drift_history: List[float] = []
     trace_unit_z_sem_to_dyn_ratio_history: List[float] = []
     trace_unit_same_instance_consistency_history: List[float] = []
+    trace_unit_same_instance_match_rate_history: List[float] = []
+    trace_unit_same_instance_assignment_cosine_history: List[float] = []
     trace_unit_diff_instance_separation_history: List[float] = []
+    trace_unit_diff_instance_collision_history: List[float] = []
+    trace_unit_purity_history: List[float] = []
+    trace_unit_track_stability_history: List[float] = []
+    trace_unit_target_entity_consistency_history: List[float] = []
     trace_unit_semantic_stability_history: List[float] = []
     trace_unit_broadcast_norm_history: List[float] = []
     true_instance_entity_count_history: List[float] = []
@@ -3529,6 +3670,10 @@ def main() -> None:
             assignment_temporal_consistency_weight=float(args.trace_unit_assignment_temporal_consistency_weight),
             semantic_inertia_weight=float(args.trace_unit_semantic_inertia_weight),
             instance_consistency_weight=float(args.trace_unit_instance_consistency_weight),
+            instance_binding_weight=float(args.trace_unit_instance_binding_weight),
+            interinstance_repulse_weight=float(args.trace_unit_interinstance_repulse_weight),
+            unit_purity_weight=float(args.trace_unit_unit_purity_weight),
+            instance_conf_threshold=float(args.trace_unit_instance_conf_threshold),
             dynsem_decorrelation_weight=float(args.trace_unit_dynsem_decorrelation_weight),
             utilization_weight=float(args.trace_unit_utilization_weight),
             min_active_target=float(args.trace_unit_min_active_target),
@@ -3611,7 +3756,13 @@ def main() -> None:
         trace_unit_z_sem_drift_history.append(float(trace_unit_info.get("z_sem_drift_mean", 0.0)))
         trace_unit_z_sem_to_dyn_ratio_history.append(float(trace_unit_info.get("z_sem_to_z_dyn_drift_ratio", 0.0)))
         trace_unit_same_instance_consistency_history.append(float(trace_unit_info.get("same_instance_within_unit_consistency", 0.0)))
+        trace_unit_same_instance_match_rate_history.append(float(trace_unit_info.get("same_instance_dominant_unit_match_rate", 0.0)))
+        trace_unit_same_instance_assignment_cosine_history.append(float(trace_unit_info.get("same_instance_assignment_cosine", 0.0)))
         trace_unit_diff_instance_separation_history.append(float(trace_unit_info.get("different_instance_between_unit_separation", 0.0)))
+        trace_unit_diff_instance_collision_history.append(float(trace_unit_info.get("different_instance_dominant_unit_collision_rate", 0.0)))
+        trace_unit_purity_history.append(float(trace_unit_info.get("unit_purity_by_instance_id", 0.0)))
+        trace_unit_track_stability_history.append(float(trace_unit_info.get("unit_track_stability_over_time", 0.0)))
+        trace_unit_target_entity_consistency_history.append(float(trace_unit_info.get("target_entity_to_dominant_unit_consistency", 0.0)))
         trace_unit_semantic_stability_history.append(float(trace_unit_info.get("unit_semantic_stability_over_time", 0.0)))
         trace_unit_broadcast_norm_history.append(float(trace_unit_info.get("broadcast_residual_norm_mean", 0.0)))
         semantic_nonempty_count += 1 if bool(tf_out["semantic_input_nonempty"]) else 0
@@ -4018,7 +4169,13 @@ def main() -> None:
             "z_sem_drift_mean": float(sum(trace_unit_z_sem_drift_history) / max(len(trace_unit_z_sem_drift_history), 1)),
             "z_sem_to_z_dyn_drift_ratio_mean": float(sum(trace_unit_z_sem_to_dyn_ratio_history) / max(len(trace_unit_z_sem_to_dyn_ratio_history), 1)),
             "same_instance_within_unit_consistency_mean": float(sum(trace_unit_same_instance_consistency_history) / max(len(trace_unit_same_instance_consistency_history), 1)),
+            "same_instance_dominant_unit_match_rate_mean": float(sum(trace_unit_same_instance_match_rate_history) / max(len(trace_unit_same_instance_match_rate_history), 1)),
+            "same_instance_assignment_cosine_mean": float(sum(trace_unit_same_instance_assignment_cosine_history) / max(len(trace_unit_same_instance_assignment_cosine_history), 1)),
             "different_instance_between_unit_separation_mean": float(sum(trace_unit_diff_instance_separation_history) / max(len(trace_unit_diff_instance_separation_history), 1)),
+            "different_instance_dominant_unit_collision_rate_mean": float(sum(trace_unit_diff_instance_collision_history) / max(len(trace_unit_diff_instance_collision_history), 1)),
+            "unit_purity_by_instance_id_mean": float(sum(trace_unit_purity_history) / max(len(trace_unit_purity_history), 1)),
+            "unit_track_stability_over_time_mean": float(sum(trace_unit_track_stability_history) / max(len(trace_unit_track_stability_history), 1)),
+            "target_entity_to_dominant_unit_consistency_mean": float(sum(trace_unit_target_entity_consistency_history) / max(len(trace_unit_target_entity_consistency_history), 1)),
             "unit_semantic_stability_over_time_mean": float(sum(trace_unit_semantic_stability_history) / max(len(trace_unit_semantic_stability_history), 1)),
             "broadcast_residual_norm_mean": float(sum(trace_unit_broadcast_norm_history) / max(len(trace_unit_broadcast_norm_history), 1)),
         },

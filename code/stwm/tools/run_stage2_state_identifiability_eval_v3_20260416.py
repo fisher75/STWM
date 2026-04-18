@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import gc
 import json
+import os
 
 import numpy as np
 import torch
@@ -14,6 +15,54 @@ from stwm.tools import run_stage2_state_identifiability_eval_20260415 as prev
 
 
 ROOT = prev.ROOT
+
+
+def _apply_process_title_normalization(default_title: str = "python") -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode != "generic":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", default_title)).strip() or default_title
+    lowered = title.lower()
+    if "stwm" in lowered or "tracewm" in lowered or "/home/" in lowered or "/raid/" in lowered:
+        title = default_title
+    try:
+        import setproctitle  # type: ignore
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
+
+
+def _entity_instance_binding_fields(
+    *,
+    instance_id_crop: np.ndarray,
+    instance_id_temporal: np.ndarray,
+    temporal_valid: np.ndarray,
+    dominant_id_hint: int,
+) -> Dict[str, np.ndarray]:
+    temporal_valid_arr = np.asarray(temporal_valid, dtype=bool)
+    temporal_ids = np.asarray(instance_id_temporal, dtype=np.int64)
+    dominant_id = int(dominant_id_hint)
+    if dominant_id <= 0:
+        positive = temporal_ids[temporal_valid_arr]
+        positive = positive[positive > 0]
+        if positive.size > 0:
+            values, counts = np.unique(positive, return_counts=True)
+            dominant_id = int(values[int(np.argmax(counts))])
+    overlap = np.zeros((int(temporal_ids.shape[0]),), dtype=np.float32)
+    if dominant_id > 0:
+        for step_i in range(int(temporal_ids.shape[0])):
+            if not bool(temporal_valid_arr[step_i]):
+                continue
+            ids = np.asarray(temporal_ids[step_i, 0], dtype=np.int64)
+            positive = ids[ids > 0]
+            if positive.size > 0:
+                overlap[step_i] = float(np.mean(positive == dominant_id))
+    confidence = float(overlap[temporal_valid_arr].mean()) if bool(np.any(temporal_valid_arr)) else 0.0
+    return {
+        "semantic_entity_dominant_instance_id": np.asarray([int(dominant_id if confidence > 0.0 else 0)], dtype=np.int64),
+        "semantic_entity_instance_overlap_score_over_time": overlap[None, :].astype(np.float32),
+        "semantic_entity_true_instance_confidence": np.asarray([confidence], dtype=np.float32),
+    }
 
 
 def _select_eval_device_v3(args: Any) -> Tuple[torch.device, Dict[str, Any]]:
@@ -284,6 +333,12 @@ def _build_single_item_batch_v3(
     semantic_instance_valid = temporal_valid[None, ...]
     semantic_objectness_score = np.asarray([max(float(sem_fg_ratio), 0.0)], dtype=np.float32)
     semantic_teacher_prior = np.zeros((1, 512), dtype=np.float32)
+    entity_binding = _entity_instance_binding_fields(
+        instance_id_crop=semantic_instance_id_crop,
+        instance_id_temporal=semantic_instance_id_temporal,
+        temporal_valid=temporal_valid,
+        dominant_id_hint=1,
+    )
     sample = {
         "obs_state": torch.from_numpy(obs_state).to(torch.float32),
         "fut_state": torch.from_numpy(fut_state).to(torch.float32),
@@ -311,6 +366,9 @@ def _build_single_item_batch_v3(
         "semantic_instance_id_temporal": torch.from_numpy(semantic_instance_id_temporal[None, ...]).to(torch.long),
         "semantic_instance_valid": torch.from_numpy(semantic_instance_valid).to(torch.bool),
         "semantic_objectness_score": torch.from_numpy(semantic_objectness_score).to(torch.float32),
+        "semantic_entity_dominant_instance_id": torch.from_numpy(entity_binding["semantic_entity_dominant_instance_id"]).to(torch.long),
+        "semantic_entity_instance_overlap_score_over_time": torch.from_numpy(entity_binding["semantic_entity_instance_overlap_score_over_time"]).to(torch.float32),
+        "semantic_entity_true_instance_confidence": torch.from_numpy(entity_binding["semantic_entity_true_instance_confidence"]).to(torch.float32),
         "semantic_teacher_prior": torch.from_numpy(semantic_teacher_prior).to(torch.float32),
         "semantic_frame_path": str(frame_paths[query_step]),
         "semantic_mask_path": "",
@@ -374,6 +432,9 @@ def _build_context_preserving_item_batch_v3(
     semantic_instance_id_temporals: List[np.ndarray] = []
     semantic_instance_valids: List[np.ndarray] = []
     semantic_objectness_scores: List[np.ndarray] = []
+    semantic_entity_dominant_ids: List[np.ndarray] = []
+    semantic_entity_instance_overlaps: List[np.ndarray] = []
+    semantic_entity_true_instance_confidences: List[np.ndarray] = []
     semantic_teacher_priors: List[np.ndarray] = []
     entity_boxes_over_time: List[np.ndarray] = []
     entity_masks_over_time: List[List[np.ndarray | None]] = []
@@ -486,6 +547,15 @@ def _build_context_preserving_item_batch_v3(
         semantic_instance_id_crops.append((semantic_mask_crops[-1] > 0.5).astype(np.int64))
         semantic_instance_id_temporals.append(np.stack(instance_temporal[:temporal_window], axis=0).astype(np.int64))
         semantic_instance_valids.append(np.asarray(temporal_valid_flags[:temporal_window], dtype=bool))
+        entity_binding = _entity_instance_binding_fields(
+            instance_id_crop=semantic_instance_id_crops[-1],
+            instance_id_temporal=semantic_instance_id_temporals[-1],
+            temporal_valid=semantic_instance_valids[-1],
+            dominant_id_hint=entity_idx + 1,
+        )
+        semantic_entity_dominant_ids.append(entity_binding["semantic_entity_dominant_instance_id"])
+        semantic_entity_instance_overlaps.append(entity_binding["semantic_entity_instance_overlap_score_over_time"])
+        semantic_entity_true_instance_confidences.append(entity_binding["semantic_entity_true_instance_confidence"])
         entity_boxes_over_time.append(np.stack(boxes, axis=0).astype(np.float32))
         entity_masks_over_time.append(target_masks)
 
@@ -523,6 +593,9 @@ def _build_context_preserving_item_batch_v3(
         "semantic_instance_id_temporal": torch.from_numpy(np.stack(semantic_instance_id_temporals, axis=0)).to(torch.long),
         "semantic_instance_valid": torch.from_numpy(np.stack(semantic_instance_valids, axis=0)).to(torch.bool),
         "semantic_objectness_score": torch.from_numpy(np.concatenate(semantic_objectness_scores, axis=0)).to(torch.float32),
+        "semantic_entity_dominant_instance_id": torch.from_numpy(np.concatenate(semantic_entity_dominant_ids, axis=0)).to(torch.long),
+        "semantic_entity_instance_overlap_score_over_time": torch.from_numpy(np.concatenate(semantic_entity_instance_overlaps, axis=0)).to(torch.float32),
+        "semantic_entity_true_instance_confidence": torch.from_numpy(np.concatenate(semantic_entity_true_instance_confidences, axis=0)).to(torch.float32),
         "semantic_teacher_prior": torch.from_numpy(np.stack(semantic_teacher_priors, axis=0)).to(torch.float32),
         "semantic_frame_path": str(frame_paths[query_step]),
         "semantic_mask_path": "",
@@ -542,6 +615,7 @@ def _build_context_preserving_item_batch_v3(
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     args = parse_args()
     protocol = prev.read_json(args.protocol_json)
     items = protocol.get("items", []) if isinstance(protocol.get("items", []), list) else []

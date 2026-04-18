@@ -1,0 +1,111 @@
+{
+  "generated_at_utc": "2026-04-18T08:46:51.497263+00:00",
+  "tmux_session": "tracewm_stage2_tusb_v3_identity_binding_20260418",
+  "teacher_backend": "clip_vit-b_16_temporal_weighted_masked_mean_v3",
+  "policy": "TUSB-v3 identity-binding repair on frozen Stage1; explicit instance-id supervision; no persistence; max 4 concurrent training tasks",
+  "lease_cleanup": {
+    "removed_count": 0,
+    "removed": [],
+    "kept_count": 4
+  },
+  "cleanup_actions": [
+    {
+      "run_name": "stage2_tusb_v3_seed123_20260418",
+      "removed_paths": [
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3_identity_binding_runs_20260418/stage2_tusb_v3_seed123_20260418.pid",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3_seed123_20260418_progress.json",
+        "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3_seed123_20260418"
+      ],
+      "rotated_logs": [
+        "/raid/chen034/workspace/stwm/logs/stage2_tusb_v3_seed123_20260418.log.failed_snapshot_20260418T084621Z"
+      ]
+    },
+    {
+      "run_name": "stage2_tusb_v3_seed42_20260418",
+      "removed_paths": [
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3_identity_binding_runs_20260418/stage2_tusb_v3_seed42_20260418.pid",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3_seed42_20260418_progress.json",
+        "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3_seed42_20260418"
+      ],
+      "rotated_logs": [
+        "/raid/chen034/workspace/stwm/logs/stage2_tusb_v3_seed42_20260418.log.failed_snapshot_20260418T084626Z"
+      ]
+    },
+    {
+      "run_name": "stage2_tusb_v3_seed456_20260418",
+      "removed_paths": [],
+      "rotated_logs": []
+    },
+    {
+      "run_name": "stage2_tusb_v3_no_identity_binding_seed123_20260418",
+      "removed_paths": [],
+      "rotated_logs": []
+    },
+    {
+      "run_name": "stage2_tusb_v3_no_interinstance_repulse_seed123_20260418",
+      "removed_paths": [],
+      "rotated_logs": []
+    },
+    {
+      "run_name": "stage2_tusb_v3_vipseg_upweight_seed123_20260418",
+      "removed_paths": [],
+      "rotated_logs": []
+    },
+    {
+      "run_name": "stage2_tusb_v3_vipseg_only_seed123_20260418",
+      "removed_paths": [],
+      "rotated_logs": []
+    }
+  ],
+  "runs": [
+    {
+      "run_name": "stage2_tusb_v3_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed123_20260418/best.pt",
+      "resume_global_step": 10500,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3_seed42_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed42_20260418/best.pt",
+      "resume_global_step": 5500,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3_seed456_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed456_20260418/best.pt",
+      "resume_global_step": 10000,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3_no_identity_binding_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed123_20260418/best.pt",
+      "resume_global_step": 10500,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3_no_interinstance_repulse_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_seed123_20260418/best.pt",
+      "resume_global_step": 10500,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3_vipseg_upweight_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_ctx_vipseg_upweight_seed123_20260418/best.pt",
+      "resume_global_step": 10500,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3_vipseg_only_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v2_ctx_vipseg_only_seed123_20260418/best.pt",
+      "resume_global_step": 10500,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    }
+  ]
+}
