@@ -1,0 +1,55 @@
+{
+  "generated_at_utc": "2026-04-19T06:30:10.014955+00:00",
+  "tmux_session": "tracewm_stage2_tusb_v3p1_hardsubset_conversion_20260418",
+  "teacher_backend": "clip_vit-b_16_temporal_drift_aware_masked_mean_v4",
+  "policy": "TUSB-v3.1 hard-subset conversion on frozen Stage1; ambiguity-aware repulse; appearance-drift teacher refine; hard-subset curriculum; max 4 concurrent training tasks",
+  "lease_cleanup": {
+    "removed_count": 0,
+    "removed": [],
+    "kept_count": 0
+  },
+  "cleanup_actions": [
+    {
+      "run_name": "stage2_tusb_v3p1_no_appearance_refine_seed123_20260418",
+      "removed_paths": [
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_hardsubset_conversion_runs_20260418/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418.pid",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418_progress.json",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418_final.json",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418_raw.json",
+        "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418"
+      ],
+      "rotated_logs": [
+        "/raid/chen034/workspace/stwm/logs/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418.log.failed_snapshot_20260419T063004Z"
+      ]
+    },
+    {
+      "run_name": "stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418",
+      "removed_paths": [
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_hardsubset_conversion_runs_20260418/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418.pid",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418_progress.json",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418_final.json",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418_raw.json",
+        "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418"
+      ],
+      "rotated_logs": [
+        "/raid/chen034/workspace/stwm/logs/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418.log.failed_snapshot_20260419T063009Z"
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "run_name": "stage2_tusb_v3p1_no_appearance_refine_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3_seed123_20260418/best_semantic_hard.pt",
+      "resume_global_step": 10800,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3_seed123_20260418/best_semantic_hard.pt",
+      "resume_global_step": 10800,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    }
+  ]
+}

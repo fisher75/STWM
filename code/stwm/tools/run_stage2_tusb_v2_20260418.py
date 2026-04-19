@@ -909,12 +909,34 @@ def _append_trace_unit_flags(cmd: List[str], meta: Dict[str, Any]) -> None:
         cmd.extend(["--trace-unit-instance-id-source", str(meta["trace_unit_instance_id_source"])])
     if "trace_unit_instance_conf_threshold" in meta:
         cmd.extend(["--trace-unit-instance-conf-threshold", str(meta["trace_unit_instance_conf_threshold"])])
+    if "trace_unit_ambiguity_repulse_weight" in meta:
+        cmd.extend(["--trace-unit-ambiguity-repulse-weight", str(meta["trace_unit_ambiguity_repulse_weight"])])
+    if "trace_unit_ambiguity_risk_threshold" in meta:
+        cmd.extend(["--trace-unit-ambiguity-risk-threshold", str(meta["trace_unit_ambiguity_risk_threshold"])])
+    if "trace_unit_ambiguity_min_dist_weight" in meta:
+        cmd.extend(["--trace-unit-ambiguity-min-dist-weight", str(meta["trace_unit_ambiguity_min_dist_weight"])])
+    if "trace_unit_ambiguity_iou_weight" in meta:
+        cmd.extend(["--trace-unit-ambiguity-iou-weight", str(meta["trace_unit_ambiguity_iou_weight"])])
+    if "trace_unit_ambiguity_motion_cross_weight" in meta:
+        cmd.extend(["--trace-unit-ambiguity-motion-cross-weight", str(meta["trace_unit_ambiguity_motion_cross_weight"])])
+    if "trace_unit_appearance_refine_weight" in meta:
+        cmd.extend(["--trace-unit-appearance-refine-weight", str(meta["trace_unit_appearance_refine_weight"])])
     cmd.extend(["--trace-unit-dynsem-decorrelation-weight", str(meta["trace_unit_dynsem_decorrelation_weight"])])
     cmd.extend(["--trace-unit-utilization-weight", str(meta["trace_unit_utilization_weight"])])
     cmd.extend(["--trace-unit-min-active-target", str(meta["trace_unit_min_active_target"])])
     cmd.extend(["--trace-unit-diversity-weight", str(meta["trace_unit_diversity_weight"])])
     cmd.extend(["--trace-unit-top2-floor-weight", str(meta["trace_unit_top2_floor_weight"])])
     cmd.extend(["--trace-unit-top2-mass-floor", str(meta["trace_unit_top2_mass_floor"])])
+    if "trace_unit_hardsubset_curriculum_weight" in meta:
+        cmd.extend(["--trace-unit-hardsubset-curriculum-weight", str(meta["trace_unit_hardsubset_curriculum_weight"])])
+    if "trace_unit_hardsubset_ambiguity_weight" in meta:
+        cmd.extend(["--trace-unit-hardsubset-ambiguity-weight", str(meta["trace_unit_hardsubset_ambiguity_weight"])])
+    if "trace_unit_hardsubset_appearance_weight" in meta:
+        cmd.extend(["--trace-unit-hardsubset-appearance-weight", str(meta["trace_unit_hardsubset_appearance_weight"])])
+    if "trace_unit_hardsubset_occlusion_weight" in meta:
+        cmd.extend(["--trace-unit-hardsubset-occlusion-weight", str(meta["trace_unit_hardsubset_occlusion_weight"])])
+    if "trace_unit_hardsubset_longgap_weight" in meta:
+        cmd.extend(["--trace-unit-hardsubset-longgap-weight", str(meta["trace_unit_hardsubset_longgap_weight"])])
     cmd.extend(["--max-entities-per-sample", str(meta["max_entities_per_sample"])])
     if bool(meta.get("trace_unit_use_instance_prior_bias", False)):
         cmd.append("--trace-unit-use-instance-prior-bias")
