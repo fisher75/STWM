@@ -168,7 +168,14 @@ def parse_args() -> Any:
     p.add_argument("--trace-unit-ambiguity-min-dist-weight", type=float, default=0.40)
     p.add_argument("--trace-unit-ambiguity-iou-weight", type=float, default=0.35)
     p.add_argument("--trace-unit-ambiguity-motion-cross-weight", type=float, default=0.25)
+    p.add_argument("--trace-unit-confuser-separation-weight", type=float, default=0.0)
+    p.add_argument("--trace-unit-confuser-risk-threshold", type=float, default=0.45)
+    p.add_argument("--trace-unit-confuser-appearance-weight", type=float, default=0.35)
+    p.add_argument("--trace-unit-confuser-motion-weight", type=float, default=0.25)
+    p.add_argument("--trace-unit-confuser-overlap-weight", type=float, default=0.40)
     p.add_argument("--trace-unit-appearance-refine-weight", type=float, default=0.0)
+    p.add_argument("--trace-unit-appearance-high-threshold", type=float, default=0.18)
+    p.add_argument("--trace-unit-appearance-high-quantile", type=float, default=0.80)
     p.add_argument("--trace-unit-hardsubset-curriculum-weight", type=float, default=0.0)
     p.add_argument("--trace-unit-hardsubset-ambiguity-weight", type=float, default=1.0)
     p.add_argument("--trace-unit-hardsubset-appearance-weight", type=float, default=1.0)
@@ -808,7 +815,14 @@ def _trace_unit_regularization_loss(
     ambiguity_min_dist_weight: float,
     ambiguity_iou_weight: float,
     ambiguity_motion_cross_weight: float,
+    confuser_separation_weight: float,
+    confuser_risk_threshold: float,
+    confuser_appearance_weight: float,
+    confuser_motion_weight: float,
+    confuser_overlap_weight: float,
     appearance_refine_weight: float,
+    appearance_high_threshold: float,
+    appearance_high_quantile: float,
     dynsem_decorrelation_weight: float,
     utilization_weight: float,
     min_active_target: float,
@@ -832,7 +846,9 @@ def _trace_unit_regularization_loss(
             "same_instance_assignment_cosine": 0.0,
             "different_instance_dominant_unit_collision_rate": 0.0,
             "ambiguity_highrisk_pair_collision_rate": 0.0,
+            "confuser_highrisk_pair_collision_rate": 0.0,
             "appearance_drift_highrisk_same_instance_match_rate": 0.0,
+            "appearance_drift_high_ratio": 0.0,
             "unit_purity_by_instance_id": 0.0,
             "unit_track_stability_over_time": 0.0,
             "target_entity_to_dominant_unit_consistency": 0.0,
@@ -897,8 +913,11 @@ def _trace_unit_regularization_loss(
     instance_consistency_metric = 0.0
     ambiguity_repulse_loss = zero
     ambiguity_highrisk_pair_collision_rate = 0.0
+    confuser_separation_loss = zero
+    confuser_highrisk_pair_collision_rate = 0.0
     appearance_refine_loss = zero
     appearance_drift_highrisk_same_instance_match_rate = 0.0
+    appearance_drift_high_ratio = 0.0
 
     dominant_ids = batch.get("semantic_entity_dominant_instance_id")
     instance_conf = batch.get("semantic_entity_true_instance_confidence")
@@ -909,7 +928,24 @@ def _trace_unit_regularization_loss(
         obs_entity_valid = obs_entity_valid[:, :obs_len].to(device=device, dtype=torch.bool)
         confident_entities = (dominant_ids > 0) & (instance_conf >= float(instance_conf_threshold))
         appearance_drift_by_entity, appearance_drift_entity_valid = _entity_temporal_appearance_drift(batch, device)
-        appearance_drift_high = appearance_drift_entity_valid & (appearance_drift_by_entity >= 0.15)
+        local_appearance_delta_by_entity, local_appearance_valid = _entity_temporal_local_appearance_delta(batch, device)
+        appearance_signal = torch.maximum(
+            appearance_drift_by_entity,
+            0.60 * appearance_drift_by_entity + 0.40 * (local_appearance_delta_by_entity / 0.25).clamp(0.0, 2.0),
+        )
+        appearance_signal_valid = appearance_drift_entity_valid | local_appearance_valid
+        appearance_drift_high, _ = _appearance_high_mask(
+            appearance_signal=appearance_signal,
+            valid_mask=appearance_signal_valid,
+            min_threshold=float(appearance_high_threshold),
+            high_quantile=float(appearance_high_quantile),
+        )
+        if bool(appearance_signal_valid.any().item()):
+            appearance_drift_high_ratio = float(
+                appearance_drift_high.float().sum().detach().cpu().item()
+                / appearance_signal_valid.float().sum().clamp_min(1.0).detach().cpu().item()
+            )
+        appearance_signature, appearance_signature_valid = _entity_temporal_appearance_signature(batch, device)
         true_instance_ratio_per_batch = float(confident_entities.float().mean().detach().cpu().item())
         dominant_units = obs_assignment.argmax(dim=-1)
 
@@ -943,6 +979,8 @@ def _trace_unit_regularization_loss(
         pair_collisions = []
         ambiguity_loss_terms = []
         ambiguity_pair_collisions = []
+        confuser_loss_terms = []
+        confuser_pair_collisions = []
         purity_vals = []
         entity_consistency_vals = []
         obs_state_ctx = batch["obs_state"].to(device=device, dtype=torch.float32)
@@ -1003,6 +1041,42 @@ def _trace_unit_regularization_loss(
                                 risk_scale = max(min((ambiguity_risk - float(ambiguity_risk_threshold)) / max(1.0 - float(ambiguity_risk_threshold), 1e-6), 1.0), 0.0)
                                 ambiguity_loss_terms.append((1.0 + risk_scale) * torch.relu(cos_ij - 0.20))
                                 ambiguity_pair_collisions.append(collided)
+                            appearance_confuser = 0.0
+                            if bool(appearance_signature_valid[b_idx, i].item()) and bool(appearance_signature_valid[b_idx, j].item()):
+                                sig_i = appearance_signature[b_idx, i]
+                                sig_j = appearance_signature[b_idx, j]
+                                appearance_confuser = max(
+                                    0.0,
+                                    float(
+                                        torch.nn.functional.cosine_similarity(sig_i[None, :], sig_j[None, :], dim=-1)[0]
+                                        .detach()
+                                        .cpu()
+                                        .item()
+                                    ),
+                                )
+                            confuser_risk = (
+                                float(confuser_overlap_weight) * iou
+                                + float(confuser_motion_weight) * motion_cross
+                                + float(confuser_appearance_weight) * appearance_confuser
+                                + float(ambiguity_min_dist_weight) * dist_risk
+                            ) / max(
+                                float(confuser_overlap_weight)
+                                + float(confuser_motion_weight)
+                                + float(confuser_appearance_weight)
+                                + float(ambiguity_min_dist_weight),
+                                1e-6,
+                            )
+                            if confuser_risk >= float(confuser_risk_threshold):
+                                confuser_scale = max(
+                                    min(
+                                        (confuser_risk - float(confuser_risk_threshold))
+                                        / max(1.0 - float(confuser_risk_threshold), 1e-6),
+                                        1.0,
+                                    ),
+                                    0.0,
+                                )
+                                confuser_loss_terms.append((1.0 + 1.5 * confuser_scale) * torch.relu(cos_ij - 0.10))
+                                confuser_pair_collisions.append(collided)
                     mass = obs_assignment[b_idx, t_idx, active_idx]
                     ids = valid_entity_ids[active_idx]
                     for unit_idx in range(int(mass.shape[-1])):
@@ -1035,6 +1109,11 @@ def _trace_unit_regularization_loss(
             ambiguity_repulse_loss = torch.stack(ambiguity_loss_terms).mean()
             ambiguity_highrisk_pair_collision_rate = float(
                 sum(ambiguity_pair_collisions) / max(len(ambiguity_pair_collisions), 1)
+            )
+        if confuser_loss_terms:
+            confuser_separation_loss = torch.stack(confuser_loss_terms).mean()
+            confuser_highrisk_pair_collision_rate = float(
+                sum(confuser_pair_collisions) / max(len(confuser_pair_collisions), 1)
             )
         if purity_vals:
             unit_purity_metric = float(sum(purity_vals) / max(len(purity_vals), 1))
@@ -1070,6 +1149,9 @@ def _trace_unit_regularization_loss(
     if float(ambiguity_repulse_weight) > 0.0:
         weighted_terms.append(float(ambiguity_repulse_weight) * ambiguity_repulse_loss)
         weight_sum += float(ambiguity_repulse_weight)
+    if float(confuser_separation_weight) > 0.0:
+        weighted_terms.append(float(confuser_separation_weight) * confuser_separation_loss)
+        weight_sum += float(confuser_separation_weight)
     if float(appearance_refine_weight) > 0.0:
         weighted_terms.append(float(appearance_refine_weight) * appearance_refine_loss)
         weight_sum += float(appearance_refine_weight)
@@ -1110,7 +1192,9 @@ def _trace_unit_regularization_loss(
         "same_instance_assignment_cosine": float(same_instance_assignment_cosine),
         "different_instance_dominant_unit_collision_rate": float(diff_instance_collision_rate),
         "ambiguity_highrisk_pair_collision_rate": float(ambiguity_highrisk_pair_collision_rate),
+        "confuser_highrisk_pair_collision_rate": float(confuser_highrisk_pair_collision_rate),
         "appearance_drift_highrisk_same_instance_match_rate": float(appearance_drift_highrisk_same_instance_match_rate),
+        "appearance_drift_high_ratio": float(appearance_drift_high_ratio),
         "unit_purity_by_instance_id": float(unit_purity_metric),
         "unit_track_stability_over_time": float(unit_track_stability),
         "target_entity_to_dominant_unit_consistency": float(target_entity_unit_consistency),
@@ -2916,6 +3000,141 @@ def _entity_temporal_appearance_drift(
     return scores, valid_entity
 
 
+def _entity_temporal_local_appearance_delta(
+    batch: Dict[str, Any],
+    device: torch.device,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    rgb_temporal = batch.get("semantic_rgb_crop_temporal")
+    mask_temporal = batch.get("semantic_mask_crop_temporal")
+    temporal_valid = batch.get("semantic_temporal_valid")
+    token_mask = batch.get("token_mask")
+    if (
+        not isinstance(rgb_temporal, torch.Tensor)
+        or not isinstance(mask_temporal, torch.Tensor)
+        or not isinstance(temporal_valid, torch.Tensor)
+        or not isinstance(token_mask, torch.Tensor)
+    ):
+        bsz = int(batch["obs_state"].shape[0])
+        entity_count = int(batch["obs_state"].shape[2])
+        return (
+            torch.zeros((bsz, entity_count), device=device, dtype=torch.float32),
+            torch.zeros((bsz, entity_count), device=device, dtype=torch.bool),
+        )
+    rgb_temporal = rgb_temporal.to(device=device, dtype=torch.float32)
+    mask_temporal = mask_temporal.to(device=device, dtype=torch.float32)
+    temporal_valid = temporal_valid.to(device=device, dtype=torch.bool)
+    token_mask = token_mask.to(device=device, dtype=torch.bool)
+    bsz, entity_count, _, _, _, _ = rgb_temporal.shape
+    scores = torch.zeros((bsz, entity_count), device=device, dtype=torch.float32)
+    valid_entity = torch.zeros((bsz, entity_count), device=device, dtype=torch.bool)
+
+    def _masked_mean_std(rgb_crop: torch.Tensor, mask_crop: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        mask = mask_crop.clamp(0.0, 1.0)
+        denom = mask.sum().clamp_min(1e-6)
+        flat = (rgb_crop * mask).reshape(3, -1)
+        mean = flat.sum(dim=-1) / denom
+        sq = ((rgb_crop - mean[:, None, None]) ** 2 * mask).reshape(3, -1).sum(dim=-1) / denom
+        std = sq.clamp_min(0.0).sqrt()
+        return mean, std
+
+    for b_idx in range(int(bsz)):
+        for ent_idx in range(int(entity_count)):
+            if not bool(token_mask[b_idx, ent_idx].item()):
+                continue
+            valid_steps = torch.nonzero(temporal_valid[b_idx, ent_idx], as_tuple=False).flatten()
+            if valid_steps.numel() < 2:
+                continue
+            first_idx = int(valid_steps[0].item())
+            last_idx = int(valid_steps[-1].item())
+            mean_early, std_early = _masked_mean_std(
+                rgb_temporal[b_idx, ent_idx, first_idx],
+                mask_temporal[b_idx, ent_idx, first_idx],
+            )
+            mean_late, std_late = _masked_mean_std(
+                rgb_temporal[b_idx, ent_idx, last_idx],
+                mask_temporal[b_idx, ent_idx, last_idx],
+            )
+            mean_delta = (mean_early - mean_late).abs().mean()
+            std_delta = (std_early - std_late).abs().mean()
+            scores[b_idx, ent_idx] = (mean_delta + 0.5 * std_delta).clamp(0.0, 2.0)
+            valid_entity[b_idx, ent_idx] = True
+    return scores, valid_entity
+
+
+def _entity_temporal_appearance_signature(
+    batch: Dict[str, Any],
+    device: torch.device,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    rgb_temporal = batch.get("semantic_rgb_crop_temporal")
+    mask_temporal = batch.get("semantic_mask_crop_temporal")
+    temporal_valid = batch.get("semantic_temporal_valid")
+    token_mask = batch.get("token_mask")
+    if (
+        not isinstance(rgb_temporal, torch.Tensor)
+        or not isinstance(mask_temporal, torch.Tensor)
+        or not isinstance(temporal_valid, torch.Tensor)
+        or not isinstance(token_mask, torch.Tensor)
+    ):
+        bsz = int(batch["obs_state"].shape[0])
+        entity_count = int(batch["obs_state"].shape[2])
+        return (
+            torch.zeros((bsz, entity_count, 6), device=device, dtype=torch.float32),
+            torch.zeros((bsz, entity_count), device=device, dtype=torch.bool),
+        )
+    rgb_temporal = rgb_temporal.to(device=device, dtype=torch.float32)
+    mask_temporal = mask_temporal.to(device=device, dtype=torch.float32)
+    temporal_valid = temporal_valid.to(device=device, dtype=torch.bool)
+    token_mask = token_mask.to(device=device, dtype=torch.bool)
+    bsz, entity_count, _, _, _, _ = rgb_temporal.shape
+    out = torch.zeros((bsz, entity_count, 6), device=device, dtype=torch.float32)
+    valid_entity = torch.zeros((bsz, entity_count), device=device, dtype=torch.bool)
+
+    def _masked_signature(rgb_crop: torch.Tensor, mask_crop: torch.Tensor) -> torch.Tensor:
+        mask = mask_crop.clamp(0.0, 1.0)
+        denom = mask.sum().clamp_min(1e-6)
+        flat = (rgb_crop * mask).reshape(3, -1)
+        mean = flat.sum(dim=-1) / denom
+        sq = ((rgb_crop - mean[:, None, None]) ** 2 * mask).reshape(3, -1).sum(dim=-1) / denom
+        std = sq.clamp_min(0.0).sqrt()
+        return torch.cat([mean, std], dim=0)
+
+    for b_idx in range(int(bsz)):
+        for ent_idx in range(int(entity_count)):
+            if not bool(token_mask[b_idx, ent_idx].item()):
+                continue
+            valid_steps = torch.nonzero(temporal_valid[b_idx, ent_idx], as_tuple=False).flatten()
+            if valid_steps.numel() <= 0:
+                continue
+            sigs = []
+            for step_idx in valid_steps.tolist():
+                sigs.append(
+                    _masked_signature(
+                        rgb_temporal[b_idx, ent_idx, int(step_idx)],
+                        mask_temporal[b_idx, ent_idx, int(step_idx)],
+                    )
+                )
+            if not sigs:
+                continue
+            out[b_idx, ent_idx] = torch.stack(sigs, dim=0).mean(dim=0)
+            valid_entity[b_idx, ent_idx] = True
+    return out, valid_entity
+
+
+def _appearance_high_mask(
+    *,
+    appearance_signal: torch.Tensor,
+    valid_mask: torch.Tensor,
+    min_threshold: float,
+    high_quantile: float,
+) -> Tuple[torch.Tensor, float]:
+    valid_vals = appearance_signal[valid_mask]
+    if valid_vals.numel() <= 0:
+        return torch.zeros_like(valid_mask, dtype=torch.bool), float(min_threshold)
+    quant = float(valid_vals.detach().quantile(float(min(max(high_quantile, 0.0), 1.0))).item()) if valid_vals.numel() >= 2 else float(valid_vals[0].detach().item())
+    threshold = max(float(min_threshold), quant)
+    return (valid_mask & (appearance_signal >= threshold)), float(threshold)
+
+
 def _pair_iou_xywh(box_i: torch.Tensor, box_j: torch.Tensor) -> float:
     xi1 = float(box_i[0].item() - 0.5 * box_i[2].item())
     yi1 = float(box_i[1].item() - 0.5 * box_i[3].item())
@@ -2948,7 +3167,13 @@ def _tusb_v3p1_context_scores(
     valid = obs_valid & token_mask[:, None, :]
     centers = obs_state[..., 0:2]
     wh = obs_state[..., 6:8].clamp(0.0, 1.0)
-    appearance_drift_by_entity, appearance_drift_valid = _entity_temporal_appearance_drift(batch, device)
+    appearance_teacher_drift_by_entity, appearance_drift_valid = _entity_temporal_appearance_drift(batch, device)
+    local_appearance_delta_by_entity, local_appearance_valid = _entity_temporal_local_appearance_delta(batch, device)
+    appearance_drift_by_entity = torch.maximum(
+        appearance_teacher_drift_by_entity,
+        (0.60 * appearance_teacher_drift_by_entity + 0.40 * (local_appearance_delta_by_entity / 0.25).clamp(0.0, 2.0)),
+    )
+    appearance_valid = appearance_drift_valid | local_appearance_valid
     bsz, obs_len, entity_count, _ = obs_state.shape
     ambiguity_score = torch.zeros((bsz,), device=device, dtype=torch.float32)
     occlusion_risk = torch.zeros((bsz,), device=device, dtype=torch.float32)
@@ -3018,7 +3243,7 @@ def _tusb_v3p1_context_scores(
                 occlusion_risk[b_idx] = float(sum(occlusion_vals) / max(len(occlusion_vals), 1))
             if long_gap_vals:
                 long_gap_like[b_idx] = float(sum(long_gap_vals) / max(len(long_gap_vals), 1))
-        valid_drift = appearance_drift_by_entity[b_idx][appearance_drift_valid[b_idx]]
+        valid_drift = appearance_drift_by_entity[b_idx][appearance_valid[b_idx]]
         if valid_drift.numel() > 0:
             appearance_drift[b_idx] = float(valid_drift.mean().detach().cpu().item())
     return {
@@ -3027,7 +3252,9 @@ def _tusb_v3p1_context_scores(
         "occlusion_risk": occlusion_risk.detach(),
         "long_gap_like": long_gap_like.detach(),
         "appearance_drift_by_entity": appearance_drift_by_entity.detach(),
-        "appearance_drift_entity_valid": appearance_drift_valid.detach(),
+        "appearance_drift_entity_valid": appearance_valid.detach(),
+        "appearance_teacher_drift_by_entity": appearance_teacher_drift_by_entity.detach(),
+        "local_appearance_delta_by_entity": local_appearance_delta_by_entity.detach(),
     }
 
 
@@ -3092,16 +3319,28 @@ def _tusb_v3p1_curriculum_weights(
     appearance_weight: float,
     occlusion_weight: float,
     longgap_weight: float,
+    appearance_high_threshold: float = 0.18,
+    appearance_high_quantile: float = 0.80,
 ) -> torch.Tensor:
     bsz = int(batch["obs_state"].shape[0])
     if float(curriculum_weight) <= 0.0:
         return torch.ones((bsz,), device=device, dtype=torch.float32)
     stats = _semantic_hard_sample_stats(batch=batch, device=device)
+    ambiguity_high = (stats["ambiguity_risk"] >= 0.45).to(torch.float32)
+    appearance_valid = stats["appearance_shift"] > 0.0
+    appearance_high, _ = _appearance_high_mask(
+        appearance_signal=stats["appearance_shift"],
+        valid_mask=appearance_valid,
+        min_threshold=float(appearance_high_threshold),
+        high_quantile=float(appearance_high_quantile),
+    )
+    occlusion_high = (stats["occlusion_risk"] >= 0.20).to(torch.float32)
+    longgap_high = (stats["long_gap_like"] >= 0.20).to(torch.float32)
     weighted = (
-        float(ambiguity_weight) * stats["ambiguity_risk"]
-        + float(appearance_weight) * (stats["appearance_shift"] / 0.25).clamp(0.0, 2.0)
-        + float(occlusion_weight) * stats["occlusion_risk"]
-        + float(longgap_weight) * stats["long_gap_like"]
+        float(ambiguity_weight) * ambiguity_high
+        + float(appearance_weight) * appearance_high.to(torch.float32)
+        + float(occlusion_weight) * occlusion_high
+        + float(longgap_weight) * longgap_high
     )
     denom = max(
         float(ambiguity_weight) + float(appearance_weight) + float(occlusion_weight) + float(longgap_weight),
@@ -3749,7 +3988,9 @@ def main() -> None:
     trace_unit_diff_instance_separation_history: List[float] = []
     trace_unit_diff_instance_collision_history: List[float] = []
     trace_unit_ambiguity_collision_history: List[float] = []
+    trace_unit_confuser_collision_history: List[float] = []
     trace_unit_appearance_highrisk_match_history: List[float] = []
+    trace_unit_appearance_high_ratio_history: List[float] = []
     trace_unit_purity_history: List[float] = []
     trace_unit_track_stability_history: List[float] = []
     trace_unit_target_entity_consistency_history: List[float] = []
@@ -3913,6 +4154,8 @@ def main() -> None:
             appearance_weight=float(args.trace_unit_hardsubset_appearance_weight),
             occlusion_weight=float(args.trace_unit_hardsubset_occlusion_weight),
             longgap_weight=float(args.trace_unit_hardsubset_longgap_weight),
+            appearance_high_threshold=float(args.trace_unit_appearance_high_threshold),
+            appearance_high_quantile=float(args.trace_unit_appearance_high_quantile),
         )
         teacher_loss = _weighted_teacher_loss(
             tf_out["pred_coord"],
@@ -3991,7 +4234,14 @@ def main() -> None:
             ambiguity_min_dist_weight=float(args.trace_unit_ambiguity_min_dist_weight),
             ambiguity_iou_weight=float(args.trace_unit_ambiguity_iou_weight),
             ambiguity_motion_cross_weight=float(args.trace_unit_ambiguity_motion_cross_weight),
+            confuser_separation_weight=float(args.trace_unit_confuser_separation_weight),
+            confuser_risk_threshold=float(args.trace_unit_confuser_risk_threshold),
+            confuser_appearance_weight=float(args.trace_unit_confuser_appearance_weight),
+            confuser_motion_weight=float(args.trace_unit_confuser_motion_weight),
+            confuser_overlap_weight=float(args.trace_unit_confuser_overlap_weight),
             appearance_refine_weight=float(args.trace_unit_appearance_refine_weight),
+            appearance_high_threshold=float(args.trace_unit_appearance_high_threshold),
+            appearance_high_quantile=float(args.trace_unit_appearance_high_quantile),
             dynsem_decorrelation_weight=float(args.trace_unit_dynsem_decorrelation_weight),
             utilization_weight=float(args.trace_unit_utilization_weight),
             min_active_target=float(args.trace_unit_min_active_target),
@@ -4079,7 +4329,9 @@ def main() -> None:
         trace_unit_diff_instance_separation_history.append(float(trace_unit_info.get("different_instance_between_unit_separation", 0.0)))
         trace_unit_diff_instance_collision_history.append(float(trace_unit_info.get("different_instance_dominant_unit_collision_rate", 0.0)))
         trace_unit_ambiguity_collision_history.append(float(trace_unit_info.get("ambiguity_highrisk_pair_collision_rate", 0.0)))
+        trace_unit_confuser_collision_history.append(float(trace_unit_info.get("confuser_highrisk_pair_collision_rate", 0.0)))
         trace_unit_appearance_highrisk_match_history.append(float(trace_unit_info.get("appearance_drift_highrisk_same_instance_match_rate", 0.0)))
+        trace_unit_appearance_high_ratio_history.append(float(trace_unit_info.get("appearance_drift_high_ratio", 0.0)))
         trace_unit_purity_history.append(float(trace_unit_info.get("unit_purity_by_instance_id", 0.0)))
         trace_unit_track_stability_history.append(float(trace_unit_info.get("unit_track_stability_over_time", 0.0)))
         trace_unit_target_entity_consistency_history.append(float(trace_unit_info.get("target_entity_to_dominant_unit_consistency", 0.0)))
@@ -4494,7 +4746,9 @@ def main() -> None:
             "different_instance_between_unit_separation_mean": float(sum(trace_unit_diff_instance_separation_history) / max(len(trace_unit_diff_instance_separation_history), 1)),
             "different_instance_dominant_unit_collision_rate_mean": float(sum(trace_unit_diff_instance_collision_history) / max(len(trace_unit_diff_instance_collision_history), 1)),
             "ambiguity_highrisk_pair_collision_rate_mean": float(sum(trace_unit_ambiguity_collision_history) / max(len(trace_unit_ambiguity_collision_history), 1)),
+            "confuser_highrisk_pair_collision_rate_mean": float(sum(trace_unit_confuser_collision_history) / max(len(trace_unit_confuser_collision_history), 1)),
             "appearance_drift_highrisk_same_instance_match_rate_mean": float(sum(trace_unit_appearance_highrisk_match_history) / max(len(trace_unit_appearance_highrisk_match_history), 1)),
+            "appearance_drift_high_ratio_mean": float(sum(trace_unit_appearance_high_ratio_history) / max(len(trace_unit_appearance_high_ratio_history), 1)),
             "unit_purity_by_instance_id_mean": float(sum(trace_unit_purity_history) / max(len(trace_unit_purity_history), 1)),
             "unit_track_stability_over_time_mean": float(sum(trace_unit_track_stability_history) / max(len(trace_unit_track_stability_history), 1)),
             "target_entity_to_dominant_unit_consistency_mean": float(sum(trace_unit_target_entity_consistency_history) / max(len(trace_unit_target_entity_consistency_history), 1)),

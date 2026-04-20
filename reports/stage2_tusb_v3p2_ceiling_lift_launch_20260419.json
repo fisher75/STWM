@@ -1,0 +1,51 @@
+{
+  "generated_at_utc": "2026-04-19T16:21:21.331653+00:00",
+  "tmux_session": "tracewm_stage2_tusb_v3p2_ceiling_lift_20260419",
+  "teacher_backend": "clip_vit-b_16_temporal_weighted_masked_mean_v5_driftcal",
+  "policy": "TUSB-v3.2 ceiling-lift on frozen Stage1; confuser-aware separation; appearance-hard signal repair; hardpanel curriculum; max 4 concurrent train tasks while leaving selector safety margins intact",
+  "lease_cleanup": {
+    "removed_count": 0,
+    "removed": [],
+    "kept_count": 2
+  },
+  "cleanup_actions": [
+    {
+      "run_name": "stage2_tusb_v3p2_no_appearance_signal_repair_seed123_20260419",
+      "removed_paths": [
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p2_ceiling_lift_runs_20260419/stage2_tusb_v3p2_no_appearance_signal_repair_seed123_20260419.pid",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p2_no_appearance_signal_repair_seed123_20260419_progress.json",
+        "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p2_no_appearance_signal_repair_seed123_20260419"
+      ],
+      "rotated_logs": [
+        "/raid/chen034/workspace/stwm/logs/stage2_tusb_v3p2_no_appearance_signal_repair_seed123_20260419.log.failed_snapshot_20260419T162115Z"
+      ]
+    },
+    {
+      "run_name": "stage2_tusb_v3p2_no_hardpanel_curriculum_seed123_20260419",
+      "removed_paths": [
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p2_ceiling_lift_runs_20260419/stage2_tusb_v3p2_no_hardpanel_curriculum_seed123_20260419.pid",
+        "/raid/chen034/workspace/stwm/reports/stage2_tusb_v3p2_no_hardpanel_curriculum_seed123_20260419_progress.json",
+        "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p2_no_hardpanel_curriculum_seed123_20260419"
+      ],
+      "rotated_logs": [
+        "/raid/chen034/workspace/stwm/logs/stage2_tusb_v3p2_no_hardpanel_curriculum_seed123_20260419.log.failed_snapshot_20260419T162121Z"
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "run_name": "stage2_tusb_v3p2_no_appearance_signal_repair_seed123_20260419",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_no_appearance_refine_seed123_20260418/best.pt",
+      "resume_global_step": 10900,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    },
+    {
+      "run_name": "stage2_tusb_v3p2_no_hardpanel_curriculum_seed123_20260419",
+      "mode": "real_train",
+      "resume_from": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_no_hardsubset_curriculum_seed123_20260418/best.pt",
+      "resume_global_step": 10900,
+      "stage2_structure_mode": "trace_unit_semantic_binding"
+    }
+  ]
+}

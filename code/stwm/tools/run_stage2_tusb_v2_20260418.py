@@ -919,8 +919,22 @@ def _append_trace_unit_flags(cmd: List[str], meta: Dict[str, Any]) -> None:
         cmd.extend(["--trace-unit-ambiguity-iou-weight", str(meta["trace_unit_ambiguity_iou_weight"])])
     if "trace_unit_ambiguity_motion_cross_weight" in meta:
         cmd.extend(["--trace-unit-ambiguity-motion-cross-weight", str(meta["trace_unit_ambiguity_motion_cross_weight"])])
+    if "trace_unit_confuser_separation_weight" in meta:
+        cmd.extend(["--trace-unit-confuser-separation-weight", str(meta["trace_unit_confuser_separation_weight"])])
+    if "trace_unit_confuser_risk_threshold" in meta:
+        cmd.extend(["--trace-unit-confuser-risk-threshold", str(meta["trace_unit_confuser_risk_threshold"])])
+    if "trace_unit_confuser_appearance_weight" in meta:
+        cmd.extend(["--trace-unit-confuser-appearance-weight", str(meta["trace_unit_confuser_appearance_weight"])])
+    if "trace_unit_confuser_motion_weight" in meta:
+        cmd.extend(["--trace-unit-confuser-motion-weight", str(meta["trace_unit_confuser_motion_weight"])])
+    if "trace_unit_confuser_overlap_weight" in meta:
+        cmd.extend(["--trace-unit-confuser-overlap-weight", str(meta["trace_unit_confuser_overlap_weight"])])
     if "trace_unit_appearance_refine_weight" in meta:
         cmd.extend(["--trace-unit-appearance-refine-weight", str(meta["trace_unit_appearance_refine_weight"])])
+    if "trace_unit_appearance_high_threshold" in meta:
+        cmd.extend(["--trace-unit-appearance-high-threshold", str(meta["trace_unit_appearance_high_threshold"])])
+    if "trace_unit_appearance_high_quantile" in meta:
+        cmd.extend(["--trace-unit-appearance-high-quantile", str(meta["trace_unit_appearance_high_quantile"])])
     cmd.extend(["--trace-unit-dynsem-decorrelation-weight", str(meta["trace_unit_dynsem_decorrelation_weight"])])
     cmd.extend(["--trace-unit-utilization-weight", str(meta["trace_unit_utilization_weight"])])
     cmd.extend(["--trace-unit-min-active-target", str(meta["trace_unit_min_active_target"])])

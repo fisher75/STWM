@@ -1,0 +1,81 @@
+{
+  "generated_at_utc": "2026-04-19T12:07:56.283398+00:00",
+  "teacher_cache_root": "/raid/chen034/workspace/stwm/data/processed/stage2_teacher_semantic_cache_v5_driftcal_20260419",
+  "teacher_cache_index": "/raid/chen034/workspace/stwm/data/processed/stage2_teacher_semantic_cache_v5_driftcal_20260419/index.json",
+  "source_teacher_cache_root": "/raid/chen034/workspace/stwm/data/processed/stage2_teacher_semantic_cache_v4_appearance_20260418",
+  "source_predecode_cache_root": "/raid/chen034/workspace/stwm/data/processed/stage2_tusb_v3_predecode_cache_20260418",
+  "current_env_blocked_backends": {
+    "dinov2_like": "backend_not_available_in_current_env",
+    "siglip_like": "backend_not_available_in_current_env"
+  },
+  "chosen_teacher_prior_v5": "clip_vit-b_16_temporal_weighted_masked_mean_v5_driftcal",
+  "appearance_drift_signal_available": true,
+  "appearance_drift_high_ratio": 0.2,
+  "global_combined_drift_high_threshold": 0.06385129541158677,
+  "per_dataset_drift_quantiles": {
+    "VIPSeg": {
+      "teacher_drift_quantiles": {
+        "q50": 0.00010085105895996094,
+        "q70": 0.00034574270248413056,
+        "q80": 0.0007157564163208013,
+        "q90": 0.0020211458206176765,
+        "q95": 0.004173851013183592
+      },
+      "local_appearance_delta_quantiles": {
+        "q50": 0.016568748280405998,
+        "q70": 0.027946670725941657,
+        "q80": 0.04065378531813622,
+        "q90": 0.0681122645735742,
+        "q95": 0.09798472225666045
+      },
+      "combined_drift_quantiles": {
+        "q50": 0.026692494750022888,
+        "q70": 0.046329271793365476,
+        "q80": 0.06528478860855104,
+        "q90": 0.11010806262493138,
+        "q95": 0.1599857538938522
+      }
+    },
+    "VSPW": {
+      "teacher_drift_quantiles": {
+        "q50": 4.0978193283081055e-05,
+        "q70": 0.00018303990364074675,
+        "q80": 0.00042034387588501035,
+        "q90": 0.0013893425464630118,
+        "q95": 0.003403681516647336
+      },
+      "local_appearance_delta_quantiles": {
+        "q50": 0.014274829998612404,
+        "q70": 0.02503815442323684,
+        "q80": 0.039073938131332406,
+        "q90": 0.06238387152552604,
+        "q95": 0.08691276125609868
+      },
+      "combined_drift_quantiles": {
+        "q50": 0.022893020883202553,
+        "q70": 0.040241952985525124,
+        "q80": 0.06351384967565539,
+        "q90": 0.10305472835898397,
+        "q95": 0.14253513589501374
+      }
+    }
+  },
+  "early_late_teacher_cosine_stats": {
+    "q50": 0.9999377727508545,
+    "q70": 0.9999873876571655,
+    "q80": 0.9999952435493469,
+    "q90": 0.9999990463256836,
+    "q95": 0.9999997615814209
+  },
+  "local_appearance_delta_stats": {
+    "q50": 0.014923366717994213,
+    "q70": 0.026018628478050233,
+    "q80": 0.039760144799947744,
+    "q90": 0.06416022479534159,
+    "q95": 0.09256596416234969
+  },
+  "cached_entry_count": 256,
+  "newly_written_count": 256,
+  "reused_existing_count": 0,
+  "current_env_blocked_backends_reasoning": "DINOv2-like and SigLIP-like backends remain unavailable in the current environment; v5 therefore strengthens the existing CLIP-family prior via drift calibration instead of changing thesis."
+}
