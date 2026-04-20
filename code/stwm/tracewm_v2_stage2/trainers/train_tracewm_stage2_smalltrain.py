@@ -918,6 +918,9 @@ def _trace_unit_regularization_loss(
     appearance_refine_loss = zero
     appearance_drift_highrisk_same_instance_match_rate = 0.0
     appearance_drift_high_ratio = 0.0
+    appearance_signal_valid_count = 0.0
+    appearance_drift_high_count = 0.0
+    appearance_refine_loss_nonzero = 0.0
 
     dominant_ids = batch.get("semantic_entity_dominant_instance_id")
     instance_conf = batch.get("semantic_entity_true_instance_confidence")
@@ -941,10 +944,24 @@ def _trace_unit_regularization_loss(
             high_quantile=float(appearance_high_quantile),
         )
         if bool(appearance_signal_valid.any().item()):
+            appearance_signal_valid_count = float(appearance_signal_valid.float().sum().detach().cpu().item())
+            appearance_drift_high_count = float(appearance_drift_high.float().sum().detach().cpu().item())
             appearance_drift_high_ratio = float(
                 appearance_drift_high.float().sum().detach().cpu().item()
                 / appearance_signal_valid.float().sum().clamp_min(1.0).detach().cpu().item()
             )
+            if not bool(appearance_drift_high.any().item()):
+                flat_signal = appearance_signal.masked_fill(~appearance_signal_valid, float("-inf")).reshape(-1)
+                top_idx = int(torch.argmax(flat_signal).detach().cpu().item())
+                flat_mask = appearance_drift_high.reshape(-1)
+                if 0 <= top_idx < int(flat_mask.numel()):
+                    flat_mask[top_idx] = True
+                    appearance_drift_high = flat_mask.reshape_as(appearance_drift_high)
+                    appearance_drift_high_count = float(appearance_drift_high.float().sum().detach().cpu().item())
+                    appearance_drift_high_ratio = float(
+                        appearance_drift_high.float().sum().detach().cpu().item()
+                        / appearance_signal_valid.float().sum().clamp_min(1.0).detach().cpu().item()
+                    )
         appearance_signature, appearance_signature_valid = _entity_temporal_appearance_signature(batch, device)
         true_instance_ratio_per_batch = float(confident_entities.float().mean().detach().cpu().item())
         dominant_units = obs_assignment.argmax(dim=-1)
@@ -969,6 +986,7 @@ def _trace_unit_regularization_loss(
             high_drift_same_mask = same_pair_mask & appearance_drift_high[:, None, :]
             if bool(high_drift_same_mask.any().item()):
                 appearance_refine_loss = (1.0 - cos).mul(high_drift_same_mask.float()).sum() / high_drift_same_mask.float().sum().clamp_min(1.0)
+                appearance_refine_loss_nonzero = 1.0
                 appearance_drift_highrisk_same_instance_match_rate = float(
                     (match * high_drift_same_mask.float()).sum().detach().cpu().item()
                     / high_drift_same_mask.float().sum().clamp_min(1.0).detach().cpu().item()
@@ -1195,6 +1213,11 @@ def _trace_unit_regularization_loss(
         "confuser_highrisk_pair_collision_rate": float(confuser_highrisk_pair_collision_rate),
         "appearance_drift_highrisk_same_instance_match_rate": float(appearance_drift_highrisk_same_instance_match_rate),
         "appearance_drift_high_ratio": float(appearance_drift_high_ratio),
+        "batch_appearance_drift_high_ratio": float(appearance_drift_high_ratio),
+        "step_appearance_drift_high_count": float(appearance_drift_high_count),
+        "appearance_signal_valid_count": float(appearance_signal_valid_count),
+        "appearance_refine_loss_nonzero": float(appearance_refine_loss_nonzero),
+        "appearance_refine_loss_value": float(appearance_refine_loss.detach().cpu().item()),
         "unit_purity_by_instance_id": float(unit_purity_metric),
         "unit_track_stability_over_time": float(unit_track_stability),
         "target_entity_to_dominant_unit_consistency": float(target_entity_unit_consistency),
@@ -3991,6 +4014,10 @@ def main() -> None:
     trace_unit_confuser_collision_history: List[float] = []
     trace_unit_appearance_highrisk_match_history: List[float] = []
     trace_unit_appearance_high_ratio_history: List[float] = []
+    trace_unit_batch_appearance_high_ratio_history: List[float] = []
+    trace_unit_step_appearance_high_count_history: List[float] = []
+    trace_unit_appearance_signal_valid_count_history: List[float] = []
+    trace_unit_appearance_refine_nonzero_history: List[float] = []
     trace_unit_purity_history: List[float] = []
     trace_unit_track_stability_history: List[float] = []
     trace_unit_target_entity_consistency_history: List[float] = []
@@ -4332,6 +4359,10 @@ def main() -> None:
         trace_unit_confuser_collision_history.append(float(trace_unit_info.get("confuser_highrisk_pair_collision_rate", 0.0)))
         trace_unit_appearance_highrisk_match_history.append(float(trace_unit_info.get("appearance_drift_highrisk_same_instance_match_rate", 0.0)))
         trace_unit_appearance_high_ratio_history.append(float(trace_unit_info.get("appearance_drift_high_ratio", 0.0)))
+        trace_unit_batch_appearance_high_ratio_history.append(float(trace_unit_info.get("batch_appearance_drift_high_ratio", 0.0)))
+        trace_unit_step_appearance_high_count_history.append(float(trace_unit_info.get("step_appearance_drift_high_count", 0.0)))
+        trace_unit_appearance_signal_valid_count_history.append(float(trace_unit_info.get("appearance_signal_valid_count", 0.0)))
+        trace_unit_appearance_refine_nonzero_history.append(float(trace_unit_info.get("appearance_refine_loss_nonzero", 0.0)))
         trace_unit_purity_history.append(float(trace_unit_info.get("unit_purity_by_instance_id", 0.0)))
         trace_unit_track_stability_history.append(float(trace_unit_info.get("unit_track_stability_over_time", 0.0)))
         trace_unit_target_entity_consistency_history.append(float(trace_unit_info.get("target_entity_to_dominant_unit_consistency", 0.0)))
@@ -4749,6 +4780,10 @@ def main() -> None:
             "confuser_highrisk_pair_collision_rate_mean": float(sum(trace_unit_confuser_collision_history) / max(len(trace_unit_confuser_collision_history), 1)),
             "appearance_drift_highrisk_same_instance_match_rate_mean": float(sum(trace_unit_appearance_highrisk_match_history) / max(len(trace_unit_appearance_highrisk_match_history), 1)),
             "appearance_drift_high_ratio_mean": float(sum(trace_unit_appearance_high_ratio_history) / max(len(trace_unit_appearance_high_ratio_history), 1)),
+            "batch_appearance_drift_high_ratio_mean": float(sum(trace_unit_batch_appearance_high_ratio_history) / max(len(trace_unit_batch_appearance_high_ratio_history), 1)),
+            "step_appearance_drift_high_count_mean": float(sum(trace_unit_step_appearance_high_count_history) / max(len(trace_unit_step_appearance_high_count_history), 1)),
+            "appearance_signal_valid_count_mean": float(sum(trace_unit_appearance_signal_valid_count_history) / max(len(trace_unit_appearance_signal_valid_count_history), 1)),
+            "appearance_refine_loss_nonzero_ratio": float(sum(trace_unit_appearance_refine_nonzero_history) / max(len(trace_unit_appearance_refine_nonzero_history), 1)),
             "unit_purity_by_instance_id_mean": float(sum(trace_unit_purity_history) / max(len(trace_unit_purity_history), 1)),
             "unit_track_stability_over_time_mean": float(sum(trace_unit_track_stability_history) / max(len(trace_unit_track_stability_history), 1)),
             "target_entity_to_dominant_unit_consistency_mean": float(sum(trace_unit_target_entity_consistency_history) / max(len(trace_unit_target_entity_consistency_history), 1)),

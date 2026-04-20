@@ -1,0 +1,84 @@
+{
+  "generated_at_utc": "2026-04-20T07:50:58.751533+00:00",
+  "best_selective_lift_branch_name": "v3p1_plus_dualpanel_sidecar_only",
+  "best_selective_lift_checkpoint_choice": "best.pt",
+  "densified_200_panel_improved_vs_current_calonly": true,
+  "densified_200_panel_hard_subsets_improved": true,
+  "ambiguity_top1_acc_improved": true,
+  "appearance_change_top1_acc_improved": true,
+  "z_sem_slower_than_z_dyn": true,
+  "branch_exceeds_current_tusb_v3p1_best": false,
+  "next_step_choice": "keep_v3p3_but_refine_signal_or_data_density_further",
+  "appearance_signal_reaches_training": false,
+  "selected_branch_metrics_densified_200": {
+    "name": "current_tusb_v3p1_best::best.pt",
+    "run_name": "stage2_tusb_v3p1_seed123_20260418",
+    "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed123_20260418/best.pt",
+    "panels": {
+      "full_identifiability_panel": {
+        "count": 200,
+        "query_future_top1_acc": 0.185,
+        "query_future_hit_rate": 0.025,
+        "query_future_localization_error": 0.2196936263580576,
+        "future_mask_iou_at_top1": 0.18528760847067882,
+        "hard_subset_top1_acc": 0.185
+      },
+      "hard_subsets": {
+        "count": 200,
+        "query_future_top1_acc": 0.185,
+        "query_future_hit_rate": 0.025,
+        "query_future_localization_error": 0.2196936263580576,
+        "future_mask_iou_at_top1": 0.18528760847067882,
+        "hard_subset_top1_acc": 0.185
+      },
+      "occlusion_reappearance": {
+        "count": 129,
+        "query_future_top1_acc": 0.1937984496124031,
+        "query_future_hit_rate": 0.031007751937984496,
+        "query_future_localization_error": 0.2268141646600052,
+        "future_mask_iou_at_top1": 0.1940210504113156,
+        "hard_subset_top1_acc": 0.1937984496124031
+      },
+      "crossing_ambiguity": {
+        "count": 146,
+        "query_future_top1_acc": 0.15753424657534246,
+        "query_future_hit_rate": 0.02054794520547945,
+        "query_future_localization_error": 0.20681024089729266,
+        "future_mask_iou_at_top1": 0.15789263812598767,
+        "hard_subset_top1_acc": 0.15753424657534246
+      },
+      "small_object": {
+        "count": 176,
+        "query_future_top1_acc": 0.1590909090909091,
+        "query_future_hit_rate": 0.011363636363636364,
+        "query_future_localization_error": 0.2221296072271316,
+        "future_mask_iou_at_top1": 0.15937960627617878,
+        "hard_subset_top1_acc": 0.1590909090909091
+      },
+      "appearance_change": {
+        "count": 137,
+        "query_future_top1_acc": 0.20437956204379562,
+        "query_future_hit_rate": 0.029197080291970802,
+        "query_future_localization_error": 0.2271870853965993,
+        "future_mask_iou_at_top1": 0.20456257039810272,
+        "hard_subset_top1_acc": 0.20437956204379562
+      },
+      "long_gap_persistence": {
+        "count": 67,
+        "query_future_top1_acc": 0.22388059701492538,
+        "query_future_hit_rate": 0.04477611940298507,
+        "query_future_localization_error": 0.23085228459782892,
+        "future_mask_iou_at_top1": 0.22414407006073922,
+        "hard_subset_top1_acc": 0.22388059701492538
+      }
+    },
+    "query_future_top1_acc": 0.185,
+    "query_future_hit_rate": 0.025,
+    "query_future_localization_error": 0.2196936263580576,
+    "future_mask_iou_at_top1": 0.18528760847067882,
+    "hard_subset_top1_acc": 0.185,
+    "ambiguity_top1_acc": 0.15753424657534246,
+    "small_object_top1_acc": 0.1590909090909091,
+    "appearance_change_top1_acc": 0.20437956204379562
+  }
+}

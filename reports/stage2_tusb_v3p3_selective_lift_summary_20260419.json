@@ -1,0 +1,338 @@
+{
+  "generated_at_utc": "2026-04-20T07:50:58.749537+00:00",
+  "status": "0_running_4_completed_0_failed",
+  "running_count": 0,
+  "completed_count": 4,
+  "failed_count": 0,
+  "all_runs_terminal": true,
+  "run_rows": [
+    {
+      "run_name": "stage2_tusb_v3p3_anchor_replay_seed123_20260419",
+      "branch_name": "v3p1_anchor_replay",
+      "family": "tusb_v3p3_selective",
+      "ablation_name": "anchor_replay",
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.08105227236415181,
+          "free_rollout_coord_mean_l2": 0.24841630883546065,
+          "free_rollout_endpoint_l2": 0.25161077462793896,
+          "total_loss_reference": 0.08390470366751732
+        },
+        "rank_key": [
+          0.25161077462793896,
+          0.24841630883546065,
+          0.08105227236415181
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p3_anchor_replay_seed123_20260419/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11000,
+        "semantic_hard_sidecar_score": 0.21077906029056512,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.05913114158368721,
+          "free_rollout_coord_mean_l2": 0.21189788585781208,
+          "free_rollout_endpoint_l2": 0.21029956361888785,
+          "total_loss_reference": 0.05891038998961449
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.08199251074300264,
+        "assignment_entropy_mean": 0.6668941730231471,
+        "actual_top2_assignment_ratio_mean": 0.9984839558817177,
+        "active_unit_count_mean": 4.543125,
+        "z_dyn_drift_mean": 0.49307889210734496,
+        "z_sem_drift_mean": 0.006136178444326823,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.011966482424970604,
+        "same_instance_within_unit_consistency_mean": 0.9702614340185595,
+        "same_instance_dominant_unit_match_rate_mean": 0.9589102685341372,
+        "same_instance_assignment_cosine_mean": 0.9702614340185595,
+        "different_instance_between_unit_separation_mean": 0.39632019258140644,
+        "different_instance_dominant_unit_collision_rate_mean": 0.40227060598191244,
+        "ambiguity_highrisk_pair_collision_rate_mean": 0.2917146513119433,
+        "confuser_highrisk_pair_collision_rate_mean": 0.384023862040681,
+        "appearance_drift_highrisk_same_instance_match_rate_mean": 0.0,
+        "appearance_drift_high_ratio_mean": 0.0,
+        "batch_appearance_drift_high_ratio_mean": 0.0,
+        "step_appearance_drift_high_count_mean": 0.0,
+        "appearance_signal_valid_count_mean": 0.0,
+        "appearance_refine_loss_nonzero_ratio": 0.0,
+        "unit_purity_by_instance_id_mean": 0.5998993322906261,
+        "unit_track_stability_over_time_mean": 0.9673689834922129,
+        "target_entity_to_dominant_unit_consistency_mean": 0.9673689834922129,
+        "unit_semantic_stability_over_time_mean": 0.9999990720402068,
+        "broadcast_residual_norm_mean": 12.470160589218139
+      }
+    },
+    {
+      "run_name": "stage2_tusb_v3p3_confuser_only_seed123_20260419",
+      "branch_name": "v3p1_plus_confuser_only",
+      "family": "tusb_v3p3_selective",
+      "ablation_name": "confuser_only",
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.09340996705856433,
+          "free_rollout_coord_mean_l2": 0.2675878275033185,
+          "free_rollout_endpoint_l2": 0.2714527241143164,
+          "total_loss_reference": 0.0966993740564862
+        },
+        "rank_key": [
+          0.2714527241143164,
+          0.2675878275033185,
+          0.09340996705856433
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p3_confuser_only_seed123_20260419/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 10900,
+        "semantic_hard_sidecar_score": 0.2042254915548961,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.05634410237253653,
+          "free_rollout_coord_mean_l2": 0.20477072934320456,
+          "free_rollout_endpoint_l2": 0.20399181821704965,
+          "total_loss_reference": 0.05616863667964935
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.16441935458002263,
+        "assignment_entropy_mean": 0.6721988223681898,
+        "actual_top2_assignment_ratio_mean": 0.9995467385470063,
+        "active_unit_count_mean": 3.99625,
+        "z_dyn_drift_mean": 0.4744470779162387,
+        "z_sem_drift_mean": 0.006107001826263558,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.012338455622536083,
+        "same_instance_within_unit_consistency_mean": 0.9723571621548127,
+        "same_instance_dominant_unit_match_rate_mean": 0.968041230220714,
+        "same_instance_assignment_cosine_mean": 0.9723571621548127,
+        "different_instance_between_unit_separation_mean": 0.3864619916077936,
+        "different_instance_dominant_unit_collision_rate_mean": 0.40335705574894815,
+        "ambiguity_highrisk_pair_collision_rate_mean": 0.28672009894936656,
+        "confuser_highrisk_pair_collision_rate_mean": 0.3569309567069843,
+        "appearance_drift_highrisk_same_instance_match_rate_mean": 0.0,
+        "appearance_drift_high_ratio_mean": 0.0,
+        "batch_appearance_drift_high_ratio_mean": 0.0,
+        "step_appearance_drift_high_count_mean": 0.0,
+        "appearance_signal_valid_count_mean": 0.0,
+        "appearance_refine_loss_nonzero_ratio": 0.0,
+        "unit_purity_by_instance_id_mean": 0.5946364572438773,
+        "unit_track_stability_over_time_mean": 0.9721977487011401,
+        "target_entity_to_dominant_unit_consistency_mean": 0.9721977487011401,
+        "unit_semantic_stability_over_time_mean": 0.9999990976547944,
+        "broadcast_residual_norm_mean": 12.482736163139343
+      }
+    },
+    {
+      "run_name": "stage2_tusb_v3p3_appearance_only_seed123_20260419",
+      "branch_name": "v3p1_plus_appearance_only",
+      "family": "tusb_v3p3_selective",
+      "ablation_name": "appearance_only",
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.07534294127914852,
+          "free_rollout_coord_mean_l2": 0.24029550272970737,
+          "free_rollout_endpoint_l2": 0.2448279708794575,
+          "total_loss_reference": 0.07804530612084755
+        },
+        "rank_key": [
+          0.2448279708794575,
+          0.24029550272970737,
+          0.07534294127914852
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p3_appearance_only_seed123_20260419/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 10900,
+        "semantic_hard_sidecar_score": 0.20570106836282095,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.05803291059150343,
+          "free_rollout_coord_mean_l2": 0.20657744846333612,
+          "free_rollout_endpoint_l2": 0.20532547689117162,
+          "total_loss_reference": 0.0576402984559536
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.030839958785363705,
+        "assignment_entropy_mean": 0.6720525379092989,
+        "actual_top2_assignment_ratio_mean": 0.9995059792188797,
+        "active_unit_count_mean": 4.77625,
+        "z_dyn_drift_mean": 0.48664429631682554,
+        "z_sem_drift_mean": 0.006594199212805713,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.012894197294976482,
+        "same_instance_within_unit_consistency_mean": 0.9715131826217009,
+        "same_instance_dominant_unit_match_rate_mean": 0.9575273246295949,
+        "same_instance_assignment_cosine_mean": 0.9715131826217009,
+        "different_instance_between_unit_separation_mean": 0.49514913928695026,
+        "different_instance_dominant_unit_collision_rate_mean": 0.33252698544825743,
+        "ambiguity_highrisk_pair_collision_rate_mean": 0.22410034295639164,
+        "confuser_highrisk_pair_collision_rate_mean": 0.2946435153494454,
+        "appearance_drift_highrisk_same_instance_match_rate_mean": 0.0,
+        "appearance_drift_high_ratio_mean": 0.0,
+        "batch_appearance_drift_high_ratio_mean": 0.0,
+        "step_appearance_drift_high_count_mean": 0.0,
+        "appearance_signal_valid_count_mean": 0.0,
+        "appearance_refine_loss_nonzero_ratio": 0.0,
+        "unit_purity_by_instance_id_mean": 0.6440344573410954,
+        "unit_track_stability_over_time_mean": 0.9659450005951652,
+        "target_entity_to_dominant_unit_consistency_mean": 0.9659450005951652,
+        "unit_semantic_stability_over_time_mean": 0.9999988945897975,
+        "broadcast_residual_norm_mean": 12.492708649635315
+      }
+    },
+    {
+      "run_name": "stage2_tusb_v3p3_confuser_and_appearance_light_seed123_20260419",
+      "branch_name": "v3p1_plus_confuser_and_appearance_light",
+      "family": "tusb_v3p3_selective",
+      "ablation_name": "confuser_and_appearance_light",
+      "status": "completed",
+      "best_checkpoint_metric": {
+        "global_step": 10500,
+        "metrics": {
+          "teacher_forced_coord_loss": 3.014592101484348e-05,
+          "free_rollout_coord_mean_l2": 0.0005033888573908999,
+          "free_rollout_endpoint_l2": 0.0005282461077264041,
+          "total_loss_reference": 3.0058316673588633e-05
+        },
+        "rank_key": [
+          0.0005282461077264041,
+          0.0005033888573908999,
+          3.014592101484348e-05
+        ]
+      },
+      "latest_checkpoint_metric": {
+        "global_step": 11000,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.0810755099119238,
+          "free_rollout_coord_mean_l2": 0.24737907248402322,
+          "free_rollout_endpoint_l2": 0.25105710356642424,
+          "total_loss_reference": 0.08388182349762945
+        },
+        "rank_key": [
+          0.25105710356642424,
+          0.24737907248402322,
+          0.0810755099119238
+        ]
+      },
+      "semantic_hard_sidecar_metric": {
+        "enabled": true,
+        "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p3_confuser_and_appearance_light_seed123_20260419/best_semantic_hard.pt",
+        "exists": true,
+        "global_step": 11000,
+        "semantic_hard_sidecar_score": 0.20873462731089792,
+        "metrics": {
+          "teacher_forced_coord_loss": 0.06071477047957086,
+          "free_rollout_coord_mean_l2": 0.21182641375629424,
+          "free_rollout_endpoint_l2": 0.20740957597715665,
+          "total_loss_reference": 0.06036809906363487
+        },
+        "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+      },
+      "trace_unit_metrics": {
+        "enabled": true,
+        "trace_unit_count": 16,
+        "trace_unit_dim": 384,
+        "trace_unit_slot_iters": 3,
+        "trace_unit_assignment_topk": 2,
+        "trace_unit_handshake_layers": 1,
+        "trace_unit_loss_mean": 0.03888460992275213,
+        "assignment_entropy_mean": 0.6682181742772733,
+        "actual_top2_assignment_ratio_mean": 0.999950634696756,
+        "active_unit_count_mean": 5.0975,
+        "z_dyn_drift_mean": 0.48083017016451224,
+        "z_sem_drift_mean": 0.007039165865145956,
+        "z_sem_to_z_dyn_drift_ratio_mean": 0.014135274240307017,
+        "same_instance_within_unit_consistency_mean": 0.9712443488986879,
+        "same_instance_dominant_unit_match_rate_mean": 0.9649828774181017,
+        "same_instance_assignment_cosine_mean": 0.9712443488986879,
+        "different_instance_between_unit_separation_mean": 0.5119458617875352,
+        "different_instance_dominant_unit_collision_rate_mean": 0.34939132541464674,
+        "ambiguity_highrisk_pair_collision_rate_mean": 0.2424274267220793,
+        "confuser_highrisk_pair_collision_rate_mean": 0.3373610505015127,
+        "appearance_drift_highrisk_same_instance_match_rate_mean": 0.0,
+        "appearance_drift_high_ratio_mean": 0.0,
+        "batch_appearance_drift_high_ratio_mean": 0.0,
+        "step_appearance_drift_high_count_mean": 0.0,
+        "appearance_signal_valid_count_mean": 0.0,
+        "appearance_refine_loss_nonzero_ratio": 0.0,
+        "unit_purity_by_instance_id_mean": 0.6725313039596814,
+        "unit_track_stability_over_time_mean": 0.9698218633793181,
+        "target_entity_to_dominant_unit_consistency_mean": 0.9698218633793181,
+        "unit_semantic_stability_over_time_mean": 0.9999985638819573,
+        "broadcast_residual_norm_mean": 12.48616409778595
+      }
+    }
+  ]
+}
