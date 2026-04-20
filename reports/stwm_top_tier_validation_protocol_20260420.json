@@ -1,0 +1,35 @@
+{
+  "generated_at_utc": "2026-04-20T15:41:30.868144+00:00",
+  "stage1_frozen": true,
+  "candidate_stage2_mainline": {
+    "run_name": "stage2_tusb_v3p1_seed123_20260418",
+    "official_checkpoint_candidate": "best.pt",
+    "sidecar_checkpoint": "best_semantic_hard.pt"
+  },
+  "v3p2_v3p3_status": {
+    "did_not_exceed_v3p1_anchor": true,
+    "no_more_cumulative_stacking": true
+  },
+  "current_top_tier_risks": [
+    "matched seed coverage incomplete",
+    "multi-seed robustness not closed",
+    "utility is still weakly independent",
+    "OOD / cross-dataset evidence missing or weak",
+    "mechanism 6-seed evidence incomplete",
+    "appearance signal still not reaching loss path"
+  ],
+  "allowed_this_round": [
+    "matched seed completion",
+    "stronger independent utility probe",
+    "cross-dataset / OOD transfer evaluation",
+    "appearance plumbing surgical fix audit",
+    "teacher semantic prior sanity only"
+  ],
+  "forbidden_this_round": [
+    "new large architecture branch",
+    "persistence return",
+    "Stage1 retraining",
+    "video/render head",
+    "codec/VAE"
+  ]
+}

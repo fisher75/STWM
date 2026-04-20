@@ -1,0 +1,37 @@
+{
+  "generated_at_utc": "2026-04-20T15:41:30.901395+00:00",
+  "setting_a_vipseg_to_burst_heavy_proxy": {
+    "supported": true,
+    "calibration_only": {
+      "count": 129.0,
+      "top1": 0.17054263565891473,
+      "mrr": 0.41546388581272337
+    },
+    "tusb_v3p1": {
+      "count": 129.0,
+      "top1": 0.18604651162790697,
+      "mrr": 0.41978897502153334
+    }
+  },
+  "setting_b_burst_to_vipseg_heavy_proxy": {
+    "supported": true,
+    "calibration_only": {
+      "count": 194.0,
+      "top1": 0.041237113402061855,
+      "mrr": 0.15857697167880747
+    },
+    "tusb_v3p1": {
+      "count": 194.0,
+      "top1": 0.04639175257731959,
+      "mrr": 0.1608701321992815
+    }
+  },
+  "setting_c_scene_domain_heldout": {
+    "supported": false,
+    "reason": "no clean held-out scene/domain split asset is materialized in the current live repo"
+  },
+  "ood_improved_vs_calibration": false,
+  "ood_hard_subset_improved": false,
+  "ood_claim_ready": false,
+  "proxy_domain_split_positive": true
+}
