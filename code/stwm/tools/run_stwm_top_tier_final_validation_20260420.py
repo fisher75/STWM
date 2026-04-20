@@ -443,7 +443,7 @@ def _ood_transfer(args: Any) -> Dict[str, Any]:
             "supported": False,
             "reason": "no clean held-out scene/domain split asset is materialized in the current live repo",
         },
-        "ood_improved_vs_calibration": False if not ood_improved else False,
+        "ood_improved_vs_calibration": bool(ood_improved),
         "ood_hard_subset_improved": False,
         "ood_claim_ready": False,
         "proxy_domain_split_positive": bool(ood_improved),

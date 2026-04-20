@@ -1,0 +1,305 @@
+{
+  "generated_at_utc": "2026-04-20T16:12:57.095954+00:00",
+  "audited_reports": [
+    {
+      "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "context_preserving_densified_200_improved_vs_current_calonly",
+        "matched_6seed_improved",
+        "bootstrap_ci_zero_excluded",
+        "downstream_utility_improved",
+        "ood_transfer_improved",
+        "mechanism_cross_seed_stable",
+        "appearance_claim_allowed",
+        "paper_target_recommendation",
+        "oral_spotlight_readiness",
+        "next_step_choice"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "context_preserving_densified_200_improved_vs_current_calonly",
+        "matched_6seed_improved",
+        "bootstrap_ci_zero_excluded",
+        "downstream_utility_improved",
+        "ood_transfer_improved",
+        "mechanism_cross_seed_stable",
+        "appearance_claim_allowed"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "stage1_ready",
+        "stage2_ready",
+        "matched_6seed_improved",
+        "bootstrap_ci_zero_excluded",
+        "downstream_utility_ready",
+        "ood_transfer_ready",
+        "mechanism_6seed_ready",
+        "appearance_claim_allowed",
+        "paper_target_recommendation",
+        "oral_spotlight_readiness",
+        "next_step_choice"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_matched_6seed_dualpanel_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "required_matched_seeds",
+        "coverage",
+        "main_6seed_table_available",
+        "if_missing_exact_reason",
+        "legacy_85_context_preserving",
+        "densified_200_context_preserving",
+        "protocol_v3_extended_600_context_preserving",
+        "failure_seed_diagnosis",
+        "matched_6seed_improved_vs_current_calonly"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_final_bootstrap_ci_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "panels",
+        "statistically_strong",
+        "practically_meaningful",
+        "paper_ready_claim_level",
+        "bootstrap_ci_zero_excluded"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_downstream_utility_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "probe_design",
+        "probe_a",
+        "probe_b",
+        "probe_c",
+        "utility_improved_vs_calibration",
+        "utility_improved_vs_cropenc",
+        "utility_improved_on_hard_subsets",
+        "utility_claim_ready"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_ood_transfer_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "setting_a_vipseg_to_burst_heavy_proxy",
+        "setting_b_burst_to_vipseg_heavy_proxy",
+        "setting_c_scene_domain_heldout",
+        "ood_improved_vs_calibration",
+        "ood_hard_subset_improved",
+        "ood_claim_ready",
+        "proxy_domain_split_positive"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_mechanism_6seed_repair_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "required_seeds",
+        "available_seed_rows",
+        "missing_seeds",
+        "seed_mean",
+        "seed_std",
+        "failed_seed_flags",
+        "mechanism_vs_performance_correlation",
+        "identity_binding_cross_seed_stable",
+        "slow_semantic_state_cross_seed_stable",
+        "anti_collapse_cross_seed_stable",
+        "mechanism_cross_seed_stable",
+        "mechanism_6seed_ready"
+      ]
+    },
+    {
+      "path": "reports/stwm_top_tier_appearance_plumbing_surgical_fix_20260420.json",
+      "exists": true,
+      "nonempty": true,
+      "valid_json": true,
+      "top_level_keys": [
+        "generated_at_utc",
+        "offline_appearance_drift_high_ratio",
+        "dataloader_appearance_drift_high_ratio",
+        "batch_appearance_drift_high_ratio_mean",
+        "appearance_refine_loss_nonzero_ratio",
+        "exact_breakpoint",
+        "appearance_claim_allowed",
+        "repair_applied_this_round"
+      ]
+    }
+  ],
+  "field_sources": {
+    "context_preserving_densified_200_improved_vs_current_calonly": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": true
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": true
+      }
+    ],
+    "matched_6seed_improved": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+        "value": false
+      }
+    ],
+    "bootstrap_ci_zero_excluded": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": true
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": true
+      },
+      {
+        "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+        "value": true
+      },
+      {
+        "path": "reports/stwm_top_tier_final_bootstrap_ci_20260420.json",
+        "value": true
+      }
+    ],
+    "downstream_utility_improved": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": true
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": true
+      }
+    ],
+    "ood_transfer_improved": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": false
+      }
+    ],
+    "mechanism_cross_seed_stable": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_mechanism_6seed_repair_20260420.json",
+        "value": false
+      }
+    ],
+    "appearance_claim_allowed": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_final_validation_summary_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+        "value": false
+      },
+      {
+        "path": "reports/stwm_top_tier_appearance_plumbing_surgical_fix_20260420.json",
+        "value": false
+      }
+    ],
+    "paper_target_recommendation": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": "borderline_needs_one_last_fix"
+      },
+      {
+        "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+        "value": "borderline_needs_one_last_fix"
+      }
+    ],
+    "oral_spotlight_readiness": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": "not_ready"
+      },
+      {
+        "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+        "value": "not_ready"
+      }
+    ],
+    "next_step_choice": [
+      {
+        "path": "reports/stwm_top_tier_final_validation_diagnosis_20260420.json",
+        "value": "one_last_surgical_fix"
+      },
+      {
+        "path": "reports/stwm_top_tier_paper_decision_20260420.json",
+        "value": "one_last_surgical_fix"
+      }
+    ]
+  },
+  "actual_values": {
+    "context_preserving_densified_200_improved_vs_current_calonly": true,
+    "matched_6seed_improved": false,
+    "bootstrap_ci_zero_excluded": true,
+    "downstream_utility_improved": true,
+    "ood_transfer_improved": false,
+    "mechanism_cross_seed_stable": false,
+    "appearance_claim_allowed": false,
+    "paper_target_recommendation": "borderline_needs_one_last_fix",
+    "oral_spotlight_readiness": "not_ready",
+    "next_step_choice": "one_last_surgical_fix"
+  },
+  "conflict_detected": false,
+  "conflicting_fields": [],
+  "conflict_details": {},
+  "source_of_truth": "live_repo_reports_json",
+  "live_manifest_report": "/raid/chen034/workspace/stwm/reports/stwm_top_tier_live_manifest_20260420.json"
+}

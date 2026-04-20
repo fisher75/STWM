@@ -1,0 +1,194 @@
+{
+  "generated_at_utc": "2026-04-20T16:12:57.440143+00:00",
+  "probe_design": {
+    "probe_a": "representation-level future object retrieval from extended protocol-v3 context-preserving rows",
+    "probe_b": "occlusion / long-gap re-identification on subset-filtered future candidate sets",
+    "probe_c": "lightweight query-conditioned future localization on densified context-preserving rows",
+    "probe_train_items": 0,
+    "probe_eval_items": 323,
+    "utility_v2_leakage_check_passed": true,
+    "independence_note": "utility_v2 uses retrieval/localization readouts from frozen future-state outputs rather than top-level protocol summary aggregation; no large downstream model is trained"
+  },
+  "probe_a": {
+    "stage1_frozen_baseline": {
+      "count": 323,
+      "top1": 0.0804953560371517,
+      "top5": 0.44891640866873067,
+      "mrr": 0.2546427008067755,
+      "candidate_confusion_rate": 0.8270902488220548
+    },
+    "current_calibration_only_best": {
+      "count": 323,
+      "top1": 0.09287925696594428,
+      "top5": 0.4520123839009288,
+      "mrr": 0.26117267422764673,
+      "candidate_confusion_rate": 0.8142177154386855
+    },
+    "current_tusb_v3p1_best::best.pt": {
+      "count": 323,
+      "top1": 0.1021671826625387,
+      "top5": 0.43962848297213625,
+      "mrr": 0.26427734806327674,
+      "candidate_confusion_rate": 0.8073300749427236
+    }
+  },
+  "probe_b": {
+    "stage1_frozen_baseline": {
+      "count": 66,
+      "top1": 0.12121212121212122,
+      "top5": 0.5909090909090909,
+      "mrr": 0.33193486059146776,
+      "candidate_confusion_rate": 0.7356693517813967
+    },
+    "current_calibration_only_best": {
+      "count": 66,
+      "top1": 0.10606060606060606,
+      "top5": 0.6212121212121212,
+      "mrr": 0.338890139503016,
+      "candidate_confusion_rate": 0.7344668505788956
+    },
+    "current_tusb_v3p1_best::best.pt": {
+      "count": 66,
+      "top1": 0.15151515151515152,
+      "top5": 0.6060606060606061,
+      "mrr": 0.3501832125433356,
+      "candidate_confusion_rate": 0.7052460713581163
+    }
+  },
+  "probe_c": {
+    "current_calibration_only_best": {
+      "count": 85,
+      "top1": 0.1411764705882353,
+      "hit_rate": 0.0,
+      "loc_error": 0.20393356848675703
+    },
+    "current_tusb_v3p1_best::best.pt": {
+      "count": 85,
+      "top1": 0.15294117647058825,
+      "hit_rate": 0.023529411764705882,
+      "loc_error": 0.20905051089856905
+    }
+  },
+  "hard_subset_breakdown": {
+    "crossing_ambiguity": {
+      "stage1_frozen_baseline": {
+        "count": 281,
+        "top1": 0.06405693950177936,
+        "top5": 0.398576512455516,
+        "mrr": 0.22537010139094904,
+        "candidate_confusion_rate": 0.8572701539210061
+      },
+      "current_calibration_only_best": {
+        "count": 281,
+        "top1": 0.07829181494661921,
+        "top5": 0.40213523131672596,
+        "mrr": 0.2318899057070523,
+        "candidate_confusion_rate": 0.8444506780232385
+      },
+      "current_tusb_v3p1_best::best.pt": {
+        "count": 281,
+        "top1": 0.07829181494661921,
+        "top5": 0.3879003558718861,
+        "mrr": 0.23184029292113642,
+        "candidate_confusion_rate": 0.8433968116473515
+      }
+    },
+    "appearance_change": {
+      "stage1_frozen_baseline": {
+        "count": 85,
+        "top1": 0.17647058823529413,
+        "top5": 0.7294117647058823,
+        "mrr": 0.3982184127569523,
+        "candidate_confusion_rate": 0.6704086792781769
+      },
+      "current_calibration_only_best": {
+        "count": 85,
+        "top1": 0.21176470588235294,
+        "top5": 0.6941176470588235,
+        "mrr": 0.41148870921101505,
+        "candidate_confusion_rate": 0.6429576988860201
+      },
+      "current_tusb_v3p1_best::best.pt": {
+        "count": 85,
+        "top1": 0.18823529411764706,
+        "top5": 0.6941176470588235,
+        "mrr": 0.4000312777535836,
+        "candidate_confusion_rate": 0.6652707867227808
+      }
+    },
+    "occlusion_reappearance": {
+      "stage1_frozen_baseline": {
+        "count": 66,
+        "top1": 0.12121212121212122,
+        "top5": 0.5909090909090909,
+        "mrr": 0.33193486059146776,
+        "candidate_confusion_rate": 0.7356693517813967
+      },
+      "current_calibration_only_best": {
+        "count": 66,
+        "top1": 0.10606060606060606,
+        "top5": 0.6212121212121212,
+        "mrr": 0.338890139503016,
+        "candidate_confusion_rate": 0.7344668505788956
+      },
+      "current_tusb_v3p1_best::best.pt": {
+        "count": 66,
+        "top1": 0.15151515151515152,
+        "top5": 0.6060606060606061,
+        "mrr": 0.3501832125433356,
+        "candidate_confusion_rate": 0.7052460713581163
+      }
+    },
+    "long_gap_persistence": {
+      "stage1_frozen_baseline": {
+        "count": 20,
+        "top1": 0.15,
+        "top5": 0.65,
+        "mrr": 0.4018650793650794,
+        "candidate_confusion_rate": 0.6517460317460317
+      },
+      "current_calibration_only_best": {
+        "count": 20,
+        "top1": 0.05,
+        "top5": 0.7,
+        "mrr": 0.3547222222222222,
+        "candidate_confusion_rate": 0.6906349206349207
+      },
+      "current_tusb_v3p1_best::best.pt": {
+        "count": 20,
+        "top1": 0.2,
+        "top5": 0.7,
+        "mrr": 0.42644841269841266,
+        "candidate_confusion_rate": 0.5989682539682539
+      }
+    },
+    "small_object": {
+      "stage1_frozen_baseline": {
+        "count": 312,
+        "top1": 0.07051282051282051,
+        "top5": 0.42948717948717946,
+        "mrr": 0.24107775329248446,
+        "candidate_confusion_rate": 0.8421187803219001
+      },
+      "current_calibration_only_best": {
+        "count": 312,
+        "top1": 0.08653846153846154,
+        "top5": 0.4358974358974359,
+        "mrr": 0.2496236644209597,
+        "candidate_confusion_rate": 0.8271898435179633
+      },
+      "current_tusb_v3p1_best::best.pt": {
+        "count": 312,
+        "top1": 0.09294871794871795,
+        "top5": 0.4230769230769231,
+        "mrr": 0.25070104577429886,
+        "candidate_confusion_rate": 0.8216619336455412
+      }
+    }
+  },
+  "utility_v2_improved_vs_calibration": true,
+  "utility_v2_improved_vs_cropenc": false,
+  "utility_v2_hard_subset_improved": true,
+  "utility_v2_leakage_check_passed": true,
+  "utility_v2_claim_ready": true
+}
