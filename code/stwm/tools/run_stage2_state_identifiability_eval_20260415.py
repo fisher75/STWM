@@ -692,23 +692,40 @@ def _predict_final_coord(method: LoadedMethod, batch: Dict[str, Any], device: to
     return float(coord[0]), float(coord[1])
 
 
-def _candidate_ranking(pred_xy_norm: Tuple[float, float], future_masks: Dict[str, np.ndarray], width: int, height: int) -> Tuple[str, float]:
+def _candidate_rankings(pred_xy_norm: Tuple[float, float], future_masks: Dict[str, np.ndarray], width: int, height: int) -> List[Dict[str, Any]]:
     px = min(max(pred_xy_norm[0] * float(width), 0.0), float(width - 1))
     py = min(max(pred_xy_norm[1] * float(height), 0.0), float(height - 1))
-    best_id = "none"
-    best_key = (2, 1e9, "none")
     diag = max(math.sqrt(float(width * width + height * height)), 1.0)
+    rows: List[Dict[str, Any]] = []
     for cand_id, mask in future_masks.items():
         if not np.any(mask):
             continue
         inside = bool(mask[int(round(py)), int(round(px))]) if 0 <= int(round(py)) < mask.shape[0] and 0 <= int(round(px)) < mask.shape[1] else False
         cx, cy = _mask_centroid(mask)
         dist = math.sqrt((cx - px) ** 2 + (cy - py) ** 2) / diag
-        key = (0 if inside else 1, float(dist), str(cand_id))
-        if key < best_key:
-            best_key = key
-            best_id = str(cand_id)
-    return best_id, float(best_key[1])
+        rows.append(
+            {
+                "candidate_id": str(cand_id),
+                "inside": bool(inside),
+                "normalized_centroid_distance": float(dist),
+            }
+        )
+    rows.sort(
+        key=lambda row: (
+            0 if bool(row.get("inside", False)) else 1,
+            float(row.get("normalized_centroid_distance", 1e9)),
+            str(row.get("candidate_id", "")),
+        )
+    )
+    return rows
+
+
+def _candidate_ranking(pred_xy_norm: Tuple[float, float], future_masks: Dict[str, np.ndarray], width: int, height: int) -> Tuple[str, float]:
+    rows = _candidate_rankings(pred_xy_norm=pred_xy_norm, future_masks=future_masks, width=width, height=height)
+    if not rows:
+        return "none", 1e9
+    top = rows[0]
+    return str(top.get("candidate_id", "none")), float(top.get("normalized_centroid_distance", 1e9))
 
 
 def _evaluate_item(method: LoadedMethod, item: Dict[str, Any], batch: Dict[str, Any], target_future_mask: np.ndarray, future_masks: Dict[str, np.ndarray], device: torch.device) -> Dict[str, Any]:
@@ -723,14 +740,25 @@ def _evaluate_item(method: LoadedMethod, item: Dict[str, Any], batch: Dict[str, 
     y_idx = int(round(pred_y))
     x_idx = int(round(pred_x))
     hit = bool(0 <= y_idx < target_future_mask.shape[0] and 0 <= x_idx < target_future_mask.shape[1] and target_future_mask[y_idx, x_idx])
-    top1_id, _ = _candidate_ranking((pred_x_norm, pred_y_norm), future_masks, width=width, height=height)
+    ranked_candidates = _candidate_rankings((pred_x_norm, pred_y_norm), future_masks, width=width, height=height)
+    top1_id = str(ranked_candidates[0]["candidate_id"]) if ranked_candidates else "none"
     top1_mask = future_masks.get(str(top1_id))
+    target_rank = 0
+    for rank_idx, row in enumerate(ranked_candidates, start=1):
+        if str(row.get("candidate_id", "")) == str(item.get("target_id")):
+            target_rank = rank_idx
+            break
     return {
         "query_future_top1_acc": 1.0 if str(top1_id) == str(item.get("target_id")) else 0.0,
         "query_future_hit_rate": 1.0 if hit else 0.0,
         "query_future_localization_error": float(localization_error),
         "future_mask_iou_at_top1": float(_mask_iou(top1_mask, target_future_mask)),
         "top1_candidate_id": str(top1_id),
+        "target_rank": int(target_rank),
+        "candidate_count": int(len(ranked_candidates)),
+        "top5_hit": 1.0 if int(target_rank) > 0 and int(target_rank) <= 5 else 0.0,
+        "mrr": float(1.0 / float(target_rank)) if int(target_rank) > 0 else 0.0,
+        "ranked_candidate_ids": [str(row.get("candidate_id", "")) for row in ranked_candidates[:10]],
         "predicted_future_xy_norm": [float(pred_x_norm), float(pred_y_norm)],
         "predicted_future_xy_pixels": [float(pred_x), float(pred_y)],
     }
