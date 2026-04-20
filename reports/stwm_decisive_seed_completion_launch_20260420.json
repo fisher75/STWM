@@ -1,0 +1,49 @@
+{
+  "generated_at_utc": "2026-04-20T16:37:34.099206+00:00",
+  "real_completion_started": false,
+  "training_jobs_launched": [],
+  "missing_after_launch": [
+    {
+      "method": "TUSB-v3.1",
+      "seed": 654,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "TUSB-v3.1",
+      "seed": 789,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "TUSB-v3.1",
+      "seed": 321,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "cropenc baseline",
+      "seed": 654,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "cropenc baseline",
+      "seed": 321,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "legacysem baseline",
+      "seed": 654,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "legacysem baseline",
+      "seed": 789,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    },
+    {
+      "method": "legacysem baseline",
+      "seed": 321,
+      "if_missing_exact_reason": "checkpoint_missing_in_live_repo"
+    }
+  ],
+  "blocking_reason": "live repo still lacks materialized matched-seed checkpoints for TUSB-v3.1/cropenc/legacysem; this decisive pass does not fabricate completion",
+  "estimated_eval_ready_check": "blocked_until_missing_checkpoints_materialize"
+}

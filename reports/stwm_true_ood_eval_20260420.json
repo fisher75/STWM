@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-04-20T16:37:34.101179+00:00",
+  "setting_a_vipseg_to_burst_heavy": {
+    "calibration_only": {
+      "count": 129,
+      "top1": 0.17054263565891473,
+      "hit_rate": 0.015503875968992248,
+      "mrr": 0.41546388581272303,
+      "loc_error": 0.17084916827698093,
+      "mask_iou_at_top1": 0.1721950911438772
+    },
+    "cropenc_baseline": {
+      "count": 0,
+      "top1": 0.0,
+      "hit_rate": 0.0,
+      "mrr": 0.0,
+      "loc_error": 0.0,
+      "mask_iou_at_top1": 0.0
+    },
+    "tusb_v3p1": {
+      "count": 129,
+      "top1": 0.18604651162790697,
+      "hit_rate": 0.023255813953488372,
+      "mrr": 0.4197889750215332,
+      "loc_error": 0.1808843958775854,
+      "mask_iou_at_top1": 0.18746222822323694
+    }
+  },
+  "setting_b_burst_to_vipseg_heavy": {
+    "calibration_only": {
+      "count": 194,
+      "top1": 0.041237113402061855,
+      "hit_rate": 0.0,
+      "mrr": 0.15857697167880738,
+      "loc_error": 0.2291313504972279,
+      "mask_iou_at_top1": 0.041237113402061855
+    },
+    "cropenc_baseline": {
+      "count": 0,
+      "top1": 0.0,
+      "hit_rate": 0.0,
+      "mrr": 0.0,
+      "loc_error": 0.0,
+      "mask_iou_at_top1": 0.0
+    },
+    "tusb_v3p1": {
+      "count": 194,
+      "top1": 0.04639175257731959,
+      "hit_rate": 0.015463917525773196,
+      "mrr": 0.16087013219928145,
+      "loc_error": 0.2283817918398484,
+      "mask_iou_at_top1": 0.04639175257731959
+    }
+  },
+  "setting_c_conservative_heldout_split": {
+    "supported": false,
+    "reason": "no materialized held-out scene/domain/category split exists in the live repo; this report keeps the boundary explicit"
+  },
+  "proxy_domain_split_positive": true,
+  "true_ood_improved_vs_calibration": false,
+  "true_ood_improved_vs_cropenc": false,
+  "true_ood_hard_subset_improved": false,
+  "ood_claim_ready": false,
+  "proxy_only_vs_true_ood_boundary": "dataset-split proxy is positive, but conservative held-out OOD split is not materialized; do not upgrade to true OOD claim"
+}
