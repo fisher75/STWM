@@ -438,7 +438,8 @@ def _select_eval_device(args: Any) -> Tuple[torch.device, Dict[str, Any]]:
 def _extract_entity_masks(
     item: Dict[str, Any],
     entity_id: str | int | None = None,
-) -> Tuple[List[np.ndarray | None], List[Tuple[int, int]], Dict[str, np.ndarray], np.ndarray]:
+    require_future_mask: bool = True,
+) -> Tuple[List[np.ndarray | None], List[Tuple[int, int]], Dict[str, np.ndarray], np.ndarray | None]:
     dataset = str(item.get("dataset", "")).strip().upper()
     if dataset == "VIPSEG":
         final_masks: Dict[str, np.ndarray] = {}
@@ -458,7 +459,7 @@ def _extract_entity_masks(
                     if np.any(cmask):
                         final_masks[str(cand)] = cmask
         target_future = target_masks[future_step]
-        if target_future is None:
+        if require_future_mask and target_future is None:
             raise RuntimeError(f"future target mask missing for {item.get('protocol_item_id')}")
         return target_masks, sizes, final_masks, target_future
 
@@ -490,14 +491,17 @@ def _extract_entity_masks(
                 if np.any(cand_mask):
                     final_masks[str(cand_id)] = cand_mask
     target_future = target_masks[future_step]
-    if target_future is None:
+    if require_future_mask and target_future is None:
         raise RuntimeError(f"future target mask missing for {item.get('protocol_item_id')}")
     sizes = [(int(width), int(height)) for _ in selected_indices]
     return target_masks, sizes, final_masks, target_future
 
 
 def _extract_target_masks(item: Dict[str, Any]) -> Tuple[List[np.ndarray | None], List[Tuple[int, int]], Dict[str, np.ndarray], np.ndarray]:
-    return _extract_entity_masks(item=item, entity_id=None)
+    target_masks, sizes, final_masks, target_future = _extract_entity_masks(item=item, entity_id=None, require_future_mask=True)
+    if target_future is None:
+        raise RuntimeError(f"future target mask missing for {item.get('protocol_item_id')}")
+    return target_masks, sizes, final_masks, target_future
 
 
 def _protocol_observed_context_candidate_ids(item: Dict[str, Any], max_context_entities: int = 8) -> List[str]:

@@ -445,8 +445,14 @@ def _build_context_preserving_item_batch_v3(
     context_entity_indices: List[int] = []
 
     for entity_idx, entity_id in enumerate(entity_ids):
-        target_masks, sizes, future_masks_local, target_future_mask_local = prev._extract_entity_masks(item, entity_id=entity_id)
+        target_masks, sizes, future_masks_local, target_future_mask_local = prev._extract_entity_masks(
+            item,
+            entity_id=entity_id,
+            require_future_mask=(entity_idx == 0),
+        )
         if entity_idx == 0:
+            if target_future_mask_local is None:
+                raise RuntimeError(f"context-preserving eval failed to resolve target future mask for {item.get('protocol_item_id')}")
             target_future_mask = target_future_mask_local
             future_masks = future_masks_local
 
