@@ -850,7 +850,7 @@ def run_all(args: Any) -> Dict[str, Any]:
 
 def parse_args() -> Any:
     parser = ArgumentParser(description="Run STAGE2 TUSB-V3 identity-binding repair")
-    parser.add_argument("--mode", default="run", choices=["run", "launch", "summarize", "diagnose"])
+    parser.add_argument("--mode", default="run", choices=["run", "launch", "run-one", "summarize", "diagnose"])
     parser.add_argument("--work-root", default=str(ROOT))
     parser.add_argument("--tmux-session", default=SESSION)
     parser.add_argument("--python-bin", default=str(base._python_bin_default()))
@@ -887,6 +887,7 @@ def parse_args() -> Any:
     parser.add_argument("--wait-timeout-seconds", type=int, default=172800)
     parser.add_argument("--poll-seconds", type=int, default=120)
     parser.add_argument("--max-concurrent-train-tasks", type=int, default=MAX_TRAIN_TASKS)
+    parser.add_argument("--meta-json", default="")
     parser.add_argument("--gpu-acquire-timeout-seconds", type=int, default=7200)
     parser.add_argument("--gpu-acquire-retry-seconds", type=int, default=60)
     parser.add_argument("--lease-path", default=str(ROOT / "reports/stage1_v2_gpu_lease_20260408.json"))
@@ -902,6 +903,8 @@ def main() -> None:
         print(json.dumps(run_all(args), ensure_ascii=True, indent=2))
     elif args.mode == "launch":
         print(json.dumps(launch(args), ensure_ascii=True, indent=2))
+    elif args.mode == "run-one":
+        tusbbase.run_one(args)
     elif args.mode == "summarize":
         print(json.dumps(summarize(args), ensure_ascii=True, indent=2))
     elif args.mode == "diagnose":

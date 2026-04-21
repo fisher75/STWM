@@ -848,7 +848,7 @@ def run_all(args: Any) -> Dict[str, Any]:
 
 def parse_args() -> Any:
     parser = ArgumentParser(description="Run STAGE2 TUSB-V3.1 hard-subset conversion")
-    parser.add_argument("--mode", default="run", choices=["run", "launch", "summarize", "diagnose"])
+    parser.add_argument("--mode", default="run", choices=["run", "launch", "run-one", "summarize", "diagnose"])
     parser.add_argument("--run-names", default="", help="comma-separated subset of run names to operate on for launch/summarize")
     parser.add_argument("--work-root", default=str(ROOT))
     parser.add_argument("--tmux-session", default=SESSION)
@@ -879,6 +879,7 @@ def parse_args() -> Any:
     parser.add_argument("--summary-report", default=str(ROOT / "reports/stage2_tusb_v3p1_hardsubset_conversion_summary_20260418.json"))
     parser.add_argument("--diagnosis-report", default=str(ROOT / "reports/stage2_tusb_v3p1_hardsubset_conversion_diagnosis_20260418.json"))
     parser.add_argument("--results-md", default=str(ROOT / "docs/STAGE2_TUSB_V3P1_HARDSUBSET_CONVERSION_20260418.md"))
+    parser.add_argument("--meta-json", default="")
     parser.add_argument("--wait-timeout-seconds", type=int, default=172800)
     parser.add_argument("--poll-seconds", type=int, default=120)
     parser.add_argument("--gpu-acquire-timeout-seconds", type=int, default=7200)
@@ -897,6 +898,8 @@ def main() -> None:
         print(json.dumps(run_all(args), ensure_ascii=True, indent=2))
     elif args.mode == "launch":
         print(json.dumps(launch(args), ensure_ascii=True, indent=2))
+    elif args.mode == "run-one":
+        tusbbase.run_one(args)
     elif args.mode == "summarize":
         print(json.dumps(summarize(args), ensure_ascii=True, indent=2))
     elif args.mode == "diagnose":

@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-21T03:40:54.952635+00:00",
+  "generated_at_utc": "2026-04-21T09:09:42.621686+00:00",
   "run_name": "stage2_fullscale_core_legacysem_seed654_matched6_20260420",
-  "status": "running",
+  "status": "completed",
   "current_mainline_semantic_source": "hand_crafted_stats",
   "datasets_bound_for_train": [
     "vspw",
@@ -134,14 +134,14 @@
     "teacher_semantic_cache_path": "",
     "max_entities_per_sample": 8,
     "resumed_from": "",
-    "true_instance_entity_count_mean_so_far": 17.434285714285714,
-    "pseudo_entity_count_mean_so_far": 26.128857142857143,
-    "fallback_entity_count_mean_so_far": 0.42457142857142854,
-    "true_instance_ratio_per_batch_mean_so_far": 0.39890788363514545
+    "true_instance_entity_count_mean_so_far": 17.4299,
+    "pseudo_entity_count_mean_so_far": 26.1422,
+    "fallback_entity_count_mean_so_far": 0.4242,
+    "true_instance_ratio_per_batch_mean_so_far": 0.39884669269159895
   },
-  "global_step": 7000,
+  "global_step": 10000,
   "train_steps_target": 10000,
-  "progress_ratio": 0.7,
+  "progress_ratio": 1.0,
   "whether_full_train_used": true,
   "whether_full_val_used": true,
   "effective_train_sample_count_per_dataset": {
@@ -160,18 +160,18 @@
     "latest_exists": true
   },
   "latest_eval_metrics": {
-    "teacher_forced_coord_loss": 0.0859214097604177,
-    "free_rollout_coord_mean_l2": 0.25207490390735593,
-    "free_rollout_endpoint_l2": 0.2555090677151019,
-    "total_loss_reference": 0.08825259660045769
+    "teacher_forced_coord_loss": 0.08472906575940678,
+    "free_rollout_coord_mean_l2": 0.2500796054588798,
+    "free_rollout_endpoint_l2": 0.2534996296395414,
+    "total_loss_reference": 0.08698311967905177
   },
   "best_metric_so_far": {
-    "global_step": 6000,
+    "global_step": 10000,
     "metrics": {
-      "teacher_forced_coord_loss": 0.0859214097604177,
-      "free_rollout_coord_mean_l2": 0.25207490390735593,
-      "free_rollout_endpoint_l2": 0.2555090677151019,
-      "total_loss_reference": 0.08825259660045769,
+      "teacher_forced_coord_loss": 0.08472906575940678,
+      "free_rollout_coord_mean_l2": 0.2500796054588798,
+      "free_rollout_endpoint_l2": 0.2534996296395414,
+      "total_loss_reference": 0.08698311967905177,
       "tapvid_style_eval": {
         "compatible": false,
         "status": "not_supported_in_current_stage2_trainer"
@@ -181,15 +181,15 @@
         "status": "not_supported_in_current_stage2_trainer"
       },
       "semantic_branch_metrics": {
-        "eval_gate_mean": 0.03157678380781828,
+        "eval_gate_mean": 0.014803011327722045,
         "semantic_input_nonempty_ratio": 1.0,
         "eval_batches": 86
       }
     },
     "rank_key": [
-      0.2555090677151019,
-      0.25207490390735593,
-      0.0859214097604177
+      0.2534996296395414,
+      0.2500796054588798,
+      0.08472906575940678
     ]
   }
 }

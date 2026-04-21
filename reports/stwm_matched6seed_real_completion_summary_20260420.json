@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-21T04:06:15.055631+00:00",
+  "generated_at_utc": "2026-04-21T10:59:47.706162+00:00",
   "per_method_seed_coverage_after_run": {
     "TUSB-v3.1": {
       "rows": [
@@ -37,35 +37,35 @@
           "method": "TUSB-v3.1",
           "seed": 654,
           "run_name": "stage2_tusb_v3p1_seed654_matched6_20260420",
-          "checkpoint_exists": false,
-          "best_pt_exists": false,
-          "best_semantic_hard_exists": false,
-          "train_needed": true,
-          "exact_checkpoint_path_or_missing_reason": "checkpoint_missing:/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed654_matched6_20260420/best.pt"
+          "checkpoint_exists": true,
+          "best_pt_exists": true,
+          "best_semantic_hard_exists": true,
+          "train_needed": false,
+          "exact_checkpoint_path_or_missing_reason": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed654_matched6_20260420/best.pt"
         },
         {
           "method": "TUSB-v3.1",
           "seed": 789,
           "run_name": "stage2_tusb_v3p1_seed789_matched6_20260420",
-          "checkpoint_exists": false,
-          "best_pt_exists": false,
-          "best_semantic_hard_exists": false,
-          "train_needed": true,
-          "exact_checkpoint_path_or_missing_reason": "checkpoint_missing:/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed789_matched6_20260420/best.pt"
+          "checkpoint_exists": true,
+          "best_pt_exists": true,
+          "best_semantic_hard_exists": true,
+          "train_needed": false,
+          "exact_checkpoint_path_or_missing_reason": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed789_matched6_20260420/best.pt"
         },
         {
           "method": "TUSB-v3.1",
           "seed": 321,
           "run_name": "stage2_tusb_v3p1_seed321_matched6_20260420",
-          "checkpoint_exists": false,
-          "best_pt_exists": false,
-          "best_semantic_hard_exists": false,
-          "train_needed": true,
-          "exact_checkpoint_path_or_missing_reason": "checkpoint_missing:/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed321_matched6_20260420/best.pt"
+          "checkpoint_exists": true,
+          "best_pt_exists": true,
+          "best_semantic_hard_exists": true,
+          "train_needed": false,
+          "exact_checkpoint_path_or_missing_reason": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_seed321_matched6_20260420/best.pt"
         }
       ],
-      "coverage_count": 3,
-      "fully_covered": false
+      "coverage_count": 6,
+      "fully_covered": true
     },
     "calibration-only": {
       "rows": [
@@ -255,62 +255,19 @@
           "method": "legacysem baseline",
           "seed": 321,
           "run_name": "stage2_fullscale_core_legacysem_seed321_matched6_20260420",
-          "checkpoint_exists": false,
-          "best_pt_exists": false,
+          "checkpoint_exists": true,
+          "best_pt_exists": true,
           "best_semantic_hard_exists": false,
-          "train_needed": true,
-          "exact_checkpoint_path_or_missing_reason": "checkpoint_missing:/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_legacysem_seed321_matched6_20260420/best.pt"
+          "train_needed": false,
+          "exact_checkpoint_path_or_missing_reason": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_fullscale_core_legacysem_seed321_matched6_20260420/best.pt"
         }
       ],
-      "coverage_count": 5,
-      "fully_covered": false
+      "coverage_count": 6,
+      "fully_covered": true
     }
   },
-  "completed_count": 7,
-  "failed_count": 6,
-  "still_missing_count": 4,
-  "exact_fail_reasons": [
-    {
-      "task_name": "tusb_v3_seed654",
-      "method": "TUSB-v3.1",
-      "seed": 654,
-      "run_name": "stage2_tusb_v3_seed654_matched6_20260420",
-      "exact_fail_reason": "window_exited_without_best_checkpoint"
-    },
-    {
-      "task_name": "tusb_v3p1_seed654",
-      "method": "TUSB-v3.1",
-      "seed": 654,
-      "run_name": "stage2_tusb_v3p1_seed654_matched6_20260420",
-      "exact_fail_reason": "window_exited_without_best_checkpoint"
-    },
-    {
-      "task_name": "tusb_v3_seed789",
-      "method": "TUSB-v3.1",
-      "seed": 789,
-      "run_name": "stage2_tusb_v3_seed789_matched6_20260420",
-      "exact_fail_reason": "window_exited_without_best_checkpoint"
-    },
-    {
-      "task_name": "tusb_v3p1_seed789",
-      "method": "TUSB-v3.1",
-      "seed": 789,
-      "run_name": "stage2_tusb_v3p1_seed789_matched6_20260420",
-      "exact_fail_reason": "window_exited_without_best_checkpoint"
-    },
-    {
-      "task_name": "tusb_v3_seed321",
-      "method": "TUSB-v3.1",
-      "seed": 321,
-      "run_name": "stage2_tusb_v3_seed321_matched6_20260420",
-      "exact_fail_reason": "window_exited_without_best_checkpoint"
-    },
-    {
-      "task_name": "tusb_v3p1_seed321",
-      "method": "TUSB-v3.1",
-      "seed": 321,
-      "run_name": "stage2_tusb_v3p1_seed321_matched6_20260420",
-      "exact_fail_reason": "window_exited_without_best_checkpoint"
-    }
-  ]
+  "completed_count": 14,
+  "failed_count": 0,
+  "still_missing_count": 0,
+  "exact_fail_reasons": []
 }
