@@ -872,6 +872,7 @@ def _add_win_counts(panel_summary: Dict[str, Any]) -> None:
 
 
 def _run_main_eval() -> Dict[str, Any]:
+    _apply_process_title_normalization()
     protocol = _read_json(PROTOCOL_V3_JSON)
     all_items = [item for item in protocol.get("items", []) if isinstance(item, dict)]
     legacy_ids = set(_legacy_85_ids())
@@ -976,6 +977,7 @@ def _bootstrap_delta(a: np.ndarray, b: np.ndarray, n_boot: int = 4000, seed: int
 
 
 def _run_strict_bootstrap() -> Dict[str, Any]:
+    _apply_process_title_normalization()
     main_eval = _read_json(MAIN_EVAL_REPORT)
     if not main_eval or not bool(main_eval.get("matched_6seed_improved_vs_calibration", False) or True):
         pass

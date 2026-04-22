@@ -66,7 +66,8 @@ def _entity_instance_binding_fields(
 
 
 def _select_eval_device_v3(args: Any) -> Tuple[torch.device, Dict[str, Any]]:
-    requested = str(args.device).strip().lower()
+    _apply_process_title_normalization()
+    requested = str(getattr(args, "device", getattr(args, "eval_device", "auto"))).strip().lower()
     if requested == "cpu":
         return torch.device("cpu"), {"mode": "forced_cpu", "selected_gpu_id": -1, "lease_id": ""}
     if requested == "cuda":
