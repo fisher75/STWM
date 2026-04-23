@@ -1,0 +1,147 @@
+{
+  "generated_at_utc": "2026-04-23T08:49:27.431663+00:00",
+  "source_final_eval_report": "/raid/chen034/workspace/stwm/reports/stwm_lightreadout_final_eval_20260422.json",
+  "panel_name": "densified_200_context_preserving",
+  "split_used": "test",
+  "comparisons": {
+    "official_vs_calibration": {
+      "probe_a": {
+        "count": 630,
+        "metrics": {
+          "top1": {
+            "count": 630,
+            "mean_delta": 0.03650793650793651,
+            "ci95_low": 0.0015873015873015873,
+            "ci95_high": 0.07301587301587302,
+            "zero_excluded": true,
+            "bootstrap_win_rate": 0.976
+          },
+          "top5": {
+            "count": 630,
+            "mean_delta": 0.020634920634920634,
+            "ci95_low": -0.009523809523809525,
+            "ci95_high": 0.04924603174603153,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.901
+          },
+          "mrr": {
+            "count": 630,
+            "mean_delta": 0.02835533760253655,
+            "ci95_low": 0.004119826595491847,
+            "ci95_high": 0.051619747410101086,
+            "zero_excluded": true,
+            "bootstrap_win_rate": 0.9865
+          },
+          "candidate_confusion_rate": {
+            "count": 630,
+            "mean_delta": 0.03650793650793651,
+            "ci95_low": 0.0015873015873015873,
+            "ci95_high": 0.07301587301587302,
+            "zero_excluded": true,
+            "bootstrap_win_rate": 0.978
+          }
+        }
+      },
+      "probe_b": {
+        "count": 384,
+        "metrics": {
+          "top1": {
+            "count": 384,
+            "mean_delta": 0.0390625,
+            "ci95_low": -0.005208333333333333,
+            "ci95_high": 0.0859375,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.947
+          },
+          "mrr": {
+            "count": 384,
+            "mean_delta": 0.03664941042583506,
+            "ci95_low": 0.0085321664400967,
+            "ci95_high": 0.0644339265415064,
+            "zero_excluded": true,
+            "bootstrap_win_rate": 0.9955
+          },
+          "false_confuser_rate": {
+            "count": 384,
+            "mean_delta": 0.0390625,
+            "ci95_low": -0.005273437499999996,
+            "ci95_high": 0.08333333333333333,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.9485
+          }
+        }
+      }
+    },
+    "official_vs_legacysem": {
+      "probe_a": {
+        "count": 630,
+        "metrics": {
+          "top1": {
+            "count": 630,
+            "mean_delta": 0.02857142857142857,
+            "ci95_low": -0.007936507936507936,
+            "ci95_high": 0.06666666666666667,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.929
+          },
+          "top5": {
+            "count": 630,
+            "mean_delta": 0.0,
+            "ci95_low": -0.02857142857142857,
+            "ci95_high": 0.031746031746031744,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.5
+          },
+          "mrr": {
+            "count": 630,
+            "mean_delta": 0.018061412855248458,
+            "ci95_low": -0.007072805619114308,
+            "ci95_high": 0.041960317864724136,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.917
+          },
+          "candidate_confusion_rate": {
+            "count": 630,
+            "mean_delta": 0.02857142857142857,
+            "ci95_low": -0.007976190476190474,
+            "ci95_high": 0.06511904761904741,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.924
+          }
+        }
+      },
+      "probe_b": {
+        "count": 384,
+        "metrics": {
+          "top1": {
+            "count": 384,
+            "mean_delta": 0.036458333333333336,
+            "ci95_low": -0.013020833333333334,
+            "ci95_high": 0.08333333333333333,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.92
+          },
+          "mrr": {
+            "count": 384,
+            "mean_delta": 0.031028318592194126,
+            "ci95_low": 0.002195508764880233,
+            "ci95_high": 0.06240363828064507,
+            "zero_excluded": true,
+            "bootstrap_win_rate": 0.981
+          },
+          "false_confuser_rate": {
+            "count": 384,
+            "mean_delta": 0.036458333333333336,
+            "ci95_low": -0.010416666666666666,
+            "ci95_high": 0.0859375,
+            "zero_excluded": false,
+            "bootstrap_win_rate": 0.9195
+          }
+        }
+      }
+    }
+  },
+  "utility_zero_excluded_vs_calibration": false,
+  "utility_zero_excluded_vs_legacysem": false,
+  "utility_claim_level": "moderate_claim"
+}
