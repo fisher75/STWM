@@ -1,0 +1,163 @@
+{
+  "generated_at_utc": "2026-04-23T08:18:11.641461+00:00",
+  "official_tusb_method": "TUSB-v3.1::official(best_semantic_hard.pt+hybrid_light)",
+  "panels": {
+    "densified_200_context_preserving": {
+      "vs_legacysem": {
+        "overall_top1": {
+          "count": 894,
+          "mean_delta": 0.03803131991051454,
+          "ci95_low": 0.006711409395973154,
+          "ci95_high": 0.06823266219239374,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.12304250559284116
+        },
+        "hard_subset_top1": {
+          "count": 894,
+          "mean_delta": 0.03803131991051454,
+          "ci95_low": 0.010067114093959731,
+          "ci95_high": 0.06823266219239374,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.12304250559284116
+        },
+        "ambiguity_top1": {
+          "count": 654,
+          "mean_delta": 0.04434250764525994,
+          "ci95_low": 0.010703363914373088,
+          "ci95_high": 0.07801987767584112,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.12538226299694188
+        },
+        "appearance_change_top1": {
+          "count": 600,
+          "mean_delta": 0.025,
+          "ci95_low": -0.011666666666666667,
+          "ci95_high": 0.06,
+          "zero_excluded": false,
+          "bootstrap_win_rate": 0.115
+        },
+        "occlusion_reappearance_top1": {
+          "count": 564,
+          "mean_delta": 0.03723404255319149,
+          "ci95_low": 0.0,
+          "ci95_high": 0.07624113475177305,
+          "zero_excluded": false,
+          "bootstrap_win_rate": 0.12588652482269502
+        },
+        "long_gap_persistence_top1": {
+          "count": 276,
+          "mean_delta": 0.018115942028985508,
+          "ci95_low": -0.03985507246376811,
+          "ci95_high": 0.07971014492753623,
+          "zero_excluded": false,
+          "bootstrap_win_rate": 0.14492753623188406
+        }
+      },
+      "vs_calibration": {
+        "overall_top1": {
+          "count": 894,
+          "mean_delta": 0.0436241610738255,
+          "ci95_low": 0.015659955257270694,
+          "ci95_high": 0.07158836689038031,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.1174496644295302
+        },
+        "hard_subset_top1": {
+          "count": 894,
+          "mean_delta": 0.0436241610738255,
+          "ci95_low": 0.015659955257270694,
+          "ci95_high": 0.07270693512304251,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.1174496644295302
+        },
+        "ambiguity_top1": {
+          "count": 654,
+          "mean_delta": 0.05657492354740061,
+          "ci95_low": 0.024464831804281346,
+          "ci95_high": 0.09021406727828746,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.12538226299694188
+        },
+        "appearance_change_top1": {
+          "count": 600,
+          "mean_delta": 0.021666666666666667,
+          "ci95_low": -0.013333333333333334,
+          "ci95_high": 0.056666666666666664,
+          "zero_excluded": false,
+          "bootstrap_win_rate": 0.105
+        },
+        "occlusion_reappearance_top1": {
+          "count": 564,
+          "mean_delta": 0.0425531914893617,
+          "ci95_low": 0.0070921985815602835,
+          "ci95_high": 0.0797872340425532,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.11879432624113476
+        },
+        "long_gap_persistence_top1": {
+          "count": 276,
+          "mean_delta": 0.05434782608695652,
+          "ci95_low": 0.0036231884057971015,
+          "ci95_high": 0.10869565217391304,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.13043478260869565
+        }
+      },
+      "vs_cropenc": {
+        "overall_top1": {
+          "count": 894,
+          "mean_delta": 0.042505592841163314,
+          "ci95_low": 0.0145413870246085,
+          "ci95_high": 0.07273489932885917,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.1174496644295302
+        },
+        "hard_subset_top1": {
+          "count": 894,
+          "mean_delta": 0.042505592841163314,
+          "ci95_low": 0.0145413870246085,
+          "ci95_high": 0.07046979865771812,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.1174496644295302
+        },
+        "ambiguity_top1": {
+          "count": 654,
+          "mean_delta": 0.0581039755351682,
+          "ci95_low": 0.024464831804281346,
+          "ci95_high": 0.09021406727828746,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.12385321100917432
+        },
+        "appearance_change_top1": {
+          "count": 600,
+          "mean_delta": 0.02666666666666667,
+          "ci95_low": -0.006666666666666667,
+          "ci95_high": 0.06166666666666667,
+          "zero_excluded": false,
+          "bootstrap_win_rate": 0.10666666666666667
+        },
+        "occlusion_reappearance_top1": {
+          "count": 564,
+          "mean_delta": 0.040780141843971635,
+          "ci95_low": 0.0035460992907801418,
+          "ci95_high": 0.07624113475177305,
+          "zero_excluded": true,
+          "bootstrap_win_rate": 0.12056737588652482
+        },
+        "long_gap_persistence_top1": {
+          "count": 276,
+          "mean_delta": 0.021739130434782608,
+          "ci95_low": -0.03260869565217391,
+          "ci95_high": 0.07608695652173914,
+          "zero_excluded": false,
+          "bootstrap_win_rate": 0.12318840579710146
+        }
+      }
+    }
+  },
+  "exact_blocking_reason": "fresh official hybrid-light extended_600 eval not materialized in this pass; current final revalidation is anchored to the completed densified_200 official rerun",
+  "zero_excluded_vs_legacysem": true,
+  "zero_excluded_vs_calibration": true,
+  "zero_excluded_vs_cropenc": true,
+  "claim_level": "strong_claim"
+}

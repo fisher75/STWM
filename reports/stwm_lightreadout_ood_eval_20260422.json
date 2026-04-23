@@ -1,0 +1,82 @@
+{
+  "generated_at_utc": "2026-04-23T08:18:17.670021+00:00",
+  "source_final_eval_report": "/raid/chen034/workspace/stwm/reports/stwm_lightreadout_final_eval_20260422.json",
+  "panel_name": "densified_200_context_preserving",
+  "setting_a_vipseg_to_burst_heavy": {
+    "official_tusb": {
+      "count": 600.0,
+      "top1": 0.275,
+      "hit_rate": 0.008333333333333333,
+      "mrr": 0.5188108465608462,
+      "loc_error": 0.2135222971458645,
+      "mask_iou_at_top1": 0.27568862663347105
+    },
+    "calibration_only": {
+      "count": 600.0,
+      "top1": 0.2,
+      "hit_rate": 0.018333333333333333,
+      "mrr": 0.46616666666666634,
+      "loc_error": 0.20187240032938858,
+      "mask_iou_at_top1": 0.20061914931123673
+    },
+    "cropenc_baseline": {
+      "count": 600.0,
+      "top1": 0.205,
+      "hit_rate": 0.018333333333333333,
+      "mrr": 0.46859854497354464,
+      "loc_error": 0.20901425638413051,
+      "mask_iou_at_top1": 0.20571816730891151
+    },
+    "legacysem": {
+      "count": 600.0,
+      "top1": 0.21333333333333335,
+      "hit_rate": 0.011666666666666667,
+      "mrr": 0.4799543650793647,
+      "loc_error": 0.209444968093078,
+      "mask_iou_at_top1": 0.21412151244183178
+    }
+  },
+  "setting_b_burst_to_vipseg_heavy": {
+    "official_tusb": {
+      "count": 294.0,
+      "top1": 0.061224489795918366,
+      "hit_rate": 0.003401360544217687,
+      "mrr": 0.26609835790914566,
+      "loc_error": 0.23655999556066035,
+      "mask_iou_at_top1": 0.061224489795918366
+    },
+    "calibration_only": {
+      "count": 294.0,
+      "top1": 0.08163265306122448,
+      "hit_rate": 0.0,
+      "mrr": 0.24888318941986273,
+      "loc_error": 0.23728214125506086,
+      "mask_iou_at_top1": 0.08163265306122448
+    },
+    "cropenc_baseline": {
+      "count": 294.0,
+      "top1": 0.07482993197278912,
+      "hit_rate": 0.0,
+      "mrr": 0.2439460258573137,
+      "loc_error": 0.24084862426841108,
+      "mask_iou_at_top1": 0.07482993197278912
+    },
+    "legacysem": {
+      "count": 294.0,
+      "top1": 0.07142857142857142,
+      "hit_rate": 0.003401360544217687,
+      "mrr": 0.2361318676747487,
+      "loc_error": 0.25401143359021006,
+      "mask_iou_at_top1": 0.07142857142857142
+    }
+  },
+  "setting_c_conservative_heldout_split": {
+    "supported": false,
+    "reason": "current live repo still has no materialized true held-out scene/category/video split in this runner"
+  },
+  "ood_improved_vs_calibration": false,
+  "ood_improved_vs_cropenc": false,
+  "ood_improved_vs_legacysem": false,
+  "ood_claim_ready": false,
+  "proxy_only_vs_true_ood_boundary": "current rerun only refreshes the existing proxy domain split under official light readout; true held-out OOD is still unsupported here"
+}
