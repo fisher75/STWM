@@ -732,7 +732,214 @@ def _candidate_ranking(pred_xy_norm: Tuple[float, float], future_masks: Dict[str
     return str(top.get("candidate_id", "none")), float(top.get("normalized_centroid_distance", 1e9))
 
 
-def _evaluate_item(method: LoadedMethod, item: Dict[str, Any], batch: Dict[str, Any], target_future_mask: np.ndarray, future_masks: Dict[str, np.ndarray], device: torch.device) -> Dict[str, Any]:
+def _prepare_candidate_inputs(
+    item: Dict[str, Any],
+    target_future_mask: np.ndarray,
+    future_masks: Dict[str, np.ndarray],
+) -> Dict[str, Any]:
+    frame_paths = [Path(x) for x in item.get("selected_frame_paths", [])]
+    future_step = int(item.get("future_step", FUT_LEN + OBS_LEN - 1))
+    with Image.open(frame_paths[future_step]) as img:
+        future_rgb = np.asarray(img.convert("RGB"), dtype=np.float32) / 255.0
+    width = int((item.get("image_size") or {}).get("width", target_future_mask.shape[1]))
+    height = int((item.get("image_size") or {}).get("height", target_future_mask.shape[0]))
+    target_cx, target_cy = _mask_centroid(target_future_mask)
+    diag = max(math.sqrt(float(width * width + height * height)), 1.0)
+    rows: Dict[str, Any] = {}
+    for cand_id, cand_mask in future_masks.items():
+        if not isinstance(cand_mask, np.ndarray) or not np.any(cand_mask):
+            continue
+        box_xyxy, mask_used, fg_ratio = _box_from_mask_or_center(
+            mask=cand_mask.astype(np.uint8),
+            width=width,
+            height=height,
+            radius=12,
+        )
+        rgb_crop, mask_crop, mask_valid = _build_semantic_crops(
+            rgb=future_rgb,
+            mask=cand_mask.astype(np.uint8),
+            box_xyxy=box_xyxy,
+            crop_size=64,
+        )
+        sem_feature = _semantic_feature(
+            rgb=future_rgb,
+            mask=cand_mask.astype(np.uint8),
+            box_xyxy=box_xyxy,
+            mask_used=bool(mask_used),
+            fg_ratio=float(fg_ratio),
+        )
+        cand_cx, cand_cy = _mask_centroid(cand_mask)
+        rows[str(cand_id)] = {
+            "rgb_crop": rgb_crop.astype(np.float32),
+            "mask_crop": mask_crop.astype(np.float32),
+            "semantic_feature": sem_feature.astype(np.float32),
+            "mask_valid": bool(mask_valid),
+            "iou_with_target": float(_mask_iou(cand_mask, target_future_mask)),
+            "centroid_distance_to_target": float(
+                math.sqrt((cand_cx - target_cx) ** 2 + (cand_cy - target_cy) ** 2) / diag
+            ),
+        }
+    return {
+        "width": width,
+        "height": height,
+        "target_future_mask": target_future_mask,
+        "future_masks": future_masks,
+        "target_id": str(item.get("target_id", "")),
+        "candidates": rows,
+    }
+
+
+def _coord_score_map(
+    pred_xy_norm: Tuple[float, float],
+    future_masks: Dict[str, np.ndarray],
+    width: int,
+    height: int,
+) -> Dict[str, float]:
+    rows = _candidate_rankings(pred_xy_norm=pred_xy_norm, future_masks=future_masks, width=width, height=height)
+    scores: Dict[str, float] = {}
+    for row in rows:
+        inside_bonus = 1.0 if bool(row.get("inside", False)) else 0.0
+        scores[str(row.get("candidate_id", ""))] = float(
+            inside_bonus - float(row.get("normalized_centroid_distance", 1.0))
+        )
+    return scores
+
+
+def _sorted_rank_from_scores(scores: Dict[str, float], target_id: str) -> Dict[str, Any]:
+    ordered = sorted(scores.items(), key=lambda kv: (-float(kv[1]), str(kv[0])))
+    ranked_ids = [str(cid) for cid, _ in ordered]
+    target_rank = 0
+    for idx, cid in enumerate(ranked_ids, start=1):
+        if str(cid) == str(target_id):
+            target_rank = idx
+            break
+    top1 = ranked_ids[0] if ranked_ids else "none"
+    return {
+        "top1_candidate_id": str(top1),
+        "target_rank": int(target_rank),
+        "top1": 1.0 if str(top1) == str(target_id) else 0.0,
+        "top5_hit": 1.0 if 0 < int(target_rank) <= 5 else 0.0,
+        "mrr": float(1.0 / float(target_rank)) if int(target_rank) > 0 else 0.0,
+        "ranked_candidate_ids": ranked_ids[:10],
+    }
+
+
+def _ridge_project_query_to_semantic(
+    unit_vectors: torch.Tensor,
+    semantic_vectors: torch.Tensor,
+    query_vector: torch.Tensor,
+    ridge: float = 1e-3,
+) -> torch.Tensor:
+    if unit_vectors.ndim != 2 or semantic_vectors.ndim != 2:
+        raise ValueError("ridge projection expects [N,D]")
+    if unit_vectors.shape[0] < 2:
+        dims = min(int(query_vector.shape[-1]), int(semantic_vectors.shape[-1]))
+        out = torch.zeros((int(semantic_vectors.shape[-1]),), device=query_vector.device, dtype=query_vector.dtype)
+        out[:dims] = query_vector[:dims]
+        return out
+    gram = unit_vectors @ unit_vectors.transpose(0, 1)
+    eye = torch.eye(int(gram.shape[0]), device=gram.device, dtype=gram.dtype)
+    coeff = torch.linalg.solve(gram + float(ridge) * eye, semantic_vectors)
+    return (query_vector @ unit_vectors.transpose(0, 1)) @ coeff
+
+
+def _extract_trace_unit_representations(
+    batch_gpu: Dict[str, Any],
+    teacher_forced_out: Dict[str, Any],
+) -> Dict[str, Any]:
+    trace_aux = teacher_forced_out.get("trace_unit_aux", {}) if isinstance(teacher_forced_out.get("trace_unit_aux", {}), dict) else {}
+    if not trace_aux:
+        return {"available": False, "reason": "trace_unit_aux_missing"}
+    assignment = trace_aux.get("assignment")
+    z_sem = trace_aux.get("z_sem")
+    z_dyn = trace_aux.get("z_dyn")
+    if not isinstance(assignment, torch.Tensor) or not isinstance(z_sem, torch.Tensor) or not isinstance(z_dyn, torch.Tensor):
+        return {"available": False, "reason": "trace_unit_tensor_missing"}
+    obs_len = min(int(batch_gpu["obs_state"].shape[1]), int(assignment.shape[1]))
+    assign_obs = assignment[0, :obs_len]
+    z_sem_obs = z_sem[0, :obs_len]
+    z_dyn_obs = z_dyn[0, :obs_len]
+    obs_valid = batch_gpu.get("obs_valid")
+    token_mask = batch_gpu.get("token_mask")
+    if not isinstance(obs_valid, torch.Tensor) or not isinstance(token_mask, torch.Tensor):
+        return {"available": False, "reason": "valid_mask_missing"}
+    obs_valid = obs_valid[0, :obs_len].to(dtype=torch.bool)
+    token_mask = token_mask[0].to(dtype=torch.bool)
+    k_len = int(assign_obs.shape[1])
+    entity_z_sem: List[torch.Tensor] = []
+    entity_z_dyn: List[torch.Tensor] = []
+    entity_assign: List[torch.Tensor] = []
+    for ent_idx in range(k_len):
+        valid_t = obs_valid[:, ent_idx] & token_mask[ent_idx]
+        if bool(valid_t.any().item()):
+            idx = valid_t.nonzero(as_tuple=False).flatten()
+            sem_steps = torch.einsum("tm,tmd->td", assign_obs[idx, ent_idx], z_sem_obs[idx])
+            dyn_steps = torch.einsum("tm,tmd->td", assign_obs[idx, ent_idx], z_dyn_obs[idx])
+            assign_steps = assign_obs[idx, ent_idx]
+            entity_z_sem.append(sem_steps.mean(dim=0))
+            entity_z_dyn.append(dyn_steps.mean(dim=0))
+            entity_assign.append(assign_steps.mean(dim=0))
+        else:
+            entity_z_sem.append(torch.zeros_like(z_sem_obs[0, 0]))
+            entity_z_dyn.append(torch.zeros_like(z_dyn_obs[0, 0]))
+            entity_assign.append(torch.zeros_like(assign_obs[0, 0]))
+    entity_z_sem_t = torch.stack(entity_z_sem, dim=0)
+    entity_z_dyn_t = torch.stack(entity_z_dyn, dim=0)
+    entity_assign_t = torch.stack(entity_assign, dim=0)
+    dominant_unit = int(entity_assign_t[0].argmax().item())
+    dominant_mass = float(entity_assign_t[0].max().item())
+    return {
+        "available": True,
+        "entity_z_sem": entity_z_sem_t,
+        "entity_z_dyn": entity_z_dyn_t,
+        "entity_assign": entity_assign_t,
+        "dominant_unit": dominant_unit,
+        "dominant_mass": dominant_mass,
+    }
+
+
+def _encode_candidate_tokens_for_light_readout(
+    method: LoadedMethod,
+    candidate_inputs: Dict[str, Any],
+    device: torch.device,
+) -> Dict[str, torch.Tensor]:
+    candidate_rows = candidate_inputs.get("candidates", {})
+    cand_ids = [str(x) for x in candidate_rows.keys()]
+    if not cand_ids or method.semantic_encoder is None:
+        return {}
+    with torch.no_grad():
+        if str(method.semantic_source_mainline).strip().lower() == "crop_visual_encoder":
+            rgb = torch.from_numpy(
+                np.stack([candidate_rows[cid]["rgb_crop"] for cid in cand_ids], axis=0)
+            ).to(device=device, dtype=torch.float32)[None, ...]
+            mask = torch.from_numpy(
+                np.stack([candidate_rows[cid]["mask_crop"] for cid in cand_ids], axis=0)
+            ).to(device=device, dtype=torch.float32)[None, ...]
+            tokens = method.semantic_encoder(
+                None,
+                semantic_rgb_crop=rgb,
+                semantic_mask_crop=mask,
+                source_mode=str(method.semantic_source_mainline),
+            )
+        else:
+            feats = torch.from_numpy(
+                np.stack([candidate_rows[cid]["semantic_feature"] for cid in cand_ids], axis=0)
+            ).to(device=device, dtype=torch.float32)[None, ...]
+            tokens = method.semantic_encoder(
+                feats,
+                source_mode=str(method.semantic_source_mainline),
+            )
+    return {cid: tokens[0, idx].detach() for idx, cid in enumerate(cand_ids)}
+
+
+def _evaluate_coord_from_free_rollout(
+    method: LoadedMethod,
+    item: Dict[str, Any],
+    batch: Dict[str, Any],
+    target_future_mask: np.ndarray,
+    future_masks: Dict[str, np.ndarray],
+    device: torch.device,
+) -> Tuple[Dict[str, Any], Dict[str, float]]:
     width = int((item.get("image_size") or {}).get("width", target_future_mask.shape[1]))
     height = int((item.get("image_size") or {}).get("height", target_future_mask.shape[0]))
     pred_x_norm, pred_y_norm = _predict_final_coord(method, batch, device=device)
@@ -743,29 +950,235 @@ def _evaluate_item(method: LoadedMethod, item: Dict[str, Any], batch: Dict[str, 
     localization_error = float(math.sqrt((pred_x - target_cx) ** 2 + (pred_y - target_cy) ** 2) / diag)
     y_idx = int(round(pred_y))
     x_idx = int(round(pred_x))
-    hit = bool(0 <= y_idx < target_future_mask.shape[0] and 0 <= x_idx < target_future_mask.shape[1] and target_future_mask[y_idx, x_idx])
-    ranked_candidates = _candidate_rankings((pred_x_norm, pred_y_norm), future_masks, width=width, height=height)
-    top1_id = str(ranked_candidates[0]["candidate_id"]) if ranked_candidates else "none"
-    top1_mask = future_masks.get(str(top1_id))
-    target_rank = 0
-    for rank_idx, row in enumerate(ranked_candidates, start=1):
-        if str(row.get("candidate_id", "")) == str(item.get("target_id")):
-            target_rank = rank_idx
-            break
-    return {
-        "query_future_top1_acc": 1.0 if str(top1_id) == str(item.get("target_id")) else 0.0,
+    hit = bool(
+        0 <= y_idx < target_future_mask.shape[0]
+        and 0 <= x_idx < target_future_mask.shape[1]
+        and target_future_mask[y_idx, x_idx]
+    )
+    coord_scores = _coord_score_map((pred_x_norm, pred_y_norm), future_masks, width=width, height=height)
+    rank = _sorted_rank_from_scores(coord_scores, str(item.get("target_id", "")))
+    result = {
+        "query_future_top1_acc": float(rank["top1"]),
         "query_future_hit_rate": 1.0 if hit else 0.0,
         "query_future_localization_error": float(localization_error),
-        "future_mask_iou_at_top1": float(_mask_iou(top1_mask, target_future_mask)),
-        "top1_candidate_id": str(top1_id),
-        "target_rank": int(target_rank),
-        "candidate_count": int(len(ranked_candidates)),
-        "top5_hit": 1.0 if int(target_rank) > 0 and int(target_rank) <= 5 else 0.0,
-        "mrr": float(1.0 / float(target_rank)) if int(target_rank) > 0 else 0.0,
-        "ranked_candidate_ids": [str(row.get("candidate_id", "")) for row in ranked_candidates[:10]],
+        "future_mask_iou_at_top1": float(_mask_iou(future_masks.get(str(rank["top1_candidate_id"])), target_future_mask)),
+        "top1_candidate_id": str(rank["top1_candidate_id"]),
+        "target_rank": int(rank["target_rank"]),
+        "candidate_count": int(len(coord_scores)),
+        "top5_hit": float(rank["top5_hit"]),
+        "mrr": float(rank["mrr"]),
+        "ranked_candidate_ids": list(rank["ranked_candidate_ids"]),
         "predicted_future_xy_norm": [float(pred_x_norm), float(pred_y_norm)],
         "predicted_future_xy_pixels": [float(pred_x), float(pred_y)],
     }
+    return result, coord_scores
+
+
+def _evaluate_tusb_light_readout_payload(
+    method: LoadedMethod,
+    item: Dict[str, Any],
+    batch: Dict[str, Any],
+    target_future_mask: np.ndarray,
+    future_masks: Dict[str, np.ndarray],
+    candidate_inputs: Dict[str, Any],
+    device: torch.device,
+) -> Dict[str, Any]:
+    coord_result, coord_scores = _evaluate_coord_from_free_rollout(
+        method=method,
+        item=item,
+        batch=batch,
+        target_future_mask=target_future_mask,
+        future_masks=future_masks,
+        device=device,
+    )
+    payload: Dict[str, Any] = {
+        "available": False,
+        "blocking_reason": "",
+        "coord_result": coord_result,
+        "coord_scores": coord_scores,
+        "unit_identity_scores": {},
+        "semantic_teacher_scores": {},
+        "dominant_unit": -1,
+        "dominant_unit_mass": 0.0,
+    }
+    if method.method_type != "stage2":
+        payload["blocking_reason"] = "stage1_has_no_trace_units"
+        return payload
+    if not (
+        method.trace_unit_tokenizer is not None
+        and method.trace_unit_factorized_state is not None
+        and method.trace_unit_handshake is not None
+        and method.trace_unit_broadcast is not None
+    ):
+        payload["blocking_reason"] = "trace_unit_modules_missing"
+        return payload
+    batch_gpu = trainer._to_device(batch, device=device, non_blocking=False)
+    with torch.no_grad():
+        tf_out = trainer._teacher_forced_predict(
+            stage1_model=method.stage1_model,
+            semantic_encoder=method.semantic_encoder,
+            semantic_fusion=method.semantic_fusion,
+            readout_head=method.readout_head,
+            structure_mode=str(method.stage2_structure_mode),
+            trace_unit_tokenizer=method.trace_unit_tokenizer,
+            trace_unit_factorized_state=method.trace_unit_factorized_state,
+            trace_unit_handshake=method.trace_unit_handshake,
+            trace_unit_broadcast=method.trace_unit_broadcast,
+            trace_unit_disable_instance_path=bool(method.trace_unit_disable_instance_path),
+            batch=batch_gpu,
+            obs_len=OBS_LEN,
+            semantic_source_mainline=method.semantic_source_mainline,
+            allow_stage1_grad=False,
+        )
+    unit_info = _extract_trace_unit_representations(batch_gpu, tf_out)
+    if not bool(unit_info.get("available", False)):
+        payload["blocking_reason"] = str(unit_info.get("reason", "trace_unit_repr_missing"))
+        return payload
+    if "semantic_tokens" not in tf_out or not isinstance(tf_out["semantic_tokens"], torch.Tensor):
+        payload["blocking_reason"] = "semantic_tokens_missing"
+        return payload
+    semantic_tokens = tf_out["semantic_tokens"][0]
+    entity_z_sem = unit_info["entity_z_sem"]
+    entity_z_dyn = unit_info["entity_z_dyn"]
+    token_mask = batch_gpu["token_mask"][0].to(dtype=torch.bool)
+    valid_entities = [idx for idx in range(int(token_mask.shape[0])) if bool(token_mask[idx].item())]
+    if len(valid_entities) < 1:
+        payload["blocking_reason"] = "no_valid_entities"
+        return payload
+    target_proj = _ridge_project_query_to_semantic(
+        entity_z_sem[valid_entities],
+        semantic_tokens[valid_entities],
+        entity_z_sem[0],
+    )
+    target_sem = semantic_tokens[0]
+    candidate_tokens = _encode_candidate_tokens_for_light_readout(method, candidate_inputs, device=device)
+    if not candidate_tokens:
+        payload["blocking_reason"] = "candidate_tokens_missing"
+        return payload
+    target_proj_n = torch.nn.functional.normalize(target_proj, dim=-1)
+    target_sem_n = torch.nn.functional.normalize(target_sem, dim=-1)
+    dominant_mass = float(unit_info.get("dominant_mass", 0.0))
+    unit_scores: Dict[str, float] = {}
+    semantic_scores: Dict[str, float] = {}
+    for cand_id, token in candidate_tokens.items():
+        token_n = torch.nn.functional.normalize(token, dim=-1)
+        unit_sim = float(torch.dot(target_proj_n, token_n).detach().cpu().item())
+        sem_sim = float(torch.dot(target_sem_n, token_n).detach().cpu().item())
+        unit_scores[str(cand_id)] = float(unit_sim * (0.5 + 0.5 * dominant_mass))
+        semantic_scores[str(cand_id)] = float(sem_sim)
+    payload.update(
+        {
+            "available": True,
+            "unit_identity_scores": unit_scores,
+            "semantic_teacher_scores": semantic_scores,
+            "dominant_unit": int(unit_info["dominant_unit"]),
+            "dominant_unit_mass": float(dominant_mass),
+            "target_z_sem_norm": float(entity_z_sem[0].norm().detach().cpu().item()),
+            "target_z_dyn_norm": float(entity_z_dyn[0].norm().detach().cpu().item()),
+        }
+    )
+    return payload
+
+
+def _build_hybrid_scores(
+    coord_scores: Dict[str, float],
+    unit_scores: Dict[str, float],
+    semantic_scores: Dict[str, float],
+    alpha: float,
+    beta: float,
+    gamma: float,
+) -> Dict[str, float]:
+    all_ids = sorted(set(coord_scores) | set(unit_scores) | set(semantic_scores))
+    return {
+        cid: float(
+            alpha * coord_scores.get(cid, -1e9)
+            + beta * unit_scores.get(cid, 0.0)
+            + gamma * semantic_scores.get(cid, 0.0)
+        )
+        for cid in all_ids
+    }
+
+
+def _evaluate_item(
+    method: LoadedMethod,
+    item: Dict[str, Any],
+    batch: Dict[str, Any],
+    target_future_mask: np.ndarray,
+    future_masks: Dict[str, np.ndarray],
+    device: torch.device,
+    scoring_mode: str = "coord_only",
+    candidate_inputs: Dict[str, Any] | None = None,
+    selected_weights: Dict[str, float] | None = None,
+) -> Dict[str, Any]:
+    coord_result, coord_scores = _evaluate_coord_from_free_rollout(
+        method=method,
+        item=item,
+        batch=batch,
+        target_future_mask=target_future_mask,
+        future_masks=future_masks,
+        device=device,
+    )
+    scoring_mode_normalized = str(scoring_mode).strip().lower()
+    if scoring_mode_normalized == "coord_only":
+        result = dict(coord_result)
+        result["scoring_mode"] = "coord_only"
+        return result
+    if candidate_inputs is None:
+        candidate_inputs = _prepare_candidate_inputs(item=item, target_future_mask=target_future_mask, future_masks=future_masks)
+    payload = _evaluate_tusb_light_readout_payload(
+        method=method,
+        item=item,
+        batch=batch,
+        target_future_mask=target_future_mask,
+        future_masks=future_masks,
+        candidate_inputs=candidate_inputs,
+        device=device,
+    )
+    result = dict(coord_result)
+    result["scoring_mode"] = scoring_mode_normalized
+    result["coord_only_scores"] = dict(coord_scores)
+    result["unit_identity_scores"] = dict(payload.get("unit_identity_scores", {}))
+    result["semantic_teacher_scores"] = dict(payload.get("semantic_teacher_scores", {}))
+    result["dominant_unit"] = int(payload.get("dominant_unit", -1))
+    result["dominant_unit_mass"] = float(payload.get("dominant_unit_mass", 0.0))
+    result["light_readout_available"] = bool(payload.get("available", False))
+    result["light_readout_blocking_reason"] = str(payload.get("blocking_reason", ""))
+    if not bool(payload.get("available", False)):
+        return result
+    if scoring_mode_normalized == "unit_identity_only":
+        active_scores = dict(payload.get("unit_identity_scores", {}))
+    elif scoring_mode_normalized == "hybrid_light":
+        weights = selected_weights or {}
+        active_scores = _build_hybrid_scores(
+            coord_scores=dict(coord_scores),
+            unit_scores=dict(payload.get("unit_identity_scores", {})),
+            semantic_scores=dict(payload.get("semantic_teacher_scores", {})),
+            alpha=float(weights.get("alpha", 0.7)),
+            beta=float(weights.get("beta", 0.2)),
+            gamma=float(weights.get("gamma", 0.1)),
+        )
+        result["selected_hybrid_weights"] = {
+            "alpha": float(weights.get("alpha", 0.7)),
+            "beta": float(weights.get("beta", 0.2)),
+            "gamma": float(weights.get("gamma", 0.1)),
+        }
+        result["hybrid_light_scores"] = dict(active_scores)
+    else:
+        raise RuntimeError(f"unsupported scoring_mode: {scoring_mode}")
+    rank = _sorted_rank_from_scores(active_scores, str(item.get("target_id", "")))
+    top1_id = str(rank["top1_candidate_id"])
+    result.update(
+        {
+            "query_future_top1_acc": float(rank["top1"]),
+            "future_mask_iou_at_top1": float(_mask_iou(future_masks.get(str(top1_id)), target_future_mask)),
+            "top1_candidate_id": str(top1_id),
+            "target_rank": int(rank["target_rank"]),
+            "top5_hit": float(rank["top5_hit"]),
+            "mrr": float(rank["mrr"]),
+            "ranked_candidate_ids": list(rank["ranked_candidate_ids"]),
+        }
+    )
+    return result
 
 
 def _aggregate_item_metrics(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -801,6 +1214,10 @@ def parse_args() -> Any:
     parser.add_argument("--lease-path", default=str(ROOT / "reports/stage1_v2_gpu_lease_20260408.json"))
     parser.add_argument("--eval-required-mem-gb", type=float, default=40.0)
     parser.add_argument("--eval-safety-margin-gb", type=float, default=8.0)
+    parser.add_argument("--scoring-mode", default="coord_only", choices=["coord_only", "unit_identity_only", "hybrid_light"])
+    parser.add_argument("--hybrid-alpha", type=float, default=0.7)
+    parser.add_argument("--hybrid-beta", type=float, default=0.2)
+    parser.add_argument("--hybrid-gamma", type=float, default=0.1)
     return parser.parse_args()
 
 
@@ -812,13 +1229,16 @@ def main() -> None:
     device, device_info = _select_eval_device(args)
     specs = _load_method_specs(args)
 
-    prepared_items: List[Tuple[Dict[str, Any], Dict[str, Any], np.ndarray, Dict[str, np.ndarray]]] = []
+    prepared_items: List[Tuple[Dict[str, Any], Dict[str, Any], np.ndarray, Dict[str, np.ndarray], Dict[str, Any] | None]] = []
     per_item: List[Dict[str, Any]] = []
     for item in items:
         if not isinstance(item, dict):
             continue
         batch, target_future_mask, future_masks = _build_single_item_batch(item)
-        prepared_items.append((item, batch, target_future_mask, future_masks))
+        candidate_inputs = None
+        if str(args.scoring_mode).strip().lower() != "coord_only":
+            candidate_inputs = _prepare_candidate_inputs(item=item, target_future_mask=target_future_mask, future_masks=future_masks)
+        prepared_items.append((item, batch, target_future_mask, future_masks, candidate_inputs))
         per_item.append(
             {
                 "protocol_item_id": str(item.get("protocol_item_id", "")),
@@ -834,7 +1254,7 @@ def main() -> None:
         for spec in specs:
             method = _load_method(spec, device=device)
             for item_row, prepared in zip(per_item, prepared_items):
-                item, batch, target_future_mask, future_masks = prepared
+                item, batch, target_future_mask, future_masks, candidate_inputs = prepared
                 item_row["methods"][method.name] = _evaluate_item(
                     method=method,
                     item=item,
@@ -842,6 +1262,13 @@ def main() -> None:
                     target_future_mask=target_future_mask,
                     future_masks=future_masks,
                     device=device,
+                    scoring_mode=str(args.scoring_mode),
+                    candidate_inputs=candidate_inputs,
+                    selected_weights={
+                        "alpha": float(args.hybrid_alpha),
+                        "beta": float(args.hybrid_beta),
+                        "gamma": float(args.hybrid_gamma),
+                    },
                 )
             _release_method(method)
     finally:
