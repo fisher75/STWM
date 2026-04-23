@@ -1147,22 +1147,36 @@ def _evaluate_item(
         return result
     if scoring_mode_normalized == "unit_identity_only":
         active_scores = dict(payload.get("unit_identity_scores", {}))
-    elif scoring_mode_normalized == "hybrid_light":
+    elif scoring_mode_normalized == "semantic_teacher_only":
+        active_scores = dict(payload.get("semantic_teacher_scores", {}))
+    elif scoring_mode_normalized in {"coord_plus_teacher", "coord_plus_unit", "hybrid_light"}:
         weights = selected_weights or {}
+        alpha = float(weights.get("alpha", 0.7))
+        beta = float(weights.get("beta", 0.2))
+        gamma = float(weights.get("gamma", 0.1))
+        if scoring_mode_normalized == "coord_plus_teacher":
+            beta = 0.0
+        elif scoring_mode_normalized == "coord_plus_unit":
+            gamma = 0.0
         active_scores = _build_hybrid_scores(
             coord_scores=dict(coord_scores),
             unit_scores=dict(payload.get("unit_identity_scores", {})),
             semantic_scores=dict(payload.get("semantic_teacher_scores", {})),
-            alpha=float(weights.get("alpha", 0.7)),
-            beta=float(weights.get("beta", 0.2)),
-            gamma=float(weights.get("gamma", 0.1)),
+            alpha=alpha,
+            beta=beta,
+            gamma=gamma,
         )
         result["selected_hybrid_weights"] = {
-            "alpha": float(weights.get("alpha", 0.7)),
-            "beta": float(weights.get("beta", 0.2)),
-            "gamma": float(weights.get("gamma", 0.1)),
+            "alpha": alpha,
+            "beta": beta,
+            "gamma": gamma,
         }
-        result["hybrid_light_scores"] = dict(active_scores)
+        if scoring_mode_normalized == "coord_plus_teacher":
+            result["coord_plus_teacher_scores"] = dict(active_scores)
+        elif scoring_mode_normalized == "coord_plus_unit":
+            result["coord_plus_unit_scores"] = dict(active_scores)
+        else:
+            result["hybrid_light_scores"] = dict(active_scores)
     else:
         raise RuntimeError(f"unsupported scoring_mode: {scoring_mode}")
     rank = _sorted_rank_from_scores(active_scores, str(item.get("target_id", "")))
@@ -1214,7 +1228,18 @@ def parse_args() -> Any:
     parser.add_argument("--lease-path", default=str(ROOT / "reports/stage1_v2_gpu_lease_20260408.json"))
     parser.add_argument("--eval-required-mem-gb", type=float, default=40.0)
     parser.add_argument("--eval-safety-margin-gb", type=float, default=8.0)
-    parser.add_argument("--scoring-mode", default="coord_only", choices=["coord_only", "unit_identity_only", "hybrid_light"])
+    parser.add_argument(
+        "--scoring-mode",
+        default="coord_only",
+        choices=[
+            "coord_only",
+            "unit_identity_only",
+            "semantic_teacher_only",
+            "coord_plus_teacher",
+            "coord_plus_unit",
+            "hybrid_light",
+        ],
+    )
     parser.add_argument("--hybrid-alpha", type=float, default=0.7)
     parser.add_argument("--hybrid-beta", type=float, default=0.2)
     parser.add_argument("--hybrid-gamma", type=float, default=0.1)
