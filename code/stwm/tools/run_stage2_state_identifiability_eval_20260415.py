@@ -932,6 +932,75 @@ def _encode_candidate_tokens_for_light_readout(
     return {cid: tokens[0, idx].detach() for idx, cid in enumerate(cand_ids)}
 
 
+def _observed_target_external_teacher_token(
+    method: LoadedMethod,
+    batch: Dict[str, Any],
+    device: torch.device,
+) -> torch.Tensor | None:
+    if method.semantic_encoder is None:
+        return None
+    with torch.no_grad():
+        if str(method.semantic_source_mainline).strip().lower() == "crop_visual_encoder":
+            rgb = batch.get("semantic_rgb_crop")
+            mask = batch.get("semantic_mask_crop")
+            if not isinstance(rgb, torch.Tensor) or not isinstance(mask, torch.Tensor):
+                return None
+            rgb = rgb.to(device=device, dtype=torch.float32)
+            mask = mask.to(device=device, dtype=torch.float32)
+            if rgb.ndim == 4:
+                rgb = rgb[:, None, ...]
+            elif rgb.ndim != 5:
+                return None
+            if mask.ndim == 3:
+                mask = mask[:, None, ...]
+            elif mask.ndim == 5:
+                mask = mask[:, :1, ...]
+            elif mask.ndim != 4:
+                return None
+            tokens = method.semantic_encoder(
+                None,
+                semantic_rgb_crop=rgb[:, :1],
+                semantic_mask_crop=mask[:, :1] if mask.ndim == 4 else mask,
+                source_mode=str(method.semantic_source_mainline),
+            )
+        else:
+            feats = batch.get("semantic_features")
+            if not isinstance(feats, torch.Tensor):
+                return None
+            feats = feats.to(device=device, dtype=torch.float32)
+            if feats.ndim == 2:
+                feats = feats[:, None, :]
+            elif feats.ndim != 3:
+                return None
+            tokens = method.semantic_encoder(
+                feats[:, :1],
+                source_mode=str(method.semantic_source_mainline),
+            )
+    if not isinstance(tokens, torch.Tensor) or tokens.ndim < 3:
+        return None
+    return tokens[0, 0].detach()
+
+
+def _external_teacher_score_map(
+    method: LoadedMethod,
+    batch: Dict[str, Any],
+    candidate_inputs: Dict[str, Any],
+    device: torch.device,
+) -> Dict[str, float]:
+    target_token = _observed_target_external_teacher_token(method=method, batch=batch, device=device)
+    if target_token is None:
+        return {}
+    candidate_tokens = _encode_candidate_tokens_for_light_readout(method, candidate_inputs, device=device)
+    if not candidate_tokens:
+        return {}
+    target_n = torch.nn.functional.normalize(target_token, dim=-1)
+    scores: Dict[str, float] = {}
+    for cand_id, token in candidate_tokens.items():
+        token_n = torch.nn.functional.normalize(token, dim=-1)
+        scores[str(cand_id)] = float(torch.dot(target_n, token_n).detach().cpu().item())
+    return scores
+
+
 def _evaluate_coord_from_free_rollout(
     method: LoadedMethod,
     item: Dict[str, Any],
@@ -1099,6 +1168,46 @@ def _build_hybrid_scores(
     }
 
 
+def _minmax_normalize_score_map(scores: Dict[str, float]) -> Dict[str, float]:
+    if not scores:
+        return {}
+    vals = [float(v) for v in scores.values() if math.isfinite(float(v))]
+    if not vals:
+        return {str(k): 0.0 for k in scores}
+    lo = min(vals)
+    hi = max(vals)
+    if abs(hi - lo) < 1e-12:
+        return {str(k): 0.0 for k in scores}
+    return {str(k): float((float(v) - lo) / (hi - lo)) for k, v in scores.items()}
+
+
+def _build_semantic_target_tiebreak_scores(
+    semantic_scores: Dict[str, float],
+    coord_scores: Dict[str, float],
+    tie_margin: float = 0.03,
+    coord_tiebreak_weight: float = 0.05,
+    coord_veto_margin: float = 0.80,
+    coord_veto_penalty: float = 0.20,
+) -> Dict[str, float]:
+    if not semantic_scores:
+        return {}
+    all_ids = sorted(set(semantic_scores) | set(coord_scores))
+    sem = {cid: float(semantic_scores.get(cid, -1e9)) for cid in all_ids}
+    coord_n = _minmax_normalize_score_map({cid: float(coord_scores.get(cid, -1e9)) for cid in all_ids})
+    top_sem = max(sem.values())
+    top_coord = max(coord_n.values()) if coord_n else 0.0
+    out: Dict[str, float] = {}
+    for cid in all_ids:
+        base = float(sem[cid])
+        adjusted = base
+        if top_sem - base <= float(tie_margin):
+            adjusted += float(coord_tiebreak_weight) * float(coord_n.get(cid, 0.0))
+        if float(coord_n.get(cid, 0.0)) < float(top_coord) - float(coord_veto_margin):
+            adjusted -= float(coord_veto_penalty)
+        out[str(cid)] = float(adjusted)
+    return out
+
+
 def _evaluate_item(
     method: LoadedMethod,
     item: Dict[str, Any],
@@ -1125,6 +1234,35 @@ def _evaluate_item(
         return result
     if candidate_inputs is None:
         candidate_inputs = _prepare_candidate_inputs(item=item, target_future_mask=target_future_mask, future_masks=future_masks)
+    if scoring_mode_normalized == "external_teacher_only":
+        external_scores = _external_teacher_score_map(
+            method=method,
+            batch=batch,
+            candidate_inputs=candidate_inputs,
+            device=device,
+        )
+        result = dict(coord_result)
+        result["scoring_mode"] = "external_teacher_only"
+        result["coord_only_scores"] = dict(coord_scores)
+        result["external_teacher_scores"] = dict(external_scores)
+        result["light_readout_available"] = bool(external_scores)
+        result["light_readout_blocking_reason"] = "" if external_scores else "external_teacher_scores_missing"
+        if not external_scores:
+            return result
+        rank = _sorted_rank_from_scores(external_scores, str(item.get("target_id", "")))
+        top1_id = str(rank["top1_candidate_id"])
+        result.update(
+            {
+                "query_future_top1_acc": float(rank["top1"]),
+                "future_mask_iou_at_top1": float(_mask_iou(future_masks.get(str(top1_id)), target_future_mask)),
+                "top1_candidate_id": str(top1_id),
+                "target_rank": int(rank["target_rank"]),
+                "top5_hit": float(rank["top5_hit"]),
+                "mrr": float(rank["mrr"]),
+                "ranked_candidate_ids": list(rank["ranked_candidate_ids"]),
+            }
+        )
+        return result
     payload = _evaluate_tusb_light_readout_payload(
         method=method,
         item=item,
@@ -1147,8 +1285,26 @@ def _evaluate_item(
         return result
     if scoring_mode_normalized == "unit_identity_only":
         active_scores = dict(payload.get("unit_identity_scores", {}))
-    elif scoring_mode_normalized == "semantic_teacher_only":
+    elif scoring_mode_normalized in {"semantic_teacher_only", "tusb_semantic_target"}:
         active_scores = dict(payload.get("semantic_teacher_scores", {}))
+        result["scoring_mode"] = "tusb_semantic_target" if scoring_mode_normalized == "tusb_semantic_target" else "semantic_teacher_only"
+    elif scoring_mode_normalized == "semantic_target_tiebreak":
+        weights = selected_weights or {}
+        active_scores = _build_semantic_target_tiebreak_scores(
+            semantic_scores=dict(payload.get("semantic_teacher_scores", {})),
+            coord_scores=dict(coord_scores),
+            tie_margin=float(weights.get("semantic_tie_margin", 0.03)),
+            coord_tiebreak_weight=float(weights.get("coord_tiebreak_weight", 0.05)),
+            coord_veto_margin=float(weights.get("coord_veto_margin", 0.80)),
+            coord_veto_penalty=float(weights.get("coord_veto_penalty", 0.20)),
+        )
+        result["selected_semantic_tiebreak_weights"] = {
+            "semantic_tie_margin": float(weights.get("semantic_tie_margin", 0.03)),
+            "coord_tiebreak_weight": float(weights.get("coord_tiebreak_weight", 0.05)),
+            "coord_veto_margin": float(weights.get("coord_veto_margin", 0.80)),
+            "coord_veto_penalty": float(weights.get("coord_veto_penalty", 0.20)),
+        }
+        result["semantic_target_tiebreak_scores"] = dict(active_scores)
     elif scoring_mode_normalized in {"coord_plus_teacher", "coord_plus_unit", "hybrid_light"}:
         weights = selected_weights or {}
         alpha = float(weights.get("alpha", 0.7))
@@ -1235,9 +1391,12 @@ def parse_args() -> Any:
             "coord_only",
             "unit_identity_only",
             "semantic_teacher_only",
+            "tusb_semantic_target",
+            "external_teacher_only",
             "coord_plus_teacher",
             "coord_plus_unit",
             "hybrid_light",
+            "semantic_target_tiebreak",
         ],
     )
     parser.add_argument("--hybrid-alpha", type=float, default=0.7)
