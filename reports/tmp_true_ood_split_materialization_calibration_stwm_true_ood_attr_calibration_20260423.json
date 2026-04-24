@@ -1,0 +1,62 @@
+{
+  "generated_at_utc": "2026-04-23T16:32:07.683043+00:00",
+  "source_dense_protocol": "/raid/chen034/workspace/stwm/reports/stage2_state_identifiability_protocol_v3_20260416.json",
+  "source_extended_protocol": "/raid/chen034/workspace/stwm/reports/stage2_protocol_v3_extended_evalset_20260420.json",
+  "densified_200_context_preserving": {
+    "item_count": 200,
+    "per_subset_count": {
+      "appearance_change": 137,
+      "crossing_ambiguity": 146,
+      "long_gap_persistence": 67,
+      "occlusion_reappearance": 129,
+      "small_object": 176
+    }
+  },
+  "split_a_vipseg_history_to_burst_heldout": {
+    "split_name": "heldout_burst_heavy_context_preserving",
+    "description": "VIPSeg-heavy history -> BURST-heavy held-out eval",
+    "split_rules": {
+      "eval_items": "dataset == BURST from protocol_v3_extended_600 items",
+      "reference_pool": "dataset != BURST from protocol_v3_extended_600 items"
+    },
+    "item_count": 306,
+    "per_subset_count": {
+      "appearance_change": 162,
+      "crossing_ambiguity": 202,
+      "long_gap_persistence": 73,
+      "occlusion_reappearance": 132,
+      "small_object": 256
+    },
+    "skipped_count": 0,
+    "skipped_reason_counts": {},
+    "leakage_check_passed": true,
+    "no_video_overlap": true,
+    "no_item_leakage": true,
+    "exact_blocking_reason": ""
+  },
+  "split_b_scene_category_video_heldout": {
+    "split_name": "heldout_scene_category_video_context_preserving",
+    "description": "conservative scene/category/video held-out split",
+    "split_rules": {
+      "heldout_video_rule": "video_key hash bucket via sha256(last8_hex) % 5 == 0",
+      "heldout_category_rule": "dataset::category_id hash bucket via sha256(last8_hex) % 7 == 0",
+      "eval_items": "items whose video_key is held out or dataset::category_id is held out",
+      "reference_pool": "items whose video_key and dataset::category_id are both not held out"
+    },
+    "item_count": 303,
+    "per_subset_count": {
+      "appearance_change": 84,
+      "crossing_ambiguity": 259,
+      "long_gap_persistence": 21,
+      "occlusion_reappearance": 63,
+      "small_object": 291
+    },
+    "skipped_count": 0,
+    "skipped_reason_counts": {},
+    "leakage_check_passed": true,
+    "no_video_overlap": true,
+    "no_item_leakage": true,
+    "exact_blocking_reason": ""
+  },
+  "true_ood_materialized": true
+}

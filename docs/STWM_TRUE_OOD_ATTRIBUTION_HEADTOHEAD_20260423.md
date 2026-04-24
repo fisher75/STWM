@@ -1,0 +1,4 @@
+# STWM True OOD Attribution HeadToHead 20260423
+
+- heldout_burst_heavy_context_preserving: improved_vs_teacher_only=False improved_vs_legacysem=True
+- heldout_scene_category_video_context_preserving: improved_vs_teacher_only=False improved_vs_legacysem=True

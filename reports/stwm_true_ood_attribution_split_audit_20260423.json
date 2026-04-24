@@ -1,0 +1,36 @@
+{
+  "generated_at_utc": "2026-04-23T18:00:09.297265+00:00",
+  "splits": {
+    "heldout_burst_heavy_context_preserving": {
+      "total_items": 306,
+      "valid_items": 306,
+      "skipped_items": 0,
+      "skipped_reason_counts": {},
+      "protocol_eval_context_entity_count_mean": 6.196078431372549,
+      "leakage_check_passed": true,
+      "exact_blocking_reason": ""
+    },
+    "heldout_scene_category_video_context_preserving": {
+      "total_items": 303,
+      "valid_items": 303,
+      "skipped_items": 0,
+      "skipped_reason_counts": {},
+      "protocol_eval_context_entity_count_mean": 7.3894389438943895,
+      "leakage_check_passed": true,
+      "exact_blocking_reason": ""
+    }
+  },
+  "true_ood_materialized": true,
+  "official_weights": {
+    "alpha": 0.5,
+    "beta": 0.4,
+    "gamma": 0.2
+  },
+  "source_shards": [
+    "reports/stwm_true_ood_attribution_shard_tusb_a_20260423.json",
+    "reports/stwm_true_ood_attribution_shard_tusb_b_20260423.json",
+    "reports/stwm_true_ood_attribution_shard_legacysem_20260423.json",
+    "reports/stwm_true_ood_attribution_shard_calibration_20260423.json",
+    "reports/stwm_true_ood_attribution_shard_cropenc_20260423.json"
+  ]
+}

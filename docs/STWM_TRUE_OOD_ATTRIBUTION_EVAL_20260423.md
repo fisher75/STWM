@@ -1,0 +1,4 @@
+# STWM True OOD Attribution Eval 20260423
+
+- heldout_burst_heavy_context_preserving: valid_items=306 hash=f62124bb38186481f0cfbdde123aacffbdb67461c512c3ca5c4bbe115530b316
+- heldout_scene_category_video_context_preserving: valid_items=303 hash=b840047786d55352a28404a8bbda17ae18c0b4832739ddd96be11704b4614947
