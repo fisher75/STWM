@@ -1,0 +1,10 @@
+# STWM Clean Trace Association Decision 20260424
+
+- semantic_teacher_only_formally_renamed_to_tusb_semantic_target: true
+- frozen_external_teacher_only_cleaner_than_old_external_teacher_only: true
+- clean_trace_conditioned_association_improved_vs_frozen_external_teacher_only: False
+- clean_trace_conditioned_association_improved_vs_legacysem: True
+- trace_semantic_coupling_load_bearing: False
+- official_story_supported: False
+- claim_level: weak_claim
+- next_step_choice: one_last_surgical_fix

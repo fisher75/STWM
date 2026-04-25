@@ -1,0 +1,509 @@
+{
+  "generated_at_utc": "2026-04-24T16:17:19.264652+00:00",
+  "audited_files": [
+    "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+    "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+    "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_gated_readout_20260423.py"
+  ],
+  "coord_only_meaning": "existing coordinate/mask readout",
+  "unit_identity_only_meaning": "TUSB unit identity score map from trace-unit assignment diagnostics",
+  "semantic_teacher_only_calls_teacher_forced_predict": true,
+  "semantic_teacher_only_uses_semantic_tokens_0": true,
+  "semantic_teacher_only_depends_on_tusb_semantic_state": true,
+  "semantic_teacher_only_should_rename": true,
+  "semantic_teacher_only_new_name": "tusb_semantic_target",
+  "external_teacher_only_clean": false,
+  "external_teacher_only_uses_method_semantic_encoder": true,
+  "external_teacher_only_uses_teacher_forced_predict": false,
+  "external_teacher_only_uses_semantic_tokens": false,
+  "external_teacher_only_uses_unit_identity_scores": false,
+  "external_teacher_only_uses_z_sem_z_dyn": false,
+  "frozen_external_teacher_only_clean": true,
+  "semantic_target_tiebreak_effective": false,
+  "semantic_target_tiebreak_ineffective_reason": "coord veto ineffective; selected tie-break behavior matched tusb_semantic_target on all comparable rows",
+  "hybrid_light_meaning": "additive coord/unit/semantic readout; retained only as historical comparison",
+  "exact_breakpoint": "semantic_teacher_only enters _teacher_forced_predict and semantic_tokens[0]; external_teacher_only routes through _external_teacher_score_map with method.semantic_encoder; semantic_target_tiebreak reason: coord veto ineffective; selected tie-break behavior matched tusb_semantic_target on all comparable rows",
+  "source_line_hits": [
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 675,
+      "pattern": "method.semantic_encoder",
+      "source": "semantic_encoder=method.semantic_encoder,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 908,
+      "pattern": "method.semantic_encoder",
+      "source": "if not cand_ids or method.semantic_encoder is None:"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 918,
+      "pattern": "method.semantic_encoder",
+      "source": "tokens = method.semantic_encoder("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 928,
+      "pattern": "method.semantic_encoder",
+      "source": "tokens = method.semantic_encoder("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 940,
+      "pattern": "method.semantic_encoder",
+      "source": "if method.semantic_encoder is None:"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 960,
+      "pattern": "method.semantic_encoder",
+      "source": "tokens = method.semantic_encoder("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 975,
+      "pattern": "method.semantic_encoder",
+      "source": "tokens = method.semantic_encoder("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 984,
+      "pattern": "_external_teacher_score_map",
+      "source": "def _external_teacher_score_map("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1166,
+      "pattern": "_teacher_forced_predict",
+      "source": "tf_out = trainer._teacher_forced_predict("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1168,
+      "pattern": "method.semantic_encoder",
+      "source": "semantic_encoder=method.semantic_encoder,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1202,
+      "pattern": "semantic_tokens[0]",
+      "source": "target_sem = semantic_tokens[0]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1202,
+      "pattern": "target_sem = semantic_tokens[0]",
+      "source": "target_sem = semantic_tokens[0]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1318,
+      "pattern": "_external_teacher_score_map",
+      "source": "external_scores = _external_teacher_score_map("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1346,
+      "pattern": "frozen_external_teacher_only",
+      "source": "if scoring_mode_normalized == \"frozen_external_teacher_only\":"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1349,
+      "pattern": "frozen_external_teacher_only",
+      "source": "result[\"scoring_mode\"] = \"frozen_external_teacher_only\""
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stage2_state_identifiability_eval_20260415.py",
+      "line": 1520,
+      "pattern": "frozen_external_teacher_only",
+      "source": "\"frozen_external_teacher_only\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 73,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 75,
+      "pattern": "external_teacher_only",
+      "source": "\"external_teacher_only\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 76,
+      "pattern": "hybrid_light",
+      "source": "\"hybrid_light\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 441,
+      "pattern": "semantic_target_tiebreak",
+      "source": "score_map = evalcore._build_semantic_target_tiebreak_scores("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 455,
+      "pattern": "semantic_target_tiebreak",
+      "source": "scoring_mode=\"semantic_target_tiebreak\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 465,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"scoring_mode\": \"semantic_target_tiebreak\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 491,
+      "pattern": "hybrid_light",
+      "source": "\"hybrid_light\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 492,
+      "pattern": "external_teacher_only",
+      "source": "\"external_teacher_only\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 493,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 499,
+      "pattern": "external_teacher_only",
+      "source": "\"true_missing_baseline_was_external_teacher_only\": True,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 500,
+      "pattern": "external_teacher_only",
+      "source": "\"external_teacher_only_present\": bool(\"_external_teacher_score_map\" in source and \"external_teacher_only\" in source),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 501,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_present\": bool(\"_build_semantic_target_tiebreak_scores\" in source and \"semantic_target_tiebreak\" in source),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 502,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"audit_passed\": bool(\"_external_teacher_score_map\" in source and \"_build_semantic_target_tiebreak_scores\" in source),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 515,
+      "pattern": "external_teacher_only",
+      "source": "f\"- external_teacher_only_present: {payload['external_teacher_only_present']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 516,
+      "pattern": "semantic_target_tiebreak",
+      "source": "f\"- semantic_target_tiebreak_present: {payload['semantic_target_tiebreak_present']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 743,
+      "pattern": "external_teacher_only",
+      "source": "_row(item_id, int(row[\"seed\"]), method_name, \"external_teacher_only\", row.get(\"subset_tags\", []), row.get(\"dataset\", \"\"), row.get(\"clip_id\", \"\"), int(row.get(\"protocol_eval_context_entity_count\", 0)),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 744,
+      "pattern": "external_teacher_only",
+      "source": "_compose(base, dict(row.get(\"external_scores\", {})), str(row.get(\"target_id\", \"\")), assets[\"target_future_mask\"], assets[\"future_masks\"], \"external_teacher_only\"))"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 755,
+      "pattern": "hybrid_light",
+      "source": "_row(item_id, int(row[\"seed\"]), method_name, \"hybrid_light\", row.get(\"subset_tags\", []), row.get(\"dataset\", \"\"), row.get(\"clip_id\", \"\"), int(row.get(\"protocol_eval_context_entity_count\", 0)),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 756,
+      "pattern": "hybrid_light",
+      "source": "_compose(base, hybrid_scores, str(row.get(\"target_id\", \"\")), assets[\"target_future_mask\"], assets[\"future_masks\"], \"hybrid_light\", {\"alpha\": 0.5, \"beta\": 0.4, \"gamma\": 0.2}))"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 758,
+      "pattern": "semantic_target_tiebreak",
+      "source": "tiebreak_scores = evalcore._build_semantic_target_tiebreak_scores("
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 767,
+      "pattern": "semantic_target_tiebreak",
+      "source": "_row(item_id, int(row[\"seed\"]), method_name, \"semantic_target_tiebreak\", row.get(\"subset_tags\", []), row.get(\"dataset\", \"\"), row.get(\"clip_id\", \"\"), int(row.get(\"protocol_eval_context_entity_count\", 0)),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 768,
+      "pattern": "semantic_target_tiebreak",
+      "source": "_compose(base, tiebreak_scores, str(row.get(\"target_id\", \"\")), assets[\"target_future_mask\"], assets[\"future_masks\"], \"semantic_target_tiebreak\", tiebreak_weights))"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 841,
+      "pattern": "semantic_target_tiebreak",
+      "source": "tiebreak = _mean_for(panel, OFFICIAL_TUSB, \"semantic_target_tiebreak\", subset_name)"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 842,
+      "pattern": "external_teacher_only",
+      "source": "external = _mean_for(panel, OFFICIAL_TUSB, \"external_teacher_only\", subset_name)"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 844,
+      "pattern": "hybrid_light",
+      "source": "hybrid = _mean_for(panel, OFFICIAL_TUSB, \"hybrid_light\", subset_name)"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 848,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_mean\": tiebreak,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 849,
+      "pattern": "external_teacher_only",
+      "source": "\"external_teacher_only_mean\": external,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 851,
+      "pattern": "hybrid_light",
+      "source": "\"hybrid_light_mean\": hybrid,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 853,
+      "pattern": "external_teacher_only",
+      "source": "\"tusb_semantic_target_improved_vs_external_teacher_only\": bool(semantic_target > external),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 854,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_improved_vs_external_teacher_only\": bool(tiebreak > external),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 854,
+      "pattern": "external_teacher_only",
+      "source": "\"semantic_target_tiebreak_improved_vs_external_teacher_only\": bool(tiebreak > external),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 855,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_improved_vs_hybrid_light\": bool(tiebreak > hybrid),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 855,
+      "pattern": "hybrid_light",
+      "source": "\"semantic_target_tiebreak_improved_vs_hybrid_light\": bool(tiebreak > hybrid),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 856,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_improved_vs_legacysem\": bool(tiebreak > legacy),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 903,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_weights\": tiebreak_weights,"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 912,
+      "pattern": "semantic_target_tiebreak",
+      "source": "f\"- selected_semantic_target_tiebreak_weights: {json.dumps(tiebreak_weights, ensure_ascii=True)}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 922,
+      "pattern": "external_teacher_only",
+      "source": "\"tusb_semantic_target_vs_external_teacher_only\": _bootstrap_block(panels[\"densified_200_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"tusb_semantic_target\", OFFICIAL_TUSB, \"external_teacher_only\", \"densified_200_context_preserving\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 923,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_vs_external_teacher_only\": _bootstrap_block(panels[\"densified_200_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", OFFICIAL_TUSB, \"external_teacher_only\", \"densified_200_context_preserving\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 923,
+      "pattern": "external_teacher_only",
+      "source": "\"semantic_target_tiebreak_vs_external_teacher_only\": _bootstrap_block(panels[\"densified_200_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", OFFICIAL_TUSB, \"external_teacher_only\", \"densified_200_context_preserving\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 924,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_vs_hybrid_light\": _bootstrap_block(panels[\"densified_200_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", OFFICIAL_TUSB, \"hybrid_light\", \"densified_200_context_preserving\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 924,
+      "pattern": "hybrid_light",
+      "source": "\"semantic_target_tiebreak_vs_hybrid_light\": _bootstrap_block(panels[\"densified_200_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", OFFICIAL_TUSB, \"hybrid_light\", \"densified_200_context_preserving\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 925,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_vs_legacysem\": _bootstrap_block(panels[\"densified_200_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", LEGACY, \"coord_only\", \"densified_200_context_preserving\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 928,
+      "pattern": "external_teacher_only",
+      "source": "\"tusb_semantic_target_vs_external_teacher_only\": _bootstrap_block(panels[\"heldout_burst_heavy_context_preserving\"][\"per_item_results\"] + panels[\"heldout_scene_category_video_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"tusb_semantic_target\", OFFICIAL_TUSB, \"external_teacher_only\", \"true_ood_combined\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 929,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_vs_external_teacher_only\": _bootstrap_block(panels[\"heldout_burst_heavy_context_preserving\"][\"per_item_results\"] + panels[\"heldout_scene_category_video_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", OFFICIAL_TUSB, \"external_teacher_only\", \"true_ood_combined\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 929,
+      "pattern": "external_teacher_only",
+      "source": "\"semantic_target_tiebreak_vs_external_teacher_only\": _bootstrap_block(panels[\"heldout_burst_heavy_context_preserving\"][\"per_item_results\"] + panels[\"heldout_scene_category_video_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", OFFICIAL_TUSB, \"external_teacher_only\", \"true_ood_combined\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 930,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_vs_legacysem\": _bootstrap_block(panels[\"heldout_burst_heavy_context_preserving\"][\"per_item_results\"] + panels[\"heldout_scene_category_video_context_preserving\"][\"per_item_results\"], OFFICIAL_TUSB, \"semantic_target_tiebreak\", LEGACY, \"coord_only\", \"true_ood_combined\"),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 942,
+      "pattern": "semantic_target_tiebreak",
+      "source": "f\"- densified.semantic_target_tiebreak_vs_legacysem.overall_zero_excluded: {bootstrap_panels['densified_200_context_preserving']['semantic_target_tiebreak_vs_legacysem']['overall_top1']['zero_excluded']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 943,
+      "pattern": "semantic_target_tiebreak",
+      "source": "f\"- ood.semantic_target_tiebreak_vs_legacysem.overall_zero_excluded: {bootstrap_panels['true_ood_combined']['semantic_target_tiebreak_vs_legacysem']['overall_top1']['zero_excluded']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 952,
+      "pattern": "external_teacher_only",
+      "source": "densified[\"tusb_semantic_target_improved_vs_external_teacher_only\"]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 953,
+      "pattern": "external_teacher_only",
+      "source": "and ood_a[\"tusb_semantic_target_improved_vs_external_teacher_only\"]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 954,
+      "pattern": "external_teacher_only",
+      "source": "and ood_b[\"tusb_semantic_target_improved_vs_external_teacher_only\"]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 956,
+      "pattern": "semantic_target_tiebreak",
+      "source": "tiebreak_vs_hybrid = bool(densified[\"semantic_target_tiebreak_improved_vs_hybrid_light\"])"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 956,
+      "pattern": "hybrid_light",
+      "source": "tiebreak_vs_hybrid = bool(densified[\"semantic_target_tiebreak_improved_vs_hybrid_light\"])"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 958,
+      "pattern": "semantic_target_tiebreak",
+      "source": "densified[\"semantic_target_tiebreak_improved_vs_legacysem\"]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 959,
+      "pattern": "semantic_target_tiebreak",
+      "source": "and ood_a[\"semantic_target_tiebreak_improved_vs_legacysem\"]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 960,
+      "pattern": "semantic_target_tiebreak",
+      "source": "and ood_b[\"semantic_target_tiebreak_improved_vs_legacysem\"]"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 973,
+      "pattern": "external_teacher_only",
+      "source": "\"tusb_semantic_target_improved_vs_external_teacher_only\": bool(tusb_target_vs_external),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 974,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_improved_vs_hybrid_light\": bool(tiebreak_vs_hybrid),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 974,
+      "pattern": "hybrid_light",
+      "source": "\"semantic_target_tiebreak_improved_vs_hybrid_light\": bool(tiebreak_vs_hybrid),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 975,
+      "pattern": "semantic_target_tiebreak",
+      "source": "\"semantic_target_tiebreak_improved_vs_legacysem\": bool(tiebreak_vs_legacy),"
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 987,
+      "pattern": "external_teacher_only",
+      "source": "f\"- tusb_semantic_target_improved_vs_external_teacher_only: {decision['tusb_semantic_target_improved_vs_external_teacher_only']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 988,
+      "pattern": "semantic_target_tiebreak",
+      "source": "f\"- semantic_target_tiebreak_improved_vs_hybrid_light: {decision['semantic_target_tiebreak_improved_vs_hybrid_light']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 988,
+      "pattern": "hybrid_light",
+      "source": "f\"- semantic_target_tiebreak_improved_vs_hybrid_light: {decision['semantic_target_tiebreak_improved_vs_hybrid_light']}\","
+    },
+    {
+      "path": "/raid/chen034/workspace/stwm/code/stwm/tools/run_stwm_trace_conditioned_readout_20260423.py",
+      "line": 989,
+      "pattern": "semantic_target_tiebreak",
+      "source": "f\"- semantic_target_tiebreak_improved_vs_legacysem: {decision['semantic_target_tiebreak_improved_vs_legacysem']}\","
+    }
+  ],
+  "audit_passed": true
+}
