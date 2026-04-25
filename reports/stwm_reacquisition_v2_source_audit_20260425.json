@@ -1,0 +1,189 @@
+{
+  "created_at": "2026-04-25T12:19:51.069755+00:00",
+  "current_claim_level": "strong_claim",
+  "current_methods_available": [
+    "STWM trace_belief_assoc",
+    "calibration-only",
+    "cropenc",
+    "frozen_external_teacher_only",
+    "legacysem",
+    "stage1 frozen"
+  ],
+  "current_task_item_count": 127,
+  "current_test_row_count": 1038,
+  "known_limitations": [
+    "No raw candidate score maps are present, so utility uses rank-derived target_rank/MRR/top5 and top1_candidate_id rather than a newly trained scorer.",
+    "No numeric gap length or occlusion severity field is present; breakdowns use occlusion/long-gap subset-tag proxies only.",
+    "No matching per-item reacquisition rows in stwm_trace_belief_eval_20260424.json for this method/scoring_mode."
+  ],
+  "protocol_derived_explanation": "The previous utility used existing protocol per-item target_rank/top1_candidate_id rows. V2 rebuilds confuser-controlled groups and attribution variants from per-item candidate predictions, but remains based on protocol-generated candidate sets rather than a new dataset.",
+  "source_reports": {
+    "belief_final_eval": {
+      "error": null,
+      "exists": true,
+      "key_fields": {
+        "panels": [
+          "densified_200_context_preserving",
+          "legacy_85_context_preserving",
+          "protocol_v3_extended_600_context_preserving"
+        ],
+        "per_panel_rows": {
+          "densified_200_context_preserving": 3576,
+          "legacy_85_context_preserving": 1584,
+          "protocol_v3_extended_600_context_preserving": 8880
+        },
+        "top_level_keys": [
+          "auxiliary_true_ood_panel_names",
+          "baselines_scoring_mode",
+          "belief_empty_items",
+          "diag_variance_available_items",
+          "eval_finished_at",
+          "eval_started_at",
+          "exact_blocking_reason",
+          "generated_at_utc",
+          "hard_subsets_improved_vs_calibration",
+          "hard_subsets_improved_vs_legacysem",
+          "improved_vs_calibration",
+          "improved_vs_cropenc",
+          "improved_vs_legacysem",
+          "official_tusb_checkpoint",
+          "official_tusb_method",
+          "official_tusb_scoring_mode",
+          "panels",
+          "raw_true_ood_panels",
+          "selected_device",
+          "source_trace_belief_eval_fresh_rerun",
+          "source_trace_belief_wall_time_seconds",
+          "stage1_frozen",
+          "wall_time_seconds"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_belief_final_eval_20260424.json",
+      "valid_json": true
+    },
+    "current_bootstrap": {
+      "error": null,
+      "exists": true,
+      "key_fields": {
+        "claim_level": "strong_claim",
+        "top_level_keys": [
+          "claim_level",
+          "comparison_policy",
+          "created_at",
+          "results",
+          "source_eval"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_reacquisition_utility_bootstrap_20260425.json",
+      "valid_json": true
+    },
+    "current_decision": {
+      "error": null,
+      "exists": true,
+      "key_fields": {
+        "claim_level": "strong_claim",
+        "next_step_choice": "add_to_main_paper",
+        "top_level_keys": [
+          "claim_level",
+          "created_at",
+          "exact_limitations",
+          "next_step_choice",
+          "reacquisition_utility_established",
+          "supports_main_paper_utility_claim",
+          "utility_improved_vs_frozen_external_teacher_only",
+          "utility_improved_vs_legacysem"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_reacquisition_utility_decision_20260425.json",
+      "valid_json": true
+    },
+    "current_task_build": {
+      "error": null,
+      "exists": true,
+      "key_fields": {
+        "item_count": 127,
+        "top_level_keys": [
+          "candidate_count_source",
+          "candidate_count_stats",
+          "created_at",
+          "gap_length_stats",
+          "item_count",
+          "leakage_check_passed",
+          "leakage_policy",
+          "method_availability",
+          "occlusion_severity_stats",
+          "row_count_all_methods_all_splits",
+          "source_filter",
+          "source_reports",
+          "source_schema_keys",
+          "split",
+          "split_definition",
+          "task",
+          "task_definition"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_reacquisition_task_build_20260425.json",
+      "valid_json": true
+    },
+    "current_utility_eval": {
+      "error": null,
+      "exists": true,
+      "key_fields": {
+        "top_level_keys": [
+          "created_at",
+          "eval_split",
+          "method_availability",
+          "methods",
+          "metric_policy",
+          "source_report",
+          "task_build_report"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_reacquisition_utility_eval_20260425.json",
+      "valid_json": true
+    },
+    "trace_belief_eval": {
+      "error": null,
+      "exists": true,
+      "key_fields": {
+        "panels": [
+          "densified_200_context_preserving",
+          "heldout_burst_heavy_context_preserving",
+          "heldout_scene_category_video_context_preserving"
+        ],
+        "per_panel_rows": {
+          "densified_200_context_preserving": 8046,
+          "heldout_burst_heavy_context_preserving": 12150,
+          "heldout_scene_category_video_context_preserving": 11124
+        },
+        "top_level_keys": [
+          "belief_empty_items",
+          "diag_variance_available_items",
+          "diag_variance_unavailable_items",
+          "eval_finished_at",
+          "eval_started_at",
+          "forbidden_feature_names_present",
+          "frozen_external_teacher_only_backend",
+          "gallery_frame_count_mean",
+          "generated_at_utc",
+          "leakage_check_passed",
+          "panels",
+          "source_shards",
+          "split_definition",
+          "split_sizes",
+          "test_item_ids_hash",
+          "trace_belief_assoc_definition",
+          "trace_belief_sem_only_definition",
+          "train_item_ids_hash",
+          "val_item_ids_hash",
+          "wall_time_seconds"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+      "valid_json": true
+    }
+  },
+  "source_reports_exist": true,
+  "valid_json": true,
+  "whether_current_utility_is_protocol_derived": true
+}

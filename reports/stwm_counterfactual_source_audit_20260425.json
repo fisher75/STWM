@@ -1,0 +1,211 @@
+{
+  "audit_passed": true,
+  "audit_passed_rationale": "Raw belief/risk score maps are unavailable, but per-item candidate metadata plus existing belief variants and planning-lite deterministic risk construction are sufficient for readout-layer counterfactual proxy interventions.",
+  "belief_rank_candidate_available": true,
+  "belief_score_available": false,
+  "candidate_metadata_available": true,
+  "created_at": "2026-04-25T12:28:06.688584+00:00",
+  "no_future_gt_as_intervention_feature": true,
+  "per_item_available": true,
+  "raw_risk_score_available": false,
+  "risk_score_available": true,
+  "source_exists": true,
+  "source_reports": {
+    "belief_final_eval": {
+      "error": null,
+      "panels": [
+        "densified_200_context_preserving",
+        "legacy_85_context_preserving",
+        "protocol_v3_extended_600_context_preserving"
+      ],
+      "path": "/home/chen034/workspace/stwm/reports/stwm_belief_final_eval_20260424.json",
+      "per_item_rows": {
+        "densified_200_context_preserving": 3576,
+        "legacy_85_context_preserving": 1584,
+        "protocol_v3_extended_600_context_preserving": 8880
+      },
+      "source_exists": true,
+      "top_level_keys": [
+        "auxiliary_true_ood_panel_names",
+        "baselines_scoring_mode",
+        "belief_empty_items",
+        "diag_variance_available_items",
+        "eval_finished_at",
+        "eval_started_at",
+        "exact_blocking_reason",
+        "generated_at_utc",
+        "hard_subsets_improved_vs_calibration",
+        "hard_subsets_improved_vs_legacysem",
+        "improved_vs_calibration",
+        "improved_vs_cropenc",
+        "improved_vs_legacysem",
+        "official_tusb_checkpoint",
+        "official_tusb_method",
+        "official_tusb_scoring_mode",
+        "panels",
+        "raw_true_ood_panels",
+        "selected_device",
+        "source_trace_belief_eval_fresh_rerun",
+        "source_trace_belief_wall_time_seconds",
+        "stage1_frozen",
+        "wall_time_seconds"
+      ],
+      "valid_json": true
+    },
+    "planning_lite_risk_decision": {
+      "error": null,
+      "path": "/home/chen034/workspace/stwm/reports/stwm_planning_lite_risk_decision_20260425.json",
+      "source_exists": true,
+      "top_level_keys": [
+        "allowed_claim_wording",
+        "appendix_only",
+        "can_enter_main_paper",
+        "claim_overexpansion_risk",
+        "created_at",
+        "false_safe_reduced",
+        "forbidden_claim_wording",
+        "improved_vs_frozen_external_teacher_only",
+        "improved_vs_legacysem",
+        "next_step_choice",
+        "planning_lite_risk_utility_established",
+        "recommended_paper_placement",
+        "risk_utility_improved"
+      ],
+      "valid_json": true
+    },
+    "planning_lite_risk_eval": {
+      "error": null,
+      "methods": [
+        "STWM trace_belief_assoc risk",
+        "calibration-only risk",
+        "cropenc risk",
+        "frozen_external_teacher_only risk",
+        "legacysem risk",
+        "stage1 trace-only risk"
+      ],
+      "path": "/home/chen034/workspace/stwm/reports/stwm_planning_lite_risk_eval_20260425.json",
+      "source_exists": true,
+      "top_level_keys": [
+        "created_at",
+        "eval_split",
+        "method_availability",
+        "methods",
+        "metrics",
+        "task_build_report",
+        "threshold_selection"
+      ],
+      "valid_json": true
+    },
+    "reacq_v2_eval": {
+      "error": null,
+      "path": "/home/chen034/workspace/stwm/reports/stwm_reacquisition_v2_eval_20260425.json",
+      "source_exists": true,
+      "top_level_keys": [
+        "created_at",
+        "eval_split",
+        "method_availability",
+        "metric_policy",
+        "per_group_counts",
+        "per_item_results_hash",
+        "skipped_items",
+        "skipped_reason_counts",
+        "source_report",
+        "task_build_report",
+        "valid_items",
+        "variants"
+      ],
+      "valid_json": true,
+      "variants": [
+        "STWM trace_belief_assoc official",
+        "belief_with_shuffled_gallery",
+        "belief_with_shuffled_trace",
+        "belief_without_trace_prior",
+        "calibration-only",
+        "cropenc",
+        "frozen_external_teacher_only",
+        "full_trace_belief",
+        "legacysem",
+        "stage1 frozen",
+        "trace_gallery_assoc"
+      ]
+    },
+    "reacq_v2_trace_decision": {
+      "error": null,
+      "path": "/home/chen034/workspace/stwm/reports/stwm_reacquisition_v2_trace_attribution_decision_20260425.json",
+      "source_exists": true,
+      "top_level_keys": [
+        "created_at",
+        "false_confuser_rate_reduced",
+        "full_trace_belief_improved_vs_belief_with_shuffled_trace",
+        "full_trace_belief_improved_vs_belief_without_trace_prior",
+        "full_trace_belief_improved_vs_frozen_external_teacher_only",
+        "full_trace_belief_improved_vs_legacysem",
+        "reacquisition_utility_v2_claim_level",
+        "recommended_paper_placement",
+        "semantic_belief_load_bearing",
+        "trace_prior_load_bearing",
+        "variant_limitations"
+      ],
+      "valid_json": true
+    },
+    "trace_belief_eval": {
+      "error": null,
+      "panels": [
+        "densified_200_context_preserving",
+        "heldout_burst_heavy_context_preserving",
+        "heldout_scene_category_video_context_preserving"
+      ],
+      "path": "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+      "per_item_rows": {
+        "densified_200_context_preserving": 8046,
+        "heldout_burst_heavy_context_preserving": 12150,
+        "heldout_scene_category_video_context_preserving": 11124
+      },
+      "source_exists": true,
+      "top_level_keys": [
+        "belief_empty_items",
+        "diag_variance_available_items",
+        "diag_variance_unavailable_items",
+        "eval_finished_at",
+        "eval_started_at",
+        "forbidden_feature_names_present",
+        "frozen_external_teacher_only_backend",
+        "gallery_frame_count_mean",
+        "generated_at_utc",
+        "leakage_check_passed",
+        "panels",
+        "source_shards",
+        "split_definition",
+        "split_sizes",
+        "test_item_ids_hash",
+        "trace_belief_assoc_definition",
+        "trace_belief_sem_only_definition",
+        "train_item_ids_hash",
+        "val_item_ids_hash",
+        "wall_time_seconds"
+      ],
+      "valid_json": true
+    }
+  },
+  "source_schema_keys": [
+    "clip_id",
+    "dataset",
+    "future_mask_iou_at_top1",
+    "item_split",
+    "method_name",
+    "mrr",
+    "panel_name",
+    "protocol_eval_context_entity_count",
+    "protocol_item_id",
+    "query_future_hit_rate",
+    "query_future_localization_error",
+    "query_future_top1_acc",
+    "scoring_mode",
+    "seed",
+    "subset_tags",
+    "target_rank",
+    "top1_candidate_id",
+    "top5_hit"
+  ],
+  "valid_json": true
+}

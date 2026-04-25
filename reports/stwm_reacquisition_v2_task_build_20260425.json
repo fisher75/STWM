@@ -1,0 +1,150 @@
+{
+  "candidate_count_source": "protocol_eval_context_entity_count",
+  "candidate_count_stats": {
+    "count": 1440,
+    "max": 8.0,
+    "mean": 6.304166666666666,
+    "min": 2.0,
+    "std": 1.9819979748279821
+  },
+  "confuser_group_definitions": {
+    "OOD_confuser": "proxy: heldout_* panel plus crossing/appearance/dense candidate context",
+    "appearance_similar_confuser": "proxy: subset tag appearance_change",
+    "crossing_or_overlap_confuser": "proxy: subset tag crossing_ambiguity",
+    "spatially_close_confuser": "proxy: protocol_eval_context_entity_count >= 6 because exact candidate distance is unavailable"
+  },
+  "created_at": "2026-04-25T12:19:51.069755+00:00",
+  "gap_length_stats": {
+    "available": false,
+    "exact_missing_reason": "No numeric gap length field exists in source per-item rows.",
+    "proxy_by_subset_tag": {
+      "long_gap_persistence": 113,
+      "occlusion_and_long_gap": 113,
+      "occlusion_reappearance": 240
+    }
+  },
+  "item_selection_policy": "Select protocol items tagged occlusion_reappearance or long_gap_persistence. Subset tags are used only for task construction and breakdowns, never as scoring features.",
+  "leakage_check_passed": true,
+  "leakage_policy": "Scoring variants use per-item method predictions/top1_candidate_id or deterministic shuffles. Future labels are used only for evaluation metrics. Subset tags are used only for group selection/breakdowns.",
+  "method_availability": {
+    "STWM trace_belief_assoc official": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_belief_assoc"
+    },
+    "belief_with_shuffled_gallery": {
+      "available": true,
+      "available_rows_all_splits": 1038,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "is_deterministic_shuffle_proxy": true,
+      "method_name": "belief_with_shuffled_gallery",
+      "scoring_mode": "shuffled_gallery_proxy",
+      "shuffle_limitation": "Raw candidate score/ranking maps are unavailable, so shuffled variant rotates top1 candidate IDs within panel+seed and recomputes exact top1; MRR/top5 are conservative approximations from top1 only."
+    },
+    "belief_with_shuffled_trace": {
+      "available": true,
+      "available_rows_all_splits": 1038,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "is_deterministic_shuffle_proxy": true,
+      "method_name": "belief_with_shuffled_trace",
+      "scoring_mode": "shuffled_trace_proxy",
+      "shuffle_limitation": "Raw candidate score/ranking maps are unavailable, so shuffled variant rotates top1 candidate IDs within panel+seed and recomputes exact top1; MRR/top5 are conservative approximations from top1 only."
+    },
+    "belief_without_trace_prior": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_belief_sem_only"
+    },
+    "calibration-only": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "calibration-only::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "cropenc": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "cropenc::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "frozen_external_teacher_only": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "frozen_external_teacher_only"
+    },
+    "full_trace_belief": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_belief_assoc"
+    },
+    "legacysem": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "legacysem::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "stage1 frozen": {
+      "available": false,
+      "available_rows_all_splits": 0,
+      "available_rows_test_split": 0,
+      "exact_missing_reason": "No matching per-item reacquisition rows for this method/scoring_mode in stwm_trace_belief_eval_20260424.json.",
+      "method_name": "stage1 frozen::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "trace_gallery_assoc": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_gallery_assoc"
+    }
+  },
+  "per_group_item_count": {
+    "OOD_confuser": 136,
+    "all_reacquisition_items": 240,
+    "appearance_similar_confuser": 134,
+    "crossing_or_overlap_confuser": 111,
+    "long_gap_persistence": 113,
+    "occlusion_and_long_gap": 113,
+    "occlusion_reappearance": 240,
+    "spatially_close_confuser": 170
+  },
+  "source_report": "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+  "split": {
+    "test": {
+      "item_count": 94,
+      "item_ids_hash": "d39a594c62ac539451a3ef6512f974c1d6d7a42a5e54139ecc8c8ab1b82bcb75"
+    },
+    "train": {
+      "item_count": 14,
+      "item_ids_hash": "19efd529aa806f5dee8e36afa5719fd11ab2fa1dca9aca32d270aeda2d853042"
+    },
+    "val": {
+      "item_count": 19,
+      "item_ids_hash": "4a4849728d9d08b83351ed0075c1fcc2d727aea7d66689d538b0a50701111a2f"
+    }
+  },
+  "split_definition": "stable sha256(protocol_item_id): train<15, val 15-29, test>=30; no training performed.",
+  "task_definition": "Given observed target before disappearance/occlusion/long gap and future candidate set after gap, predict which future candidate is the same identity as the observed target."
+}

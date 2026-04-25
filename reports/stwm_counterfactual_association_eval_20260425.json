@@ -1,0 +1,172 @@
+{
+  "counterfactual": {
+    "no_trace_prior": {
+      "MRR": 0.6823849793000746,
+      "breakdowns": {
+        "OOD_hard": {
+          "MRR": 0.6918151444577549,
+          "count": 2586,
+          "false_confuser_rate": 0.44895591647331784,
+          "false_reacquisition_rate": 0.44895591647331784,
+          "item_count": 431,
+          "top1": 0.5510440835266821
+        },
+        "all_items": {
+          "MRR": 0.6823849793000746,
+          "count": 3480,
+          "false_confuser_rate": 0.46120689655172414,
+          "false_reacquisition_rate": 0.46120689655172414,
+          "item_count": 580,
+          "top1": 0.5387931034482759
+        },
+        "crossing_ambiguity": {
+          "MRR": 0.6335901878601066,
+          "count": 2562,
+          "false_confuser_rate": 0.5101483216237315,
+          "false_reacquisition_rate": 0.5101483216237315,
+          "item_count": 427,
+          "top1": 0.48985167837626853
+        },
+        "long_gap_persistence": {
+          "MRR": 0.7331050709369293,
+          "count": 678,
+          "false_confuser_rate": 0.42625368731563423,
+          "false_reacquisition_rate": 0.42625368731563423,
+          "item_count": 113,
+          "top1": 0.5737463126843658
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.7216759484085873,
+          "count": 1440,
+          "false_confuser_rate": 0.42291666666666666,
+          "false_reacquisition_rate": 0.42291666666666666,
+          "item_count": 240,
+          "top1": 0.5770833333333333
+        }
+      },
+      "count": 3480,
+      "decision_flip_rate": 0.1278735632183908,
+      "false_confuser_rate": 0.46120689655172414,
+      "false_reacquisition_rate": 0.46120689655172414,
+      "item_count": 580,
+      "paired_count_for_counterfactual_delta": 3480,
+      "target_rank_delta": -0.12729885057471266,
+      "top1": 0.5387931034482759
+    },
+    "semantic_swap_fixed_trace": {
+      "available": false,
+      "exact_blocking_reason": "Raw semantic evidence/candidate appearance token maps are not present in per-item reports; cannot replace semantic evidence while preserving trace belief without fabricating scorer inputs."
+    },
+    "shuffled_trace": {
+      "MRR": 0.07557471264367815,
+      "breakdowns": {
+        "OOD_hard": {
+          "MRR": 0.08043310131477185,
+          "count": 2586,
+          "false_confuser_rate": 0.9195668986852281,
+          "false_reacquisition_rate": 0.9195668986852281,
+          "item_count": 431,
+          "top1": 0.08043310131477185
+        },
+        "all_items": {
+          "MRR": 0.07557471264367815,
+          "count": 3480,
+          "false_confuser_rate": 0.9244252873563218,
+          "false_reacquisition_rate": 0.9244252873563218,
+          "item_count": 580,
+          "top1": 0.07557471264367815
+        },
+        "crossing_ambiguity": {
+          "MRR": 0.06752537080405933,
+          "count": 2562,
+          "false_confuser_rate": 0.9324746291959407,
+          "false_reacquisition_rate": 0.9324746291959407,
+          "item_count": 427,
+          "top1": 0.06752537080405933
+        },
+        "long_gap_persistence": {
+          "MRR": 0.10176991150442478,
+          "count": 678,
+          "false_confuser_rate": 0.8982300884955752,
+          "false_reacquisition_rate": 0.8982300884955752,
+          "item_count": 113,
+          "top1": 0.10176991150442478
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.08819444444444445,
+          "count": 1440,
+          "false_confuser_rate": 0.9118055555555555,
+          "false_reacquisition_rate": 0.9118055555555555,
+          "item_count": 240,
+          "top1": 0.08819444444444445
+        }
+      },
+      "count": 3480,
+      "decision_flip_rate": 0.9221264367816092,
+      "false_confuser_rate": 0.9244252873563218,
+      "false_reacquisition_rate": 0.9244252873563218,
+      "item_count": 580,
+      "paired_count_for_counterfactual_delta": 3480,
+      "target_rank_delta": -1.1596958174904943,
+      "top1": 0.07557471264367815
+    }
+  },
+  "created_at": "2026-04-25T12:28:06.688584+00:00",
+  "metric_policy": "top1/false-confuser recomputed from top1_candidate_id vs target id suffix. query_future_top1_acc is not copied.",
+  "original": {
+    "full_trace_belief": {
+      "MRR": 0.6573215615023112,
+      "breakdowns": {
+        "OOD_hard": {
+          "MRR": 0.6675712128740747,
+          "count": 2586,
+          "false_confuser_rate": 0.48646558391337974,
+          "false_reacquisition_rate": 0.48646558391337974,
+          "item_count": 431,
+          "top1": 0.5135344160866203
+        },
+        "all_items": {
+          "MRR": 0.6573215615023112,
+          "count": 3480,
+          "false_confuser_rate": 0.49942528735632186,
+          "false_reacquisition_rate": 0.49942528735632186,
+          "item_count": 580,
+          "top1": 0.5005747126436781
+        },
+        "crossing_ambiguity": {
+          "MRR": 0.6168406325896604,
+          "count": 2562,
+          "false_confuser_rate": 0.5335675253708041,
+          "false_reacquisition_rate": 0.5335675253708041,
+          "item_count": 427,
+          "top1": 0.46643247462919596
+        },
+        "long_gap_persistence": {
+          "MRR": 0.6974364377019244,
+          "count": 678,
+          "false_confuser_rate": 0.4823008849557522,
+          "false_reacquisition_rate": 0.4823008849557522,
+          "item_count": 113,
+          "top1": 0.5176991150442478
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.6848518696815797,
+          "count": 1440,
+          "false_confuser_rate": 0.48125,
+          "false_reacquisition_rate": 0.48125,
+          "item_count": 240,
+          "top1": 0.51875
+        }
+      },
+      "count": 3480,
+      "false_confuser_rate": 0.49942528735632186,
+      "false_reacquisition_rate": 0.49942528735632186,
+      "item_count": 580,
+      "top1": 0.5005747126436781
+    }
+  },
+  "removing_trace_increases_false_confuser_rate": false,
+  "semantic_swap_under_fixed_trace_changes_only_ambiguous_cases": false,
+  "shuffled_trace_changes_decision": true,
+  "source": "reports/stwm_trace_belief_eval_20260424.json"
+}
