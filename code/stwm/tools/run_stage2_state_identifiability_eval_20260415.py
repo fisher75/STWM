@@ -49,6 +49,8 @@ def _repo_root() -> Path:
 
 
 ROOT = _repo_root()
+OFFICIAL_TUSB_V3P1_CHECKPOINT = "best_semantic_hard.pt"
+OFFICIAL_TUSB_V3P1_SCORING_MODE = "trace_belief_assoc"
 OBS_LEN = 8
 FUT_LEN = 8
 TOTAL_STEPS = OBS_LEN + FUT_LEN

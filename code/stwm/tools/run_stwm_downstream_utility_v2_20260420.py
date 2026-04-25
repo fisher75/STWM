@@ -12,6 +12,9 @@ import os
 ROOT = Path("/raid/chen034/workspace/stwm")
 DEFAULT_REPORT = ROOT / "reports/stwm_top_tier_downstream_utility_v2_20260420.json"
 DEFAULT_DOC = ROOT / "docs/STWM_TOP_TIER_DOWNSTREAM_UTILITY_V2_20260420.md"
+OFFICIAL_BELIEF_TUSB_METHOD = "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)"
+OFFICIAL_BELIEF_TUSB_CHECKPOINT = "best_semantic_hard.pt"
+OFFICIAL_BELIEF_TUSB_SCORING_MODE = "trace_belief_assoc"
 EXTENDED = ROOT / "reports/stage2_protocol_v3_extended_evalset_20260420.json"
 DENSE = ROOT / "reports/stage2_v3p1_dualpanel_context_audit_20260420.json"
 
@@ -72,13 +75,26 @@ def _rows_from_context_eval(path: Path) -> List[Dict[str, Any]]:
     return list(payload.get("context_preserving_eval", {}).get("per_item_results", []))
 
 
+def _scored_method_rows(rows: List[Dict[str, Any]], method_name: str) -> List[Dict[str, Any]]:
+    scored: List[Dict[str, Any]] = []
+    for row in rows:
+        methods = row.get("methods", {})
+        if isinstance(methods, dict) and method_name in methods and isinstance(methods[method_name], dict):
+            scored.append(dict(methods[method_name]))
+            continue
+        if str(row.get("method_name", "")) == method_name:
+            scored.append(dict(row))
+    return scored
+
+
 def _aggregate_retrieval(rows: List[Dict[str, Any]], method_name: str) -> Dict[str, Any]:
-    scored = [row["methods"][method_name] for row in rows if method_name in row.get("methods", {})]
+    scored = _scored_method_rows(rows, method_name)
     if not scored:
         return {"count": 0, "top1": 0.0, "top5": 0.0, "mrr": 0.0, "candidate_confusion_rate": 0.0}
     candidate_conf = []
     for item in scored:
-        cand = max(int(item.get("candidate_count", 0)), 1)
+        ranked = item.get("ranked_candidate_ids", [])
+        cand = max(int(item.get("candidate_count", len(ranked) if isinstance(ranked, list) else 0)), 1)
         rank = int(item.get("target_rank", 0))
         candidate_conf.append(0.0 if rank <= 1 or cand <= 1 else 1.0 - (1.0 / float(cand)))
     return {
@@ -91,7 +107,7 @@ def _aggregate_retrieval(rows: List[Dict[str, Any]], method_name: str) -> Dict[s
 
 
 def _aggregate_loc(rows: List[Dict[str, Any]], method_name: str) -> Dict[str, Any]:
-    scored = [row["methods"][method_name] for row in rows if method_name in row.get("methods", {})]
+    scored = _scored_method_rows(rows, method_name)
     if not scored:
         return {"count": 0, "top1": 0.0, "hit_rate": 0.0, "loc_error": 0.0}
     return {
@@ -311,7 +327,7 @@ def main() -> None:
     parser.add_argument("--output-report", default=str(DEFAULT_REPORT))
     parser.add_argument("--output-doc", default=str(DEFAULT_DOC))
     parser.add_argument("--final-eval-report", default="")
-    parser.add_argument("--official-tusb-method", default="TUSB-v3.1::official(best_semantic_hard.pt+hybrid_light)")
+    parser.add_argument("--official-tusb-method", default=OFFICIAL_BELIEF_TUSB_METHOD)
     parser.add_argument("--calibration-method", default="calibration-only::best.pt")
     parser.add_argument("--cropenc-method", default="cropenc::best.pt")
     parser.add_argument("--legacysem-method", default="legacysem::best.pt")

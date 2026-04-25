@@ -1,0 +1,262 @@
+{
+  "generated_at_utc": "2026-04-25T09:18:26.422683+00:00",
+  "source_final_eval_report": "/raid/chen034/workspace/stwm/reports/stwm_belief_final_eval_20260424.json",
+  "source_panels": {
+    "dense_panel_name": "densified_200_context_preserving",
+    "extended_panel_name": "protocol_v3_extended_600_context_preserving"
+  },
+  "official_tusb_method": "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)",
+  "probe_design": {
+    "probe_a": "future object retrieval from official final-eval extended-panel rows",
+    "probe_b": "occlusion / long-gap re-identification from official final-eval extended-panel rows",
+    "probe_c": "lightweight future localization from official final-eval densified-panel rows",
+    "probe_train_items": 0,
+    "probe_eval_items": 8880,
+    "utility_leakage_check_passed": true,
+    "independence_note": "uses frozen per-item retrieval/localization outputs from the official final-eval chain; no new downstream model is trained"
+  },
+  "probe_a": {
+    "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+      "count": 2220,
+      "top1": 0.5180180180180181,
+      "top5": 0.8635135135135135,
+      "mrr": 0.6659936140355946,
+      "candidate_confusion_rate": 0.0
+    },
+    "calibration-only::best.pt": {
+      "count": 2220,
+      "top1": 0.15360360360360362,
+      "top5": 0.6504504504504505,
+      "mrr": 0.36043345337249905,
+      "candidate_confusion_rate": 0.0
+    },
+    "cropenc::best.pt": {
+      "count": 2220,
+      "top1": 0.15045045045045044,
+      "top5": 0.6504504504504505,
+      "mrr": 0.3588650272739127,
+      "candidate_confusion_rate": 0.0
+    },
+    "legacysem::best.pt": {
+      "count": 2220,
+      "top1": 0.14954954954954955,
+      "top5": 0.6549549549549549,
+      "mrr": 0.3617013271698507,
+      "candidate_confusion_rate": 0.0
+    }
+  },
+  "probe_b": {
+    "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+      "count": 720,
+      "top1": 0.5597222222222222,
+      "top5": 0.9305555555555556,
+      "mrr": 0.712386058101184,
+      "candidate_confusion_rate": 0.0
+    },
+    "calibration-only::best.pt": {
+      "count": 720,
+      "top1": 0.1763888888888889,
+      "top5": 0.8166666666666667,
+      "mrr": 0.43960963160959976,
+      "candidate_confusion_rate": 0.0
+    },
+    "cropenc::best.pt": {
+      "count": 720,
+      "top1": 0.17916666666666667,
+      "top5": 0.8222222222222222,
+      "mrr": 0.4400145707794697,
+      "candidate_confusion_rate": 0.0
+    },
+    "legacysem::best.pt": {
+      "count": 720,
+      "top1": 0.18888888888888888,
+      "top5": 0.8180555555555555,
+      "mrr": 0.4465116871790636,
+      "candidate_confusion_rate": 0.0
+    }
+  },
+  "probe_c": {
+    "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+      "count": 894,
+      "top1": 0.46308724832214765,
+      "hit_rate": 0.006711409395973154,
+      "loc_error": 0.22109845300039482
+    },
+    "calibration-only::best.pt": {
+      "count": 894,
+      "top1": 0.1610738255033557,
+      "hit_rate": 0.012304250559284116,
+      "loc_error": 0.21351721445930766
+    },
+    "cropenc::best.pt": {
+      "count": 894,
+      "top1": 0.1621923937360179,
+      "hit_rate": 0.012304250559284116,
+      "loc_error": 0.21948327669506834
+    },
+    "legacysem::best.pt": {
+      "count": 894,
+      "top1": 0.16666666666666666,
+      "hit_rate": 0.008948545861297539,
+      "loc_error": 0.22410105406193329
+    }
+  },
+  "hard_subset_breakdown": {
+    "crossing_ambiguity": {
+      "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+        "count": 1698,
+        "top1": 0.48115429917550057,
+        "top5": 0.8215547703180212,
+        "mrr": 0.6274965585938507,
+        "candidate_confusion_rate": 0.0
+      },
+      "calibration-only::best.pt": {
+        "count": 1698,
+        "top1": 0.13722025912838634,
+        "top5": 0.5783274440518257,
+        "mrr": 0.3261004803847429,
+        "candidate_confusion_rate": 0.0
+      },
+      "cropenc::best.pt": {
+        "count": 1698,
+        "top1": 0.13074204946996468,
+        "top5": 0.5777385159010601,
+        "mrr": 0.3227531783315845,
+        "candidate_confusion_rate": 0.0
+      },
+      "legacysem::best.pt": {
+        "count": 1698,
+        "top1": 0.1330977620730271,
+        "top5": 0.5830388692579506,
+        "mrr": 0.3265691348976638,
+        "candidate_confusion_rate": 0.0
+      }
+    },
+    "appearance_change": {
+      "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+        "count": 888,
+        "top1": 0.5157657657657657,
+        "top5": 0.8997747747747747,
+        "mrr": 0.6779107219383935,
+        "candidate_confusion_rate": 0.0
+      },
+      "calibration-only::best.pt": {
+        "count": 888,
+        "top1": 0.23536036036036037,
+        "top5": 0.8220720720720721,
+        "mrr": 0.4663304258810324,
+        "candidate_confusion_rate": 0.0
+      },
+      "cropenc::best.pt": {
+        "count": 888,
+        "top1": 0.22635135135135134,
+        "top5": 0.8220720720720721,
+        "mrr": 0.46182698837397135,
+        "candidate_confusion_rate": 0.0
+      },
+      "legacysem::best.pt": {
+        "count": 888,
+        "top1": 0.2286036036036036,
+        "top5": 0.8288288288288288,
+        "mrr": 0.467244975553206,
+        "candidate_confusion_rate": 0.0
+      }
+    },
+    "occlusion_reappearance": {
+      "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+        "count": 720,
+        "top1": 0.5597222222222222,
+        "top5": 0.9305555555555556,
+        "mrr": 0.712386058101184,
+        "candidate_confusion_rate": 0.0
+      },
+      "calibration-only::best.pt": {
+        "count": 720,
+        "top1": 0.1763888888888889,
+        "top5": 0.8166666666666667,
+        "mrr": 0.43960963160959976,
+        "candidate_confusion_rate": 0.0
+      },
+      "cropenc::best.pt": {
+        "count": 720,
+        "top1": 0.17916666666666667,
+        "top5": 0.8222222222222222,
+        "mrr": 0.4400145707794697,
+        "candidate_confusion_rate": 0.0
+      },
+      "legacysem::best.pt": {
+        "count": 720,
+        "top1": 0.18888888888888888,
+        "top5": 0.8180555555555555,
+        "mrr": 0.4465116871790636,
+        "candidate_confusion_rate": 0.0
+      }
+    },
+    "long_gap_persistence": {
+      "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+        "count": 312,
+        "top1": 0.5480769230769231,
+        "top5": 0.9326923076923077,
+        "mrr": 0.7140682234432234,
+        "candidate_confusion_rate": 0.0
+      },
+      "calibration-only::best.pt": {
+        "count": 312,
+        "top1": 0.19230769230769232,
+        "top5": 0.9038461538461539,
+        "mrr": 0.4782280219780212,
+        "candidate_confusion_rate": 0.0
+      },
+      "cropenc::best.pt": {
+        "count": 312,
+        "top1": 0.22115384615384615,
+        "top5": 0.9038461538461539,
+        "mrr": 0.49302503052502983,
+        "candidate_confusion_rate": 0.0
+      },
+      "legacysem::best.pt": {
+        "count": 312,
+        "top1": 0.22115384615384615,
+        "top5": 0.9006410256410257,
+        "mrr": 0.4957722832722831,
+        "candidate_confusion_rate": 0.0
+      }
+    },
+    "small_object": {
+      "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)": {
+        "count": 1968,
+        "top1": 0.4954268292682927,
+        "top5": 0.8460365853658537,
+        "mrr": 0.6466916445591242,
+        "candidate_confusion_rate": 0.0
+      },
+      "calibration-only::best.pt": {
+        "count": 1968,
+        "top1": 0.13109756097560976,
+        "top5": 0.6117886178861789,
+        "mrr": 0.33102757443442427,
+        "candidate_confusion_rate": 0.0
+      },
+      "cropenc::best.pt": {
+        "count": 1968,
+        "top1": 0.12703252032520326,
+        "top5": 0.6102642276422764,
+        "mrr": 0.32880946504814607,
+        "candidate_confusion_rate": 0.0
+      },
+      "legacysem::best.pt": {
+        "count": 1968,
+        "top1": 0.12754065040650406,
+        "top5": 0.6173780487804879,
+        "mrr": 0.3318516713283584,
+        "candidate_confusion_rate": 0.0
+      }
+    }
+  },
+  "utility_improved_vs_calibration": true,
+  "utility_improved_vs_cropenc": true,
+  "utility_improved_vs_legacysem": true,
+  "utility_hard_subset_improved": true,
+  "leakage_check_passed": true,
+  "utility_claim_ready": true
+}

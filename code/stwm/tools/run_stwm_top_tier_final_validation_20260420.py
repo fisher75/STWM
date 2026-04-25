@@ -772,6 +772,9 @@ def _final_validation_reports(args: Any, dualpanel: Dict[str, Any], matched: Dic
 
 
 PROMOTE_OFFICIAL_TUSB = "TUSB-v3.1::official(best_semantic_hard.pt+hybrid_light)"
+PROMOTE_BELIEF_OFFICIAL_TUSB = "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)"
+PROMOTE_BELIEF_OFFICIAL_CHECKPOINT = "best_semantic_hard.pt"
+PROMOTE_BELIEF_OFFICIAL_SCORING_MODE = "trace_belief_assoc"
 PROMOTE_CAL = "calibration-only::best.pt"
 PROMOTE_CROP = "cropenc::best.pt"
 PROMOTE_LEGACY = "legacysem::best.pt"

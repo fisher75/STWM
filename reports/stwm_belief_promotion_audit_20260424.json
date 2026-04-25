@@ -1,0 +1,17 @@
+{
+  "generated_at_utc": "2026-04-25T09:15:18.291677+00:00",
+  "official_tusb_checkpoint": "best_semantic_hard.pt",
+  "official_tusb_scoring_mode": "trace_belief_assoc",
+  "official_tusb_method": "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)",
+  "baselines_scoring_mode": "coord_only",
+  "baseline_methods": {
+    "calibration-only": "best.pt + coord_only",
+    "cropenc": "best.pt + coord_only",
+    "legacysem": "best.pt + coord_only",
+    "stage1_frozen": "best.pt + coord_only; frozen and not retrained"
+  },
+  "belief_feasibility_audit_passed": true,
+  "official_evaluator_supports_belief": true,
+  "belief_promotion_passed": true,
+  "exact_blocking_reason": ""
+}
