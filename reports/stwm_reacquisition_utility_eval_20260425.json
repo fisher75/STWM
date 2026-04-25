@@ -1,0 +1,396 @@
+{
+  "created_at": "2026-04-25T11:28:35.244745+00:00",
+  "eval_split": "test",
+  "method_availability": {
+    "STWM trace_belief_assoc": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_belief_assoc"
+    },
+    "calibration-only": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "calibration-only::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "cropenc": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "cropenc::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "frozen_external_teacher_only": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "frozen_external_teacher_only"
+    },
+    "legacysem": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "legacysem::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "stage1 frozen": {
+      "available": false,
+      "available_rows_all_splits": 0,
+      "available_rows_test_split": 0,
+      "exact_missing_reason": "No matching per-item reacquisition rows in stwm_trace_belief_eval_20260424.json for this method/scoring_mode.",
+      "method_name": "stage1 frozen::best.pt",
+      "scoring_mode": "coord_only"
+    }
+  },
+  "methods": {
+    "STWM trace_belief_assoc": {
+      "MRR": 0.6680490871047543,
+      "count": 1038,
+      "false_confuser_rate": 0.5009633911368016,
+      "false_reacquisition_rate": 0.5009633911368016,
+      "gap_length_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.6609742747673781,
+            "count": 522,
+            "top1": 0.47701149425287354
+          },
+          "occlusion_only": {
+            "MRR": 0.6752061647018675,
+            "count": 516,
+            "top1": 0.5213178294573644
+          }
+        },
+        "numeric_gap_unavailable": true
+      },
+      "occlusion_severity_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.6609742747673781,
+            "count": 522,
+            "top1": 0.47701149425287354
+          },
+          "occlusion_only": {
+            "MRR": 0.6752061647018675,
+            "count": 516,
+            "top1": 0.5213178294573644
+          }
+        },
+        "numeric_severity_unavailable": true
+      },
+      "per_panel_breakdown": {
+        "densified_200_context_preserving": {
+          "MRR": 0.6516893505045679,
+          "count": 420,
+          "false_confuser_rate": 0.5166666666666667,
+          "false_reacquisition_rate": 0.5166666666666667,
+          "top1": 0.48333333333333334,
+          "top5": 0.888095238095238
+        },
+        "heldout_burst_heavy_context_preserving": {
+          "MRR": 0.7080300453514738,
+          "count": 420,
+          "false_confuser_rate": 0.45,
+          "false_reacquisition_rate": 0.45,
+          "top1": 0.55,
+          "top5": 0.9452380952380952
+        },
+        "heldout_scene_category_video_context_preserving": {
+          "MRR": 0.6179434654302902,
+          "count": 198,
+          "false_confuser_rate": 0.5757575757575758,
+          "false_reacquisition_rate": 0.5757575757575758,
+          "top1": 0.42424242424242425,
+          "top5": 0.8787878787878788
+        }
+      },
+      "top1": 0.49903660886319845,
+      "top5": 0.9094412331406551
+    },
+    "calibration-only": {
+      "MRR": 0.4344813143979646,
+      "count": 1038,
+      "false_confuser_rate": 0.8131021194605009,
+      "false_reacquisition_rate": 0.8131021194605009,
+      "gap_length_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.46785714285714286,
+            "count": 522,
+            "top1": 0.21839080459770116
+          },
+          "occlusion_only": {
+            "MRR": 0.40071739491019137,
+            "count": 516,
+            "top1": 0.15503875968992248
+          }
+        },
+        "numeric_gap_unavailable": true
+      },
+      "occlusion_severity_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.46785714285714286,
+            "count": 522,
+            "top1": 0.21839080459770116
+          },
+          "occlusion_only": {
+            "MRR": 0.40071739491019137,
+            "count": 516,
+            "top1": 0.15503875968992248
+          }
+        },
+        "numeric_severity_unavailable": true
+      },
+      "per_panel_breakdown": {
+        "densified_200_context_preserving": {
+          "MRR": 0.42076627181973264,
+          "count": 420,
+          "false_confuser_rate": 0.8119047619047619,
+          "false_reacquisition_rate": 0.8119047619047619,
+          "top1": 0.1880952380952381,
+          "top5": 0.7571428571428571
+        },
+        "heldout_burst_heavy_context_preserving": {
+          "MRR": 0.48327097505668937,
+          "count": 420,
+          "false_confuser_rate": 0.7833333333333333,
+          "false_reacquisition_rate": 0.7833333333333333,
+          "top1": 0.21666666666666667,
+          "top5": 0.8857142857142857
+        },
+        "heldout_scene_category_video_context_preserving": {
+          "MRR": 0.3600806093787377,
+          "count": 198,
+          "false_confuser_rate": 0.8787878787878788,
+          "false_reacquisition_rate": 0.8787878787878788,
+          "top1": 0.12121212121212122,
+          "top5": 0.6666666666666666
+        }
+      },
+      "top1": 0.18689788053949905,
+      "top5": 0.791907514450867
+    },
+    "cropenc": {
+      "MRR": 0.4354396330988902,
+      "count": 1038,
+      "false_confuser_rate": 0.8111753371868978,
+      "false_reacquisition_rate": 0.8111753371868978,
+      "gap_length_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.4759989053092501,
+            "count": 522,
+            "top1": 0.23563218390804597
+          },
+          "occlusion_only": {
+            "MRR": 0.39440874144422383,
+            "count": 516,
+            "top1": 0.14147286821705427
+          }
+        },
+        "numeric_gap_unavailable": true
+      },
+      "occlusion_severity_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.4759989053092501,
+            "count": 522,
+            "top1": 0.23563218390804597
+          },
+          "occlusion_only": {
+            "MRR": 0.39440874144422383,
+            "count": 516,
+            "top1": 0.14147286821705427
+          }
+        },
+        "numeric_severity_unavailable": true
+      },
+      "per_panel_breakdown": {
+        "densified_200_context_preserving": {
+          "MRR": 0.42225655948238056,
+          "count": 420,
+          "false_confuser_rate": 0.8095238095238095,
+          "false_reacquisition_rate": 0.8095238095238095,
+          "top1": 0.19047619047619047,
+          "top5": 0.7642857142857142
+        },
+        "heldout_burst_heavy_context_preserving": {
+          "MRR": 0.491921768707483,
+          "count": 420,
+          "false_confuser_rate": 0.7690476190476191,
+          "false_reacquisition_rate": 0.7690476190476191,
+          "top1": 0.23095238095238096,
+          "top5": 0.8904761904761904
+        },
+        "heldout_scene_category_video_context_preserving": {
+          "MRR": 0.34359313796416857,
+          "count": 198,
+          "false_confuser_rate": 0.9040404040404041,
+          "false_reacquisition_rate": 0.9040404040404041,
+          "top1": 0.09595959595959595,
+          "top5": 0.6666666666666666
+        }
+      },
+      "top1": 0.18882466281310212,
+      "top5": 0.7967244701348748
+    },
+    "frozen_external_teacher_only": {
+      "MRR": 0.6456467044107302,
+      "count": 1038,
+      "false_confuser_rate": 0.5317919075144508,
+      "false_reacquisition_rate": 0.5317919075144508,
+      "gap_length_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.6668582375478928,
+            "count": 522,
+            "top1": 0.4942528735632184
+          },
+          "occlusion_only": {
+            "MRR": 0.6241885255394147,
+            "count": 516,
+            "top1": 0.4418604651162791
+          }
+        },
+        "numeric_gap_unavailable": true
+      },
+      "occlusion_severity_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.6668582375478928,
+            "count": 522,
+            "top1": 0.4942528735632184
+          },
+          "occlusion_only": {
+            "MRR": 0.6241885255394147,
+            "count": 516,
+            "top1": 0.4418604651162791
+          }
+        },
+        "numeric_severity_unavailable": true
+      },
+      "per_panel_breakdown": {
+        "densified_200_context_preserving": {
+          "MRR": 0.6076959672757992,
+          "count": 420,
+          "false_confuser_rate": 0.5714285714285714,
+          "false_reacquisition_rate": 0.5714285714285714,
+          "top1": 0.42857142857142855,
+          "top5": 0.8714285714285714
+        },
+        "heldout_burst_heavy_context_preserving": {
+          "MRR": 0.7113095238095238,
+          "count": 420,
+          "false_confuser_rate": 0.45714285714285713,
+          "false_reacquisition_rate": 0.45714285714285713,
+          "top1": 0.5428571428571428,
+          "top5": 0.9285714285714286
+        },
+        "heldout_scene_category_video_context_preserving": {
+          "MRR": 0.5868634996085976,
+          "count": 198,
+          "false_confuser_rate": 0.6060606060606061,
+          "false_reacquisition_rate": 0.6060606060606061,
+          "top1": 0.3939393939393939,
+          "top5": 0.8484848484848485
+        }
+      },
+      "top1": 0.4682080924855491,
+      "top5": 0.8901734104046243
+    },
+    "legacysem": {
+      "MRR": 0.43843021730049825,
+      "count": 1038,
+      "false_confuser_rate": 0.7996146435452793,
+      "false_reacquisition_rate": 0.7996146435452793,
+      "gap_length_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.4845648604269294,
+            "count": 522,
+            "top1": 0.2509578544061303
+          },
+          "occlusion_only": {
+            "MRR": 0.3917591248353876,
+            "count": 516,
+            "top1": 0.14922480620155038
+          }
+        },
+        "numeric_gap_unavailable": true
+      },
+      "occlusion_severity_breakdown": {
+        "by_subset_proxy": {
+          "occlusion_and_long_gap": {
+            "MRR": 0.4845648604269294,
+            "count": 522,
+            "top1": 0.2509578544061303
+          },
+          "occlusion_only": {
+            "MRR": 0.3917591248353876,
+            "count": 516,
+            "top1": 0.14922480620155038
+          }
+        },
+        "numeric_severity_unavailable": true
+      },
+      "per_panel_breakdown": {
+        "densified_200_context_preserving": {
+          "MRR": 0.42398997280421263,
+          "count": 420,
+          "false_confuser_rate": 0.8,
+          "false_reacquisition_rate": 0.8,
+          "top1": 0.2,
+          "top5": 0.7547619047619047
+        },
+        "heldout_burst_heavy_context_preserving": {
+          "MRR": 0.4942233560090703,
+          "count": 420,
+          "false_confuser_rate": 0.7619047619047619,
+          "false_reacquisition_rate": 0.7619047619047619,
+          "top1": 0.23809523809523808,
+          "top5": 0.8857142857142857
+        },
+        "heldout_scene_category_video_context_preserving": {
+          "MRR": 0.3507119568501934,
+          "count": 198,
+          "false_confuser_rate": 0.8787878787878788,
+          "false_reacquisition_rate": 0.8787878787878788,
+          "top1": 0.12121212121212122,
+          "top5": 0.6717171717171717
+        }
+      },
+      "top1": 0.2003853564547206,
+      "top5": 0.791907514450867
+    },
+    "stage1 frozen": {
+      "MRR": null,
+      "count": 0,
+      "false_confuser_rate": null,
+      "false_reacquisition_rate": null,
+      "gap_length_breakdown": {
+        "by_subset_proxy": {},
+        "numeric_gap_unavailable": true
+      },
+      "occlusion_severity_breakdown": {
+        "by_subset_proxy": {},
+        "numeric_severity_unavailable": true
+      },
+      "per_panel_breakdown": {},
+      "top1": null,
+      "top5": null
+    }
+  },
+  "metric_policy": "Utility metrics are recomputed from target_rank/MRR/top5_hit/top1_candidate_id on occlusion/long-gap rows; query_future_top1_acc is not copied as protocol top1.",
+  "source_report": "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+  "task_build_report": "reports/stwm_reacquisition_task_build_20260425.json"
+}

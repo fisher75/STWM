@@ -1,0 +1,129 @@
+{
+  "candidate_count_source": "protocol_eval_context_entity_count from per-item rows",
+  "candidate_count_stats": {
+    "count": 1440,
+    "max": 8.0,
+    "mean": 6.304166666666666,
+    "min": 2.0,
+    "std": 1.9819979748279821
+  },
+  "created_at": "2026-04-25T11:28:35.244745+00:00",
+  "gap_length_stats": {
+    "available": false,
+    "exact_missing_reason": "No numeric gap length field exists in per-item rows.",
+    "proxy_breakdown_by_subset_tag": {
+      "occlusion_and_long_gap": 678,
+      "occlusion_only": 762
+    }
+  },
+  "item_count": 127,
+  "leakage_check_passed": true,
+  "leakage_policy": "Subset tags are used only to select occlusion/long-gap task items and breakdowns. Metrics are recomputed from target_rank/top1_candidate_id/MRR/top5_hit, not from protocol top1 summary fields. No future GT feature is used as a confidence/scoring input.",
+  "method_availability": {
+    "STWM trace_belief_assoc": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_belief_assoc"
+    },
+    "calibration-only": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "calibration-only::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "cropenc": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "cropenc::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "frozen_external_teacher_only": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "frozen_external_teacher_only"
+    },
+    "legacysem": {
+      "available": true,
+      "available_rows_all_splits": 1440,
+      "available_rows_test_split": 1038,
+      "exact_missing_reason": null,
+      "method_name": "legacysem::best.pt",
+      "scoring_mode": "coord_only"
+    },
+    "stage1 frozen": {
+      "available": false,
+      "available_rows_all_splits": 0,
+      "available_rows_test_split": 0,
+      "exact_missing_reason": "No matching per-item reacquisition rows in stwm_trace_belief_eval_20260424.json for this method/scoring_mode.",
+      "method_name": "stage1 frozen::best.pt",
+      "scoring_mode": "coord_only"
+    }
+  },
+  "occlusion_severity_stats": {
+    "available": false,
+    "exact_missing_reason": "No numeric occlusion severity field exists in per-item rows.",
+    "proxy_breakdown_by_subset_tag": {
+      "occlusion_and_long_gap": 678,
+      "occlusion_only": 762
+    }
+  },
+  "row_count_all_methods_all_splits": 12960,
+  "source_filter": {
+    "required_subset_tags_any_of": [
+      "long_gap_persistence",
+      "occlusion_reappearance"
+    ]
+  },
+  "source_reports": [
+    "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+    "/home/chen034/workspace/stwm/reports/stwm_belief_final_eval_20260424.json",
+    "/home/chen034/workspace/stwm/reports/stwm_belief_strict_bootstrap_20260424.json"
+  ],
+  "source_schema_keys": [
+    "clip_id",
+    "dataset",
+    "future_mask_iou_at_top1",
+    "item_split",
+    "method_name",
+    "mrr",
+    "panel_name",
+    "protocol_eval_context_entity_count",
+    "protocol_item_id",
+    "query_future_hit_rate",
+    "query_future_localization_error",
+    "query_future_top1_acc",
+    "scoring_mode",
+    "seed",
+    "subset_tags",
+    "target_rank",
+    "top1_candidate_id",
+    "top5_hit"
+  ],
+  "split": {
+    "test": {
+      "item_count": 91,
+      "item_ids_hash": "e41ab7b55bc0f5506241372d625cea35d117cb10fc9a1e0c9ed56ae73d046710"
+    },
+    "train": {
+      "item_count": 15,
+      "item_ids_hash": "3731177d12ebc7039604c4ae5f46a3d1b2ef2f56d876aa88ded3bb56ef9f1350"
+    },
+    "val": {
+      "item_count": 21,
+      "item_ids_hash": "480f42bdb714ad2e082b29629504e9288a931b668064db4b62982f6a2c8b75de"
+    }
+  },
+  "split_definition": "stable sha256(protocol_item_id) bucket: train<15, val 15-29, test>=30; no parameter tuning performed.",
+  "task": "occlusion_aware_reacquisition",
+  "task_definition": "Observed target disappears / is occluded; future candidates appear after gap; system must reacquire same identity."
+}

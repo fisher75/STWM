@@ -1,0 +1,134 @@
+{
+  "claim_level": "strong_claim",
+  "comparison_policy": "For top1/top5/MRR, positive delta means STWM minus baseline. For false rates, positive delta means baseline false rate minus STWM false rate.",
+  "created_at": "2026-04-25T11:28:35.244745+00:00",
+  "results": {
+    "STWM vs calibration-only": {
+      "MRR": {
+        "ci95_high": 0.25792319549649684,
+        "ci95_low": 0.20923761876402755,
+        "count": 1038,
+        "mean_delta": 0.23356777270678972,
+        "win_rate": 0.6146435452793835,
+        "zero_excluded": true
+      },
+      "false_confuser_rate": {
+        "ci95_high": 0.34778420038535646,
+        "ci95_low": 0.2774566473988439,
+        "count": 1038,
+        "mean_delta": 0.31213872832369943,
+        "win_rate": 0.37572254335260113,
+        "zero_excluded": true
+      },
+      "false_reacquisition_rate": {
+        "ci95_high": 0.34778420038535646,
+        "ci95_low": 0.2774566473988439,
+        "count": 1038,
+        "mean_delta": 0.31213872832369943,
+        "win_rate": 0.37572254335260113,
+        "zero_excluded": true
+      },
+      "top1": {
+        "ci95_high": 0.34778420038535646,
+        "ci95_low": 0.2774566473988439,
+        "count": 1038,
+        "mean_delta": 0.31213872832369943,
+        "win_rate": 0.37572254335260113,
+        "zero_excluded": true
+      },
+      "top5": {
+        "ci95_high": 0.14450867052023122,
+        "ci95_low": 0.09248554913294797,
+        "count": 1038,
+        "mean_delta": 0.11753371868978806,
+        "win_rate": 0.15606936416184972,
+        "zero_excluded": true
+      }
+    },
+    "STWM vs frozen_external_teacher_only": {
+      "MRR": {
+        "ci95_high": 0.04208513968835313,
+        "ci95_low": 0.0032872997141164817,
+        "count": 1038,
+        "mean_delta": 0.022402382694024104,
+        "win_rate": 0.30057803468208094,
+        "zero_excluded": true
+      },
+      "false_confuser_rate": {
+        "ci95_high": 0.06358381502890173,
+        "ci95_low": 0.0,
+        "count": 1038,
+        "mean_delta": 0.030828516377649325,
+        "win_rate": 0.15221579961464354,
+        "zero_excluded": false
+      },
+      "false_reacquisition_rate": {
+        "ci95_high": 0.06358381502890173,
+        "ci95_low": 0.0,
+        "count": 1038,
+        "mean_delta": 0.030828516377649325,
+        "win_rate": 0.15221579961464354,
+        "zero_excluded": false
+      },
+      "top1": {
+        "ci95_high": 0.06358381502890173,
+        "ci95_low": 0.0,
+        "count": 1038,
+        "mean_delta": 0.030828516377649325,
+        "win_rate": 0.15221579961464354,
+        "zero_excluded": false
+      },
+      "top5": {
+        "ci95_high": 0.03275529865125241,
+        "ci95_low": 0.005780346820809248,
+        "count": 1038,
+        "mean_delta": 0.019267822736030827,
+        "win_rate": 0.03468208092485549,
+        "zero_excluded": true
+      }
+    },
+    "STWM vs legacysem": {
+      "MRR": {
+        "ci95_high": 0.25494430432769705,
+        "ci95_low": 0.20508462899609867,
+        "count": 1038,
+        "mean_delta": 0.22961886980425616,
+        "win_rate": 0.6107899807321773,
+        "zero_excluded": true
+      },
+      "false_confuser_rate": {
+        "ci95_high": 0.33429672447013487,
+        "ci95_low": 0.26204238921001927,
+        "count": 1038,
+        "mean_delta": 0.29865125240847784,
+        "win_rate": 0.36897880539499034,
+        "zero_excluded": true
+      },
+      "false_reacquisition_rate": {
+        "ci95_high": 0.33429672447013487,
+        "ci95_low": 0.26204238921001927,
+        "count": 1038,
+        "mean_delta": 0.29865125240847784,
+        "win_rate": 0.36897880539499034,
+        "zero_excluded": true
+      },
+      "top1": {
+        "ci95_high": 0.33429672447013487,
+        "ci95_low": 0.26204238921001927,
+        "count": 1038,
+        "mean_delta": 0.29865125240847784,
+        "win_rate": 0.36897880539499034,
+        "zero_excluded": true
+      },
+      "top5": {
+        "ci95_high": 0.14354527938342967,
+        "ci95_low": 0.09248554913294797,
+        "count": 1038,
+        "mean_delta": 0.11753371868978806,
+        "win_rate": 0.15414258188824662,
+        "zero_excluded": true
+      }
+    }
+  },
+  "source_eval": "reports/stwm_reacquisition_utility_eval_20260425.json"
+}

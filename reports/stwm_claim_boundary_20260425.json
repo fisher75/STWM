@@ -1,0 +1,33 @@
+{
+  "generated_at_utc": "2026-04-25T10:33:08.493683+00:00",
+  "strong_claims_allowed": [
+    "STWM / TUSB-v3.1 + trace_belief_assoc improves over calibration-only, cropenc, and legacysem under the official frozen checkpoint/readout setting.",
+    "Trace belief readout uses trace-conditioned semantic identity belief rather than pure external teacher retrieval.",
+    "Official belief readout supports future identity association on context-preserving matched evaluation."
+  ],
+  "moderate_claims_allowed": [
+    "OOD robustness is positive in current materialized true-OOD splits but should not be phrased as universal OOD dominance.",
+    "Downstream utility supports representation usefulness, but not broad planning or full world-model capability.",
+    "Mechanism evidence is supportive but bounded; do not elevate it to a fully stable cross-seed mechanism theorem."
+  ],
+  "forbidden_claims": [
+    "appearance-change solved",
+    "universal OOD dominance",
+    "oral/spotlight guaranteed",
+    "teacher-only fully irrelevant",
+    "full video world model claim",
+    "hybrid_light is the official method",
+    "frozen_external_teacher_only and tusb_semantic_target are interchangeable"
+  ],
+  "source_of_truth": {
+    "official_method_name": "reports/stwm_belief_final_decision_20260424.json + reports/stwm_belief_final_eval_20260424.json",
+    "official_readout": "reports/stwm_belief_final_decision_20260424.json",
+    "belief_feasibility": "reports/stwm_trace_belief_feasibility_audit_20260424.json",
+    "main_comparison": "reports/stwm_belief_final_eval_20260424.json",
+    "bootstrap_claim_level": "reports/stwm_belief_strict_bootstrap_20260424.json",
+    "downstream_utility": "reports/stwm_belief_downstream_utility_20260424.json",
+    "true_ood": "reports/stwm_belief_true_ood_eval_20260424.json",
+    "bayesian_belief_framing_inputs": "reports/stwm_trace_belief_eval_20260424.json",
+    "claim_boundary": "reports/stwm_belief_final_decision_20260424.json plus bounded conflict audit from earlier variants"
+  }
+}

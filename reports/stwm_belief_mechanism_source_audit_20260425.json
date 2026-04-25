@@ -1,0 +1,162 @@
+{
+  "confidence_available": false,
+  "confidence_policy": "No raw probability/candidate score map exists in the source rows. Calibration is therefore computed as rank-based reliability using MRR/target_rank, not as calibrated model probability.",
+  "created_at": "2026-04-25T11:21:57.583422+00:00",
+  "false_confuser_policy": "False-confuser uses top1 wrong with top1_candidate_id differing from protocol_item_id suffix when target id can be inferred; otherwise wrong top1 is used as a conservative proxy.",
+  "leakage_check": {
+    "confidence_uses_future_gt": false,
+    "confidence_uses_subset_tags": false,
+    "grouping_uses_subset_tags_for_requested_hard_case_breakdowns": true,
+    "passed": true
+  },
+  "per_item_result_counts": {
+    "belief_final_eval": 14040,
+    "paired_teacher_belief_trace_rows": 3480,
+    "trace_belief_eval": 31320
+  },
+  "per_item_schema_observed": [
+    "clip_id",
+    "dataset",
+    "future_mask_iou_at_top1",
+    "item_split",
+    "method_name",
+    "mrr",
+    "panel_name",
+    "protocol_eval_context_entity_count",
+    "protocol_item_id",
+    "query_future_hit_rate",
+    "query_future_localization_error",
+    "query_future_top1_acc",
+    "scoring_mode",
+    "seed",
+    "subset_tags",
+    "target_rank",
+    "top1_candidate_id",
+    "top5_hit"
+  ],
+  "source_method_mapping": {
+    "belief": {
+      "method": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "trace_belief_assoc"
+    },
+    "belief_final_eval_official_method_prefix": "TUSB-v3.1::official",
+    "teacher_baseline": {
+      "method": "TUSB-v3.1::best_semantic_hard.pt",
+      "scoring_mode": "frozen_external_teacher_only"
+    }
+  },
+  "source_reports": {
+    "belief_final_eval": {
+      "error": null,
+      "key_fields": {
+        "has_panels": true,
+        "panel_names": [
+          "densified_200_context_preserving",
+          "legacy_85_context_preserving",
+          "protocol_v3_extended_600_context_preserving"
+        ],
+        "per_panel_row_counts": {
+          "densified_200_context_preserving": 3576,
+          "legacy_85_context_preserving": 1584,
+          "protocol_v3_extended_600_context_preserving": 8880
+        },
+        "top_level_keys": [
+          "auxiliary_true_ood_panel_names",
+          "baselines_scoring_mode",
+          "belief_empty_items",
+          "diag_variance_available_items",
+          "eval_finished_at",
+          "eval_started_at",
+          "exact_blocking_reason",
+          "generated_at_utc",
+          "hard_subsets_improved_vs_calibration",
+          "hard_subsets_improved_vs_legacysem",
+          "improved_vs_calibration",
+          "improved_vs_cropenc",
+          "improved_vs_legacysem",
+          "official_tusb_checkpoint",
+          "official_tusb_method",
+          "official_tusb_scoring_mode",
+          "panels",
+          "raw_true_ood_panels",
+          "selected_device",
+          "source_trace_belief_eval_fresh_rerun",
+          "source_trace_belief_wall_time_seconds",
+          "stage1_frozen",
+          "wall_time_seconds"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_belief_final_eval_20260424.json",
+      "report_exists": true,
+      "valid_json": true
+    },
+    "belief_strict_bootstrap": {
+      "error": null,
+      "key_fields": {
+        "has_panels": true,
+        "panel_names": [
+          "densified_200_context_preserving",
+          "protocol_v3_extended_600_context_preserving"
+        ],
+        "per_panel_row_counts": {
+          "densified_200_context_preserving": 0,
+          "protocol_v3_extended_600_context_preserving": 0
+        },
+        "top_level_keys": [
+          "claim_level",
+          "generated_at_utc",
+          "official_tusb_method",
+          "panels",
+          "zero_excluded_vs_calibration",
+          "zero_excluded_vs_cropenc",
+          "zero_excluded_vs_legacysem"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_belief_strict_bootstrap_20260424.json",
+      "report_exists": true,
+      "valid_json": true
+    },
+    "trace_belief_eval": {
+      "error": null,
+      "key_fields": {
+        "has_panels": true,
+        "panel_names": [
+          "densified_200_context_preserving",
+          "heldout_burst_heavy_context_preserving",
+          "heldout_scene_category_video_context_preserving"
+        ],
+        "per_panel_row_counts": {
+          "densified_200_context_preserving": 8046,
+          "heldout_burst_heavy_context_preserving": 12150,
+          "heldout_scene_category_video_context_preserving": 11124
+        },
+        "top_level_keys": [
+          "belief_empty_items",
+          "diag_variance_available_items",
+          "diag_variance_unavailable_items",
+          "eval_finished_at",
+          "eval_started_at",
+          "forbidden_feature_names_present",
+          "frozen_external_teacher_only_backend",
+          "gallery_frame_count_mean",
+          "generated_at_utc",
+          "leakage_check_passed",
+          "panels",
+          "source_shards",
+          "split_definition",
+          "split_sizes",
+          "test_item_ids_hash",
+          "trace_belief_assoc_definition",
+          "trace_belief_sem_only_definition",
+          "train_item_ids_hash",
+          "val_item_ids_hash",
+          "wall_time_seconds"
+        ]
+      },
+      "path": "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+      "report_exists": true,
+      "valid_json": true
+    }
+  },
+  "task": "STWM BELIEF MECHANISM + CALIBRATION PLOT PACK"
+}

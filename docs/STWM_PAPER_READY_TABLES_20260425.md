@@ -1,0 +1,22 @@
+# STWM Paper Ready Tables 20260425
+
+## Table 1: Main comparison
+- {"label": "STWM belief", "overall_top1": 0.4630872483221476, "hard_subset_top1": 0.4630872483221476, "ambiguity_top1": 0.4220183486238533, "occlusion_reappearance_top1": 0.5053191489361701, "long_gap_persistence_top1": 0.5144927536231884, "MRR": 0.6276732410913713, "top5_hit": 0.8489932885906041}
+- {"label": "calibration-only", "overall_top1": 0.1610738255033557, "hard_subset_top1": 0.1610738255033557, "ambiguity_top1": 0.14678899082568808, "occlusion_reappearance_top1": 0.17198581560283688, "long_gap_persistence_top1": 0.1956521739130435, "MRR": 0.394711026498255, "top5_hit": 0.7360178970917226}
+- {"label": "cropenc", "overall_top1": 0.16219239373601788, "hard_subset_top1": 0.16219239373601788, "ambiguity_top1": 0.14525993883792052, "occlusion_reappearance_top1": 0.17375886524822692, "long_gap_persistence_top1": 0.2282608695652174, "MRR": 0.3947195286198854, "top5_hit": 0.7393736017897092}
+- {"label": "legacysem", "overall_top1": 0.16666666666666666, "hard_subset_top1": 0.16666666666666666, "ambiguity_top1": 0.15902140672782875, "occlusion_reappearance_top1": 0.17730496453900713, "long_gap_persistence_top1": 0.2318840579710145, "MRR": 0.3997711276778473, "top5_hit": 0.7438478747203581}
+- {"label": "frozen_external_teacher_only", "overall_top1": 0.4228187919463087, "hard_subset_top1": 0.4228187919463087, "ambiguity_top1": 0.34862385321100925, "occlusion_reappearance_top1": 0.48936170212765956, "long_gap_persistence_top1": 0.5652173913043478, "MRR": 0.592226373115583, "top5_hit": 0.8456375838926175}
+
+## Table 2: Readout ablation
+- {"label": "coord_only", "overall_top1": 0.17333333333333334, "hard_subset_top1": 0.17333333333333334, "ambiguity_top1": 0.15639269406392695, "occlusion_reappearance_top1": 0.1757105943152455, "long_gap_persistence_top1": 0.20398009950248755, "MRR": 0.40152751940389814, "top5_hit": 0.7233333333333333}
+- {"label": "hybrid_light", "overall_top1": 0.20833333333333337, "hard_subset_top1": 0.20833333333333337, "ambiguity_top1": 0.20205479452054795, "occlusion_reappearance_top1": 0.21834625322997417, "long_gap_persistence_top1": 0.24378109452736316, "MRR": 0.43940741427502267, "top5_hit": 0.7741666666666666}
+- {"label": "tusb_semantic_target", "overall_top1": 0.34116331096196867, "hard_subset_top1": 0.34116331096196867, "ambiguity_top1": 0.3103975535168196, "occlusion_reappearance_top1": 0.38829787234042556, "long_gap_persistence_top1": 0.4202898550724638, "MRR": 0.5332945976843394, "top5_hit": 0.8064876957494408}
+- {"label": "clean_residual_v2", "overall_top1": 0.42505592841163303, "hard_subset_top1": 0.42505592841163303, "ambiguity_top1": 0.35779816513761475, "occlusion_reappearance_top1": 0.4982269503546099, "long_gap_persistence_top1": 0.5471014492753624, "MRR": 0.5984221443577145, "top5_hit": 0.8467561521252797}
+- {"label": "trace_gallery_assoc", "overall_top1": 0.4630872483221476, "hard_subset_top1": 0.4630872483221476, "ambiguity_top1": 0.4220183486238532, "occlusion_reappearance_top1": 0.5053191489361701, "long_gap_persistence_top1": 0.5036231884057971, "MRR": 0.6245977353032212, "top5_hit": 0.8456375838926175}
+- {"label": "trace_belief_assoc", "overall_top1": 0.4630872483221476, "hard_subset_top1": 0.4630872483221476, "ambiguity_top1": 0.4220183486238533, "occlusion_reappearance_top1": 0.5053191489361701, "long_gap_persistence_top1": 0.5144927536231884, "MRR": 0.6276732410913713, "top5_hit": 0.8489932885906041}
+
+## Table 3: Mechanism summary
+- {"source_report": "reports/stwm_top_tier_mechanism_6seed_full_20260420.json", "active_units": 5.41125, "same_instance_binding": null, "z_sem_z_dyn_drift_ratio": null, "trace_belief_gain": true, "bootstrap_claim_level": "strong_claim", "mechanism_claim_boundary": "supportive diagnostic only; mechanism_cross_seed_stable is not promoted as a strong claim"}
+
+## Table 4: Utility/OOD summary
+- {"downstream_utility": {"source_report": "reports/stwm_belief_downstream_utility_20260424.json", "utility_improved_vs_calibration": true, "utility_improved_vs_cropenc": true, "utility_improved_vs_legacysem": true, "utility_claim_ready": true}, "true_ood": {"source_report": "reports/stwm_belief_true_ood_eval_20260424.json", "ood_improved_vs_calibration": true, "ood_improved_vs_cropenc": true, "ood_improved_vs_legacysem": true, "ood_claim_ready": true}, "claim_level": "strong_claim"}
