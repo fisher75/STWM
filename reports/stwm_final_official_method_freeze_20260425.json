@@ -1,0 +1,52 @@
+{
+  "generated_at_utc": "2026-04-25T09:43:41.321943+00:00",
+  "official_method_name": "STWM / TUSB-v3.1 + trace_belief_assoc",
+  "official_stage1": "frozen trace-first future-state backbone",
+  "official_stage2": "TUSB-v3.1 identity-bound semantic trace units",
+  "official_checkpoint": "best_semantic_hard.pt",
+  "official_readout": "trace_belief_assoc",
+  "official_report_source": "reports/stwm_belief_final_decision_20260424.json",
+  "why_belief_over_hybrid_residual_gallery": {
+    "hybrid_light": "useful predecessor, but belief final validation supersedes it and keeps trace-conditioned uncertainty/history in the official readout",
+    "clean_residual_v2": "not paper-valid as strongest mainline; decision reports did not support official story strongly enough",
+    "trace_gallery_assoc": "gallery/prototype did not beat frozen external teacher and legacysem cleanly enough across ID/OOD",
+    "trace_belief_assoc": "current source-of-truth reports show improved_vs_calibration/cropenc/legacysem=true, utility=true, OOD=true, bootstrap_claim_level=strong_claim"
+  },
+  "frozen_components": [
+    "Stage1 backbone",
+    "Stage2 TUSB-v3.1 backbone",
+    "semantic teacher/cache inputs",
+    "protocol panels/splits",
+    "matched 6 seeds",
+    "best_semantic_hard.pt checkpoint"
+  ],
+  "trainable_components": [],
+  "inference_time_readout_components": [
+    "observed target belief mean/variance proxy",
+    "TUSB semantic target consistency",
+    "unit identity consistency",
+    "coordinate/motion plausibility prior"
+  ],
+  "baselines": [
+    "stage1 frozen",
+    "calibration-only",
+    "cropenc",
+    "legacysem",
+    "frozen_external_teacher_only",
+    "tusb_semantic_target",
+    "hybrid_light",
+    "clean_residual_v2",
+    "trace_gallery_assoc"
+  ],
+  "no_longer_mainline_variants": [
+    "hybrid_light",
+    "clean_residual_v2",
+    "trace_gallery_assoc",
+    "trace_prototype_only",
+    "coord_only",
+    "tusb_semantic_target-only",
+    "frozen_external_teacher_only"
+  ],
+  "stage1_frozen_no_retrain": true,
+  "stage2_backbone_frozen_no_new_structure": true
+}

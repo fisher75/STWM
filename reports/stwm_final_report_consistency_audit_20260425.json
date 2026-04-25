@@ -1,0 +1,171 @@
+{
+  "generated_at_utc": "2026-04-25T09:43:41.322321+00:00",
+  "reports": [
+    {
+      "report_key": "belief_feasibility",
+      "path": "reports/stwm_trace_belief_feasibility_audit_20260424.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "audit_passed": true
+      },
+      "error": null
+    },
+    {
+      "report_key": "belief_eval",
+      "path": "reports/stwm_trace_belief_eval_20260424.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {},
+      "error": null
+    },
+    {
+      "report_key": "belief_bootstrap",
+      "path": "reports/stwm_trace_belief_bootstrap_20260424.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "claim_level": "moderate_claim"
+      },
+      "error": null
+    },
+    {
+      "report_key": "belief_decision",
+      "path": "reports/stwm_trace_belief_decision_20260424.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "claim_level": "moderate_claim",
+        "next_step_choice": "start_main_submission_assets",
+        "trace_belief_assoc_improved_vs_frozen_external_teacher_only": true,
+        "trace_belief_assoc_improved_vs_legacysem": true,
+        "trace_semantic_coupling_load_bearing": true,
+        "official_story_supported": true
+      },
+      "error": null
+    },
+    {
+      "report_key": "clean_trace_assoc_decision",
+      "path": "reports/stwm_clean_trace_assoc_decision_20260424.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "claim_level": "weak_claim",
+        "next_step_choice": "one_last_surgical_fix",
+        "trace_semantic_coupling_load_bearing": false,
+        "official_story_supported": false
+      },
+      "error": null
+    },
+    {
+      "report_key": "prototype_decision",
+      "path": "reports/stwm_trace_prototype_decision_20260424.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "claim_level": "weak_claim",
+        "next_step_choice": "one_last_surgical_fix",
+        "trace_semantic_coupling_load_bearing": false,
+        "official_story_supported": false
+      },
+      "error": null
+    },
+    {
+      "report_key": "lightreadout_decision",
+      "path": "reports/stwm_tusb_light_readout_decision_20260422.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "next_step_choice": "promote_light_readout_and_run_final_top_tier_validation",
+        "improved_vs_calibration": true,
+        "improved_vs_cropenc": true,
+        "improved_vs_legacysem": true
+      },
+      "error": null
+    },
+    {
+      "report_key": "true_ood_decision_20260422",
+      "path": "reports/stwm_true_ood_final_decision_20260422.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "next_step_choice": "start_main_submission_assets",
+        "improved_vs_calibration": true,
+        "improved_vs_cropenc": true,
+        "improved_vs_legacysem": true,
+        "hard_subsets_improved": true
+      },
+      "error": null
+    },
+    {
+      "report_key": "utility_v3_decision_20260422",
+      "path": "reports/stwm_lightreadout_downstream_utility_v3_decision_20260422.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "next_step_choice": "run_true_ood_next",
+        "utility_claim_ready": true
+      },
+      "error": null
+    },
+    {
+      "report_key": "postfix_matched6_decision",
+      "path": "reports/stwm_postfix_matched6seed_decision_20260421.json",
+      "exists": true,
+      "valid_json": true,
+      "key_fields": {
+        "audit_passed": true,
+        "next_step_choice": "start_main_submission_assets",
+        "improved_vs_calibration": true,
+        "bootstrap_claim_level": "moderate_claim"
+      },
+      "error": null
+    }
+  ],
+  "conflicting_conclusions": [
+    {
+      "claim": "official mainline readout",
+      "current_source_of_truth": "stwm_belief_final_decision_20260424.json",
+      "older_conflict": "stwm_tusb_light_readout_decision_20260422 promoted hybrid_light",
+      "resolution": "hybrid_light is predecessor/no-longer-mainline"
+    },
+    {
+      "claim": "trace-conditioned association variants",
+      "current_source_of_truth": "stwm_belief_final_decision_20260424.json",
+      "older_conflict": "clean_trace_assoc/prototype decisions have official_story_supported=false",
+      "resolution": "those variants are ablations/failed alternatives; belief is official"
+    },
+    {
+      "claim": "bootstrap strength",
+      "current_source_of_truth": "stwm_belief_strict_bootstrap_20260424.json",
+      "older_conflict": "stwm_trace_belief_bootstrap_20260424 was moderate_claim",
+      "resolution": "standalone belief ID+OOD bootstrap was moderate; promoted final ID/main-panel strict bootstrap is strong"
+    },
+    {
+      "claim": "mechanism evidence",
+      "current_source_of_truth": "stwm_top_tier_mechanism_6seed_full_20260420.json",
+      "older_conflict": "belief performance is strong but mechanism_cross_seed_stable=false",
+      "resolution": "do not claim mechanism fully solved; use as limited supporting evidence only"
+    }
+  ],
+  "source_of_truth_per_claim": {
+    "official_method": "reports/stwm_belief_final_decision_20260424.json + reports/stwm_belief_promotion_audit_20260424.json",
+    "main_comparison": "reports/stwm_belief_final_eval_20260424.json",
+    "strict_bootstrap": "reports/stwm_belief_strict_bootstrap_20260424.json",
+    "downstream_utility": "reports/stwm_belief_downstream_utility_20260424.json",
+    "true_ood": "reports/stwm_belief_true_ood_eval_20260424.json",
+    "belief_attribution": "reports/stwm_trace_belief_decision_20260424.json",
+    "matched6_checkpoint_context": "reports/stwm_postfix_matched6seed_decision_20260421.json",
+    "mechanism_boundary": "reports/stwm_top_tier_mechanism_6seed_full_20260420.json"
+  },
+  "final_status": {
+    "belief_official": true,
+    "improved_vs_calibration": true,
+    "improved_vs_cropenc": true,
+    "improved_vs_legacysem": true,
+    "bootstrap_claim_level": "strong_claim",
+    "utility_claim_ready": true,
+    "ood_claim_ready": true,
+    "next_step_choice": "start_main_submission_assets"
+  }
+}
