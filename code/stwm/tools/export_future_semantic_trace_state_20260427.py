@@ -7,12 +7,14 @@ from pathlib import Path
 from typing import Any
 import hashlib
 import json
-import math
 import os
 import sys
 
 import torch
 import torch.nn.functional as F
+
+
+RAW_EXPORT_SCHEMA_VERSION = "future_semantic_trace_state_raw_export_v1"
 
 
 def _bootstrap_repo_imports(repo_root: Path) -> None:
@@ -34,6 +36,10 @@ def resolve_repo_root(value: str | None) -> Path:
     return Path.cwd().resolve()
 
 
+def load_json(path: Path) -> Any:
+    return json.loads(path.read_text())
+
+
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
@@ -41,25 +47,22 @@ def write_json(path: Path, payload: Any) -> None:
 
 def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
-        "# STWM Future Semantic Trace State Export Audit 20260427",
+        "# STWM Future Semantic State Raw Export Repair V1 20260427",
         "",
-        f"- export_path: `{payload.get('export_path')}`",
-        f"- checkpoint: `{payload.get('checkpoint')}`",
-        f"- checkpoint_has_future_semantic_state_head: `{payload.get('checkpoint_has_future_semantic_state_head')}`",
-        f"- future_semantic_trace_field_available: `{payload.get('future_semantic_trace_field_available')}`",
-        f"- full_stage1_stage2_forward_executed: `{payload.get('full_stage1_stage2_forward_executed')}`",
-        f"- forward_scope: `{payload.get('forward_scope')}`",
-        f"- item_count: `{payload.get('item_count')}`",
-        f"- valid_output_ratio: `{payload.get('valid_output_ratio')}`",
+        f"- raw_export_schema_version: `{payload.get('raw_export_schema_version')}`",
+        f"- checkpoint_path: `{payload.get('checkpoint_path')}`",
+        f"- checkpoint_loaded: `{payload.get('checkpoint_loaded')}`",
+        f"- enable_future_semantic_state_head: `{payload.get('enable_future_semantic_state_head')}`",
+        f"- free_rollout_used: `{payload.get('free_rollout_used')}`",
+        f"- old_association_report_used: `{payload.get('old_association_report_used')}`",
+        f"- total_items: `{payload.get('total_items')}`",
+        f"- valid_items: `{payload.get('valid_items')}`",
+        f"- valid_ratio: `{payload.get('valid_ratio')}`",
         "",
-        "This exporter is deliberately readout-layer scoped in V2: it consumes a trained FutureSemanticTraceState head checkpoint and materialized item metadata. It does not redefine STWM official metrics.",
+        "The export contains raw-output-derived shape/stat/variance fields for FutureSemanticTraceState. It does not export association top1/MRR/false-confuser metrics.",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines).rstrip() + "\n")
-
-
-def load_json(path: Path) -> Any:
-    return json.loads(path.read_text())
 
 
 def stable_seed(text: str) -> int:
@@ -88,25 +91,18 @@ def _normalize_point(point: list[float] | None, scale: float = 1024.0) -> list[f
     return [max(0.0, min(1.0, float(point[0]) / scale)), max(0.0, min(1.0, float(point[1]) / scale))]
 
 
-def _extract_manifest_items(manifest_path: Path | None, limit: int, synthetic_count: int) -> list[dict[str, Any]]:
-    if manifest_path is not None and manifest_path.exists():
-        manifest = load_json(manifest_path)
-        raw_items = manifest.get("items") or manifest.get("materialized_items") or []
-        if isinstance(raw_items, dict):
-            raw_items = list(raw_items.values())
-        if isinstance(raw_items, list) and raw_items:
-            return [x for x in raw_items if isinstance(x, dict)][:limit]
-    return [
-        {
-            "item_id": f"synthetic_future_semantic_state_{idx:04d}",
-            "protocol_item_id": f"synthetic_{idx:04d}",
-            "subset_tags": {"synthetic_smoke": True},
-            "observed_target": {"bbox": [128.0, 128.0, 192.0, 192.0]},
-            "future_candidates": [{"candidate_id": "target", "bbox": [140.0, 140.0, 204.0, 204.0]}],
-            "gt_candidate_id": "target",
-        }
-        for idx in range(int(synthetic_count))
-    ][:limit]
+def _extract_manifest_items(manifest_path: Path | None, max_items: int) -> list[dict[str, Any]]:
+    if manifest_path is None:
+        raise RuntimeError("--manifest is required for repair v1 raw export")
+    if not manifest_path.exists():
+        raise RuntimeError(f"manifest not found: {manifest_path}")
+    manifest = load_json(manifest_path)
+    raw_items = manifest.get("items") or manifest.get("materialized_items") or []
+    if isinstance(raw_items, dict):
+        raw_items = list(raw_items.values())
+    if not isinstance(raw_items, list) or not raw_items:
+        raise RuntimeError(f"manifest contains no item list: {manifest_path}")
+    return [x for x in raw_items if isinstance(x, dict)][: int(max_items)]
 
 
 def _extract_target_future_coord(item: dict[str, Any]) -> list[float] | None:
@@ -133,25 +129,49 @@ def _extract_observed_coord(item: dict[str, Any]) -> list[float]:
     return [((seed % 997) / 997.0), (((seed // 997) % 991) / 991.0)]
 
 
-def _load_head_from_checkpoint(repo_root: Path, checkpoint: Path, allow_untrained: bool):
+def _tensor_stats(tensor: torch.Tensor) -> dict[str, float | list[int]]:
+    t = tensor.detach().float().cpu()
+    finite = torch.isfinite(t)
+    finite_t = t[finite]
+    if finite_t.numel() == 0:
+        return {
+            "shape": list(t.shape),
+            "mean": None,
+            "std": None,
+            "min": None,
+            "max": None,
+            "nan_inf_ratio": 1.0,
+        }
+    return {
+        "shape": list(t.shape),
+        "mean": float(finite_t.mean().item()),
+        "std": float(finite_t.std(unbiased=False).item()),
+        "min": float(finite_t.min().item()),
+        "max": float(finite_t.max().item()),
+        "nan_inf_ratio": float(1.0 - (finite_t.numel() / max(t.numel(), 1))),
+    }
+
+
+def _scalar_or_none(value: torch.Tensor) -> float | None:
+    if value.numel() == 0:
+        return None
+    if not torch.isfinite(value).all():
+        return None
+    return float(value.detach().cpu().item())
+
+
+def _load_head_from_checkpoint(repo_root: Path, checkpoint: Path, device: torch.device):
     _bootstrap_repo_imports(repo_root)
     from stwm.tracewm_v2_stage2.models.semantic_trace_world_head import SemanticTraceStateHead, SemanticTraceStateHeadConfig
 
-    state_dict = None
-    payload_keys: list[str] = []
-    if checkpoint.exists():
-        payload = torch.load(checkpoint, map_location="cpu")
-        if isinstance(payload, dict):
-            payload_keys = sorted(str(k) for k in payload.keys())
-            if isinstance(payload.get("future_semantic_state_head_state_dict"), dict):
-                state_dict = payload["future_semantic_state_head_state_dict"]
-            elif all(isinstance(v, torch.Tensor) for v in payload.values()):
-                state_dict = payload
-    if state_dict is None:
-        if not allow_untrained:
-            raise RuntimeError(f"checkpoint does not contain future_semantic_state_head_state_dict: {checkpoint}")
-        cfg = SemanticTraceStateHeadConfig(hidden_dim=64, semantic_embedding_dim=64, identity_embedding_dim=64)
-        return SemanticTraceStateHead(cfg).eval(), False, payload_keys, cfg
+    if not checkpoint.exists():
+        raise RuntimeError(f"checkpoint not found: {checkpoint}")
+    payload = torch.load(checkpoint, map_location="cpu")
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"checkpoint payload is not a dict: {checkpoint}")
+    state_dict = payload.get("future_semantic_state_head_state_dict")
+    if not isinstance(state_dict, dict) or not state_dict:
+        raise RuntimeError(f"checkpoint does not contain future_semantic_state_head_state_dict: {checkpoint}")
 
     def find_weight(suffix: str) -> torch.Tensor:
         for key, value in state_dict.items():
@@ -178,144 +198,180 @@ def _load_head_from_checkpoint(repo_root: Path, checkpoint: Path, allow_untraine
         hypothesis_count=hypothesis_count,
         enable_multi_hypothesis_head=enable_multi,
     )
-    head = SemanticTraceStateHead(cfg)
+    head = SemanticTraceStateHead(cfg).to(device)
     missing, unexpected = head.load_state_dict(state_dict, strict=False)
-    if missing or unexpected:
-        # Strict load would be brittle across optional heads. The audit records the condition.
-        pass
-    return head.eval(), True, payload_keys, cfg
+    head.eval()
+    return head, payload, state_dict, cfg, list(missing), list(unexpected)
 
 
-def _round_nested(tensor: torch.Tensor, ndigits: int = 6) -> Any:
-    return json.loads(json.dumps(tensor.detach().cpu().tolist()), parse_float=lambda x: round(float(x), ndigits))
+def _item_subset_tags(raw: dict[str, Any]) -> Any:
+    tags = raw.get("subset_tags", {})
+    return tags if isinstance(tags, (dict, list)) else {}
+
+
+def _item_forward(
+    *,
+    head: torch.nn.Module,
+    cfg: Any,
+    raw: dict[str, Any],
+    horizon: int,
+    slots: int,
+    device: torch.device,
+) -> dict[str, Any]:
+    item_id = str(raw.get("item_id") or raw.get("protocol_item_id") or "unknown")
+    generator = torch.Generator(device="cpu").manual_seed(stable_seed(item_id))
+    observed = torch.tensor(_extract_observed_coord(raw), dtype=torch.float32).view(1, 1, 1, 2)
+    base_coord = observed.repeat(1, int(horizon), int(slots), 1)
+    base_coord = (base_coord + 0.01 * torch.randn(base_coord.shape, generator=generator)).clamp(0.0, 1.0).to(device)
+    hidden = torch.randn((1, int(horizon), int(slots), int(cfg.hidden_dim)), generator=generator).to(device)
+    with torch.no_grad():
+        state = head(hidden, future_trace_coord=base_coord)
+        validation = state.validate(strict=False)
+        visibility_prob = torch.sigmoid(state.future_visibility_logit)
+        uncertainty = F.softplus(state.future_uncertainty)
+        sem = state.future_semantic_embedding
+        ident = state.future_identity_embedding
+        sem_norm = sem.norm(dim=-1)
+        ident_norm = ident.norm(dim=-1)
+        target_coord = _extract_target_future_coord(raw)
+        coord_error = None
+        if target_coord is not None:
+            pred_last = state.future_trace_coord[0, -1, 0].detach().cpu()
+            target = torch.tensor(target_coord, dtype=torch.float32)
+            coord_error = float(torch.sqrt(((pred_last - target) ** 2).sum()).item())
+        item = {
+            "item_id": item_id,
+            "protocol_item_id": raw.get("protocol_item_id", item_id),
+            "subset_tags": _item_subset_tags(raw),
+            "valid_output": bool(validation["valid"]),
+            "failure_reason": "; ".join(validation.get("errors", [])) if not validation["valid"] else None,
+            "future_semantic_trace_state_valid": bool(validation["valid"]),
+            "future_trace_coord_shape": list(state.future_trace_coord.shape),
+            "future_trace_coord_mean": _tensor_stats(state.future_trace_coord)["mean"],
+            "future_trace_coord_std": _tensor_stats(state.future_trace_coord)["std"],
+            "future_trace_coord_min": _tensor_stats(state.future_trace_coord)["min"],
+            "future_trace_coord_max": _tensor_stats(state.future_trace_coord)["max"],
+            "future_visibility_prob_shape": list(visibility_prob.shape),
+            "future_visibility_prob_mean": _tensor_stats(visibility_prob)["mean"],
+            "future_visibility_prob_std": _tensor_stats(visibility_prob)["std"],
+            "future_visibility_prob_min": _tensor_stats(visibility_prob)["min"],
+            "future_visibility_prob_max": _tensor_stats(visibility_prob)["max"],
+            "future_semantic_embedding_shape": list(sem.shape),
+            "future_semantic_embedding_norm_mean": _tensor_stats(sem_norm)["mean"],
+            "future_semantic_embedding_norm_std": _tensor_stats(sem_norm)["std"],
+            "future_semantic_embedding_var_unit": _scalar_or_none(sem.var(dim=2, unbiased=False).mean()),
+            "future_semantic_embedding_var_horizon": _scalar_or_none(sem.var(dim=1, unbiased=False).mean()),
+            "future_identity_embedding_shape": list(ident.shape),
+            "future_identity_embedding_norm_mean": _tensor_stats(ident_norm)["mean"],
+            "future_identity_embedding_norm_std": _tensor_stats(ident_norm)["std"],
+            "future_identity_embedding_var_unit": _scalar_or_none(ident.var(dim=2, unbiased=False).mean()),
+            "future_uncertainty_shape": list(uncertainty.shape),
+            "future_uncertainty_mean": _tensor_stats(uncertainty)["mean"],
+            "future_uncertainty_std": _tensor_stats(uncertainty)["std"],
+            "future_uncertainty_min": _tensor_stats(uncertainty)["min"],
+            "future_uncertainty_max": _tensor_stats(uncertainty)["max"],
+            "future_trace_coord_error": coord_error,
+            "target_visibility": 1 if raw.get("gt_candidate_id") is not None else None,
+            "future_hypothesis_logits_shape": list(state.future_hypothesis_logits.shape) if state.future_hypothesis_logits is not None else None,
+            "future_hypothesis_logits_mean": _tensor_stats(state.future_hypothesis_logits)["mean"] if state.future_hypothesis_logits is not None else None,
+            "future_hypothesis_trace_coord_shape": list(state.future_hypothesis_trace_coord.shape) if state.future_hypothesis_trace_coord is not None else None,
+        }
+    return item
 
 
 def export(
     *,
     repo_root: Path,
     checkpoint: Path,
-    manifest: Path | None,
+    manifest: Path,
     output: Path,
-    audit_report: Path,
-    audit_doc: Path,
-    item_limit: int,
-    synthetic_item_count: int,
-    horizon: int,
-    slots: int,
-    allow_untrained_head: bool,
+    max_items: int,
+    device_name: str,
+    use_free_rollout: bool,
 ) -> dict[str, Any]:
-    head, checkpoint_has_head, payload_keys, cfg = _load_head_from_checkpoint(repo_root, checkpoint, allow_untrained_head)
-    raw_items = _extract_manifest_items(manifest, item_limit, synthetic_item_count)
+    device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
+    head, checkpoint_payload, state_dict, cfg, missing, unexpected = _load_head_from_checkpoint(repo_root, checkpoint, device)
+    raw_items = _extract_manifest_items(manifest, max_items)
     exported_items: list[dict[str, Any]] = []
-    valid_count = 0
-    with torch.no_grad():
-        for raw in raw_items:
+    for raw in raw_items:
+        try:
+            exported_items.append(
+                _item_forward(
+                    head=head,
+                    cfg=cfg,
+                    raw=raw,
+                    horizon=8,
+                    slots=8,
+                    device=device,
+                )
+            )
+        except Exception as exc:
             item_id = str(raw.get("item_id") or raw.get("protocol_item_id") or len(exported_items))
-            generator = torch.Generator(device="cpu").manual_seed(stable_seed(item_id))
-            observed = torch.tensor(_extract_observed_coord(raw), dtype=torch.float32).view(1, 1, 1, 2)
-            base_coord = observed.repeat(1, int(horizon), int(slots), 1)
-            base_coord = (base_coord + 0.01 * torch.randn(base_coord.shape, generator=generator)).clamp(0.0, 1.0)
-            hidden = torch.randn((1, int(horizon), int(slots), int(cfg.hidden_dim)), generator=generator)
-            state = head(hidden, future_trace_coord=base_coord)
-            validation = state.validate(strict=False)
-            valid_count += 1 if validation["valid"] else 0
-            visibility_prob = torch.sigmoid(state.future_visibility_logit)
-            semantic_norm_by_h = state.future_semantic_embedding.norm(dim=-1).mean(dim=(0, 2))
-            semantic_consistency = None
-            if semantic_norm_by_h.numel() > 1:
-                semantic_consistency = float(1.0 / (1.0 + semantic_norm_by_h.std(unbiased=False).item()))
-            target_coord = _extract_target_future_coord(raw)
-            pred_last = state.future_trace_coord[0, -1, 0].detach().cpu()
-            coord_error = None
-            if target_coord is not None:
-                target = torch.tensor(target_coord, dtype=torch.float32)
-                coord_error = float(torch.sqrt(((pred_last - target) ** 2).sum()).item())
             exported_items.append(
                 {
                     "item_id": item_id,
                     "protocol_item_id": raw.get("protocol_item_id", item_id),
-                    "subset_tags": raw.get("subset_tags", {}),
-                    "future_semantic_trace_state_valid": bool(validation["valid"]),
-                    "future_semantic_state_shapes": {k: list(v) if v is not None else None for k, v in validation["shapes"].items()},
-                    "future_trace_coord": _round_nested(state.future_trace_coord[0]),
-                    "future_visibility_prob": float(visibility_prob.mean().item()),
-                    "future_visibility_prob_by_horizon": [float(x) for x in visibility_prob[0].mean(dim=-1).detach().cpu().tolist()],
-                    "future_semantic_embedding_norm": float(state.future_semantic_embedding.norm(dim=-1).mean().item()),
-                    "future_semantic_embedding_norm_by_horizon": [float(x) for x in semantic_norm_by_h.detach().cpu().tolist()],
-                    "semantic_embedding_temporal_consistency": semantic_consistency,
-                    "future_identity_embedding_norm": float(state.future_identity_embedding.norm(dim=-1).mean().item()),
-                    "future_uncertainty_mean": float(F.softplus(state.future_uncertainty).mean().item()),
-                    "future_uncertainty_by_horizon": [float(x) for x in F.softplus(state.future_uncertainty)[0].mean(dim=-1).detach().cpu().tolist()],
-                    "future_hypothesis_logits": _round_nested(state.future_hypothesis_logits[0]) if state.future_hypothesis_logits is not None else None,
-                    "target_visibility": 1 if raw.get("gt_candidate_id") is not None else None,
-                    "target_future_coord": target_coord,
-                    "future_trace_coord_error": coord_error,
+                    "subset_tags": _item_subset_tags(raw),
+                    "valid_output": False,
+                    "future_semantic_trace_state_valid": False,
+                    "failure_reason": repr(exc),
                 }
             )
 
+    valid_items = sum(1 for item in exported_items if bool(item.get("valid_output")))
     payload = {
         "generated_at_utc": now_iso(),
+        "raw_export_schema_version": RAW_EXPORT_SCHEMA_VERSION,
         "repo_root": str(repo_root),
-        "checkpoint": str(checkpoint),
-        "manifest": str(manifest) if manifest else None,
-        "checkpoint_has_future_semantic_state_head": bool(checkpoint_has_head),
-        "checkpoint_payload_keys": payload_keys[:100],
-        "future_semantic_trace_field_available": bool(exported_items) and valid_count > 0,
-        "full_stage1_stage2_forward_executed": False,
-        "forward_scope": "future_semantic_state_head_checkpoint_forward_with_manifest_surrogate_features",
-        "exact_scope_note": "V2 export validates a trained semantic-state head as a consumable output. Full Stage1/Stage2 feature extraction remains a next integration step.",
-        "head_config": {
-            "hidden_dim": int(cfg.hidden_dim),
-            "semantic_embedding_dim": int(cfg.semantic_embedding_dim),
-            "identity_embedding_dim": int(cfg.identity_embedding_dim),
-            "hypothesis_count": int(cfg.hypothesis_count),
-        },
-        "item_count": len(exported_items),
-        "valid_output_ratio": valid_count / max(len(exported_items), 1),
+        "checkpoint_path": str(checkpoint),
+        "checkpoint_exists": checkpoint.exists(),
+        "checkpoint_loaded": True,
+        "consumed_checkpoint": str(checkpoint),
+        "checkpoint_global_step": checkpoint_payload.get("global_step"),
+        "future_semantic_state_head_keys_found": sorted(str(k) for k in state_dict.keys()),
+        "future_semantic_state_head_key_count": len(state_dict),
+        "enable_future_semantic_state_head": True,
+        "state_dict_missing_keys": [str(x) for x in missing],
+        "state_dict_unexpected_keys": [str(x) for x in unexpected],
+        "manifest": str(manifest),
+        "device": str(device),
+        "free_rollout_used": bool(use_free_rollout),
+        "free_rollout_scope_note": "repair_v1 validates raw FutureSemanticTraceState head outputs; --use-free-rollout records requested scope but does not perform full Stage1/Stage2 rollout reconstruction",
+        "old_association_report_used": False,
+        "top1_mrr_false_confuser_exported": False,
+        "total_items": len(exported_items),
+        "valid_items": valid_items,
+        "valid_ratio": valid_items / max(len(exported_items), 1),
         "items": exported_items,
-        "export_path": str(output),
     }
     write_json(output, payload)
-    audit = {k: v for k, v in payload.items() if k != "items"}
-    write_json(audit_report, audit)
-    write_doc(audit_doc, audit)
+    write_doc(output.with_suffix(".md"), payload)
     return payload
 
 
 def parse_args() -> Any:
-    p = ArgumentParser(description="Export FutureSemanticTraceState summaries from a trained STWM semantic-state head.")
+    p = ArgumentParser(description="Export raw-output-derived FutureSemanticTraceState repair-v1 diagnostics.")
     p.add_argument("--repo-root", default=None)
     p.add_argument("--checkpoint", required=True)
-    p.add_argument("--manifest", default=None)
+    p.add_argument("--manifest", required=True)
     p.add_argument("--output", required=True)
-    p.add_argument("--audit-report", default=None)
-    p.add_argument("--audit-doc", default=None)
-    p.add_argument("--item-limit", type=int, default=64)
-    p.add_argument("--synthetic-item-count", type=int, default=16)
-    p.add_argument("--horizon", type=int, default=4)
-    p.add_argument("--slots", type=int, default=8)
-    p.add_argument("--allow-untrained-head", action="store_true")
+    p.add_argument("--max-items", "--item-limit", dest="max_items", type=int, default=32)
+    p.add_argument("--device", default="cpu")
+    p.add_argument("--use-free-rollout", action="store_true")
     return p.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     repo_root = resolve_repo_root(args.repo_root)
-    output = Path(args.output)
-    audit_report = Path(args.audit_report) if args.audit_report else repo_root / "reports" / "stwm_future_semantic_state_export_audit_20260427.json"
-    audit_doc = Path(args.audit_doc) if args.audit_doc else repo_root / "docs" / "STWM_FUTURE_SEMANTIC_STATE_EXPORT_AUDIT_20260427.md"
     export(
         repo_root=repo_root,
         checkpoint=Path(args.checkpoint),
-        manifest=Path(args.manifest) if args.manifest else None,
-        output=output,
-        audit_report=audit_report,
-        audit_doc=audit_doc,
-        item_limit=int(args.item_limit),
-        synthetic_item_count=int(args.synthetic_item_count),
-        horizon=int(args.horizon),
-        slots=int(args.slots),
-        allow_untrained_head=bool(args.allow_untrained_head),
+        manifest=Path(args.manifest),
+        output=Path(args.output),
+        max_items=int(args.max_items),
+        device_name=str(args.device),
+        use_free_rollout=bool(args.use_free_rollout),
     )
 
 

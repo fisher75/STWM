@@ -281,6 +281,180 @@ def run_export_mode(export_report: Path, out_report: Path, out_doc: Path, repo_r
     return payload
 
 
+def _required_number(item: dict[str, Any], key: str) -> float:
+    if key not in item:
+        raise ValueError(f"raw export item missing required field: {key}")
+    value = item.get(key)
+    if value is None:
+        raise ValueError(f"raw export item field is null: {key}")
+    if not isinstance(value, (int, float)):
+        raise ValueError(f"raw export item field is not numeric: {key}")
+    return float(value)
+
+
+def _required_shape(item: dict[str, Any], key: str) -> list[int]:
+    if key not in item:
+        raise ValueError(f"raw export item missing required shape field: {key}")
+    value = item.get(key)
+    if not isinstance(value, list) or not all(isinstance(x, int) for x in value):
+        raise ValueError(f"raw export item shape field is invalid: {key}={value}")
+    return [int(x) for x in value]
+
+
+def _nonzero_ratio(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return sum(1 for value in values if abs(float(value)) > 1e-12) / len(values)
+
+
+def _nonconstant_ratio(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return sum(1 for value in values if abs(float(value)) > 1e-9) / len(values)
+
+
+def _mean_required(items: list[dict[str, Any]], key: str) -> float:
+    values = [_required_number(item, key) for item in items]
+    return float(sum(values) / max(len(values), 1))
+
+
+def _raw_subset_items(items: list[dict[str, Any]], subset: str) -> list[dict[str, Any]]:
+    return subset_rows(items, subset)
+
+
+def _safe_mean(values: list[float]) -> float | None:
+    return sum(values) / len(values) if values else None
+
+
+def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
+    if not items:
+        return {
+            "item_count": 0,
+            "valid_output_ratio": 0.0,
+            "output_degenerate": True,
+            "target_metrics_available": False,
+            "reason": "no_items",
+        }
+    for item in items:
+        _required_shape(item, "future_trace_coord_shape")
+        _required_shape(item, "future_visibility_prob_shape")
+        _required_shape(item, "future_semantic_embedding_shape")
+        _required_shape(item, "future_identity_embedding_shape")
+        _required_shape(item, "future_uncertainty_shape")
+        for key in [
+            "future_trace_coord_mean",
+            "future_trace_coord_std",
+            "future_visibility_prob_mean",
+            "future_visibility_prob_std",
+            "future_semantic_embedding_norm_mean",
+            "future_semantic_embedding_norm_std",
+            "future_semantic_embedding_var_unit",
+            "future_semantic_embedding_var_horizon",
+            "future_identity_embedding_norm_mean",
+            "future_identity_embedding_norm_std",
+            "future_identity_embedding_var_unit",
+            "future_uncertainty_mean",
+            "future_uncertainty_std",
+        ]:
+            _required_number(item, key)
+
+    valid_items = [item for item in items if bool(item.get("valid_output"))]
+    semantic_var_unit = [_required_number(item, "future_semantic_embedding_var_unit") for item in valid_items]
+    semantic_var_horizon = [_required_number(item, "future_semantic_embedding_var_horizon") for item in valid_items]
+    identity_var_unit = [_required_number(item, "future_identity_embedding_var_unit") for item in valid_items]
+    visibility_std = [_required_number(item, "future_visibility_prob_std") for item in valid_items]
+    uncertainty_std = [_required_number(item, "future_uncertainty_std") for item in valid_items]
+    semantic_norm = [_required_number(item, "future_semantic_embedding_norm_mean") for item in valid_items]
+    coord_error_pairs = [
+        (float(item["future_uncertainty_mean"]), float(item["future_trace_coord_error"]))
+        for item in valid_items
+        if item.get("future_trace_coord_error") is not None and isinstance(item.get("future_trace_coord_error"), (int, float))
+    ]
+    visibility_pairs = [
+        (float(item["future_visibility_prob_mean"]), int(item["target_visibility"]))
+        for item in valid_items
+        if item.get("target_visibility") is not None and isinstance(item.get("target_visibility"), (int, float))
+    ]
+    output_degenerate = bool(
+        _safe_mean(semantic_var_unit) is None
+        or float(_safe_mean(semantic_var_unit) or 0.0) <= 0.0
+        or float(_safe_mean(semantic_var_horizon) or 0.0) <= 0.0
+        or float(_safe_mean(identity_var_unit) or 0.0) <= 0.0
+        or float(_safe_mean(visibility_std) or 0.0) <= 0.0
+        or float(_safe_mean(uncertainty_std) or 0.0) <= 0.0
+    )
+    visibility_scores = [x for x, _ in visibility_pairs]
+    visibility_labels = [y for _, y in visibility_pairs]
+    visibility_accuracy = None
+    if visibility_pairs:
+        visibility_accuracy = _safe_mean([1.0 if (score >= 0.5) == bool(label) else 0.0 for score, label in visibility_pairs])
+    return {
+        "item_count": len(items),
+        "valid_item_count": len(valid_items),
+        "valid_output_ratio": len(valid_items) / max(len(items), 1),
+        "semantic_embedding_nonzero_ratio": _nonzero_ratio(semantic_norm),
+        "semantic_embedding_var_unit_mean": _safe_mean(semantic_var_unit),
+        "semantic_embedding_var_horizon_mean": _safe_mean(semantic_var_horizon),
+        "identity_embedding_var_unit_mean": _safe_mean(identity_var_unit),
+        "visibility_prob_std_mean": _safe_mean(visibility_std),
+        "uncertainty_std_mean": _safe_mean(uncertainty_std),
+        "uncertainty_nonconstant_ratio": _nonconstant_ratio(uncertainty_std),
+        "output_degenerate": output_degenerate,
+        "target_metrics_available": bool(coord_error_pairs or visibility_pairs),
+        "reason": None if bool(coord_error_pairs or visibility_pairs) else "raw export lacks target coord or target visibility labels",
+        "future_trace_coord_error": _safe_mean([y for _, y in coord_error_pairs]),
+        "visibility_accuracy": visibility_accuracy,
+        "visibility_AUROC": binary_auc(visibility_scores, visibility_labels),
+        "uncertainty_error_correlation": pearson([x for x, _ in coord_error_pairs], [y for _, y in coord_error_pairs]),
+    }
+
+
+def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, repo_root: Path) -> dict[str, Any]:
+    export = load_json(export_report)
+    if export.get("raw_export_schema_version") != "future_semantic_trace_state_raw_export_v1":
+        raise ValueError(f"not a repair-v1 raw export: {export_report}")
+    if bool(export.get("old_association_report_used")):
+        raise ValueError("raw export unexpectedly reports old_association_report_used=true")
+    items = export.get("items")
+    if not isinstance(items, list):
+        raise ValueError("raw export missing item list")
+    overall = aggregate_raw_export_items(items)
+    breakdown = {}
+    for subset in SUBSETS:
+        subset_items = _raw_subset_items(items, subset)
+        if subset_items:
+            breakdown[subset] = aggregate_raw_export_items(subset_items)
+    trace_regression = bool(export.get("trace_rollout_regression_detected", False))
+    claimable = bool(
+        overall["valid_output_ratio"] >= 0.95
+        and overall["output_degenerate"] is False
+        and float(overall["semantic_embedding_var_unit_mean"] or 0.0) > 0.0
+        and float(overall["visibility_prob_std_mean"] or 0.0) > 0.0
+        and float(overall["uncertainty_nonconstant_ratio"] or 0.0) > 0.5
+        and not trace_regression
+    )
+    payload = {
+        "generated_at_utc": now_iso(),
+        "repo_root": str(repo_root),
+        "mode": "consume_future_semantic_state_raw_export",
+        "source_export": str(export_report),
+        "raw_export_schema_version": export.get("raw_export_schema_version"),
+        "semantic_state_eval_consumed_future_semantic_trace_state": True,
+        "old_association_report_only": False,
+        "old_association_report_used": False,
+        "raw_export_consumed": True,
+        "future_semantic_trace_field_available": bool(export.get("valid_ratio", 0.0) > 0.0),
+        "trace_rollout_regression_detected": trace_regression,
+        "overall": overall,
+        "per_subset_breakdown": breakdown,
+        "per_item_results_hash": hash_items(items),
+        "world_model_output_now_claimable": claimable,
+    }
+    write_json(out_report, payload)
+    write_doc(out_doc, payload)
+    return payload
+
+
 def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
         "# STWM Future Semantic Query Eval 20260427",
@@ -291,12 +465,18 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
         f"- old_association_report_only: `{payload.get('old_association_report_only')}`",
         "",
     ]
-    if payload.get("mode") == "consume_future_semantic_state_export":
+    if payload.get("mode") in {"consume_future_semantic_state_export", "consume_future_semantic_state_raw_export"}:
         overall = payload.get("overall", {})
         lines += [
             "## Overall Semantic-State Metrics",
             f"- item_count: `{overall.get('item_count')}`",
             f"- valid_output_ratio: `{fmt(overall.get('valid_output_ratio'))}`",
+            f"- output_degenerate: `{overall.get('output_degenerate')}`",
+            f"- semantic_embedding_var_unit_mean: `{fmt(overall.get('semantic_embedding_var_unit_mean'))}`",
+            f"- semantic_embedding_var_horizon_mean: `{fmt(overall.get('semantic_embedding_var_horizon_mean'))}`",
+            f"- identity_embedding_var_unit_mean: `{fmt(overall.get('identity_embedding_var_unit_mean'))}`",
+            f"- visibility_prob_std_mean: `{fmt(overall.get('visibility_prob_std_mean'))}`",
+            f"- uncertainty_std_mean: `{fmt(overall.get('uncertainty_std_mean'))}`",
             f"- visibility_accuracy: `{fmt(overall.get('visibility_accuracy'))}`",
             f"- visibility_AUROC: `{fmt(overall.get('visibility_AUROC'))}`",
             f"- uncertainty_error_correlation: `{fmt(overall.get('uncertainty_error_correlation'))}`",
@@ -327,7 +507,11 @@ def parse_args() -> Any:
     p.add_argument(
         "--mode",
         default="read_old_association_report",
-        choices=["read_old_association_report", "consume_future_semantic_state_export"],
+        choices=[
+            "read_old_association_report",
+            "consume_future_semantic_state_export",
+            "consume_future_semantic_state_raw_export",
+        ],
     )
     p.add_argument("--source-report", default=None)
     p.add_argument("--semantic-state-export", default=None)
@@ -346,10 +530,14 @@ def main() -> None:
     if args.mode == "read_old_association_report":
         source = Path(args.source_report) if args.source_report else reports / "stwm_trace_belief_eval_20260424.json"
         run_old_report_mode(source, out_report, out_doc, repo_root)
-    else:
+    elif args.mode == "consume_future_semantic_state_export":
         if not args.semantic_state_export:
             raise SystemExit("--semantic-state-export is required for consume_future_semantic_state_export mode")
         run_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
+    else:
+        if not args.semantic_state_export:
+            raise SystemExit("--semantic-state-export is required for consume_future_semantic_state_raw_export mode")
+        run_raw_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
 
 
 if __name__ == "__main__":

@@ -32,229 +32,154 @@ def write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def flatten_numbers(value: Any) -> list[float]:
-    out: list[float] = []
-    if isinstance(value, bool):
-        return out
-    if isinstance(value, (int, float)):
-        out.append(float(value))
-    elif isinstance(value, list):
-        for item in value:
-            out.extend(flatten_numbers(item))
-    elif isinstance(value, dict):
-        for item in value.values():
-            out.extend(flatten_numbers(item))
-    return out
-
-
-def stats(values: list[float]) -> dict[str, Any]:
-    finite = [v for v in values if math.isfinite(v)]
-    if not values:
-        return {
-            "count": 0,
-            "finite_count": 0,
-            "nan_inf_ratio": None,
-            "mean": None,
-            "std": None,
-            "min": None,
-            "max": None,
-            "all_zero_ratio": None,
-            "constant": None,
-        }
-    mean = sum(finite) / len(finite) if finite else None
-    var = sum((x - mean) ** 2 for x in finite) / len(finite) if finite and mean is not None else None
-    std = math.sqrt(var) if var is not None else None
-    return {
-        "count": len(values),
-        "finite_count": len(finite),
-        "nan_inf_ratio": 1.0 - (len(finite) / max(len(values), 1)),
-        "mean": mean,
-        "std": std,
-        "min": min(finite) if finite else None,
-        "max": max(finite) if finite else None,
-        "all_zero_ratio": sum(1 for x in finite if abs(x) < 1e-12) / max(len(finite), 1),
-        "constant": bool(std is not None and std < 1e-9),
-    }
-
-
-def pearson(xs: list[float], ys: list[float]) -> float | None:
-    pairs = [(x, y) for x, y in zip(xs, ys) if math.isfinite(x) and math.isfinite(y)]
-    if len(pairs) < 2:
-        return None
-    xs2, ys2 = zip(*pairs)
-    mx = sum(xs2) / len(xs2)
-    my = sum(ys2) / len(ys2)
-    vx = sum((x - mx) ** 2 for x in xs2)
-    vy = sum((y - my) ** 2 for y in ys2)
-    if vx <= 0 or vy <= 0:
-        return None
-    return sum((x - mx) * (y - my) for x, y in pairs) / math.sqrt(vx * vy)
-
-
-def item_has_raw_embeddings(item: dict[str, Any]) -> bool:
-    return isinstance(item.get("future_semantic_embedding"), list) and isinstance(item.get("future_identity_embedding"), list)
-
-
-def audit(export_path: Path) -> dict[str, Any]:
-    export = load_json(export_path)
-    items = [x for x in (export.get("items") or []) if isinstance(x, dict)]
-
-    semantic_raw = []
-    identity_raw = []
-    semantic_norm = []
-    semantic_norm_by_horizon = []
-    identity_norm = []
-    visibility = []
-    uncertainty = []
-    uncertainty_by_horizon = []
-    coord_error = []
-    trace_coord = []
-
-    for item in items:
-        semantic_raw.extend(flatten_numbers(item.get("future_semantic_embedding")))
-        identity_raw.extend(flatten_numbers(item.get("future_identity_embedding")))
-        semantic_norm.extend(flatten_numbers(item.get("future_semantic_embedding_norm")))
-        semantic_norm_by_horizon.extend(flatten_numbers(item.get("future_semantic_embedding_norm_by_horizon")))
-        identity_norm.extend(flatten_numbers(item.get("future_identity_embedding_norm")))
-        visibility.extend(flatten_numbers(item.get("future_visibility_prob")))
-        uncertainty.extend(flatten_numbers(item.get("future_uncertainty_mean")))
-        uncertainty_by_horizon.extend(flatten_numbers(item.get("future_uncertainty_by_horizon")))
-        coord_error.extend(flatten_numbers(item.get("future_trace_coord_error")))
-        trace_coord.extend(flatten_numbers(item.get("future_trace_coord")))
-
-    raw_embedding_available = any(item_has_raw_embeddings(item) for item in items)
-    required_raw_fields_missing = not raw_embedding_available
-    semantic_distribution = stats(semantic_raw if semantic_raw else semantic_norm)
-    identity_distribution = stats(identity_raw if identity_raw else identity_norm)
-    visibility_distribution = stats(visibility)
-    uncertainty_distribution = stats(uncertainty)
-    trace_coord_distribution = stats(trace_coord)
-    semantic_horizon_distribution = stats(semantic_norm_by_horizon)
-    uncertainty_horizon_distribution = stats(uncertainty_by_horizon)
-
-    numeric_degenerate = any(
-        bool(block.get("constant")) or (block.get("all_zero_ratio") is not None and float(block.get("all_zero_ratio")) > 0.99)
-        for block in [
-            semantic_distribution,
-            identity_distribution,
-            visibility_distribution,
-            uncertainty_distribution,
-            trace_coord_distribution,
-        ]
-        if block.get("count", 0) > 0
-    )
-    nan_inf_detected = any(
-        block.get("nan_inf_ratio") is not None and float(block.get("nan_inf_ratio")) > 0.0
-        for block in [
-            semantic_distribution,
-            identity_distribution,
-            visibility_distribution,
-            uncertainty_distribution,
-            trace_coord_distribution,
-        ]
-    )
-
-    exact_failure_reason = None
-    safe_for_medium_training = True
-    if required_raw_fields_missing:
-        safe_for_medium_training = False
-        exact_failure_reason = (
-            "V2 export lacks raw future_semantic_embedding/future_identity_embedding tensors; "
-            "only norm summaries are available, so unit/horizon embedding degeneracy cannot be ruled out."
-        )
-    elif numeric_degenerate:
-        safe_for_medium_training = False
-        exact_failure_reason = "available semantic-state numeric outputs are constant or all-zero."
-    elif nan_inf_detected:
-        safe_for_medium_training = False
-        exact_failure_reason = "NaN/Inf detected in semantic-state numeric outputs."
-
-    payload = {
-        "generated_at_utc": now_iso(),
-        "source_export": str(export_path),
-        "item_count": len(items),
-        "checkpoint": export.get("checkpoint"),
-        "forward_scope": export.get("forward_scope"),
-        "full_stage1_stage2_forward_executed": bool(export.get("full_stage1_stage2_forward_executed")),
-        "raw_embedding_available": raw_embedding_available,
-        "semantic_embedding_norm_distribution": semantic_distribution,
-        "semantic_embedding_variance_across_units_available": raw_embedding_available,
-        "semantic_embedding_variance_across_horizon_proxy": semantic_horizon_distribution,
-        "identity_embedding_norm_distribution": identity_distribution,
-        "identity_embedding_variance_across_units_available": raw_embedding_available,
-        "visibility_probability_distribution": visibility_distribution,
-        "uncertainty_distribution": uncertainty_distribution,
-        "uncertainty_by_horizon_distribution": uncertainty_horizon_distribution,
-        "trace_coord_distribution": trace_coord_distribution,
-        "uncertainty_error_correlation": pearson(uncertainty, coord_error),
-        "all_zero_ratio": {
-            "semantic": semantic_distribution.get("all_zero_ratio"),
-            "identity": identity_distribution.get("all_zero_ratio"),
-            "visibility": visibility_distribution.get("all_zero_ratio"),
-            "uncertainty": uncertainty_distribution.get("all_zero_ratio"),
-            "trace_coord": trace_coord_distribution.get("all_zero_ratio"),
-        },
-        "constant_output_ratio": {
-            "semantic_constant": semantic_distribution.get("constant"),
-            "identity_constant": identity_distribution.get("constant"),
-            "visibility_constant": visibility_distribution.get("constant"),
-            "uncertainty_constant": uncertainty_distribution.get("constant"),
-            "trace_coord_constant": trace_coord_distribution.get("constant"),
-        },
-        "nan_inf_ratio": {
-            "semantic": semantic_distribution.get("nan_inf_ratio"),
-            "identity": identity_distribution.get("nan_inf_ratio"),
-            "visibility": visibility_distribution.get("nan_inf_ratio"),
-            "uncertainty": uncertainty_distribution.get("nan_inf_ratio"),
-            "trace_coord": trace_coord_distribution.get("nan_inf_ratio"),
-        },
-        "semantic_state_degenerate": bool(numeric_degenerate or nan_inf_detected),
-        "degeneracy_audit_complete": raw_embedding_available,
-        "exact_failure_reason": exact_failure_reason,
-        "safe_for_medium_training": bool(safe_for_medium_training),
-    }
-    return payload
-
-
 def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
-        "# STWM Future Semantic State Degeneracy Audit 20260427",
+        "# STWM Future Semantic State Degeneracy Audit Repair V1 20260427",
         "",
         f"- source_export: `{payload.get('source_export')}`",
-        f"- item_count: `{payload.get('item_count')}`",
-        f"- raw_embedding_available: `{payload.get('raw_embedding_available')}`",
+        f"- raw_export_consumed: `{payload.get('raw_export_consumed')}`",
+        f"- old_association_report_used: `{payload.get('old_association_report_used')}`",
+        f"- raw_export_valid_ratio: `{payload.get('raw_export_valid_ratio')}`",
         f"- semantic_state_degenerate: `{payload.get('semantic_state_degenerate')}`",
         f"- safe_for_medium_training: `{payload.get('safe_for_medium_training')}`",
         f"- exact_failure_reason: `{payload.get('exact_failure_reason')}`",
         "",
-        "## Key Distributions",
-        f"- semantic_embedding_norm_distribution: `{payload.get('semantic_embedding_norm_distribution')}`",
-        f"- identity_embedding_norm_distribution: `{payload.get('identity_embedding_norm_distribution')}`",
-        f"- visibility_probability_distribution: `{payload.get('visibility_probability_distribution')}`",
-        f"- uncertainty_distribution: `{payload.get('uncertainty_distribution')}`",
+        "## Means",
+        f"- semantic_embedding_var_unit_mean: `{payload.get('semantic_embedding_var_unit_mean')}`",
+        f"- semantic_embedding_var_horizon_mean: `{payload.get('semantic_embedding_var_horizon_mean')}`",
+        f"- identity_embedding_var_unit_mean: `{payload.get('identity_embedding_var_unit_mean')}`",
+        f"- visibility_prob_std_mean: `{payload.get('visibility_prob_std_mean')}`",
+        f"- uncertainty_std_mean: `{payload.get('uncertainty_std_mean')}`",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines).rstrip() + "\n")
 
 
+def finite(value: Any) -> bool:
+    return isinstance(value, (int, float)) and math.isfinite(float(value))
+
+
+def mean(values: list[float]) -> float | None:
+    return sum(values) / len(values) if values else None
+
+
+def fraction(values: list[bool]) -> float | None:
+    return sum(1 for value in values if value) / len(values) if values else None
+
+
+def item_number(item: dict[str, Any], key: str) -> float:
+    value = item.get(key)
+    if not finite(value):
+        raise ValueError(f"raw export item missing finite numeric {key}: {value}")
+    return float(value)
+
+
+def audit(export_path: Path) -> dict[str, Any]:
+    export = load_json(export_path)
+    if export.get("raw_export_schema_version") != "future_semantic_trace_state_raw_export_v1":
+        raise ValueError(f"degeneracy audit repair v1 requires raw export schema, got {export.get('raw_export_schema_version')}")
+    if bool(export.get("old_association_report_used")):
+        raise ValueError("raw export reports old_association_report_used=true")
+    items = export.get("items")
+    if not isinstance(items, list):
+        raise ValueError("raw export missing item list")
+    valid_items = [item for item in items if isinstance(item, dict) and bool(item.get("valid_output"))]
+    sem_var_unit = [item_number(item, "future_semantic_embedding_var_unit") for item in valid_items]
+    sem_var_horizon = [item_number(item, "future_semantic_embedding_var_horizon") for item in valid_items]
+    id_var_unit = [item_number(item, "future_identity_embedding_var_unit") for item in valid_items]
+    visibility_std = [item_number(item, "future_visibility_prob_std") for item in valid_items]
+    uncertainty_std = [item_number(item, "future_uncertainty_std") for item in valid_items]
+    semantic_norm = [item_number(item, "future_semantic_embedding_norm_mean") for item in valid_items]
+    identity_norm = [item_number(item, "future_identity_embedding_norm_mean") for item in valid_items]
+    all_zero_flags = [
+        abs(v) < 1e-12
+        for values in [sem_var_unit, sem_var_horizon, id_var_unit, visibility_std, uncertainty_std, semantic_norm, identity_norm]
+        for v in values
+    ]
+    constant_flags = [
+        float(v) <= 1e-12
+        for values in [sem_var_unit, sem_var_horizon, id_var_unit, visibility_std, uncertainty_std]
+        for v in values
+    ]
+    nan_inf_flags = [
+        not finite(v)
+        for values in [sem_var_unit, sem_var_horizon, id_var_unit, visibility_std, uncertainty_std, semantic_norm, identity_norm]
+        for v in values
+    ]
+    semantic_state_degenerate = bool(
+        not valid_items
+        or float(mean(sem_var_unit) or 0.0) <= 0.0
+        or float(mean(sem_var_horizon) or 0.0) <= 0.0
+        or float(mean(id_var_unit) or 0.0) <= 0.0
+        or float(mean(visibility_std) or 0.0) <= 0.0
+        or float(mean(uncertainty_std) or 0.0) <= 0.0
+        or any(nan_inf_flags)
+    )
+    raw_export_valid_ratio = float(export.get("valid_ratio") or 0.0)
+    old_assoc = bool(export.get("old_association_report_used"))
+    raw_export_consumed = True
+    target_metrics_available = any(item.get("future_trace_coord_error") is not None for item in valid_items) or any(
+        item.get("target_visibility") is not None for item in valid_items
+    )
+    non_target_diagnostic_available = bool(valid_items)
+    safe_for_medium_training = bool(
+        not semantic_state_degenerate
+        and raw_export_valid_ratio >= 0.95
+        and not old_assoc
+        and raw_export_consumed
+        and (target_metrics_available or non_target_diagnostic_available)
+    )
+    exact_failure_reason = None
+    if semantic_state_degenerate:
+        exact_failure_reason = "raw FutureSemanticTraceState statistics are degenerate or non-finite"
+    elif raw_export_valid_ratio < 0.95:
+        exact_failure_reason = f"raw_export_valid_ratio below threshold: {raw_export_valid_ratio}"
+    elif old_assoc:
+        exact_failure_reason = "old association report was used"
+    elif not (target_metrics_available or non_target_diagnostic_available):
+        exact_failure_reason = "no target metrics or non-target diagnostics available"
+    payload = {
+        "generated_at_utc": now_iso(),
+        "source_export": str(export_path),
+        "raw_export_consumed": raw_export_consumed,
+        "old_association_report_used": old_assoc,
+        "item_count": len(items),
+        "valid_item_count": len(valid_items),
+        "raw_export_valid_ratio": raw_export_valid_ratio,
+        "all_zero_ratio": fraction(all_zero_flags),
+        "nan_inf_ratio": fraction(nan_inf_flags),
+        "constant_output_ratio": fraction(constant_flags),
+        "semantic_embedding_var_unit_mean": mean(sem_var_unit),
+        "semantic_embedding_var_horizon_mean": mean(sem_var_horizon),
+        "identity_embedding_var_unit_mean": mean(id_var_unit),
+        "visibility_prob_std_mean": mean(visibility_std),
+        "uncertainty_std_mean": mean(uncertainty_std),
+        "semantic_embedding_nonzero_ratio": fraction([abs(v) > 1e-12 for v in semantic_norm]),
+        "identity_embedding_nonzero_ratio": fraction([abs(v) > 1e-12 for v in identity_norm]),
+        "target_metrics_available": target_metrics_available,
+        "non_target_diagnostic_available": non_target_diagnostic_available,
+        "semantic_state_degenerate": semantic_state_degenerate,
+        "safe_for_medium_training": safe_for_medium_training,
+        "exact_failure_reason": exact_failure_reason,
+    }
+    return payload
+
+
 def parse_args() -> Any:
-    p = ArgumentParser(description="Audit FutureSemanticTraceState export for degenerate outputs.")
+    p = ArgumentParser(description="Audit repair-v1 raw FutureSemanticTraceState export for degeneracy.")
     p.add_argument("--repo-root", default=None)
-    p.add_argument("--export", default=None)
-    p.add_argument("--out-report", default=None)
-    p.add_argument("--out-doc", default=None)
+    p.add_argument("--export", required=True)
+    p.add_argument("--out-report", required=True)
+    p.add_argument("--out-doc", required=True)
     return p.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    repo_root = resolve_repo_root(args.repo_root)
-    export_path = Path(args.export) if args.export else repo_root / "reports" / "stwm_future_semantic_state_export_20260427.json"
-    out_report = Path(args.out_report) if args.out_report else repo_root / "reports" / "stwm_future_semantic_state_degeneracy_audit_20260427.json"
-    out_doc = Path(args.out_doc) if args.out_doc else repo_root / "docs" / "STWM_FUTURE_SEMANTIC_STATE_DEGENERACY_AUDIT_20260427.md"
-    payload = audit(export_path)
-    write_json(out_report, payload)
-    write_doc(out_doc, payload)
+    resolve_repo_root(args.repo_root)
+    payload = audit(Path(args.export))
+    write_json(Path(args.out_report), payload)
+    write_doc(Path(args.out_doc), payload)
 
 
 if __name__ == "__main__":
