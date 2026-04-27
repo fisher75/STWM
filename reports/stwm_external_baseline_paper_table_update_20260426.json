@@ -1,0 +1,110 @@
+{
+  "created_at": "2026-04-27T08:30:02.410164+00:00",
+  "main_paper_table_recommendation": {
+    "best_marks": {
+      "best_false_confuser_item_aligned": "sam2",
+      "best_long_gap_item_aligned": "stwm_trace_belief_assoc",
+      "best_occlusion_item_aligned": "sam2",
+      "best_ood_item_aligned": "sam2",
+      "best_overall_item_aligned": "sam2",
+      "note": "frozen_external_teacher_only row is aggregate from reacquisition_v2 and should be footnoted if included with item-aligned external rows.",
+      "official_stwm": "stwm_trace_belief_assoc"
+    },
+    "columns": [
+      "overall_top1",
+      "MRR",
+      "false_confuser_rate",
+      "occlusion_top1",
+      "long_gap_top1",
+      "OOD_top1"
+    ],
+    "cutie_placement": "appendix_or_smaller_row",
+    "include_methods": [
+      "STWM trace_belief_assoc",
+      "SAM2",
+      "CoTracker",
+      "frozen_external_teacher_only",
+      "legacysem"
+    ],
+    "rows": [
+      {
+        "MRR": 0.6599690243984163,
+        "OOD_top1": 0.5180180180180181,
+        "display_name": "STWM trace_belief_assoc (official)",
+        "false_confuser_rate": 0.4910025706940874,
+        "is_official_stwm": true,
+        "long_gap_top1": 0.5480769230769231,
+        "method": "stwm_trace_belief_assoc",
+        "occlusion_top1": 0.5524934383202099,
+        "overall_top1": 0.5089974293059126,
+        "source_alignment": "official matched per-item mean"
+      },
+      {
+        "MRR": 0.7754042623766482,
+        "OOD_top1": 0.6621621621621622,
+        "display_name": "SAM2",
+        "false_confuser_rate": 0.32904884318766064,
+        "is_official_stwm": false,
+        "long_gap_top1": 0.5384615384615384,
+        "method": "sam2",
+        "occlusion_top1": 0.5748031496062992,
+        "overall_top1": 0.6709511568123393,
+        "source_alignment": "external manifest item-aligned"
+      },
+      {
+        "MRR": 0.7289178924174189,
+        "OOD_top1": 0.6027027027027027,
+        "display_name": "CoTracker",
+        "false_confuser_rate": 0.39845758354755784,
+        "is_official_stwm": false,
+        "long_gap_top1": 0.3269230769230769,
+        "method": "cotracker",
+        "occlusion_top1": 0.41732283464566927,
+        "overall_top1": 0.6015424164524421,
+        "source_alignment": "external manifest item-aligned"
+      },
+      {
+        "MRR": 0.6953703703703704,
+        "OOD_top1": null,
+        "display_name": "frozen_external_teacher_only",
+        "false_confuser_rate": 0.4797687861271676,
+        "is_official_stwm": false,
+        "long_gap_top1": 0.5903614457831325,
+        "method": "frozen_external_teacher_only",
+        "occlusion_top1": 0.5202312138728323,
+        "overall_top1": 0.5202312138728323,
+        "source_alignment": "stwm_reacquisition_v2_eval_20260425 aggregate; not item-aligned to external manifest"
+      },
+      {
+        "MRR": 0.3577152621183171,
+        "OOD_top1": 0.14954954954954955,
+        "display_name": "legacysem",
+        "false_confuser_rate": 0.8530419880034276,
+        "is_official_stwm": false,
+        "long_gap_top1": 0.22115384615384615,
+        "method": "legacysem",
+        "occlusion_top1": 0.1784776902887139,
+        "overall_top1": 0.1469580119965724,
+        "source_alignment": "official matched per-item mean"
+      },
+      {
+        "MRR": 0.6255134137899792,
+        "OOD_top1": 0.5027027027027027,
+        "display_name": "Cutie",
+        "false_confuser_rate": 0.5115681233933161,
+        "is_official_stwm": false,
+        "long_gap_top1": 0.46153846153846156,
+        "method": "cutie",
+        "occlusion_top1": 0.3937007874015748,
+        "overall_top1": 0.4884318766066838,
+        "source_alignment": "external manifest item-aligned"
+      }
+    ]
+  },
+  "placement": {
+    "cotracker": "main_paper",
+    "cutie": "appendix_or_smaller_row",
+    "full_per_subset_table": "appendix",
+    "sam2": "main_paper"
+  }
+}

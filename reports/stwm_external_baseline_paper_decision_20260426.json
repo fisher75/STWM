@@ -1,0 +1,20 @@
+{
+  "baseline_full_eval_credible": true,
+  "created_at": "2026-04-27T08:30:02.410300+00:00",
+  "credibility_reasons": [
+    "All three external baselines completed 389/389 materialized items with zero failed items.",
+    "Code confirms full_eval output phase and iterates manifest items with runner.run_item; smoke reports only gate entry.",
+    "Visual examples were generated from full eval outputs."
+  ],
+  "cutie_appendix": true,
+  "external_results_weaken_stwm_mainline": true,
+  "highres_rerun_note": "Not required for the corrected claim boundary; only consider a small optional high-res sanity if claiming external SOTA, which is forbidden by current results.",
+  "main_claim_rewrite": "STWM is not a universal VOS/point-tracking replacement; it is a trace-conditioned belief association mechanism that improves internal baselines and provides complementary advantages in continuity-heavy reacquisition cases while strong foundation/video trackers such as SAM2 remain stronger overall.",
+  "more_data_note": "389 items are enough for the external diagnostic/placement update. Do not continue infinite baseline expansion just because SAM2 is strong.",
+  "need_highres_rerun": false,
+  "need_more_data": false,
+  "next_step_choice": "update_paper_assets_with_external_baselines",
+  "sam2_cotracker_main_paper": true,
+  "strengthened_claim": "They strengthen a narrower claim: STWM has complementary continuity-heavy trace-belief advantages, especially vs CoTracker on occlusion and long-gap.",
+  "weakened_claim": "They rule out an overall external-SOTA claim because SAM2 and CoTracker beat STWM overall."
+}

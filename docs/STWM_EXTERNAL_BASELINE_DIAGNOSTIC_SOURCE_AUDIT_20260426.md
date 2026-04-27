@@ -1,0 +1,108 @@
+# STWM External Baseline Diagnostic Source Audit 20260426
+
+- code_confirms_full_eval_not_smoke: `true`
+- items_count: `389`
+- per_baseline_success_count: `{'cutie': 389, 'sam2': 389, 'cotracker': 389}`
+- runtime_per_item: `{'cutie': 0.7249, 'sam2': 1.8937, 'cotracker': 0.6176}`
+- resize_max_side: `384`
+- local_window_policy: observed prompt to future frame inclusive; avg frames `16.00`
+- point_sample_count_for_cotracker: max 64; actual avg `57.04`
+
+```json
+{
+  "code_confirms_full_eval_not_smoke": true,
+  "code_evidence": {
+    "calls_runner_run_item": true,
+    "full_eval_output_phase_env": "STWM_EXTERNAL_OUTPUT_PHASE setdefault full_eval",
+    "iterates_manifest_items": true,
+    "smoke_used_as_gate_only": true
+  },
+  "created_at": "2026-04-27T08:30:02.368313+00:00",
+  "exact_missing_field": [],
+  "files_exist": {
+    "code/stwm/tools/external_baselines/run_external_baseline_eval_20260426.py": true,
+    "code/stwm/tools/external_baselines/run_external_baseline_smoke_20260426.py": true,
+    "reports/stwm_external_baseline_cotracker_full_eval_20260426.json": true,
+    "reports/stwm_external_baseline_cutie_full_eval_20260426.json": true,
+    "reports/stwm_external_baseline_full_eval_bootstrap_20260426.json": true,
+    "reports/stwm_external_baseline_full_eval_decision_20260426.json": true,
+    "reports/stwm_external_baseline_full_eval_item_plan_20260426.json": true,
+    "reports/stwm_external_baseline_full_eval_summary_20260426.json": true,
+    "reports/stwm_external_baseline_item_manifest_20260426.json": true,
+    "reports/stwm_external_baseline_sam2_full_eval_20260426.json": true
+  },
+  "items_count": 389,
+  "local_window_policy": {
+    "average_frame_count_per_item": 16,
+    "confirmed_in_code": true,
+    "max_frame_count_per_item": 16,
+    "median_frame_count_per_item": 16,
+    "policy": "uses frames from observed_prompt_frame_index through future_frame_index inclusive"
+  },
+  "per_baseline_failed_count": {
+    "cotracker": 0,
+    "cutie": 0,
+    "sam2": 0
+  },
+  "per_baseline_success_count": {
+    "cotracker": 389,
+    "cutie": 389,
+    "sam2": 389
+  },
+  "point_sample_count_for_cotracker": {
+    "actual_average_sampled_points": 57.03856041131105,
+    "actual_average_visible_points": 27.08483290488432,
+    "actual_max_sampled_points": 64,
+    "actual_median_sampled_points": 64,
+    "code_max_points": 64
+  },
+  "resize_max_side": 384,
+  "runtime_per_item": {
+    "cotracker": 0.617604884318766,
+    "cutie": 0.7249339331619538,
+    "sam2": 1.893683033419023
+  },
+  "valid_json": {
+    "reports/stwm_external_baseline_cotracker_full_eval_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_cutie_full_eval_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_full_eval_bootstrap_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_full_eval_decision_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_full_eval_item_plan_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_full_eval_summary_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_item_manifest_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    },
+    "reports/stwm_external_baseline_sam2_full_eval_20260426.json": {
+      "exact_error": null,
+      "exists": true,
+      "valid_json": true
+    }
+  }
+}
+```
