@@ -1,0 +1,134 @@
+{
+  "baseline_runnable_status": {
+    "cotracker": false,
+    "cutie": true,
+    "sam2": true
+  },
+  "cotracker_checkpoint_ready": false,
+  "cotracker_import_ok": true,
+  "created_at": "2026-04-27T14:57:31+0800",
+  "cutie_checkpoint_ready": true,
+  "cutie_import_ok": true,
+  "entries": {
+    "cotracker": {
+      "baseline_name": "cotracker",
+      "checkpoint_dir": "/home/chen034/workspace/stwm/baselines/checkpoints/cotracker",
+      "checkpoint_files": [],
+      "checkpoint_ready": false,
+      "download_attempt": null,
+      "download_attempted": false,
+      "exact_blocking_reason": "checkpoint_missing_or_download_unfinished",
+      "import_details": {
+        "command_result": null,
+        "modules": {
+          "cotracker": {
+            "file": "/home/chen034/workspace/stwm/baselines/repos/co-tracker/cotracker/__init__.py",
+            "ok": true
+          },
+          "cotracker.predictor": {
+            "file": "/home/chen034/workspace/stwm/baselines/repos/co-tracker/cotracker/predictor.py",
+            "ok": true
+          }
+        },
+        "ok": true
+      },
+      "import_ok": true
+    },
+    "cutie": {
+      "baseline_name": "cutie",
+      "checkpoint_dir": "/home/chen034/workspace/stwm/baselines/checkpoints/cutie",
+      "checkpoint_files": [
+        {
+          "path": "/home/chen034/workspace/stwm/baselines/checkpoints/cutie/coco_lvis_h18_itermask.pth",
+          "size_bytes": 40700707
+        },
+        {
+          "path": "/home/chen034/workspace/stwm/baselines/checkpoints/cutie/cutie-base-mega.pth",
+          "size_bytes": 140443788
+        }
+      ],
+      "checkpoint_ready": true,
+      "download_attempt": null,
+      "download_attempted": false,
+      "exact_blocking_reason": null,
+      "import_details": {
+        "command_result": null,
+        "modules": {
+          "cutie": {
+            "file": null,
+            "ok": true
+          },
+          "cutie.inference.inference_core": {
+            "file": "/home/chen034/workspace/stwm/baselines/repos/Cutie/cutie/inference/inference_core.py",
+            "ok": true
+          }
+        },
+        "ok": true
+      },
+      "import_ok": true
+    },
+    "sam2": {
+      "baseline_name": "sam2",
+      "checkpoint_dir": "/home/chen034/workspace/stwm/baselines/checkpoints/sam2",
+      "checkpoint_files": [
+        {
+          "path": "/home/chen034/workspace/stwm/baselines/checkpoints/sam2/sam2.1_hiera_base_plus.pt",
+          "size_bytes": 323606802
+        },
+        {
+          "path": "/home/chen034/workspace/stwm/baselines/checkpoints/sam2/sam2.1_hiera_large.pt",
+          "size_bytes": 898083611
+        },
+        {
+          "path": "/home/chen034/workspace/stwm/baselines/checkpoints/sam2/sam2.1_hiera_small.pt",
+          "size_bytes": 184416285
+        },
+        {
+          "path": "/home/chen034/workspace/stwm/baselines/checkpoints/sam2/sam2.1_hiera_tiny.pt",
+          "size_bytes": 156008466
+        }
+      ],
+      "checkpoint_ready": true,
+      "download_attempt": null,
+      "download_attempted": false,
+      "exact_blocking_reason": null,
+      "import_details": {
+        "command_result": null,
+        "modules": {
+          "sam2": {
+            "file": "/home/chen034/workspace/stwm/baselines/repos/sam2/sam2/__init__.py",
+            "ok": true
+          },
+          "sam2.build_sam": {
+            "file": "/home/chen034/workspace/stwm/baselines/repos/sam2/sam2/build_sam.py",
+            "ok": true
+          }
+        },
+        "ok": true
+      },
+      "import_ok": true
+    }
+  },
+  "python_policy": {
+    "main_base_environment_modified": false,
+    "new_conda_env_created": false,
+    "new_conda_env_reason": "not_needed_for_import_smoke; existing stwm env imports all cloned repos without installing packages",
+    "stwm_environment_used_read_only": true,
+    "stwm_python": "/home/chen034/miniconda3/envs/stwm/bin/python"
+  },
+  "sam2_checkpoint_ready": true,
+  "sam2_import_ok": true,
+  "stwm_env_check": {
+    "cmd": [
+      "/home/chen034/miniconda3/envs/stwm/bin/python",
+      "-c",
+      "import sys, torch, torchvision, cv2, hydra, omegaconf; print(sys.executable); print(torch.__version__)"
+    ],
+    "cwd": null,
+    "returncode": 0,
+    "stderr_excerpt": "",
+    "stdout_excerpt": "/home/chen034/miniconda3/envs/stwm/bin/python\n2.11.0+cu128\n",
+    "timeout": false,
+    "wall_time_seconds": 2.258
+  }
+}

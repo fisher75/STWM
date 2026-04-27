@@ -1,0 +1,34 @@
+# STWM Figure Caption Draft 20260425
+
+## Figure 1
+
+Teaser of STWM trace-conditioned belief association. A teacher-only readout can lock onto a visually similar confuser under occlusion, while STWM combines trace history and semantic evidence to recover the intended future identity. The panel summarizes utility gains without making closed-loop planning or video-generation claims.
+
+## Figure 2
+
+Overview of the frozen STWM pipeline. A frozen trace-first Stage 1 backbone feeds TUSB-v3.1 semantic trace units, and the official readout is trace_belief_assoc using best_semantic_hard.pt. Outputs are future identity association, reacquisition, planning-lite risk scoring, and belief-level counterfactual evidence.
+
+## Figure 3
+
+Main quantitative results from frozen official reports. STWM is compared against calibration-only, cropenc, legacysem, and frozen external teacher baselines on ID association, hard subsets, reacquisition utility, and planning-lite risk utility. These panels should be read as report-backed validation, not new experiments.
+
+## Figure 4
+
+Mechanism view of trace belief and false-confuser behavior. The left panel sketches belief dynamics for a representative hard case, while the right panels summarize false-confuser and rank-confidence reliability statistics from existing per-item reports. Reliability uses a rank-confidence proxy rather than calibrated probabilities.
+
+## Figure 5
+
+Hard-case qualitative comparison using report-derived schematic panels. Cases cover confuser crossing, occlusion reappearance, long gaps, and OOD-style hard scenes, comparing frozen external teacher, legacysem, and STWM. Raw video frames were not referenced by the source reports, so these panels are paper-ready v1 schematics.
+
+## Figure 6
+
+Occlusion-aware reacquisition utility. The task asks the system to recover the same future identity after disappearance or a long gap; STWM improves over teacher-only and legacysem baselines in the existing V2 report. The schematic cases illustrate the failure mode and intended readout behavior.
+
+## Figure 7
+
+Planning-lite risk utility probe. Candidate-path risk is evaluated as a lightweight scoring task using synthetic path corridors and existing future-object belief outputs, not as closed-loop autonomous driving. STWM improves risk AUC in the existing probe while keeping the claim boundary explicit.
+
+## Figure 8
+
+Belief-level counterfactual interventions. Readout-layer interventions such as trace shuffling and object removal/shift change association, reacquisition, and planning-lite risk outputs in the existing counterfactual report. The evidence supports a trace-belief causal role at the readout level only.
+

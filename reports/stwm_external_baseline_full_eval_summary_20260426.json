@@ -1,0 +1,547 @@
+{
+  "best_external_by_false_confuser": "sam2",
+  "best_external_by_long_gap": "sam2",
+  "best_external_by_ood": "sam2",
+  "best_external_by_overall": "sam2",
+  "created_at": "2026-04-27T16:09:55+0800",
+  "external_reports": {
+    "cotracker": "reports/stwm_external_baseline_cotracker_full_eval_20260426.json",
+    "cutie": "reports/stwm_external_baseline_cutie_full_eval_20260426.json",
+    "sam2": "reports/stwm_external_baseline_sam2_full_eval_20260426.json"
+  },
+  "per_method_overall": {
+    "calibration-only": {
+      "MRR": 0.3570264260736007,
+      "count": 389,
+      "false_confuser_rate": 0.8487574978577549,
+      "false_reacquisition_rate": 0.8487574978577549,
+      "runtime_per_item": null,
+      "source": "official matched per-item mean",
+      "top1": 0.15124250214224508,
+      "top5": 0.6443873179091688
+    },
+    "cotracker": {
+      "MRR": 0.7289178924174189,
+      "count": 389,
+      "failed_items": 0,
+      "false_confuser_rate": 0.39845758354755784,
+      "false_reacquisition_rate": 0.39845758354755784,
+      "runtime_per_item": 0.617604884318766,
+      "successful_items": 389,
+      "top1": 0.6015424164524421,
+      "top5": 0.8946015424164524
+    },
+    "cropenc": {
+      "MRR": 0.35633010771918455,
+      "count": 389,
+      "false_confuser_rate": 0.8508997429305912,
+      "false_reacquisition_rate": 0.8508997429305912,
+      "runtime_per_item": null,
+      "source": "official matched per-item mean",
+      "top1": 0.14910025706940874,
+      "top5": 0.6456726649528706
+    },
+    "cutie": {
+      "MRR": 0.6255134137899792,
+      "count": 389,
+      "failed_items": 0,
+      "false_confuser_rate": 0.5115681233933161,
+      "false_reacquisition_rate": 0.5115681233933161,
+      "runtime_per_item": 0.7249339331619538,
+      "successful_items": 389,
+      "top1": 0.4884318766066838,
+      "top5": 0.8251928020565553
+    },
+    "frozen_external_teacher_only": {
+      "MRR": 0.6953703703703704,
+      "count": 1038,
+      "false_confuser_rate": 0.4797687861271676,
+      "false_reacquisition_rate": 0.4797687861271676,
+      "runtime_per_item": null,
+      "source": "stwm_reacquisition_v2_eval_20260425 aggregate; not item-aligned to external manifest",
+      "top1": 0.5202312138728323,
+      "top5": 0.930635838150289
+    },
+    "legacysem": {
+      "MRR": 0.3577152621183171,
+      "count": 389,
+      "false_confuser_rate": 0.8530419880034276,
+      "false_reacquisition_rate": 0.8530419880034276,
+      "runtime_per_item": null,
+      "source": "official matched per-item mean",
+      "top1": 0.1469580119965724,
+      "top5": 0.6495287060839761
+    },
+    "sam2": {
+      "MRR": 0.7754042623766482,
+      "count": 389,
+      "failed_items": 0,
+      "false_confuser_rate": 0.32904884318766064,
+      "false_reacquisition_rate": 0.32904884318766064,
+      "runtime_per_item": 1.893683033419023,
+      "successful_items": 389,
+      "top1": 0.6709511568123393,
+      "top5": 0.9254498714652957
+    },
+    "stwm_trace_belief_assoc": {
+      "MRR": 0.6599690243984163,
+      "count": 389,
+      "false_confuser_rate": 0.4910025706940874,
+      "false_reacquisition_rate": 0.4910025706940874,
+      "runtime_per_item": null,
+      "source": "official matched per-item mean",
+      "top1": 0.5089974293059126,
+      "top5": 0.8646101113967438
+    }
+  },
+  "per_method_per_subset": {
+    "calibration-only": {
+      "OOD_hard": {
+        "MRR": 0.3604334533724991,
+        "count": 370,
+        "false_confuser_rate": 0.8463963963963964,
+        "false_reacquisition_rate": 0.8463963963963964,
+        "top1": 0.15360360360360362
+      },
+      "OOD_hard_top1": 0.15360360360360362,
+      "appearance_change": {
+        "MRR": 0.45868665799404895,
+        "count": 161,
+        "false_confuser_rate": 0.7712215320910973,
+        "false_reacquisition_rate": 0.7712215320910973,
+        "top1": 0.2287784679089027
+      },
+      "appearance_change_top1": 0.2287784679089027,
+      "crossing_ambiguity": {
+        "MRR": 0.32387197994598965,
+        "count": 302,
+        "false_confuser_rate": 0.8647902869757175,
+        "false_reacquisition_rate": 0.8647902869757175,
+        "top1": 0.13520971302428256
+      },
+      "crossing_ambiguity_top1": 0.13520971302428256,
+      "long_gap_persistence": {
+        "MRR": 0.478228021978022,
+        "count": 52,
+        "false_confuser_rate": 0.8076923076923077,
+        "false_reacquisition_rate": 0.8076923076923077,
+        "top1": 0.19230769230769232
+      },
+      "long_gap_persistence_top1": 0.19230769230769232,
+      "occlusion_reappearance": {
+        "MRR": 0.42503693123299546,
+        "count": 127,
+        "false_confuser_rate": 0.8333333333333334,
+        "false_reacquisition_rate": 0.8333333333333334,
+        "top1": 0.16666666666666666
+      },
+      "occlusion_reappearance_top1": 0.16666666666666666
+    },
+    "cotracker": {
+      "OOD_hard": {
+        "MRR": 0.7296299871299872,
+        "count": 370,
+        "failed_items": 0,
+        "false_confuser_rate": 0.3972972972972973,
+        "false_reacquisition_rate": 0.3972972972972973,
+        "runtime_per_item": 0.6160997297297297,
+        "successful_items": 370,
+        "top1": 0.6027027027027027,
+        "top5": 0.8972972972972973
+      },
+      "OOD_hard_top1": 0.6027027027027027,
+      "appearance_change": {
+        "MRR": 0.6336109424700468,
+        "count": 161,
+        "failed_items": 0,
+        "false_confuser_rate": 0.5590062111801242,
+        "false_reacquisition_rate": 0.5590062111801242,
+        "runtime_per_item": 0.5969751552795031,
+        "successful_items": 161,
+        "top1": 0.4409937888198758,
+        "top5": 0.8881987577639752
+      },
+      "appearance_change_top1": 0.4409937888198758,
+      "crossing_ambiguity": {
+        "MRR": 0.7644757589337582,
+        "count": 302,
+        "failed_items": 0,
+        "false_confuser_rate": 0.34105960264900664,
+        "false_reacquisition_rate": 0.34105960264900664,
+        "runtime_per_item": 0.6267066225165563,
+        "successful_items": 302,
+        "top1": 0.6589403973509934,
+        "top5": 0.8973509933774835
+      },
+      "crossing_ambiguity_top1": 0.6589403973509934,
+      "long_gap_persistence": {
+        "MRR": 0.5630265567765568,
+        "count": 52,
+        "failed_items": 0,
+        "false_confuser_rate": 0.6730769230769231,
+        "false_reacquisition_rate": 0.6730769230769231,
+        "runtime_per_item": 0.5575615384615384,
+        "successful_items": 52,
+        "top1": 0.3269230769230769,
+        "top5": 0.8653846153846154
+      },
+      "long_gap_persistence_top1": 0.3269230769230769,
+      "occlusion_reappearance": {
+        "MRR": 0.6136096474782757,
+        "count": 127,
+        "failed_items": 0,
+        "false_confuser_rate": 0.5826771653543307,
+        "false_reacquisition_rate": 0.5826771653543307,
+        "runtime_per_item": 0.5795346456692914,
+        "successful_items": 127,
+        "top1": 0.41732283464566927,
+        "top5": 0.889763779527559
+      },
+      "occlusion_reappearance_top1": 0.41732283464566927
+    },
+    "cropenc": {
+      "OOD_hard": {
+        "MRR": 0.3588650272739122,
+        "count": 370,
+        "false_confuser_rate": 0.8495495495495495,
+        "false_reacquisition_rate": 0.8495495495495495,
+        "top1": 0.15045045045045044
+      },
+      "OOD_hard_top1": 0.15045045045045044,
+      "appearance_change": {
+        "MRR": 0.4562496868643061,
+        "count": 161,
+        "false_confuser_rate": 0.777432712215321,
+        "false_reacquisition_rate": 0.777432712215321,
+        "top1": 0.22256728778467907
+      },
+      "appearance_change_top1": 0.22256728778467907,
+      "crossing_ambiguity": {
+        "MRR": 0.32175993801077524,
+        "count": 302,
+        "false_confuser_rate": 0.869757174392936,
+        "false_reacquisition_rate": 0.869757174392936,
+        "top1": 0.13024282560706402
+      },
+      "crossing_ambiguity_top1": 0.13024282560706402,
+      "long_gap_persistence": {
+        "MRR": 0.4930250305250305,
+        "count": 52,
+        "false_confuser_rate": 0.7788461538461539,
+        "false_reacquisition_rate": 0.7788461538461539,
+        "top1": 0.22115384615384615
+      },
+      "long_gap_persistence_top1": 0.22115384615384615,
+      "occlusion_reappearance": {
+        "MRR": 0.4258116421175582,
+        "count": 127,
+        "false_confuser_rate": 0.8307086614173228,
+        "false_reacquisition_rate": 0.8307086614173228,
+        "top1": 0.16929133858267717
+      },
+      "occlusion_reappearance_top1": 0.16929133858267717
+    },
+    "cutie": {
+      "OOD_hard": {
+        "MRR": 0.6356420610157586,
+        "count": 370,
+        "failed_items": 0,
+        "false_confuser_rate": 0.4972972972972973,
+        "false_reacquisition_rate": 0.4972972972972973,
+        "runtime_per_item": 0.72222,
+        "successful_items": 370,
+        "top1": 0.5027027027027027,
+        "top5": 0.8297297297297297
+      },
+      "OOD_hard_top1": 0.5027027027027027,
+      "appearance_change": {
+        "MRR": 0.570672216254923,
+        "count": 161,
+        "failed_items": 0,
+        "false_confuser_rate": 0.6211180124223602,
+        "false_reacquisition_rate": 0.6211180124223602,
+        "runtime_per_item": 0.6957465838509317,
+        "successful_items": 161,
+        "top1": 0.37888198757763975,
+        "top5": 0.8633540372670807
+      },
+      "appearance_change_top1": 0.37888198757763975,
+      "crossing_ambiguity": {
+        "MRR": 0.6189297399217396,
+        "count": 302,
+        "failed_items": 0,
+        "false_confuser_rate": 0.5099337748344371,
+        "false_reacquisition_rate": 0.5099337748344371,
+        "runtime_per_item": 0.7406529801324503,
+        "successful_items": 302,
+        "top1": 0.4900662251655629,
+        "top5": 0.7980132450331126
+      },
+      "crossing_ambiguity_top1": 0.4900662251655629,
+      "long_gap_persistence": {
+        "MRR": 0.6376831501831501,
+        "count": 52,
+        "failed_items": 0,
+        "false_confuser_rate": 0.5384615384615384,
+        "false_reacquisition_rate": 0.5384615384615384,
+        "runtime_per_item": 0.6479346153846154,
+        "successful_items": 52,
+        "top1": 0.46153846153846156,
+        "top5": 0.9230769230769231
+      },
+      "long_gap_persistence_top1": 0.46153846153846156,
+      "occlusion_reappearance": {
+        "MRR": 0.561154081905686,
+        "count": 127,
+        "failed_items": 0,
+        "false_confuser_rate": 0.6062992125984252,
+        "false_reacquisition_rate": 0.6062992125984252,
+        "runtime_per_item": 0.6813732283464566,
+        "successful_items": 127,
+        "top1": 0.3937007874015748,
+        "top5": 0.8267716535433071
+      },
+      "occlusion_reappearance_top1": 0.3937007874015748
+    },
+    "frozen_external_teacher_only": {
+      "OOD_confuser": {
+        "MRR": 0.6989213440244368,
+        "count": 582,
+        "false_confuser_rate": 0.4845360824742268,
+        "false_reacquisition_rate": 0.4845360824742268,
+        "top1": 0.5154639175257731,
+        "top5": 0.9381443298969072,
+        "valid_item_seed_rows": 582,
+        "valid_items": 82
+      },
+      "all_reacquisition_items": {
+        "MRR": 0.6953703703703704,
+        "count": 1038,
+        "false_confuser_rate": 0.4797687861271676,
+        "false_reacquisition_rate": 0.4797687861271676,
+        "top1": 0.5202312138728323,
+        "top5": 0.930635838150289,
+        "valid_item_seed_rows": 1038,
+        "valid_items": 94
+      },
+      "appearance_similar_confuser": {
+        "MRR": 0.7235576923076923,
+        "count": 624,
+        "false_confuser_rate": 0.46153846153846156,
+        "false_reacquisition_rate": 0.46153846153846156,
+        "top1": 0.5384615384615384,
+        "top5": 0.9807692307692307,
+        "valid_item_seed_rows": 624,
+        "valid_items": 55
+      },
+      "crossing_or_overlap_confuser": {
+        "MRR": 0.5511288685946221,
+        "count": 438,
+        "false_confuser_rate": 0.6575342465753424,
+        "false_reacquisition_rate": 0.6575342465753424,
+        "top1": 0.3424657534246575,
+        "top5": 0.8493150684931506,
+        "valid_item_seed_rows": 438,
+        "valid_items": 39
+      },
+      "long_gap_persistence": {
+        "MRR": 0.733132530120482,
+        "count": 498,
+        "false_confuser_rate": 0.40963855421686746,
+        "false_reacquisition_rate": 0.40963855421686746,
+        "top1": 0.5903614457831325,
+        "top5": 0.9036144578313253,
+        "valid_item_seed_rows": 498,
+        "valid_items": 40
+      },
+      "occlusion_and_long_gap": {
+        "MRR": 0.733132530120482,
+        "count": 498,
+        "false_confuser_rate": 0.40963855421686746,
+        "false_reacquisition_rate": 0.40963855421686746,
+        "top1": 0.5903614457831325,
+        "top5": 0.9036144578313253,
+        "valid_item_seed_rows": 498,
+        "valid_items": 40
+      },
+      "occlusion_reappearance": {
+        "MRR": 0.6953703703703704,
+        "count": 1038,
+        "false_confuser_rate": 0.4797687861271676,
+        "false_reacquisition_rate": 0.4797687861271676,
+        "top1": 0.5202312138728323,
+        "top5": 0.930635838150289,
+        "valid_item_seed_rows": 1038,
+        "valid_items": 94
+      },
+      "spatially_close_confuser": {
+        "MRR": 0.6114862707535121,
+        "count": 696,
+        "false_confuser_rate": 0.603448275862069,
+        "false_reacquisition_rate": 0.603448275862069,
+        "top1": 0.39655172413793105,
+        "top5": 0.9137931034482759,
+        "valid_item_seed_rows": 696,
+        "valid_items": 63
+      }
+    },
+    "legacysem": {
+      "OOD_hard": {
+        "MRR": 0.36170132716984993,
+        "count": 370,
+        "false_confuser_rate": 0.8504504504504504,
+        "false_reacquisition_rate": 0.8504504504504504,
+        "top1": 0.14954954954954955
+      },
+      "OOD_hard_top1": 0.14954954954954955,
+      "appearance_change": {
+        "MRR": 0.4581529025915258,
+        "count": 161,
+        "false_confuser_rate": 0.7784679089026916,
+        "false_reacquisition_rate": 0.7784679089026916,
+        "top1": 0.22153209109730848
+      },
+      "appearance_change_top1": 0.22153209109730848,
+      "crossing_ambiguity": {
+        "MRR": 0.3236450698252324,
+        "count": 302,
+        "false_confuser_rate": 0.8692052980132451,
+        "false_reacquisition_rate": 0.8692052980132451,
+        "top1": 0.13079470198675497
+      },
+      "crossing_ambiguity_top1": 0.13079470198675497,
+      "long_gap_persistence": {
+        "MRR": 0.4957722832722833,
+        "count": 52,
+        "false_confuser_rate": 0.7788461538461539,
+        "false_reacquisition_rate": 0.7788461538461539,
+        "top1": 0.22115384615384615
+      },
+      "long_gap_persistence_top1": 0.22115384615384615,
+      "occlusion_reappearance": {
+        "MRR": 0.4315046840205916,
+        "count": 127,
+        "false_confuser_rate": 0.8215223097112861,
+        "false_reacquisition_rate": 0.8215223097112861,
+        "top1": 0.1784776902887139
+      },
+      "occlusion_reappearance_top1": 0.1784776902887139
+    },
+    "sam2": {
+      "OOD_hard": {
+        "MRR": 0.7688259226968904,
+        "count": 370,
+        "failed_items": 0,
+        "false_confuser_rate": 0.33783783783783783,
+        "false_reacquisition_rate": 0.33783783783783783,
+        "runtime_per_item": 1.8949472972972974,
+        "successful_items": 370,
+        "top1": 0.6621621621621622,
+        "top5": 0.9243243243243243
+      },
+      "OOD_hard_top1": 0.6621621621621622,
+      "appearance_change": {
+        "MRR": 0.7190057182293207,
+        "count": 161,
+        "failed_items": 0,
+        "false_confuser_rate": 0.42857142857142855,
+        "false_reacquisition_rate": 0.42857142857142855,
+        "runtime_per_item": 1.8527434782608696,
+        "successful_items": 161,
+        "top1": 0.5714285714285714,
+        "top5": 0.9316770186335404
+      },
+      "appearance_change_top1": 0.5714285714285714,
+      "crossing_ambiguity": {
+        "MRR": 0.7832246535301438,
+        "count": 302,
+        "failed_items": 0,
+        "false_confuser_rate": 0.31125827814569534,
+        "false_reacquisition_rate": 0.31125827814569534,
+        "runtime_per_item": 1.9084596026490066,
+        "successful_items": 302,
+        "top1": 0.6887417218543046,
+        "top5": 0.9139072847682119
+      },
+      "crossing_ambiguity_top1": 0.6887417218543046,
+      "long_gap_persistence": {
+        "MRR": 0.6905677655677656,
+        "count": 52,
+        "failed_items": 0,
+        "false_confuser_rate": 0.46153846153846156,
+        "false_reacquisition_rate": 0.46153846153846156,
+        "runtime_per_item": 1.7558423076923078,
+        "successful_items": 52,
+        "top1": 0.5384615384615384,
+        "top5": 0.9615384615384616
+      },
+      "long_gap_persistence_top1": 0.5384615384615384,
+      "occlusion_reappearance": {
+        "MRR": 0.7207974003249594,
+        "count": 127,
+        "failed_items": 0,
+        "false_confuser_rate": 0.4251968503937008,
+        "false_reacquisition_rate": 0.4251968503937008,
+        "runtime_per_item": 1.8286779527559056,
+        "successful_items": 127,
+        "top1": 0.5748031496062992,
+        "top5": 0.952755905511811
+      },
+      "occlusion_reappearance_top1": 0.5748031496062992
+    },
+    "stwm_trace_belief_assoc": {
+      "OOD_hard": {
+        "MRR": 0.6659936140355963,
+        "count": 370,
+        "false_confuser_rate": 0.481981981981982,
+        "false_reacquisition_rate": 0.481981981981982,
+        "top1": 0.5180180180180181
+      },
+      "OOD_hard_top1": 0.5180180180180181,
+      "appearance_change": {
+        "MRR": 0.6596233622854443,
+        "count": 161,
+        "false_confuser_rate": 0.5093167701863354,
+        "false_reacquisition_rate": 0.5093167701863354,
+        "top1": 0.4906832298136646
+      },
+      "appearance_change_top1": 0.4906832298136646,
+      "crossing_ambiguity": {
+        "MRR": 0.6221584085426253,
+        "count": 302,
+        "false_confuser_rate": 0.5281456953642384,
+        "false_reacquisition_rate": 0.5281456953642384,
+        "top1": 0.4718543046357616
+      },
+      "crossing_ambiguity_top1": 0.4718543046357616,
+      "long_gap_persistence": {
+        "MRR": 0.7140682234432234,
+        "count": 52,
+        "false_confuser_rate": 0.4519230769230769,
+        "false_reacquisition_rate": 0.4519230769230769,
+        "top1": 0.5480769230769231
+      },
+      "long_gap_persistence_top1": 0.5480769230769231,
+      "occlusion_reappearance": {
+        "MRR": 0.705011457360396,
+        "count": 127,
+        "false_confuser_rate": 0.44750656167979,
+        "false_reacquisition_rate": 0.44750656167979,
+        "top1": 0.5524934383202099
+      },
+      "occlusion_reappearance_top1": 0.5524934383202099
+    }
+  },
+  "strongest_external_baseline": "sam2",
+  "stwm_reference_alignment": {
+    "aggregation": "mean over official rows/seeds/panels per protocol_item_id",
+    "manifest_items": 389,
+    "matched_items_by_method": {
+      "calibration-only": 389,
+      "cropenc": 389,
+      "legacysem": 389,
+      "stwm_trace_belief_assoc": 389
+    },
+    "source": "reports/stwm_belief_final_eval_20260424.json"
+  }
+}

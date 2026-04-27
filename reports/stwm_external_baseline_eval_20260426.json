@@ -1,0 +1,875 @@
+{
+  "comparison_to_legacysem": null,
+  "comparison_to_stwm": null,
+  "comparison_to_teacher": null,
+  "created_at": "2026-04-27T14:57:31+0800",
+  "eval_policy": {
+    "full_eval_only_for_smoke_pass": true,
+    "metrics": [
+      "top1",
+      "top5",
+      "MRR",
+      "false_confuser_rate",
+      "false_reacquisition_rate",
+      "occlusion_reappearance_top1",
+      "long_gap_persistence_top1",
+      "crossing_ambiguity_top1",
+      "OOD_hard_top1",
+      "runtime_per_item"
+    ],
+    "panels_or_tasks": [
+      "reacquisition_v2",
+      "densified_200_context_preserving_if_runnable",
+      "OOD_hard_if_available"
+    ]
+  },
+  "exact_blocking_reason": "no external baseline passed smoke; full eval intentionally not run for failed baselines",
+  "existing_stwm_comparators": {
+    "STWM trace_belief_assoc official": {
+      "MRR": 0.6973950996877611,
+      "candidate_count_bins": {
+        "candidate_count_5_7": {
+          "MRR": 0.7660075329566856,
+          "count": 354,
+          "false_confuser_rate": 0.4011299435028249,
+          "false_reacquisition_rate": 0.4011299435028249,
+          "top1": 0.5988700564971752,
+          "top5": 0.9943502824858758,
+          "valid_item_seed_rows": 354,
+          "valid_items": 32
+        },
+        "candidate_count_ge_8": {
+          "MRR": 0.5776438772552531,
+          "count": 438,
+          "false_confuser_rate": 0.6118721461187214,
+          "false_reacquisition_rate": 0.6118721461187214,
+          "top1": 0.3881278538812785,
+          "top5": 0.8904109589041096,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "candidate_count_le_4": {
+          "MRR": 0.8118757259001161,
+          "count": 246,
+          "false_confuser_rate": 0.3333333333333333,
+          "false_reacquisition_rate": 0.3333333333333333,
+          "top1": 0.6666666666666666,
+          "top5": 0.9512195121951219,
+          "valid_item_seed_rows": 246,
+          "valid_items": 23
+        }
+      },
+      "count": 1038,
+      "false_confuser_rate": 0.47398843930635837,
+      "false_reacquisition_rate": 0.47398843930635837,
+      "gap_length_bins": {
+        "available": false,
+        "exact_missing_reason": "No numeric gap length field exists in source per-item rows; occlusion/long-gap subset tags are used for proxy breakdown only.",
+        "proxy_by_subset_tag": {
+          "long_gap_persistence": {
+            "MRR": 0.6878083763625932,
+            "count": 498,
+            "false_confuser_rate": 0.4899598393574297,
+            "false_reacquisition_rate": 0.4899598393574297,
+            "top1": 0.5100401606425703,
+            "top5": 0.9397590361445783,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_and_long_gap": {
+            "MRR": 0.6878083763625932,
+            "count": 498,
+            "false_confuser_rate": 0.4899598393574297,
+            "false_reacquisition_rate": 0.4899598393574297,
+            "top1": 0.5100401606425703,
+            "top5": 0.9397590361445783,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_reappearance": {
+            "MRR": 0.6973950996877611,
+            "count": 1038,
+            "false_confuser_rate": 0.47398843930635837,
+            "false_reacquisition_rate": 0.47398843930635837,
+            "top1": 0.5260115606936416,
+            "top5": 0.9402697495183044,
+            "valid_item_seed_rows": 1038,
+            "valid_items": 94
+          }
+        }
+      },
+      "group_breakdown": {
+        "OOD_confuser": {
+          "MRR": 0.6857491507446684,
+          "count": 582,
+          "false_confuser_rate": 0.5,
+          "false_reacquisition_rate": 0.5,
+          "top1": 0.5,
+          "top5": 0.9518900343642611,
+          "valid_item_seed_rows": 582,
+          "valid_items": 82
+        },
+        "all_reacquisition_items": {
+          "MRR": 0.6973950996877611,
+          "count": 1038,
+          "false_confuser_rate": 0.47398843930635837,
+          "false_reacquisition_rate": 0.47398843930635837,
+          "top1": 0.5260115606936416,
+          "top5": 0.9402697495183044,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "appearance_similar_confuser": {
+          "MRR": 0.6913466919476534,
+          "count": 624,
+          "false_confuser_rate": 0.5,
+          "false_reacquisition_rate": 0.5,
+          "top1": 0.5,
+          "top5": 0.9839743589743589,
+          "valid_item_seed_rows": 624,
+          "valid_items": 55
+        },
+        "crossing_or_overlap_confuser": {
+          "MRR": 0.6128906700362924,
+          "count": 438,
+          "false_confuser_rate": 0.5525114155251142,
+          "false_reacquisition_rate": 0.5525114155251142,
+          "top1": 0.4474885844748858,
+          "top5": 0.8584474885844748,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "long_gap_persistence": {
+          "MRR": 0.6878083763625932,
+          "count": 498,
+          "false_confuser_rate": 0.4899598393574297,
+          "false_reacquisition_rate": 0.4899598393574297,
+          "top1": 0.5100401606425703,
+          "top5": 0.9397590361445783,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_and_long_gap": {
+          "MRR": 0.6878083763625932,
+          "count": 498,
+          "false_confuser_rate": 0.4899598393574297,
+          "false_reacquisition_rate": 0.4899598393574297,
+          "top1": 0.5100401606425703,
+          "top5": 0.9397590361445783,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.6973950996877611,
+          "count": 1038,
+          "false_confuser_rate": 0.47398843930635837,
+          "false_reacquisition_rate": 0.47398843930635837,
+          "top1": 0.5260115606936416,
+          "top5": 0.9402697495183044,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "spatially_close_confuser": {
+          "MRR": 0.6384214821424341,
+          "count": 696,
+          "false_confuser_rate": 0.5545977011494253,
+          "false_reacquisition_rate": 0.5545977011494253,
+          "top1": 0.4454022988505747,
+          "top5": 0.9281609195402298,
+          "valid_item_seed_rows": 696,
+          "valid_items": 63
+        }
+      },
+      "top1": 0.5260115606936416,
+      "top5": 0.9402697495183044,
+      "valid_item_seed_rows": 1038,
+      "valid_items": 94
+    },
+    "calibration-only": {
+      "MRR": 0.43132994887746223,
+      "candidate_count_bins": {
+        "candidate_count_5_7": {
+          "MRR": 0.49124293785310735,
+          "count": 354,
+          "false_confuser_rate": 0.8135593220338984,
+          "false_reacquisition_rate": 0.8135593220338984,
+          "top1": 0.1864406779661017,
+          "top5": 0.9322033898305084,
+          "valid_item_seed_rows": 354,
+          "valid_items": 32
+        },
+        "candidate_count_ge_8": {
+          "MRR": 0.3192248560155384,
+          "count": 438,
+          "false_confuser_rate": 0.8584474885844748,
+          "false_reacquisition_rate": 0.8584474885844748,
+          "top1": 0.1415525114155251,
+          "top5": 0.5753424657534246,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "candidate_count_le_4": {
+          "MRR": 0.5447154471544715,
+          "count": 246,
+          "false_confuser_rate": 0.8292682926829268,
+          "false_reacquisition_rate": 0.8292682926829268,
+          "top1": 0.17073170731707318,
+          "top5": 1.0,
+          "valid_item_seed_rows": 246,
+          "valid_items": 23
+        }
+      },
+      "count": 1038,
+      "false_confuser_rate": 0.8362235067437379,
+      "false_reacquisition_rate": 0.8362235067437379,
+      "gap_length_bins": {
+        "available": false,
+        "exact_missing_reason": "No numeric gap length field exists in source per-item rows; occlusion/long-gap subset tags are used for proxy breakdown only.",
+        "proxy_by_subset_tag": {
+          "long_gap_persistence": {
+            "MRR": 0.46279403327596097,
+            "count": 498,
+            "false_confuser_rate": 0.8313253012048193,
+            "false_reacquisition_rate": 0.8313253012048193,
+            "top1": 0.1686746987951807,
+            "top5": 0.891566265060241,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_and_long_gap": {
+            "MRR": 0.46279403327596097,
+            "count": 498,
+            "false_confuser_rate": 0.8313253012048193,
+            "false_reacquisition_rate": 0.8313253012048193,
+            "top1": 0.1686746987951807,
+            "top5": 0.891566265060241,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_reappearance": {
+            "MRR": 0.43132994887746223,
+            "count": 1038,
+            "false_confuser_rate": 0.8362235067437379,
+            "false_reacquisition_rate": 0.8362235067437379,
+            "top1": 0.16377649325626203,
+            "top5": 0.7976878612716763,
+            "valid_item_seed_rows": 1038,
+            "valid_items": 94
+          }
+        }
+      },
+      "group_breakdown": {
+        "OOD_confuser": {
+          "MRR": 0.44073611310114297,
+          "count": 582,
+          "false_confuser_rate": 0.8230240549828178,
+          "false_reacquisition_rate": 0.8230240549828178,
+          "top1": 0.17697594501718214,
+          "top5": 0.8041237113402062,
+          "valid_item_seed_rows": 582,
+          "valid_items": 82
+        },
+        "all_reacquisition_items": {
+          "MRR": 0.43132994887746223,
+          "count": 1038,
+          "false_confuser_rate": 0.8362235067437379,
+          "false_reacquisition_rate": 0.8362235067437379,
+          "top1": 0.16377649325626203,
+          "top5": 0.7976878612716763,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "appearance_similar_confuser": {
+          "MRR": 0.48358516483516484,
+          "count": 624,
+          "false_confuser_rate": 0.7852564102564102,
+          "false_reacquisition_rate": 0.7852564102564102,
+          "top1": 0.21474358974358973,
+          "top5": 0.8942307692307693,
+          "valid_item_seed_rows": 624,
+          "valid_items": 55
+        },
+        "crossing_or_overlap_confuser": {
+          "MRR": 0.3997677276543004,
+          "count": 438,
+          "false_confuser_rate": 0.8447488584474886,
+          "false_reacquisition_rate": 0.8447488584474886,
+          "top1": 0.1552511415525114,
+          "top5": 0.684931506849315,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "long_gap_persistence": {
+          "MRR": 0.46279403327596097,
+          "count": 498,
+          "false_confuser_rate": 0.8313253012048193,
+          "false_reacquisition_rate": 0.8313253012048193,
+          "top1": 0.1686746987951807,
+          "top5": 0.891566265060241,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_and_long_gap": {
+          "MRR": 0.46279403327596097,
+          "count": 498,
+          "false_confuser_rate": 0.8313253012048193,
+          "false_reacquisition_rate": 0.8313253012048193,
+          "top1": 0.1686746987951807,
+          "top5": 0.891566265060241,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.43132994887746223,
+          "count": 1038,
+          "false_confuser_rate": 0.8362235067437379,
+          "false_reacquisition_rate": 0.8362235067437379,
+          "top1": 0.16377649325626203,
+          "top5": 0.7976878612716763,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "spatially_close_confuser": {
+          "MRR": 0.3760351823775946,
+          "count": 696,
+          "false_confuser_rate": 0.8505747126436781,
+          "false_reacquisition_rate": 0.8505747126436781,
+          "top1": 0.14942528735632185,
+          "top5": 0.6982758620689655,
+          "valid_item_seed_rows": 696,
+          "valid_items": 63
+        }
+      },
+      "top1": 0.16377649325626203,
+      "top5": 0.7976878612716763,
+      "valid_item_seed_rows": 1038,
+      "valid_items": 94
+    },
+    "cropenc": {
+      "MRR": 0.43250257310573653,
+      "candidate_count_bins": {
+        "candidate_count_5_7": {
+          "MRR": 0.4871468926553672,
+          "count": 354,
+          "false_confuser_rate": 0.8107344632768362,
+          "false_reacquisition_rate": 0.8107344632768362,
+          "top1": 0.18926553672316385,
+          "top5": 0.9322033898305084,
+          "valid_item_seed_rows": 354,
+          "valid_items": 32
+        },
+        "candidate_count_ge_8": {
+          "MRR": 0.31922603702531466,
+          "count": 438,
+          "false_confuser_rate": 0.860730593607306,
+          "false_reacquisition_rate": 0.860730593607306,
+          "top1": 0.13926940639269406,
+          "top5": 0.5776255707762558,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "candidate_count_le_4": {
+          "MRR": 0.5555555555555555,
+          "count": 246,
+          "false_confuser_rate": 0.8048780487804879,
+          "false_reacquisition_rate": 0.8048780487804879,
+          "top1": 0.1951219512195122,
+          "top5": 1.0,
+          "valid_item_seed_rows": 246,
+          "valid_items": 23
+        }
+      },
+      "count": 1038,
+      "false_confuser_rate": 0.8304431599229287,
+      "false_reacquisition_rate": 0.8304431599229287,
+      "gap_length_bins": {
+        "available": false,
+        "exact_missing_reason": "No numeric gap length field exists in source per-item rows; occlusion/long-gap subset tags are used for proxy breakdown only.",
+        "proxy_by_subset_tag": {
+          "long_gap_persistence": {
+            "MRR": 0.4854513291260279,
+            "count": 498,
+            "false_confuser_rate": 0.7871485943775101,
+            "false_reacquisition_rate": 0.7871485943775101,
+            "top1": 0.21285140562248997,
+            "top5": 0.891566265060241,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_and_long_gap": {
+            "MRR": 0.4854513291260279,
+            "count": 498,
+            "false_confuser_rate": 0.7871485943775101,
+            "false_reacquisition_rate": 0.7871485943775101,
+            "top1": 0.21285140562248997,
+            "top5": 0.891566265060241,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_reappearance": {
+            "MRR": 0.43250257310573653,
+            "count": 1038,
+            "false_confuser_rate": 0.8304431599229287,
+            "false_reacquisition_rate": 0.8304431599229287,
+            "top1": 0.16955684007707128,
+            "top5": 0.7986512524084779,
+            "valid_item_seed_rows": 1038,
+            "valid_items": 94
+          }
+        }
+      },
+      "group_breakdown": {
+        "OOD_confuser": {
+          "MRR": 0.43958918123153756,
+          "count": 582,
+          "false_confuser_rate": 0.8213058419243986,
+          "false_reacquisition_rate": 0.8213058419243986,
+          "top1": 0.17869415807560138,
+          "top5": 0.8058419243986255,
+          "valid_item_seed_rows": 582,
+          "valid_items": 82
+        },
+        "all_reacquisition_items": {
+          "MRR": 0.43250257310573653,
+          "count": 1038,
+          "false_confuser_rate": 0.8304431599229287,
+          "false_reacquisition_rate": 0.8304431599229287,
+          "top1": 0.16955684007707128,
+          "top5": 0.7986512524084779,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "appearance_similar_confuser": {
+          "MRR": 0.47541435280405864,
+          "count": 624,
+          "false_confuser_rate": 0.7996794871794872,
+          "false_reacquisition_rate": 0.7996794871794872,
+          "top1": 0.20032051282051283,
+          "top5": 0.8958333333333334,
+          "valid_item_seed_rows": 624,
+          "valid_items": 55
+        },
+        "crossing_or_overlap_confuser": {
+          "MRR": 0.39725767078485597,
+          "count": 438,
+          "false_confuser_rate": 0.8447488584474886,
+          "false_reacquisition_rate": 0.8447488584474886,
+          "top1": 0.1552511415525114,
+          "top5": 0.684931506849315,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "long_gap_persistence": {
+          "MRR": 0.4854513291260279,
+          "count": 498,
+          "false_confuser_rate": 0.7871485943775101,
+          "false_reacquisition_rate": 0.7871485943775101,
+          "top1": 0.21285140562248997,
+          "top5": 0.891566265060241,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_and_long_gap": {
+          "MRR": 0.4854513291260279,
+          "count": 498,
+          "false_confuser_rate": 0.7871485943775101,
+          "false_reacquisition_rate": 0.7871485943775101,
+          "top1": 0.21285140562248997,
+          "top5": 0.891566265060241,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.43250257310573653,
+          "count": 1038,
+          "false_confuser_rate": 0.8304431599229287,
+          "false_reacquisition_rate": 0.8304431599229287,
+          "top1": 0.16955684007707128,
+          "top5": 0.7986512524084779,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "spatially_close_confuser": {
+          "MRR": 0.3718453125724442,
+          "count": 696,
+          "false_confuser_rate": 0.853448275862069,
+          "false_reacquisition_rate": 0.853448275862069,
+          "top1": 0.14655172413793102,
+          "top5": 0.6997126436781609,
+          "valid_item_seed_rows": 696,
+          "valid_items": 63
+        }
+      },
+      "top1": 0.16955684007707128,
+      "top5": 0.7986512524084779,
+      "valid_item_seed_rows": 1038,
+      "valid_items": 94
+    },
+    "frozen_external_teacher_only": {
+      "MRR": 0.6953703703703704,
+      "candidate_count_bins": {
+        "candidate_count_5_7": {
+          "MRR": 0.7497175141242938,
+          "count": 354,
+          "false_confuser_rate": 0.4576271186440678,
+          "false_reacquisition_rate": 0.4576271186440678,
+          "top1": 0.5423728813559322,
+          "top5": 1.0,
+          "valid_item_seed_rows": 354,
+          "valid_items": 32
+        },
+        "candidate_count_ge_8": {
+          "MRR": 0.5712201927955353,
+          "count": 438,
+          "false_confuser_rate": 0.6164383561643836,
+          "false_reacquisition_rate": 0.6164383561643836,
+          "top1": 0.3835616438356164,
+          "top5": 0.863013698630137,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "candidate_count_le_4": {
+          "MRR": 0.8382113821138211,
+          "count": 246,
+          "false_confuser_rate": 0.2682926829268293,
+          "false_reacquisition_rate": 0.2682926829268293,
+          "top1": 0.7317073170731707,
+          "top5": 0.9512195121951219,
+          "valid_item_seed_rows": 246,
+          "valid_items": 23
+        }
+      },
+      "count": 1038,
+      "false_confuser_rate": 0.4797687861271676,
+      "false_reacquisition_rate": 0.4797687861271676,
+      "gap_length_bins": {
+        "available": false,
+        "exact_missing_reason": "No numeric gap length field exists in source per-item rows; occlusion/long-gap subset tags are used for proxy breakdown only.",
+        "proxy_by_subset_tag": {
+          "long_gap_persistence": {
+            "MRR": 0.733132530120482,
+            "count": 498,
+            "false_confuser_rate": 0.40963855421686746,
+            "false_reacquisition_rate": 0.40963855421686746,
+            "top1": 0.5903614457831325,
+            "top5": 0.9036144578313253,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_and_long_gap": {
+            "MRR": 0.733132530120482,
+            "count": 498,
+            "false_confuser_rate": 0.40963855421686746,
+            "false_reacquisition_rate": 0.40963855421686746,
+            "top1": 0.5903614457831325,
+            "top5": 0.9036144578313253,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_reappearance": {
+            "MRR": 0.6953703703703704,
+            "count": 1038,
+            "false_confuser_rate": 0.4797687861271676,
+            "false_reacquisition_rate": 0.4797687861271676,
+            "top1": 0.5202312138728323,
+            "top5": 0.930635838150289,
+            "valid_item_seed_rows": 1038,
+            "valid_items": 94
+          }
+        }
+      },
+      "group_breakdown": {
+        "OOD_confuser": {
+          "MRR": 0.6989213440244368,
+          "count": 582,
+          "false_confuser_rate": 0.4845360824742268,
+          "false_reacquisition_rate": 0.4845360824742268,
+          "top1": 0.5154639175257731,
+          "top5": 0.9381443298969072,
+          "valid_item_seed_rows": 582,
+          "valid_items": 82
+        },
+        "all_reacquisition_items": {
+          "MRR": 0.6953703703703704,
+          "count": 1038,
+          "false_confuser_rate": 0.4797687861271676,
+          "false_reacquisition_rate": 0.4797687861271676,
+          "top1": 0.5202312138728323,
+          "top5": 0.930635838150289,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "appearance_similar_confuser": {
+          "MRR": 0.7235576923076923,
+          "count": 624,
+          "false_confuser_rate": 0.46153846153846156,
+          "false_reacquisition_rate": 0.46153846153846156,
+          "top1": 0.5384615384615384,
+          "top5": 0.9807692307692307,
+          "valid_item_seed_rows": 624,
+          "valid_items": 55
+        },
+        "crossing_or_overlap_confuser": {
+          "MRR": 0.5511288685946221,
+          "count": 438,
+          "false_confuser_rate": 0.6575342465753424,
+          "false_reacquisition_rate": 0.6575342465753424,
+          "top1": 0.3424657534246575,
+          "top5": 0.8493150684931506,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "long_gap_persistence": {
+          "MRR": 0.733132530120482,
+          "count": 498,
+          "false_confuser_rate": 0.40963855421686746,
+          "false_reacquisition_rate": 0.40963855421686746,
+          "top1": 0.5903614457831325,
+          "top5": 0.9036144578313253,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_and_long_gap": {
+          "MRR": 0.733132530120482,
+          "count": 498,
+          "false_confuser_rate": 0.40963855421686746,
+          "false_reacquisition_rate": 0.40963855421686746,
+          "top1": 0.5903614457831325,
+          "top5": 0.9036144578313253,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.6953703703703704,
+          "count": 1038,
+          "false_confuser_rate": 0.4797687861271676,
+          "false_reacquisition_rate": 0.4797687861271676,
+          "top1": 0.5202312138728323,
+          "top5": 0.930635838150289,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "spatially_close_confuser": {
+          "MRR": 0.6114862707535121,
+          "count": 696,
+          "false_confuser_rate": 0.603448275862069,
+          "false_reacquisition_rate": 0.603448275862069,
+          "top1": 0.39655172413793105,
+          "top5": 0.9137931034482759,
+          "valid_item_seed_rows": 696,
+          "valid_items": 63
+        }
+      },
+      "top1": 0.5202312138728323,
+      "top5": 0.930635838150289,
+      "valid_item_seed_rows": 1038,
+      "valid_items": 94
+    },
+    "legacysem": {
+      "MRR": 0.44222752545059807,
+      "candidate_count_bins": {
+        "candidate_count_5_7": {
+          "MRR": 0.5118644067796609,
+          "count": 354,
+          "false_confuser_rate": 0.7768361581920904,
+          "false_reacquisition_rate": 0.7768361581920904,
+          "top1": 0.2231638418079096,
+          "top5": 0.9322033898305084,
+          "valid_item_seed_rows": 354,
+          "valid_items": 32
+        },
+        "candidate_count_ge_8": {
+          "MRR": 0.3251876059765315,
+          "count": 438,
+          "false_confuser_rate": 0.8538812785388128,
+          "false_reacquisition_rate": 0.8538812785388128,
+          "top1": 0.1461187214611872,
+          "top5": 0.5799086757990868,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "candidate_count_le_4": {
+          "MRR": 0.5504065040650407,
+          "count": 246,
+          "false_confuser_rate": 0.8048780487804879,
+          "false_reacquisition_rate": 0.8048780487804879,
+          "top1": 0.1951219512195122,
+          "top5": 0.991869918699187,
+          "valid_item_seed_rows": 246,
+          "valid_items": 23
+        }
+      },
+      "count": 1038,
+      "false_confuser_rate": 0.8159922928709056,
+      "false_reacquisition_rate": 0.8159922928709056,
+      "gap_length_bins": {
+        "available": false,
+        "exact_missing_reason": "No numeric gap length field exists in source per-item rows; occlusion/long-gap subset tags are used for proxy breakdown only.",
+        "proxy_by_subset_tag": {
+          "long_gap_persistence": {
+            "MRR": 0.4890084146108242,
+            "count": 498,
+            "false_confuser_rate": 0.785140562248996,
+            "false_reacquisition_rate": 0.785140562248996,
+            "top1": 0.21485943775100402,
+            "top5": 0.8875502008032129,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_and_long_gap": {
+            "MRR": 0.4890084146108242,
+            "count": 498,
+            "false_confuser_rate": 0.785140562248996,
+            "false_reacquisition_rate": 0.785140562248996,
+            "top1": 0.21485943775100402,
+            "top5": 0.8875502008032129,
+            "valid_item_seed_rows": 498,
+            "valid_items": 40
+          },
+          "occlusion_reappearance": {
+            "MRR": 0.44222752545059807,
+            "count": 1038,
+            "false_confuser_rate": 0.8159922928709056,
+            "false_reacquisition_rate": 0.8159922928709056,
+            "top1": 0.18400770712909442,
+            "top5": 0.7976878612716763,
+            "valid_item_seed_rows": 1038,
+            "valid_items": 94
+          }
+        }
+      },
+      "group_breakdown": {
+        "OOD_confuser": {
+          "MRR": 0.45372417189188263,
+          "count": 582,
+          "false_confuser_rate": 0.8006872852233677,
+          "false_reacquisition_rate": 0.8006872852233677,
+          "top1": 0.19931271477663232,
+          "top5": 0.8058419243986255,
+          "valid_item_seed_rows": 582,
+          "valid_items": 82
+        },
+        "all_reacquisition_items": {
+          "MRR": 0.44222752545059807,
+          "count": 1038,
+          "false_confuser_rate": 0.8159922928709056,
+          "false_reacquisition_rate": 0.8159922928709056,
+          "top1": 0.18400770712909442,
+          "top5": 0.7976878612716763,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "appearance_similar_confuser": {
+          "MRR": 0.4915393812028427,
+          "count": 624,
+          "false_confuser_rate": 0.7740384615384616,
+          "false_reacquisition_rate": 0.7740384615384616,
+          "top1": 0.22596153846153846,
+          "top5": 0.8942307692307693,
+          "valid_item_seed_rows": 624,
+          "valid_items": 55
+        },
+        "crossing_or_overlap_confuser": {
+          "MRR": 0.394631540949517,
+          "count": 438,
+          "false_confuser_rate": 0.8310502283105022,
+          "false_reacquisition_rate": 0.8310502283105022,
+          "top1": 0.1689497716894977,
+          "top5": 0.680365296803653,
+          "valid_item_seed_rows": 438,
+          "valid_items": 39
+        },
+        "long_gap_persistence": {
+          "MRR": 0.4890084146108242,
+          "count": 498,
+          "false_confuser_rate": 0.785140562248996,
+          "false_reacquisition_rate": 0.785140562248996,
+          "top1": 0.21485943775100402,
+          "top5": 0.8875502008032129,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_and_long_gap": {
+          "MRR": 0.4890084146108242,
+          "count": 498,
+          "false_confuser_rate": 0.785140562248996,
+          "false_reacquisition_rate": 0.785140562248996,
+          "top1": 0.21485943775100402,
+          "top5": 0.8875502008032129,
+          "valid_item_seed_rows": 498,
+          "valid_items": 40
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.44222752545059807,
+          "count": 1038,
+          "false_confuser_rate": 0.8159922928709056,
+          "false_reacquisition_rate": 0.8159922928709056,
+          "top1": 0.18400770712909442,
+          "top5": 0.7976878612716763,
+          "valid_item_seed_rows": 1038,
+          "valid_items": 94
+        },
+        "spatially_close_confuser": {
+          "MRR": 0.3826132731097521,
+          "count": 696,
+          "false_confuser_rate": 0.8462643678160919,
+          "false_reacquisition_rate": 0.8462643678160919,
+          "top1": 0.15373563218390804,
+          "top5": 0.7011494252873564,
+          "valid_item_seed_rows": 696,
+          "valid_items": 63
+        }
+      },
+      "top1": 0.18400770712909442,
+      "top5": 0.7976878612716763,
+      "valid_item_seed_rows": 1038,
+      "valid_items": 94
+    }
+  },
+  "existing_stwm_comparators_source": "reports/stwm_reacquisition_v2_eval_20260425.json",
+  "per_baseline_results": {
+    "cotracker": {
+      "baseline_name": "cotracker",
+      "exact_blocking_reason": "checkpoint_missing_or_download_unfinished; existing STWM reports expose per-item rankings/subset tags but not raw frame paths, observed prompt masks/boxes, future frame indices, or future candidate masks/boxes required by VOS/tracking baselines",
+      "full_eval_completed": false,
+      "per_baseline_results": null,
+      "per_subset_results": {},
+      "skipped_reason_counts": {
+        "smoke_failed": 1
+      }
+    },
+    "cutie": {
+      "baseline_name": "cutie",
+      "exact_blocking_reason": "existing STWM reports expose per-item rankings/subset tags but not raw frame paths, observed prompt masks/boxes, future frame indices, or future candidate masks/boxes required by VOS/tracking baselines",
+      "full_eval_completed": false,
+      "per_baseline_results": null,
+      "per_subset_results": {},
+      "skipped_reason_counts": {
+        "smoke_failed": 1
+      }
+    },
+    "sam2": {
+      "baseline_name": "sam2",
+      "exact_blocking_reason": "existing STWM reports expose per-item rankings/subset tags but not raw frame paths, observed prompt masks/boxes, future frame indices, or future candidate masks/boxes required by VOS/tracking baselines",
+      "full_eval_completed": false,
+      "per_baseline_results": null,
+      "per_subset_results": {},
+      "skipped_reason_counts": {
+        "smoke_failed": 1
+      }
+    }
+  },
+  "per_item_results_hash": "3681c7d2a6a7f9f8b5f47a51c4ff04e68dd5603b956ee2fd30f4204f9a5f2713",
+  "per_subset_results": {},
+  "skipped_reason_counts": {
+    "cotracker": {
+      "smoke_failed": 1
+    },
+    "cutie": {
+      "smoke_failed": 1
+    },
+    "sam2": {
+      "smoke_failed": 1
+    }
+  }
+}

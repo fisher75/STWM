@@ -1,0 +1,30 @@
+# STWM External Baseline Full Eval Decision 20260426
+
+```json
+{
+  "cotracker_completed": true,
+  "created_at": "2026-04-27T16:10:02+0800",
+  "cutie_completed": true,
+  "next_step_choice": "add_external_baselines_to_main_paper",
+  "notes": [
+    "External full eval is deterministic frozen inference on the materialized manifest; smoke scores were not reused.",
+    "STWM official comparison uses existing official reports only; no official STWM result was modified.",
+    "If CoTracker overall is stronger but STWM is stronger on selected hard subsets, report that decomposition honestly."
+  ],
+  "recommended_appendix_external_baselines": [
+    "cutie"
+  ],
+  "recommended_main_paper_external_baselines": [
+    "sam2",
+    "cotracker"
+  ],
+  "sam2_completed": true,
+  "strongest_external_baseline": "sam2",
+  "stwm_false_confuser_improved_vs_strongest_external": false,
+  "stwm_improved_vs_cotracker": false,
+  "stwm_improved_vs_cutie": true,
+  "stwm_improved_vs_sam2": false,
+  "stwm_improved_vs_strongest_external": false,
+  "stwm_long_gap_or_occlusion_improved_vs_strongest_external": true
+}
+```
