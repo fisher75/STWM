@@ -1,0 +1,7 @@
+# STWM World Model No Drift Guardrail V5
+
+- generated_at_utc: `2026-04-27T16:29:49Z`
+- allowed: `["Visibility and reappearance are separate FutureSemanticTraceState predictions.", "Reappearance training can start only after independent future_reappearance_logit export/eval smoke passes.", "Random-init reappearance AUROC/AP can be logged as smoke diagnostics, not model ability."]`
+- forbidden: `["Using future_visibility_logit as reappearance probability.", "Claiming calibrated reappearance from visibility probability.", "Training reappearance loss on the same logit as visibility loss.", "Proceeding to large training before reappearance-head smoke passes.", "Interpreting random-init reappearance metrics as learned reappearance ability."]`
+- this_round_training_started: `False`
+- this_round_status: `independent reappearance head/export/eval smoke passed; no capability claim yet`

@@ -67,6 +67,9 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
         f"- total_items: `{payload.get('total_items')}`",
         f"- valid_items: `{payload.get('valid_items')}`",
         f"- valid_ratio: `{payload.get('valid_ratio')}`",
+        f"- future_reappearance_head_available: `{payload.get('future_reappearance_head_available')}`",
+        f"- reappearance_prob_source: `{payload.get('reappearance_prob_source')}`",
+        f"- reappearance_head_weights_random_init: `{payload.get('reappearance_head_weights_random_init')}`",
         "",
         "The export contains raw-output-derived shape/stat/variance fields for FutureSemanticTraceState. It does not export association top1/MRR/false-confuser metrics.",
     ]
@@ -355,10 +358,15 @@ def _build_full_model_from_checkpoint(repo_root: Path, checkpoint: Path, device:
     missing, unexpected = readout_head.load_state_dict(payload.get("readout_head_state_dict", {}), strict=False)
     load_report["readout_head"] = {"loaded_keys": len(payload.get("readout_head_state_dict", {}) or {}), "missing": len(missing), "unexpected": len(unexpected)}
     missing, unexpected = future_semantic_state_head.load_state_dict(payload.get("future_semantic_state_head_state_dict", {}), strict=False)
+    missing_reappearance = [str(k) for k in missing if str(k).startswith("reappearance_head.")]
     load_report["future_semantic_state_head"] = {
         "loaded_keys": len(payload.get("future_semantic_state_head_state_dict", {}) or {}),
         "missing": len(missing),
         "unexpected": len(unexpected),
+        "missing_keys": [str(k) for k in missing],
+        "unexpected_keys": [str(k) for k in unexpected],
+        "missing_reappearance_head_weights": bool(missing_reappearance),
+        "missing_reappearance_head_weight_keys": missing_reappearance,
     }
     optional = [
         ("trace_unit_tokenizer", trace_unit_tokenizer, "trace_unit_tokenizer_state_dict"),
@@ -455,6 +463,8 @@ def _item_forward(
         state = head(hidden, future_trace_coord=base_coord)
         validation = state.validate(strict=False)
         visibility_prob = torch.sigmoid(state.future_visibility_logit)
+        reappearance_head_available = state.future_reappearance_logit is not None
+        reappearance_prob = torch.sigmoid(state.future_reappearance_logit) if reappearance_head_available else None
         uncertainty = F.softplus(state.future_uncertainty)
         sem = state.future_semantic_embedding
         ident = state.future_identity_embedding
@@ -483,6 +493,15 @@ def _item_forward(
             "future_visibility_prob_std": _tensor_stats(visibility_prob)["std"],
             "future_visibility_prob_min": _tensor_stats(visibility_prob)["min"],
             "future_visibility_prob_max": _tensor_stats(visibility_prob)["max"],
+            "future_reappearance_head_available": bool(reappearance_head_available),
+            "reappearance_prob_source": "future_reappearance_logit" if reappearance_head_available else "missing_reappearance_head",
+            "future_reappearance_logit_shape": list(state.future_reappearance_logit.shape) if reappearance_head_available else None,
+            "future_reappearance_prob_shape": list(reappearance_prob.shape) if reappearance_prob is not None else None,
+            "future_reappearance_prob_mean": _tensor_stats(reappearance_prob)["mean"] if reappearance_prob is not None else None,
+            "future_reappearance_prob_std": _tensor_stats(reappearance_prob)["std"] if reappearance_prob is not None else None,
+            "future_reappearance_prob_min": _tensor_stats(reappearance_prob)["min"] if reappearance_prob is not None else None,
+            "future_reappearance_prob_max": _tensor_stats(reappearance_prob)["max"] if reappearance_prob is not None else None,
+            "future_reappearance_prob_values": [],
             "future_semantic_embedding_shape": list(sem.shape),
             "future_semantic_embedding_norm_mean": _tensor_stats(sem_norm)["mean"],
             "future_semantic_embedding_norm_std": _tensor_stats(sem_norm)["std"],
@@ -518,6 +537,8 @@ def _item_from_state(
 ) -> dict[str, Any]:
     validation = state.validate(strict=False)
     visibility_prob = torch.sigmoid(state.future_visibility_logit)
+    reappearance_head_available = state.future_reappearance_logit is not None
+    reappearance_prob = torch.sigmoid(state.future_reappearance_logit) if reappearance_head_available else None
     uncertainty = F.softplus(state.future_uncertainty)
     sem = state.future_semantic_embedding
     ident = state.future_identity_embedding
@@ -548,6 +569,7 @@ def _item_from_state(
         "future_visibility_target_values": [],
         "future_reappearance_prob_values": [],
         "future_reappearance_target_values": [],
+        "reappearance_prob_source": "future_reappearance_logit" if reappearance_head_available else "missing_reappearance_head",
     }
     if visibility_targets is not None:
         vis_t = visibility_targets.future_visibility_target.detach().to(device=visibility_prob.device, dtype=torch.float32)
@@ -556,7 +578,7 @@ def _item_from_state(
         rep_m = visibility_targets.future_reappearance_mask.detach().to(device=visibility_prob.device, dtype=torch.bool)
         vis_vals = visibility_prob.detach()[vis_m].float().cpu().tolist()
         vis_labels = vis_t.detach()[vis_m].float().cpu().tolist()
-        rep_vals = visibility_prob.detach()[rep_m].float().cpu().tolist()
+        rep_vals = reappearance_prob.detach()[rep_m].float().cpu().tolist() if reappearance_prob is not None else []
         rep_labels = rep_t.detach()[rep_m].float().cpu().tolist()
         target_fields = {
             "future_visibility_target_shape": list(vis_t.shape),
@@ -572,6 +594,7 @@ def _item_from_state(
             "future_visibility_target_values": [int(round(float(x))) for x in vis_labels],
             "future_reappearance_prob_values": [float(x) for x in rep_vals],
             "future_reappearance_target_values": [int(round(float(x))) for x in rep_labels],
+            "reappearance_prob_source": "future_reappearance_logit" if reappearance_head_available else "missing_reappearance_head",
         }
     item = {
         "item_id": item_id,
@@ -590,6 +613,14 @@ def _item_from_state(
         "future_visibility_prob_std": _tensor_stats(visibility_prob)["std"],
         "future_visibility_prob_min": _tensor_stats(visibility_prob)["min"],
         "future_visibility_prob_max": _tensor_stats(visibility_prob)["max"],
+        "future_reappearance_head_available": bool(reappearance_head_available),
+        "reappearance_prob_source": "future_reappearance_logit" if reappearance_head_available else "missing_reappearance_head",
+        "future_reappearance_logit_shape": list(state.future_reappearance_logit.shape) if reappearance_head_available else None,
+        "future_reappearance_prob_shape": list(reappearance_prob.shape) if reappearance_prob is not None else None,
+        "future_reappearance_prob_mean": _tensor_stats(reappearance_prob)["mean"] if reappearance_prob is not None else None,
+        "future_reappearance_prob_std": _tensor_stats(reappearance_prob)["std"] if reappearance_prob is not None else None,
+        "future_reappearance_prob_min": _tensor_stats(reappearance_prob)["min"] if reappearance_prob is not None else None,
+        "future_reappearance_prob_max": _tensor_stats(reappearance_prob)["max"] if reappearance_prob is not None else None,
         "future_semantic_embedding_shape": list(sem.shape),
         "future_semantic_embedding_norm_mean": _tensor_stats(sem_norm)["mean"],
         "future_semantic_embedding_norm_std": _tensor_stats(sem_norm)["std"],
@@ -780,6 +811,20 @@ def export(
         for item in exported_items
         if isinstance(item.get("future_reappearance_supervised_ratio"), (int, float))
     ]
+    reappearance_head_available = bool(
+        exported_items and all(bool(item.get("future_reappearance_head_available")) for item in exported_items if bool(item.get("valid_output")))
+    )
+    reappearance_sources = [str(item.get("reappearance_prob_source", "")) for item in exported_items if item.get("reappearance_prob_source")]
+    reappearance_prob_source = "future_reappearance_logit" if reappearance_sources and all(x == "future_reappearance_logit" for x in reappearance_sources) else (
+        reappearance_sources[0] if reappearance_sources else "missing_reappearance_head"
+    )
+    missing_reappearance_head_weights = bool(any(str(k).startswith("reappearance_head.") for k in locals().get("missing", [])))
+    if full_report:
+        missing_reappearance_head_weights = bool(
+            full_report.get("load_report", {})
+            .get("future_semantic_state_head", {})
+            .get("missing_reappearance_head_weights", missing_reappearance_head_weights)
+        )
     visibility_metric_status = (
         "calibrated_visibility_available"
         if target_quality == "strong_slot_aligned"
@@ -813,6 +858,10 @@ def export(
         "enable_future_semantic_state_head": True,
         "state_dict_missing_keys": [str(x) for x in locals().get("missing", [])],
         "state_dict_unexpected_keys": [str(x) for x in locals().get("unexpected", [])],
+        "missing_reappearance_head_weights": bool(missing_reappearance_head_weights),
+        "reappearance_head_weights_random_init": bool(missing_reappearance_head_weights and reappearance_head_available),
+        "future_reappearance_head_available": bool(reappearance_head_available),
+        "reappearance_prob_source": reappearance_prob_source,
         "manifest": str(manifest),
         "device": str(device),
         "random_hidden_used": bool(random_hidden_used),

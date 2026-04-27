@@ -1,0 +1,18 @@
+{
+  "auto_pos_weight_added": true,
+  "auto_pos_weight_formula": "negatives / positives under future_reappearance_mask, clamped to [1, future_reappearance_pos_weight_max]",
+  "future_reappearance_logit_source": "SemanticTraceStateHead.reappearance_head(future_hidden)",
+  "generated_at_utc": "2026-04-27T16:29:49Z",
+  "independent_reappearance_head_added": true,
+  "loss_info_fields": [
+    "future_reappearance_head_available",
+    "future_reappearance_pos_weight",
+    "future_reappearance_positive_rate",
+    "future_reappearance_loss_uses_independent_logit"
+  ],
+  "missing_reappearance_logit_with_positive_loss_policy": "raises RuntimeError instead of silent fallback",
+  "reappearance_loss_uses": "state.future_reappearance_logit",
+  "updated_file": "code/stwm/tracewm_v2_stage2/models/semantic_trace_world_head.py",
+  "visibility_logit_used_as_reappearance_fallback": false,
+  "visibility_loss_uses": "state.future_visibility_logit"
+}

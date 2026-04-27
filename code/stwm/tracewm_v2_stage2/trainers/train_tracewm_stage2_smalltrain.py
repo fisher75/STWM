@@ -281,6 +281,8 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-loss-weight", type=float, default=0.0)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-reappearance-pos-weight", default="auto")
+    p.add_argument("--future-reappearance-pos-weight-max", type=float, default=50.0)
     p.add_argument("--future-identity-belief-loss-weight", type=float, default=0.0)
     p.add_argument("--future-uncertainty-loss-weight", type=float, default=0.0)
     p.add_argument("--future-hypothesis-count", type=int, default=1)
@@ -4092,6 +4094,9 @@ def main() -> None:
     future_reappearance_supervised_ratio_history: List[float] = []
     future_visibility_positive_rate_history: List[float] = []
     future_reappearance_positive_rate_history: List[float] = []
+    future_reappearance_pos_weight_history: List[float] = []
+    future_reappearance_head_available_history: List[float] = []
+    future_reappearance_loss_uses_independent_logit_history: List[float] = []
     future_visibility_target_source_history: List[str] = []
     future_visibility_target_quality_history: List[str] = []
     trace_unit_loss_history: List[float] = []
@@ -4407,6 +4412,8 @@ def main() -> None:
                     semantic_loss_weight=float(args.future_semantic_loss_weight),
                     visibility_loss_weight=float(args.future_visibility_loss_weight),
                     reappearance_loss_weight=float(args.future_reappearance_loss_weight),
+                    reappearance_pos_weight=args.future_reappearance_pos_weight,
+                    reappearance_pos_weight_max=float(args.future_reappearance_pos_weight_max),
                     identity_belief_loss_weight=float(args.future_identity_belief_loss_weight),
                     uncertainty_loss_weight=float(args.future_uncertainty_loss_weight),
                     hypothesis_loss_weight=float(args.future_hypothesis_loss_weight),
@@ -4497,6 +4504,14 @@ def main() -> None:
         future_reappearance_supervised_ratio_history.append(float(future_semantic_state_info.get("future_reappearance_supervised_ratio", 0.0)))
         future_visibility_positive_rate_history.append(float(future_semantic_state_info.get("future_visibility_positive_rate", 0.0)))
         future_reappearance_positive_rate_history.append(float(future_semantic_state_info.get("future_reappearance_positive_rate", 0.0)))
+        if future_semantic_state_info.get("future_reappearance_pos_weight") is not None:
+            future_reappearance_pos_weight_history.append(float(future_semantic_state_info.get("future_reappearance_pos_weight", 0.0)))
+        future_reappearance_head_available_history.append(
+            1.0 if bool(future_semantic_state_info.get("future_reappearance_head_available", False)) else 0.0
+        )
+        future_reappearance_loss_uses_independent_logit_history.append(
+            1.0 if bool(future_semantic_state_info.get("future_reappearance_loss_uses_independent_logit", False)) else 0.0
+        )
         future_visibility_target_source_history.append(str(future_semantic_state_info.get("future_visibility_target_source", "")))
         future_visibility_target_quality_history.append(str(future_semantic_state_info.get("future_visibility_target_quality", "")))
         trace_unit_loss_history.append(float(trace_unit_info.get("trace_unit_loss", 0.0)))
@@ -4948,6 +4963,17 @@ def main() -> None:
             "future_reappearance_supervised_ratio_mean": float(sum(future_reappearance_supervised_ratio_history) / max(len(future_reappearance_supervised_ratio_history), 1)),
             "future_visibility_positive_rate_mean": float(sum(future_visibility_positive_rate_history) / max(len(future_visibility_positive_rate_history), 1)),
             "future_reappearance_positive_rate_mean": float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1)),
+            "future_reappearance_head_available": bool(
+                sum(future_reappearance_head_available_history) / max(len(future_reappearance_head_available_history), 1) > 0.5
+            ),
+            "future_reappearance_loss_uses_independent_logit": bool(
+                sum(future_reappearance_loss_uses_independent_logit_history)
+                / max(len(future_reappearance_loss_uses_independent_logit_history), 1)
+                > 0.5
+            ),
+            "future_reappearance_pos_weight_mean": float(sum(future_reappearance_pos_weight_history) / max(len(future_reappearance_pos_weight_history), 1)),
+            "future_reappearance_pos_weight_setting": str(args.future_reappearance_pos_weight),
+            "future_reappearance_pos_weight_max": float(args.future_reappearance_pos_weight_max),
         },
         "trace_unit_metrics": {
             "enabled": bool(structure_mode == "trace_unit_semantic_binding"),

@@ -415,9 +415,14 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
     rep_supervised = []
     vis_positive = []
     rep_positive = []
+    reappearance_head_flags: list[bool] = []
+    reappearance_prob_sources: list[str] = []
     for item in valid_items:
         target_qualities.append(str(item.get("future_visibility_target_quality", "")))
         target_sources.append(str(item.get("future_visibility_target_source", "")))
+        reappearance_head_flags.append(bool(item.get("future_reappearance_head_available")))
+        if item.get("reappearance_prob_source"):
+            reappearance_prob_sources.append(str(item.get("reappearance_prob_source")))
         if isinstance(item.get("future_visibility_supervised_ratio"), (int, float)):
             vis_supervised.append(float(item["future_visibility_supervised_ratio"]))
         if isinstance(item.get("future_reappearance_supervised_ratio"), (int, float)):
@@ -457,7 +462,20 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
     target_source = next((x for x in target_sources if x), "unavailable")
     both_class_visibility = _both_classes(visibility_labels)
     both_class_reappearance = _both_classes(reappearance_labels)
+    reappearance_head_available = bool(reappearance_head_flags and all(reappearance_head_flags))
+    reappearance_prob_source = (
+        "future_reappearance_logit"
+        if reappearance_prob_sources and all(x == "future_reappearance_logit" for x in reappearance_prob_sources)
+        else next((x for x in reappearance_prob_sources if x), "missing_reappearance_head")
+    )
     calibrated_visibility_available = bool(target_quality == "strong_slot_aligned" and both_class_visibility and binary_auc(visibility_scores, visibility_labels) is not None)
+    calibrated_reappearance_available = bool(
+        target_quality == "strong_slot_aligned"
+        and both_class_reappearance
+        and reappearance_head_available
+        and reappearance_prob_source == "future_reappearance_logit"
+        and binary_auc(reappearance_scores, reappearance_labels) is not None
+    )
     visibility_metric_status = (
         "calibrated_visibility_available"
         if calibrated_visibility_available
@@ -465,6 +483,19 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         if target_quality != "strong_slot_aligned" and target_quality != "weak_unavailable"
         else "target_available_but_single_class"
         if target_quality == "strong_slot_aligned" and not both_class_visibility
+        else "target_unavailable"
+    )
+    reappearance_metric_status = (
+        "calibrated_reappearance_available"
+        if calibrated_reappearance_available
+        else "head_missing"
+        if not reappearance_head_available
+        else "prob_source_not_future_reappearance_logit"
+        if reappearance_prob_source != "future_reappearance_logit"
+        else "target_available_but_not_strong_slot_aligned"
+        if target_quality != "strong_slot_aligned" and target_quality != "weak_unavailable"
+        else "target_available_but_single_class"
+        if target_quality == "strong_slot_aligned" and not both_class_reappearance
         else "target_unavailable"
     )
     return {
@@ -491,6 +522,9 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         "future_reappearance_accuracy": reappearance_accuracy,
         "future_reappearance_AUROC": binary_auc(reappearance_scores, reappearance_labels),
         "future_reappearance_AP": binary_ap(reappearance_scores, reappearance_labels),
+        "future_reappearance_head_available": reappearance_head_available,
+        "reappearance_head_available": reappearance_head_available,
+        "reappearance_prob_source": reappearance_prob_source,
         "future_visibility_target_source": target_source,
         "future_visibility_target_quality": target_quality,
         "future_visibility_supervised_ratio": _safe_mean(vis_supervised),
@@ -500,7 +534,9 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         "both_class_visibility_available": both_class_visibility,
         "both_class_reappearance_available": both_class_reappearance,
         "calibrated_visibility_available": calibrated_visibility_available,
+        "calibrated_reappearance_available": calibrated_reappearance_available,
         "visibility_metric_status": visibility_metric_status,
+        "reappearance_metric_status": reappearance_metric_status,
         "uncertainty_error_correlation": pearson([x for x, _ in coord_error_pairs], [y for _, y in coord_error_pairs]),
     }
 
@@ -562,6 +598,11 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
         "paper_world_model_claimable_reason": "requires medium-scale semantic-state signal judgement without trace rollout regression",
         "visibility_metric_status": str(overall.get("visibility_metric_status") or export.get("visibility_metric_status") or "target_unavailable"),
         "calibrated_visibility_available": bool(overall.get("calibrated_visibility_available")),
+        "reappearance_metric_status": str(overall.get("reappearance_metric_status") or "head_missing"),
+        "calibrated_reappearance_available": bool(overall.get("calibrated_reappearance_available")),
+        "future_reappearance_head_available": bool(overall.get("future_reappearance_head_available")),
+        "reappearance_head_available": bool(overall.get("reappearance_head_available")),
+        "reappearance_prob_source": str(overall.get("reappearance_prob_source") or "missing_reappearance_head"),
         "current_export_data_source": str(export.get("current_export_data_source") or "unknown"),
         "semantic_state_signal_positive": True if engineering_output_claimable else "unclear",
         "trace_rollout_regression_detected": trace_regression,
@@ -600,6 +641,12 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
             f"- uncertainty_std_mean: `{fmt(overall.get('uncertainty_std_mean'))}`",
             f"- visibility_accuracy: `{fmt(overall.get('visibility_accuracy'))}`",
             f"- visibility_AUROC: `{fmt(overall.get('visibility_AUROC'))}`",
+            f"- calibrated_visibility_available: `{payload.get('calibrated_visibility_available')}`",
+            f"- reappearance_head_available: `{payload.get('reappearance_head_available')}`",
+            f"- reappearance_prob_source: `{payload.get('reappearance_prob_source')}`",
+            f"- future_reappearance_AUROC: `{fmt(overall.get('future_reappearance_AUROC'))}`",
+            f"- future_reappearance_AP: `{fmt(overall.get('future_reappearance_AP'))}`",
+            f"- calibrated_reappearance_available: `{payload.get('calibrated_reappearance_available')}`",
             f"- uncertainty_error_correlation: `{fmt(overall.get('uncertainty_error_correlation'))}`",
             f"- semantic_embedding_temporal_consistency: `{fmt(overall.get('semantic_embedding_temporal_consistency'))}`",
             f"- future_trace_coord_error: `{fmt(overall.get('future_trace_coord_error'))}`",

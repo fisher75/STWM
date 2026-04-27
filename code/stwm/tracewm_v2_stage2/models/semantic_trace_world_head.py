@@ -82,6 +82,10 @@ class SemanticTraceStateHead(torch.nn.Module):
             torch.nn.LayerNorm(hidden_dim),
             torch.nn.Linear(hidden_dim, 1),
         )
+        self.reappearance_head = torch.nn.Sequential(
+            torch.nn.LayerNorm(hidden_dim),
+            torch.nn.Linear(hidden_dim, 1),
+        )
         self.uncertainty_head = torch.nn.Sequential(
             torch.nn.LayerNorm(hidden_dim),
             torch.nn.Linear(hidden_dim, 1),
@@ -101,6 +105,7 @@ class SemanticTraceStateHead(torch.nn.Module):
         semantic_embedding = self.semantic_embedding_head(future_hidden)
         identity_embedding = self.identity_embedding_head(future_hidden)
         visibility_logit = self.visibility_head(future_hidden).squeeze(-1)
+        reappearance_logit = self.reappearance_head(future_hidden).squeeze(-1)
         uncertainty = self.uncertainty_head(future_hidden).squeeze(-1)
         semantic_logits = self.semantic_logit_head(future_hidden) if self.semantic_logit_head is not None else None
         extent_box = self.extent_head(future_hidden) if self.extent_head is not None else None
@@ -111,6 +116,7 @@ class SemanticTraceStateHead(torch.nn.Module):
         state = FutureSemanticTraceState(
             future_trace_coord=future_trace_coord,
             future_visibility_logit=visibility_logit,
+            future_reappearance_logit=reappearance_logit,
             future_semantic_embedding=semantic_embedding,
             future_semantic_logits=semantic_logits,
             future_identity_embedding=identity_embedding,
@@ -128,6 +134,8 @@ class FutureSemanticStateLossConfig:
     semantic_loss_weight: float = 0.0
     visibility_loss_weight: float = 0.0
     reappearance_loss_weight: float = 0.0
+    reappearance_pos_weight: float | str = "auto"
+    reappearance_pos_weight_max: float = 50.0
     identity_belief_loss_weight: float = 0.0
     uncertainty_loss_weight: float = 0.0
     hypothesis_loss_weight: float = 0.0
@@ -180,6 +188,31 @@ def _broadcast_instance_confidence(instance_confidence: torch.Tensor | None, val
     return valid & (conf.expand_as(valid.to(dtype=torch.float32)) >= float(threshold)), source
 
 
+def _resolve_reappearance_pos_weight(
+    *,
+    target: torch.Tensor,
+    mask: torch.Tensor,
+    setting: float | str,
+    max_value: float,
+) -> tuple[torch.Tensor | None, float | None, float | None]:
+    if not bool(mask.any().item()):
+        return None, None, None
+    target_valid = target[mask].to(dtype=torch.float32)
+    positive_rate = float(target_valid.mean().detach().cpu().item())
+    if isinstance(setting, str) and setting.strip().lower() == "auto":
+        pos = target_valid.sum()
+        neg = target_valid.numel() - pos
+        if float(pos.detach().cpu().item()) <= 0.0:
+            weight_value = float(max_value)
+        else:
+            weight_value = float((neg / pos).detach().cpu().item())
+        weight_value = max(1.0, min(float(max_value), weight_value))
+    else:
+        weight_value = float(setting)
+        weight_value = max(1.0, min(float(max_value), weight_value))
+    return torch.tensor(weight_value, device=target.device, dtype=torch.float32), weight_value, positive_rate
+
+
 def compute_future_semantic_state_losses(
     *,
     state: FutureSemanticTraceState,
@@ -219,12 +252,45 @@ def compute_future_semantic_state_losses(
         total = total + float(cfg.visibility_loss_weight) * visibility_loss
 
     reappearance_loss = zero
+    reappearance_pos_weight_value: float | None = None
+    reappearance_positive_rate: float | None = None
+    reappearance_blocked_reason: str | None = None
+    reappearance_head_available = state.future_reappearance_logit is not None
+    reappearance_uses_independent_logit = bool(reappearance_head_available and reappearance_target is not None)
     if reappearance_target is not None and float(cfg.reappearance_loss_weight) > 0.0:
+        if state.future_reappearance_logit is None:
+            raise RuntimeError("future_reappearance_loss_weight > 0 requires independent state.future_reappearance_logit")
         rep_target = reappearance_target.to(device=device, dtype=torch.float32)
         rep_valid = reappearance_mask.to(device=device, dtype=torch.bool) if reappearance_mask is not None else visibility_valid
-        rep_bce = F.binary_cross_entropy_with_logits(state.future_visibility_logit, rep_target, reduction="none")
+        pos_weight, reappearance_pos_weight_value, reappearance_positive_rate = _resolve_reappearance_pos_weight(
+            target=rep_target,
+            mask=rep_valid,
+            setting=cfg.reappearance_pos_weight,
+            max_value=float(cfg.reappearance_pos_weight_max),
+        )
+        if pos_weight is None:
+            reappearance_blocked_reason = "future_reappearance_mask_has_no_valid_entries"
+            rep_bce = state.future_reappearance_logit.sum() * 0.0
+        else:
+            rep_bce = F.binary_cross_entropy_with_logits(
+                state.future_reappearance_logit,
+                rep_target,
+                reduction="none",
+                pos_weight=pos_weight,
+            )
         reappearance_loss = _masked_mean(rep_bce, rep_valid)
         total = total + float(cfg.reappearance_loss_weight) * reappearance_loss
+    elif reappearance_target is not None:
+        rep_target = reappearance_target.to(device=device, dtype=torch.float32)
+        rep_valid = reappearance_mask.to(device=device, dtype=torch.bool) if reappearance_mask is not None else visibility_valid
+        _, reappearance_pos_weight_value, reappearance_positive_rate = _resolve_reappearance_pos_weight(
+            target=rep_target,
+            mask=rep_valid,
+            setting=cfg.reappearance_pos_weight,
+            max_value=float(cfg.reappearance_pos_weight_max),
+        )
+    elif float(cfg.reappearance_loss_weight) > 0.0:
+        reappearance_blocked_reason = "future_reappearance_target_missing"
 
     identity_loss = zero
     id_valid, instance_confidence_broadcast = _broadcast_instance_confidence(
@@ -260,6 +326,13 @@ def compute_future_semantic_state_losses(
         "future_semantic_loss_weight": float(cfg.semantic_loss_weight),
         "future_visibility_loss_weight": float(cfg.visibility_loss_weight),
         "future_reappearance_loss_weight": float(cfg.reappearance_loss_weight),
+        "future_reappearance_head_available": bool(reappearance_head_available),
+        "future_reappearance_pos_weight": reappearance_pos_weight_value,
+        "future_reappearance_pos_weight_setting": str(cfg.reappearance_pos_weight),
+        "future_reappearance_pos_weight_max": float(cfg.reappearance_pos_weight_max),
+        "future_reappearance_positive_rate": reappearance_positive_rate,
+        "future_reappearance_loss_uses_independent_logit": bool(reappearance_uses_independent_logit),
+        "future_reappearance_loss_blocked_reason": reappearance_blocked_reason,
         "future_identity_belief_loss_weight": float(cfg.identity_belief_loss_weight),
         "future_uncertainty_loss_weight": float(cfg.uncertainty_loss_weight),
         "future_hypothesis_loss_weight": float(cfg.hypothesis_loss_weight),
