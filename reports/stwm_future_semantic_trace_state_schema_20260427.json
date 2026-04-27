@@ -1,0 +1,45 @@
+{
+  "backward_compatibility_preserved": true,
+  "default_behavior": {
+    "checkpoint_compatibility": "old checkpoints load because head absent unless flag enabled",
+    "enabled_by_default": false,
+    "loss_weights_default_zero": true
+  },
+  "generated_at": "2026-04-27T21:11:28+0800",
+  "head_file": "code/stwm/tracewm_v2_stage2/models/semantic_trace_world_head.py",
+  "losses": {
+    "future_hypothesis_loss": "default hypothesis-0 CE placeholder when enabled; weight default zero",
+    "future_identity_belief_loss": "cosine loss gated by semantic_entity_true_instance_confidence when nonzero weight",
+    "future_semantic_embedding_loss": "cosine loss to current semantic tokens when nonzero weight",
+    "future_trace_coord_loss": "existing coord/readout loss retained; report field reserved as 0 in new head loss block",
+    "future_uncertainty_loss": "diagnostic smooth-L1 to detached coord error when nonzero weight",
+    "future_visibility_loss": "BCE with fut_valid/token_mask targets when nonzero weight"
+  },
+  "optional_tensors": {
+    "future_extent_box": "[B,H,K,4] optional",
+    "future_hypothesis_logits": "[B,M] optional",
+    "future_hypothesis_trace_coord": "[B,M,H,K,2 or 3] optional",
+    "future_semantic_logits": "[B,H,K,C] optional"
+  },
+  "required_tensors": {
+    "future_identity_embedding": "[B,H,K,D_id]",
+    "future_semantic_embedding": "[B,H,K,D_sem]",
+    "future_trace_coord": "[B,H,K,2 or 3]",
+    "future_uncertainty": "[B,H,K]",
+    "future_visibility_logit": "[B,H,K]"
+  },
+  "schema_file": "code/stwm/tracewm_v2_stage2/models/future_semantic_trace_state.py",
+  "schema_name": "FutureSemanticTraceState",
+  "training_flags": [
+    "--enable-future-semantic-state-head",
+    "--future-semantic-embedding-dim",
+    "--future-semantic-loss-weight",
+    "--future-visibility-loss-weight",
+    "--future-identity-belief-loss-weight",
+    "--future-uncertainty-loss-weight",
+    "--future-hypothesis-count",
+    "--future-hypothesis-loss-weight",
+    "--enable-future-extent-head",
+    "--enable-future-multihypothesis-head"
+  ]
+}

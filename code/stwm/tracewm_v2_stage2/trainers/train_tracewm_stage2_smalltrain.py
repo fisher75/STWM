@@ -45,6 +45,12 @@ from stwm.tracewm_v2_stage2.models.trace_unit_tokenizer import (
     TraceUnitTokenizer,
     TraceUnitTokenizerConfig,
 )
+from stwm.tracewm_v2_stage2.models.semantic_trace_world_head import (
+    FutureSemanticStateLossConfig,
+    SemanticTraceStateHead,
+    SemanticTraceStateHeadConfig,
+    compute_future_semantic_state_losses,
+)
 
 
 def now_iso() -> str:
@@ -269,6 +275,16 @@ def parse_args() -> Any:
         "--semantic-hard-manifest-path",
         default="/home/chen034/workspace/stwm/manifests/protocol_v2/stage2_semantic_hard_subsets_20260410.json",
     )
+    p.add_argument("--enable-future-semantic-state-head", action="store_true")
+    p.add_argument("--future-semantic-embedding-dim", type=int, default=256)
+    p.add_argument("--future-semantic-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-identity-belief-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-uncertainty-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-hypothesis-count", type=int, default=1)
+    p.add_argument("--future-hypothesis-loss-weight", type=float, default=0.0)
+    p.add_argument("--enable-future-extent-head", action="store_true")
+    p.add_argument("--enable-future-multihypothesis-head", action="store_true")
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -586,6 +602,7 @@ def _teacher_forced_predict(
     obs_len: int,
     semantic_source_mainline: str,
     allow_stage1_grad: bool = False,
+    future_semantic_state_head: SemanticTraceStateHead | None = None,
 ) -> Dict[str, Any]:
     full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
     shifted = _prepare_shifted(full_state)
@@ -619,6 +636,10 @@ def _teacher_forced_predict(
         disable_instance_path=bool(trace_unit_disable_instance_path),
     )
     pred_coord = readout_head(enhanced_hidden[:, int(obs_len) :])
+    future_hidden = enhanced_hidden[:, int(obs_len) :]
+    future_semantic_trace_state = None
+    if future_semantic_state_head is not None:
+        future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_coord)
 
     target_coord = batch["fut_state"][..., 0:2]
     valid_mask = batch["fut_valid"] & token_mask[:, None, :]
@@ -628,7 +649,8 @@ def _teacher_forced_predict(
         "target_coord": target_coord,
         "valid_mask": valid_mask,
         "semantic_tokens": sem_enc,
-        "future_fused_hidden": enhanced_hidden[:, int(obs_len) :],
+        "future_fused_hidden": future_hidden,
+        "future_semantic_trace_state": future_semantic_trace_state,
         "gate_mean": float(aux.get("gate_mean", 0.0)),
         "gate_std": float(aux.get("gate_std", 0.0)),
         "semantic_input_nonempty": bool((batch["semantic_mask"] & token_mask).any().item()),
@@ -3498,6 +3520,7 @@ def _checkpoint_payload(
     semantic_encoder: SemanticEncoder,
     semantic_fusion: SemanticFusion,
     readout_head: torch.nn.Linear,
+    future_semantic_state_head: SemanticTraceStateHead | None,
     semantic_rescue_heads: SemanticRescueAuxHeads | None,
     trace_unit_tokenizer: TraceUnitTokenizer | None,
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
@@ -3519,6 +3542,8 @@ def _checkpoint_payload(
         "args": vars(args),
         "run_metadata": run_metadata,
     }
+    if future_semantic_state_head is not None:
+        payload["future_semantic_state_head_state_dict"] = future_semantic_state_head.state_dict()
     if semantic_rescue_heads is not None:
         payload["semantic_rescue_heads_state_dict"] = semantic_rescue_heads.state_dict()
     if trace_unit_tokenizer is not None:
@@ -3680,6 +3705,19 @@ def main() -> None:
         )
     ).to(device)
     readout_head = torch.nn.Linear(fusion_hidden_dim, 2).to(device)
+    future_semantic_state_head: SemanticTraceStateHead | None = None
+    if bool(args.enable_future_semantic_state_head):
+        future_semantic_state_head = SemanticTraceStateHead(
+            SemanticTraceStateHeadConfig(
+                hidden_dim=int(fusion_hidden_dim),
+                semantic_embedding_dim=int(args.future_semantic_embedding_dim),
+                identity_embedding_dim=int(args.future_semantic_embedding_dim),
+                hypothesis_count=int(args.future_hypothesis_count),
+                enable_extent_head=bool(args.enable_future_extent_head),
+                enable_multi_hypothesis_head=bool(args.enable_future_multihypothesis_head)
+                or int(args.future_hypothesis_count) > 1,
+            )
+        ).to(device)
     trace_unit_tokenizer: TraceUnitTokenizer | None = None
     trace_unit_factorized_state: TraceUnitFactorizedState | None = None
     trace_unit_handshake: TraceUnitHandshake | None = None
@@ -3739,6 +3777,8 @@ def main() -> None:
     trainable_params: List[torch.nn.Parameter] = []
     stage1_trainable_params: List[torch.nn.Parameter] = [p for p in stage1_model.parameters() if p.requires_grad]
     modules_for_training: List[torch.nn.Module] = [semantic_encoder, semantic_fusion, readout_head]
+    if future_semantic_state_head is not None:
+        modules_for_training.append(future_semantic_state_head)
     if semantic_rescue_heads is not None:
         modules_for_training.append(semantic_rescue_heads)
     for optional_module in [
@@ -3800,6 +3840,17 @@ def main() -> None:
         "semantic_aux_subset_weighting_strength": float(args.semantic_aux_subset_weighting_strength),
         "confidence_gated_alignment_loss_weight": float(args.confidence_gated_alignment_loss_weight),
         "sparse_persistence_contrastive_loss_weight": float(args.sparse_persistence_contrastive_loss_weight),
+        "enable_future_semantic_state_head": bool(args.enable_future_semantic_state_head),
+        "future_semantic_embedding_dim": int(args.future_semantic_embedding_dim),
+        "future_semantic_loss_weight": float(args.future_semantic_loss_weight),
+        "future_visibility_loss_weight": float(args.future_visibility_loss_weight),
+        "future_identity_belief_loss_weight": float(args.future_identity_belief_loss_weight),
+        "future_uncertainty_loss_weight": float(args.future_uncertainty_loss_weight),
+        "future_hypothesis_count": int(args.future_hypothesis_count),
+        "future_hypothesis_loss_weight": float(args.future_hypothesis_loss_weight),
+        "enable_future_extent_head": bool(args.enable_future_extent_head),
+        "enable_future_multihypothesis_head": bool(args.enable_future_multihypothesis_head),
+        "future_semantic_state_head_default_enabled": False,
         "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
         "confidence_gating_margin_threshold": float(args.confidence_gating_margin_threshold),
         "confidence_gating_temperature": float(args.confidence_gating_temperature),
@@ -3914,6 +3965,8 @@ def main() -> None:
             run_metadata["semantic_encoder_resume_unexpected_keys"] = list(semantic_encoder_unexpected)
         semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}))
         readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
+        if future_semantic_state_head is not None and isinstance(payload.get("future_semantic_state_head_state_dict", None), dict):
+            future_semantic_state_head.load_state_dict(payload["future_semantic_state_head_state_dict"], strict=False)
         if trace_unit_tokenizer is not None and isinstance(payload.get("trace_unit_tokenizer_state_dict", None), dict):
             trace_unit_tokenizer.load_state_dict(payload["trace_unit_tokenizer_state_dict"], strict=False)
         if trace_unit_factorized_state is not None and isinstance(payload.get("trace_unit_factorized_state_state_dict", None), dict):
@@ -3948,6 +4001,8 @@ def main() -> None:
     semantic_encoder.train()
     semantic_fusion.train()
     readout_head.train()
+    if future_semantic_state_head is not None:
+        future_semantic_state_head.train()
     if semantic_rescue_heads is not None:
         semantic_rescue_heads.train()
     if trace_unit_tokenizer is not None:
@@ -3998,6 +4053,13 @@ def main() -> None:
     rescue_cache_hit_history: List[float] = []
     semantic_hard_weight_mean_history: List[float] = []
     gate_history: List[float] = []
+    future_semantic_state_loss_history: List[float] = []
+    future_visibility_loss_history: List[float] = []
+    future_semantic_embedding_loss_history: List[float] = []
+    future_identity_belief_loss_history: List[float] = []
+    future_uncertainty_loss_history: List[float] = []
+    future_hypothesis_loss_history: List[float] = []
+    future_semantic_state_valid_history: List[float] = []
     trace_unit_loss_history: List[float] = []
     trace_unit_assignment_entropy_history: List[float] = []
     trace_unit_top2_ratio_history: List[float] = []
@@ -4095,6 +4157,7 @@ def main() -> None:
             semantic_encoder=semantic_encoder,
             semantic_fusion=semantic_fusion,
             readout_head=readout_head,
+            future_semantic_state_head=future_semantic_state_head,
             semantic_rescue_heads=semantic_rescue_heads,
             trace_unit_tokenizer=trace_unit_tokenizer,
             trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4165,6 +4228,7 @@ def main() -> None:
             obs_len=int(args.obs_len),
             semantic_source_mainline=str(args.semantic_source_mainline),
             allow_stage1_grad=bool(pre_stage1_trainable_parameter_count > 0),
+            future_semantic_state_head=future_semantic_state_head,
         )
 
         main_rollout_reweight_strength = 0.0 if str(rescue_mode).startswith("v2") else float(args.semantic_hard_curriculum_weight)
@@ -4276,11 +4340,42 @@ def main() -> None:
             top2_floor_weight=float(args.trace_unit_top2_floor_weight),
             top2_mass_floor=float(args.trace_unit_top2_mass_floor),
         )
+        future_semantic_state_loss = tf_out["pred_coord"].sum() * 0.0
+        future_semantic_state_info: Dict[str, Any] = {
+            "future_trace_coord_loss": 0.0,
+            "future_visibility_loss": 0.0,
+            "future_semantic_embedding_loss": 0.0,
+            "future_identity_belief_loss": 0.0,
+            "future_uncertainty_loss": 0.0,
+            "future_hypothesis_loss": 0.0,
+            "future_semantic_state_loss": 0.0,
+            "future_semantic_state_output_valid": bool(future_semantic_state_head is None),
+        }
+        if future_semantic_state_head is not None and tf_out.get("future_semantic_trace_state") is not None:
+            coord_error = torch.sqrt(((tf_out["pred_coord"] - tf_out["target_coord"]) ** 2).sum(dim=-1).clamp_min(1e-12))
+            future_semantic_state_loss, future_semantic_state_info = compute_future_semantic_state_losses(
+                state=tf_out["future_semantic_trace_state"],
+                semantic_target=tf_out["semantic_tokens"],
+                identity_target=tf_out["semantic_tokens"],
+                visibility_target=(batch["fut_valid"] & batch["token_mask"][:, None, :]),
+                valid_mask=tf_out["valid_mask"],
+                coord_error=coord_error.detach(),
+                instance_confidence=batch.get("semantic_entity_true_instance_confidence"),
+                cfg=FutureSemanticStateLossConfig(
+                    semantic_loss_weight=float(args.future_semantic_loss_weight),
+                    visibility_loss_weight=float(args.future_visibility_loss_weight),
+                    identity_belief_loss_weight=float(args.future_identity_belief_loss_weight),
+                    uncertainty_loss_weight=float(args.future_uncertainty_loss_weight),
+                    hypothesis_loss_weight=float(args.future_hypothesis_loss_weight),
+                    instance_conf_threshold=float(args.trace_unit_instance_conf_threshold),
+                ),
+            )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = (
             teacher_loss
             + float(rescue_weight) * float(aux_schedule_scale) * rescue_loss
             + trace_unit_loss
+            + future_semantic_state_loss
         )
 
         optimizer.zero_grad(set_to_none=True)
@@ -4343,6 +4438,13 @@ def main() -> None:
         rescue_cache_hit_history.append(float(rescue_info.get("semantic_bootstrap_cache_hit_ratio", 0.0)))
         semantic_hard_weight_mean_history.append(float((semantic_hard_weights * tusb_v3p1_curriculum_weights).detach().mean().cpu().item()))
         gate_history.append(float(tf_out["gate_mean"]))
+        future_semantic_state_loss_history.append(float(future_semantic_state_info.get("future_semantic_state_loss", 0.0)))
+        future_visibility_loss_history.append(float(future_semantic_state_info.get("future_visibility_loss", 0.0)))
+        future_semantic_embedding_loss_history.append(float(future_semantic_state_info.get("future_semantic_embedding_loss", 0.0)))
+        future_identity_belief_loss_history.append(float(future_semantic_state_info.get("future_identity_belief_loss", 0.0)))
+        future_uncertainty_loss_history.append(float(future_semantic_state_info.get("future_uncertainty_loss", 0.0)))
+        future_hypothesis_loss_history.append(float(future_semantic_state_info.get("future_hypothesis_loss", 0.0)))
+        future_semantic_state_valid_history.append(1.0 if bool(future_semantic_state_info.get("future_semantic_state_output_valid", False)) else 0.0)
         trace_unit_loss_history.append(float(trace_unit_info.get("trace_unit_loss", 0.0)))
         trace_unit_assignment_entropy_history.append(float(trace_unit_info.get("assignment_entropy_mean", 0.0)))
         trace_unit_top2_ratio_history.append(float(trace_unit_info.get("actual_top2_assignment_ratio", 0.0)))
@@ -4463,6 +4565,7 @@ def main() -> None:
                     semantic_encoder=semantic_encoder,
                     semantic_fusion=semantic_fusion,
                     readout_head=readout_head,
+                    future_semantic_state_head=future_semantic_state_head,
                     semantic_rescue_heads=semantic_rescue_heads,
                     trace_unit_tokenizer=trace_unit_tokenizer,
                     trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4491,6 +4594,7 @@ def main() -> None:
                         semantic_encoder=semantic_encoder,
                         semantic_fusion=semantic_fusion,
                         readout_head=readout_head,
+                        future_semantic_state_head=future_semantic_state_head,
                         semantic_rescue_heads=semantic_rescue_heads,
                         trace_unit_tokenizer=trace_unit_tokenizer,
                         trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4570,6 +4674,7 @@ def main() -> None:
                 semantic_encoder=semantic_encoder,
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
+                future_semantic_state_head=future_semantic_state_head,
                 semantic_rescue_heads=semantic_rescue_heads,
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4756,6 +4861,28 @@ def main() -> None:
             "semantic_bootstrap_cache_hit_ratio_mean": float(sum(rescue_cache_hit_history) / max(len(rescue_cache_hit_history), 1)),
             "semantic_hard_sample_weight_mean": float(sum(semantic_hard_weight_mean_history) / max(len(semantic_hard_weight_mean_history), 1)),
             "semantic_bootstrap_cache_item_count": int(len(bootstrap_cache)),
+        },
+        "future_semantic_trace_state_metrics": {
+            "enabled": bool(args.enable_future_semantic_state_head),
+            "future_semantic_embedding_dim": int(args.future_semantic_embedding_dim),
+            "future_hypothesis_count": int(args.future_hypothesis_count),
+            "enable_future_extent_head": bool(args.enable_future_extent_head),
+            "enable_future_multihypothesis_head": bool(args.enable_future_multihypothesis_head),
+            "loss_weights_default_zero_preserve_official": bool(
+                float(args.future_semantic_loss_weight) == 0.0
+                and float(args.future_visibility_loss_weight) == 0.0
+                and float(args.future_identity_belief_loss_weight) == 0.0
+                and float(args.future_uncertainty_loss_weight) == 0.0
+                and float(args.future_hypothesis_loss_weight) == 0.0
+            ),
+            "future_trace_coord_loss_mean": 0.0,
+            "future_visibility_loss_mean": float(sum(future_visibility_loss_history) / max(len(future_visibility_loss_history), 1)),
+            "future_semantic_embedding_loss_mean": float(sum(future_semantic_embedding_loss_history) / max(len(future_semantic_embedding_loss_history), 1)),
+            "future_identity_belief_loss_mean": float(sum(future_identity_belief_loss_history) / max(len(future_identity_belief_loss_history), 1)),
+            "future_uncertainty_loss_mean": float(sum(future_uncertainty_loss_history) / max(len(future_uncertainty_loss_history), 1)),
+            "future_hypothesis_loss_mean": float(sum(future_hypothesis_loss_history) / max(len(future_hypothesis_loss_history), 1)),
+            "future_semantic_state_loss_mean": float(sum(future_semantic_state_loss_history) / max(len(future_semantic_state_loss_history), 1)),
+            "future_semantic_state_output_valid_ratio": float(sum(future_semantic_state_valid_history) / max(len(future_semantic_state_valid_history), 1)),
         },
         "trace_unit_metrics": {
             "enabled": bool(structure_mode == "trace_unit_semantic_binding"),

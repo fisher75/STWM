@@ -1,0 +1,114 @@
+{
+  "audit_passed": true,
+  "audited_repo_root": "/home/chen034/workspace/stwm",
+  "code_now_supports_optional_future_semantic_trace_field": true,
+  "code_truth_policy": "current live repo only",
+  "current_only_outputs_enhanced_future_coord_readout_by_default": true,
+  "current_world_model_level": [
+    "trace_future_state_backbone",
+    "semantic_conditioned_rollout_adapter"
+  ],
+  "currently_explicitly_outputs_future_semantic_trace_field_in_official_checkpoint": false,
+  "future_semantic_prediction_support": {
+    "official_checkpoint": false,
+    "optional_head_schema": true,
+    "requires_small_train": true
+  },
+  "generated_at": "2026-04-27T21:11:28+0800",
+  "line_evidence": {
+    "free_rollout_predict_lines": [
+      661
+    ],
+    "future_semantic_state_head_lines": [
+      605,
+      641,
+      642,
+      3523,
+      3545,
+      3546,
+      3708,
+      3709,
+      3710,
+      3780
+    ],
+    "semantic_dataset_teacher_prior_lines": [
+      702,
+      752,
+      949,
+      998,
+      1096,
+      1097,
+      1135,
+      1172
+    ],
+    "teacher_forced_predict_lines": [
+      589
+    ],
+    "trace_unit_aux_lines": [
+      625,
+      657,
+      824,
+      856,
+      883,
+      884,
+      885,
+      886,
+      887,
+      913
+    ]
+  },
+  "missing_for_true_semantic_trajectory_world_model": [
+    "trained future_semantic_embedding targets and nonzero loss weights",
+    "trained future_visibility/reappearance logits with calibrated labels",
+    "calibrated future_uncertainty and uncertainty ECE from explicit head outputs",
+    "multi-hypothesis semantic rollout training beyond K=1 default",
+    "free-rollout semantic state feedback so future semantic predictions influence later steps",
+    "optional action/ego-motion conditioning interface beyond placeholder framing",
+    "full evaluation that consumes FutureSemanticTraceState rather than association-only reports"
+  ],
+  "multi_step_free_rollout_support": {
+    "evidence": "code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py: _free_rollout_predict iterative state_seq update",
+    "supported_for_coord_state": true,
+    "supported_for_semantic_state": "schema/head present, but not trained or wired into free rollout state updates yet"
+  },
+  "sam2_cotracker_role_in_code": {
+    "evidence": "code/stwm/tools/external_baselines/run_external_baseline_eval_20260426.py",
+    "external_baseline": true,
+    "external_consumer_utility_probe": true,
+    "not_core_method": true,
+    "observation_prior": false,
+    "weak_teacher": false
+  },
+  "semantic_information_role_current": {
+    "association": true,
+    "calibration": true,
+    "prediction": "partial/optional only after this upgrade; official checkpoint has no trained future semantic state target"
+  },
+  "stage1_current_input": "shifted trace state tensor built from observed+future state during teacher-forced training or iterative state_seq during free rollout; token_mask gates valid trace tokens",
+  "stage1_current_output": "TraceCausalTransformer hidden states and pred_state; no semantic trajectory field by itself",
+  "stage2_current_input": [
+    "Stage1 hidden/pred_state",
+    "semantic_features",
+    "semantic_rgb_crop/mask_crop",
+    "semantic_rgb_crop_temporal/mask_crop_temporal",
+    "semantic_teacher_prior",
+    "semantic_instance_valid / dominant instance metadata",
+    "trace-unit assignment/binding inputs when TUSB mode enabled"
+  ],
+  "stage2_current_output_after_upgrade_default_off": [
+    "same official outputs as before when --enable-future-semantic-state-head is absent"
+  ],
+  "stage2_current_output_before_upgrade": [
+    "pred_coord [B,H,K,2]",
+    "semantic_tokens [B,K,D]",
+    "trace_unit_aux with z_sem/z_dyn/assignments when enabled",
+    "belief/readout scores in evaluation tools"
+  ],
+  "stage2_optional_world_model_output_added": "FutureSemanticTraceState via --enable-future-semantic-state-head",
+  "uncertainty_multi_hypothesis_support": {
+    "official_checkpoint": false,
+    "optional_multi_hypothesis_trace_head": true,
+    "optional_uncertainty_logit": true,
+    "requires_training_and_calibration": true
+  }
+}

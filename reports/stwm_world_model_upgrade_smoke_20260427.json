@@ -1,0 +1,125 @@
+{
+  "checks": {
+    "backward_compatibility_preserved": true,
+    "baseline_current_stage2_eval_unchanged": "not_rerun_by_design; official report files were read-only for this pack",
+    "current_official_metrics_modified": false,
+    "forward_pass_works": true,
+    "future_query_eval_can_consume_outputs": true,
+    "loss_info": {
+      "future_hypothesis_loss": 0.0,
+      "future_hypothesis_loss_weight": 0.0,
+      "future_identity_belief_loss": 0.0,
+      "future_identity_belief_loss_weight": 0.0,
+      "future_semantic_embedding_loss": 0.0,
+      "future_semantic_loss_weight": 0.0,
+      "future_semantic_state_loss": 0.0,
+      "future_semantic_state_output_valid": true,
+      "future_semantic_state_shapes": {
+        "future_extent_box": [
+          2,
+          3,
+          4,
+          4
+        ],
+        "future_hypothesis_logits": [
+          2,
+          2
+        ],
+        "future_hypothesis_trace_coord": [
+          2,
+          2,
+          3,
+          4,
+          2
+        ],
+        "future_identity_embedding": [
+          2,
+          3,
+          4,
+          16
+        ],
+        "future_semantic_embedding": [
+          2,
+          3,
+          4,
+          16
+        ],
+        "future_semantic_logits": null,
+        "future_trace_coord": [
+          2,
+          3,
+          4,
+          2
+        ],
+        "future_uncertainty": [
+          2,
+          3,
+          4
+        ],
+        "future_visibility_logit": [
+          2,
+          3,
+          4
+        ]
+      },
+      "future_trace_coord_loss": 0.0,
+      "future_uncertainty_loss": 0.0,
+      "future_uncertainty_loss_weight": 0.0,
+      "future_visibility_loss": 0.0,
+      "future_visibility_loss_weight": 0.0
+    },
+    "loss_terms_finite": true,
+    "no_regression_in_current_official_metrics_when_heads_disabled": "code path default-off; no official metrics regenerated or edited",
+    "output_schema_valid": true,
+    "output_shapes": {
+      "future_extent_box": [
+        2,
+        3,
+        4,
+        4
+      ],
+      "future_hypothesis_logits": [
+        2,
+        2
+      ],
+      "future_hypothesis_trace_coord": [
+        2,
+        2,
+        3,
+        4,
+        2
+      ],
+      "future_identity_embedding": [
+        2,
+        3,
+        4,
+        16
+      ],
+      "future_semantic_embedding": [
+        2,
+        3,
+        4,
+        16
+      ],
+      "future_semantic_logits": null,
+      "future_trace_coord": [
+        2,
+        3,
+        4,
+        2
+      ],
+      "future_uncertainty": [
+        2,
+        3,
+        4
+      ],
+      "future_visibility_logit": [
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  "generated_at": "2026-04-27T21:12:18+0800",
+  "smoke_passed": true
+}

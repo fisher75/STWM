@@ -1,0 +1,321 @@
+{
+  "all_panels_per_item_results_hash": "555c80d0cbb3818631043e7feb77930aebae03d08ad3028ec75297d5ad4d24f6",
+  "exact_blocking_reason_for_uncertainty_ece": "current official per-item reports do not contain calibrated future_uncertainty/confidence fields from a FutureSemanticTraceState head",
+  "exact_blocking_reason_for_visibility_auroc": "current official per-item reports do not contain explicit future_visibility_logit or visibility labels emitted by a FutureSemanticTraceState head",
+  "fresh_eval_executed": false,
+  "future_semantic_query_eval_added": true,
+  "future_semantic_trace_field_available": false,
+  "generated_at_utc": "2026-04-27T13:09:34.140704+00:00",
+  "official_method": "TUSB-v3.1::best_semantic_hard.pt",
+  "official_scoring_mode": "trace_belief_assoc",
+  "overall_all_panels": {
+    "MRR": 0.6573215615023088,
+    "false_confuser_rate": 0.49942528735632186,
+    "gap_length_decay": null,
+    "row_count": 3480,
+    "top1": 0.5005747126436781,
+    "uncertainty_ECE": null,
+    "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+    "unique_item_count": 389,
+    "visibility_AUROC": null,
+    "visibility_accuracy": null,
+    "visibility_metric_status": "unavailable_no_future_visibility_field"
+  },
+  "panels": {
+    "densified_200_context_preserving": {
+      "overall": {
+        "MRR": 0.6276732410913708,
+        "false_confuser_rate": 0.5369127516778524,
+        "gap_length_decay": null,
+        "row_count": 894,
+        "top1": 0.46308724832214765,
+        "uncertainty_ECE": null,
+        "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+        "unique_item_count": 149,
+        "visibility_AUROC": null,
+        "visibility_accuracy": null,
+        "visibility_metric_status": "unavailable_no_future_visibility_field"
+      },
+      "panel_name": "densified_200_context_preserving",
+      "per_item_results_hash": "44d557e0fba725337355eb8064b28f7d3fef7ad7d6225ebcdbcad186cef63a3a",
+      "semantic_hard_subset_breakdown": {
+        "OOD_hard": {
+          "MRR": null,
+          "false_confuser_rate": null,
+          "gap_length_decay": null,
+          "row_count": 0,
+          "top1": null,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "appearance_change": {
+          "MRR": 0.6112005551208324,
+          "false_confuser_rate": 0.5700000000000001,
+          "gap_length_decay": null,
+          "row_count": 600,
+          "top1": 0.43,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 100,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "crossing_ambiguity": {
+          "MRR": 0.5799794253858591,
+          "false_confuser_rate": 0.5779816513761468,
+          "gap_length_decay": null,
+          "row_count": 654,
+          "top1": 0.42201834862385323,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 109,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "long_gap_persistence": {
+          "MRR": 0.6894539337474119,
+          "false_confuser_rate": 0.48550724637681164,
+          "gap_length_decay": null,
+          "row_count": 276,
+          "top1": 0.5144927536231884,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 46,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.6687979855353813,
+          "false_confuser_rate": 0.49468085106382975,
+          "gap_length_decay": null,
+          "row_count": 564,
+          "top1": 0.5053191489361702,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 94,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        }
+      },
+      "task_definitions": {
+        "false_confuser_rejection": "measured as 1 - future target grounding top1",
+        "future_target_grounding": "given observed query entity, rank future candidate entity",
+        "future_visibility_reappearance_prediction": "blocked until explicit future visibility logits are emitted",
+        "semantic_hard_subset_breakdown": [
+          "long_gap_persistence",
+          "occlusion_reappearance",
+          "crossing_ambiguity",
+          "OOD_hard",
+          "appearance_change"
+        ]
+      }
+    },
+    "heldout_burst_heavy_context_preserving": {
+      "overall": {
+        "MRR": 0.7239032921810709,
+        "false_confuser_rate": 0.43407407407407406,
+        "gap_length_decay": null,
+        "row_count": 1350,
+        "top1": 0.5659259259259259,
+        "uncertainty_ECE": null,
+        "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+        "unique_item_count": 225,
+        "visibility_AUROC": null,
+        "visibility_accuracy": null,
+        "visibility_metric_status": "unavailable_no_future_visibility_field"
+      },
+      "panel_name": "heldout_burst_heavy_context_preserving",
+      "per_item_results_hash": "5df1b24076f9579ff19a95f33687437f495b0306f1fb1db242a9d9a5ce066787",
+      "semantic_hard_subset_breakdown": {
+        "OOD_hard": {
+          "MRR": null,
+          "false_confuser_rate": null,
+          "gap_length_decay": null,
+          "row_count": 0,
+          "top1": null,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "appearance_change": {
+          "MRR": 0.7211140147115765,
+          "false_confuser_rate": 0.44037940379403795,
+          "gap_length_decay": null,
+          "row_count": 738,
+          "top1": 0.559620596205962,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 123,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "crossing_ambiguity": {
+          "MRR": 0.6767916032470834,
+          "false_confuser_rate": 0.4874429223744292,
+          "gap_length_decay": null,
+          "row_count": 876,
+          "top1": 0.5125570776255708,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 146,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "long_gap_persistence": {
+          "MRR": 0.7140682234432234,
+          "false_confuser_rate": 0.45192307692307687,
+          "gap_length_decay": null,
+          "row_count": 312,
+          "top1": 0.5480769230769231,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 52,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.7388708513708506,
+          "false_confuser_rate": 0.4107744107744108,
+          "gap_length_decay": null,
+          "row_count": 594,
+          "top1": 0.5892255892255892,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 99,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        }
+      },
+      "task_definitions": {
+        "false_confuser_rejection": "measured as 1 - future target grounding top1",
+        "future_target_grounding": "given observed query entity, rank future candidate entity",
+        "future_visibility_reappearance_prediction": "blocked until explicit future visibility logits are emitted",
+        "semantic_hard_subset_breakdown": [
+          "long_gap_persistence",
+          "occlusion_reappearance",
+          "crossing_ambiguity",
+          "OOD_hard",
+          "appearance_change"
+        ]
+      }
+    },
+    "heldout_scene_category_video_context_preserving": {
+      "overall": {
+        "MRR": 0.606043456349444,
+        "false_confuser_rate": 0.5436893203883495,
+        "gap_length_decay": null,
+        "row_count": 1236,
+        "top1": 0.4563106796116505,
+        "uncertainty_ECE": null,
+        "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+        "unique_item_count": 206,
+        "visibility_AUROC": null,
+        "visibility_accuracy": null,
+        "visibility_metric_status": "unavailable_no_future_visibility_field"
+      },
+      "panel_name": "heldout_scene_category_video_context_preserving",
+      "per_item_results_hash": "ccc7657a08778735561118a2dcb9a4b93abd21096f93458e62045be6e7517550",
+      "semantic_hard_subset_breakdown": {
+        "OOD_hard": {
+          "MRR": null,
+          "false_confuser_rate": null,
+          "gap_length_decay": null,
+          "row_count": 0,
+          "top1": null,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "appearance_change": {
+          "MRR": 0.5857148429791684,
+          "false_confuser_rate": 0.5903954802259888,
+          "gap_length_decay": null,
+          "row_count": 354,
+          "top1": 0.4096045197740113,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 59,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "crossing_ambiguity": {
+          "MRR": 0.5893117364805349,
+          "false_confuser_rate": 0.5445736434108528,
+          "gap_length_decay": null,
+          "row_count": 1032,
+          "top1": 0.45542635658914726,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 172,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "long_gap_persistence": {
+          "MRR": 0.6642592592592594,
+          "false_confuser_rate": 0.5777777777777777,
+          "gap_length_decay": null,
+          "row_count": 90,
+          "top1": 0.4222222222222222,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 15,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        },
+        "occlusion_reappearance": {
+          "MRR": 0.6031749744157235,
+          "false_confuser_rate": 0.6028368794326241,
+          "gap_length_decay": null,
+          "row_count": 282,
+          "top1": 0.3971631205673759,
+          "uncertainty_ECE": null,
+          "uncertainty_metric_status": "unavailable_no_confidence_or_uncertainty_field",
+          "unique_item_count": 47,
+          "visibility_AUROC": null,
+          "visibility_accuracy": null,
+          "visibility_metric_status": "unavailable_no_future_visibility_field"
+        }
+      },
+      "task_definitions": {
+        "false_confuser_rejection": "measured as 1 - future target grounding top1",
+        "future_target_grounding": "given observed query entity, rank future candidate entity",
+        "future_visibility_reappearance_prediction": "blocked until explicit future visibility logits are emitted",
+        "semantic_hard_subset_breakdown": [
+          "long_gap_persistence",
+          "occlusion_reappearance",
+          "crossing_ambiguity",
+          "OOD_hard",
+          "appearance_change"
+        ]
+      }
+    }
+  },
+  "read_only_existing_per_item_eval": true,
+  "source_report": "/home/chen034/workspace/stwm/reports/stwm_trace_belief_eval_20260424.json",
+  "task_metrics": [
+    "top1",
+    "MRR",
+    "false_confuser_rate",
+    "visibility_AUROC_or_accuracy",
+    "uncertainty_ECE_if_available",
+    "gap_length_decay_if_available"
+  ]
+}
