@@ -1,0 +1,86 @@
+{
+  "all_zero_constant_nan_degeneracy_detected_in_available_summaries": false,
+  "blocking_reasons": [
+    "V2 export does not include raw future_semantic_embedding/future_identity_embedding/future_uncertainty tensors; it includes norm/mean summaries, so embedding degeneracy cannot be fully audited.",
+    "V2 export forward_scope is head checkpoint forward with manifest surrogate features, not full Stage1/Stage2 feature-based export.",
+    "V2 export lacks raw future_semantic_embedding/future_identity_embedding tensors; only norm summaries are available, so unit/horizon embedding degeneracy cannot be ruled out."
+  ],
+  "checkpoint_contains_future_semantic_state_head": true,
+  "checkpoint_exists": true,
+  "checkpoint_future_semantic_state_head_key_count": 16,
+  "checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_worldmodel_v2_smalltrain_lr1e7_20260427/latest.pt",
+  "consuming_eval_reads_export_not_old_association_report": true,
+  "degeneracy_audit_complete": false,
+  "degeneracy_audit_safe_for_medium_training": false,
+  "export_checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_worldmodel_v2_smalltrain_lr1e7_20260427/latest.pt",
+  "export_field_presence_first_item": {
+    "future_identity_embedding": false,
+    "future_identity_embedding_norm": true,
+    "future_semantic_embedding": false,
+    "future_semantic_embedding_norm": true,
+    "future_trace_coord": true,
+    "future_uncertainty": false,
+    "future_uncertainty_mean": true,
+    "future_visibility_prob": true
+  },
+  "export_forward_scope": "future_semantic_state_head_checkpoint_forward_with_manifest_surrogate_features",
+  "export_full_stage1_stage2_forward_executed": false,
+  "export_has_required_raw_fields": false,
+  "export_has_required_summary_or_raw_fields": true,
+  "export_reads_v2_smalltrain_checkpoint": true,
+  "free_rollout_semantic_state_output_from_free_rollout_predict": true,
+  "future_semantic_state_loss_weights": {
+    "future_identity_belief_loss_weight": 0.01,
+    "future_semantic_loss_weight": 0.02,
+    "future_uncertainty_loss_weight": 0.005,
+    "future_visibility_loss_weight": 0.05
+  },
+  "future_semantic_state_loss_weights_nonzero": true,
+  "future_semantic_state_losses": {
+    "future_identity_belief_loss_mean": 0.459079846739769,
+    "future_semantic_embedding_loss_mean": 1.040074735879898,
+    "future_uncertainty_loss_mean": 0.13248085416853428,
+    "future_visibility_loss_mean": 0.362246572971344
+  },
+  "future_semantic_state_losses_finite": true,
+  "generated_at_utc": "2026-04-27T14:01:51.633679+00:00",
+  "semantic_state_eval_code_evidence": {
+    "eval_tool_has_consume_export_mode": true,
+    "eval_tool_hashes_future_semantic_state_fields": true,
+    "eval_tool_requires_semantic_state_export": true,
+    "free_rollout_feedback_disabled_marker": true,
+    "free_rollout_predict_generates_state": true,
+    "free_rollout_predict_returns_state": true
+  },
+  "semantic_state_eval_consumed_future_semantic_trace_state": true,
+  "smalltrain_train_steps": 4,
+  "source_files_checked": [
+    "code/stwm/tracewm_v2_stage2/models/future_semantic_trace_state.py",
+    "code/stwm/tracewm_v2_stage2/models/semantic_trace_world_head.py",
+    "code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py",
+    "code/stwm/tools/export_future_semantic_trace_state_20260427.py",
+    "code/stwm/tools/eval_future_semantic_trace_queries_20260427.py"
+  ],
+  "source_reports_checked": [
+    "reports/stwm_world_model_upgrade_v2_pre_audit_20260427.json",
+    "reports/stwm_future_semantic_trace_state_validation_audit_20260427.json",
+    "reports/stwm_semantic_trace_world_head_v2_audit_20260427.json",
+    "reports/stwm_free_rollout_future_semantic_state_audit_20260427.json",
+    "reports/stwm_future_semantic_state_export_audit_20260427.json",
+    "reports/stwm_future_semantic_state_consuming_eval_audit_20260427.json",
+    "reports/stwm_world_model_upgrade_v2_smalltrain_launch_20260427.json",
+    "reports/stwm_world_model_upgrade_v2_smalltrain_summary_20260427.json",
+    "reports/stwm_world_model_upgrade_v2_semantic_state_eval_20260427.json",
+    "reports/stwm_world_model_no_drift_guardrail_20260427.json"
+  ],
+  "trace_rollout_regression_detected": false,
+  "trace_rollout_regression_detected_false_calculation": {
+    "baseline_endpoint_l2": 0.20384375751018524,
+    "baseline_step": 11002,
+    "final_endpoint_l2": 0.2036447376012802,
+    "final_step": 11004,
+    "method": "same-run one-batch V2 window, compare free_rollout_endpoint_l2 at global_step 11002 vs 11004",
+    "threshold": "final <= baseline * 1.05"
+  },
+  "v2_reality_check_conclusion": "fix_export_eval_before_training"
+}

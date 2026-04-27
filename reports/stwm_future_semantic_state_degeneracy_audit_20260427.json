@@ -1,0 +1,114 @@
+{
+  "all_zero_ratio": {
+    "identity": 0.0,
+    "semantic": 0.0,
+    "trace_coord": 0.0,
+    "uncertainty": 0.0,
+    "visibility": 0.0
+  },
+  "checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_worldmodel_v2_smalltrain_lr1e7_20260427/latest.pt",
+  "constant_output_ratio": {
+    "identity_constant": false,
+    "semantic_constant": false,
+    "trace_coord_constant": false,
+    "uncertainty_constant": false,
+    "visibility_constant": false
+  },
+  "degeneracy_audit_complete": false,
+  "exact_failure_reason": "V2 export lacks raw future_semantic_embedding/future_identity_embedding tensors; only norm summaries are available, so unit/horizon embedding degeneracy cannot be ruled out.",
+  "forward_scope": "future_semantic_state_head_checkpoint_forward_with_manifest_surrogate_features",
+  "full_stage1_stage2_forward_executed": false,
+  "generated_at_utc": "2026-04-27T14:00:17.845638+00:00",
+  "identity_embedding_norm_distribution": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 64,
+    "finite_count": 64,
+    "max": 9.326595306396484,
+    "mean": 9.239005237817764,
+    "min": 9.137425422668457,
+    "nan_inf_ratio": 0.0,
+    "std": 0.04840054727506755
+  },
+  "identity_embedding_variance_across_units_available": false,
+  "item_count": 64,
+  "nan_inf_ratio": {
+    "identity": 0.0,
+    "semantic": 0.0,
+    "trace_coord": 0.0,
+    "uncertainty": 0.0,
+    "visibility": 0.0
+  },
+  "raw_embedding_available": false,
+  "safe_for_medium_training": false,
+  "semantic_embedding_norm_distribution": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 64,
+    "finite_count": 64,
+    "max": 9.354607582092285,
+    "mean": 9.234694704413414,
+    "min": 9.148828506469727,
+    "nan_inf_ratio": 0.0,
+    "std": 0.045638388955322504
+  },
+  "semantic_embedding_variance_across_horizon_proxy": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 512,
+    "finite_count": 512,
+    "max": 9.64737319946289,
+    "mean": 9.234694695100188,
+    "min": 8.721014976501465,
+    "nan_inf_ratio": 0.0,
+    "std": 0.14558192366378173
+  },
+  "semantic_embedding_variance_across_units_available": false,
+  "semantic_state_degenerate": false,
+  "source_export": "reports/stwm_future_semantic_state_export_20260427.json",
+  "trace_coord_distribution": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 8192,
+    "finite_count": 8192,
+    "max": 1.0,
+    "mean": 0.5667317840576162,
+    "min": 0.07005,
+    "nan_inf_ratio": 0.0,
+    "std": 0.2684467297599687
+  },
+  "uncertainty_by_horizon_distribution": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 512,
+    "finite_count": 512,
+    "max": 1.0809162855148315,
+    "mean": 0.7270932048559189,
+    "min": 0.45628613233566284,
+    "nan_inf_ratio": 0.0,
+    "std": 0.09967935724234453
+  },
+  "uncertainty_distribution": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 64,
+    "finite_count": 64,
+    "max": 0.7992051243782043,
+    "mean": 0.7270932141691446,
+    "min": 0.6411131024360657,
+    "nan_inf_ratio": 0.0,
+    "std": 0.03438910143004142
+  },
+  "uncertainty_error_correlation": -0.07198890962450584,
+  "visibility_probability_distribution": {
+    "all_zero_ratio": 0.0,
+    "constant": false,
+    "count": 64,
+    "finite_count": 64,
+    "max": 0.5613614320755005,
+    "mean": 0.5076779844239354,
+    "min": 0.46152567863464355,
+    "nan_inf_ratio": 0.0,
+    "std": 0.018789687497758435
+  }
+}
