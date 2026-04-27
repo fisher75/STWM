@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 import os
 import random
@@ -520,6 +521,13 @@ def metric_value(row: dict[str, Any], metric: str) -> float:
     return float(row.get(metric) or 0.0)
 
 
+def stable_bootstrap_seed(metric: str, subset: str | None) -> int:
+    """Return a process-stable seed; Python's built-in hash() is randomized."""
+    key = f"{metric}|{subset or 'all'}".encode("utf-8")
+    digest = hashlib.sha256(key).hexdigest()
+    return BOOTSTRAP_SEED + (int(digest[:12], 16) % 1_000_000)
+
+
 def bootstrap_compare(stwm_rows: dict[str, dict[str, Any]], ext_rows: dict[str, dict[str, Any]], metric: str, subset: str | None = None) -> dict[str, Any]:
     ids = sorted(set(stwm_rows) & set(ext_rows))
     if subset:
@@ -527,7 +535,7 @@ def bootstrap_compare(stwm_rows: dict[str, dict[str, Any]], ext_rows: dict[str, 
     deltas = [metric_value(stwm_rows[i], metric) - metric_value(ext_rows[i], metric) for i in ids]
     if not deltas:
         return {"count": 0, "mean_delta": None, "ci95_low": None, "ci95_high": None, "zero_excluded": False, "bootstrap_win_rate": None}
-    rng = random.Random(BOOTSTRAP_SEED + abs(hash((metric, subset))) % 100000)
+    rng = random.Random(stable_bootstrap_seed(metric, subset))
     n = len(deltas)
     boot = []
     for _ in range(BOOTSTRAP_N):
@@ -717,7 +725,6 @@ def pad_to_width(img: np.ndarray, width: int) -> np.ndarray:
 
 def decide(summary: dict[str, Any], bootstrap: dict[str, Any], reports: dict[str, dict[str, Any]]) -> dict[str, Any]:
     strongest = summary.get("strongest_external_baseline")
-    stwm_overall = summary["per_method_overall"].get("stwm_trace_belief_assoc", {})
 
     def improved_vs(ext: str | None) -> bool | None:
         if not ext:
@@ -733,26 +740,61 @@ def decide(summary: dict[str, Any], bootstrap: dict[str, Any], reports: dict[str
     improved_strongest = improved_vs(strongest)
     false_strong = None
     hard_strong = None
+    stwm_numerically_above_strongest_on_long_gap = None
+    stwm_significantly_above_strongest_on_long_gap = None
+    stwm_significantly_above_strongest_on_occlusion = None
+
+    def metric_result(ext: str | None, metric: str) -> dict[str, Any]:
+        if not ext:
+            return {}
+        return (bootstrap.get("comparisons", {}).get(f"STWM_vs_{ext}") or {}).get(metric, {}) or {}
+
+    def significant_positive(ext: str | None, metric: str) -> bool:
+        result = metric_result(ext, metric)
+        return bool((result.get("mean_delta") or 0) > 0 and result.get("zero_excluded") is True)
+
     if strongest:
         comp = bootstrap.get("comparisons", {}).get(f"STWM_vs_{strongest}") or {}
-        false_strong = (comp.get("false_confuser_rate", {}).get("mean_delta") or 0) > 0
-        hard_deltas = [
-            comp.get("long_gap_persistence_top1", {}).get("mean_delta"),
-            comp.get("occlusion_reappearance_top1", {}).get("mean_delta"),
-        ]
-        hard_strong = any(x is not None and x > 0 for x in hard_deltas)
+        false_result = comp.get("false_confuser_rate", {}) or {}
+        false_strong = bool((false_result.get("mean_delta") or 0) > 0 and false_result.get("zero_excluded") is True)
+        long_gap_result = comp.get("long_gap_persistence_top1", {}) or {}
+        occlusion_result = comp.get("occlusion_reappearance_top1", {}) or {}
+        stwm_numerically_above_strongest_on_long_gap = bool((long_gap_result.get("mean_delta") or 0) > 0)
+        stwm_significantly_above_strongest_on_long_gap = bool(
+            (long_gap_result.get("mean_delta") or 0) > 0 and long_gap_result.get("zero_excluded") is True
+        )
+        stwm_significantly_above_strongest_on_occlusion = bool(
+            (occlusion_result.get("mean_delta") or 0) > 0 and occlusion_result.get("zero_excluded") is True
+        )
+        hard_strong = bool(stwm_significantly_above_strongest_on_long_gap or stwm_significantly_above_strongest_on_occlusion)
 
     completed = {name: bool(report.get("completed")) for name, report in reports.items()}
+    stwm_overall_external_sota = bool(completed and all(improved.get(name) is True for name in completed if completed[name]))
+    stwm_significantly_improved_vs_cotracker_on_continuity_subsets = bool(
+        significant_positive("cotracker", "long_gap_persistence_top1")
+        and significant_positive("cotracker", "occlusion_reappearance_top1")
+    )
+    stwm_significantly_improved_vs_sam2_on_continuity_subsets = bool(
+        significant_positive("sam2", "long_gap_persistence_top1")
+        or significant_positive("sam2", "occlusion_reappearance_top1")
+    )
     main = []
     appendix = []
     for name, ok in completed.items():
         if not ok:
             appendix.append(name)
+        elif name in {"sam2", "cotracker"}:
+            main.append(name)
         elif strongest == name or improved.get(name) is False:
             main.append(name)
         else:
             appendix.append(name)
-    if any(completed.values()) and (improved_strongest or false_strong or hard_strong):
+    if any(completed.values()) and (
+        improved_strongest
+        or false_strong
+        or hard_strong
+        or stwm_significantly_improved_vs_cotracker_on_continuity_subsets
+    ):
         next_step = "add_external_baselines_to_main_paper"
     elif any(completed.values()):
         next_step = "add_external_baselines_to_appendix_only"
@@ -771,6 +813,12 @@ def decide(summary: dict[str, Any], bootstrap: dict[str, Any], reports: dict[str
         "stwm_improved_vs_strongest_external": improved_strongest,
         "stwm_false_confuser_improved_vs_strongest_external": false_strong,
         "stwm_long_gap_or_occlusion_improved_vs_strongest_external": hard_strong,
+        "stwm_numerically_above_strongest_on_long_gap": stwm_numerically_above_strongest_on_long_gap,
+        "stwm_significantly_above_strongest_on_long_gap": stwm_significantly_above_strongest_on_long_gap,
+        "stwm_significantly_above_strongest_on_occlusion": stwm_significantly_above_strongest_on_occlusion,
+        "stwm_significantly_improved_vs_cotracker_on_continuity_subsets": stwm_significantly_improved_vs_cotracker_on_continuity_subsets,
+        "stwm_significantly_improved_vs_sam2_on_continuity_subsets": stwm_significantly_improved_vs_sam2_on_continuity_subsets,
+        "stwm_overall_external_sota": stwm_overall_external_sota,
         "recommended_main_paper_external_baselines": main,
         "recommended_appendix_external_baselines": appendix,
         "next_step_choice": next_step,

@@ -1,0 +1,47 @@
+{
+  "active_full_eval_path": {
+    "imports": [
+      "CutieSmokeRunner",
+      "SAM2SmokeRunner",
+      "CoTrackerSmokeRunner"
+    ],
+    "output_phase": "STWM_EXTERNAL_OUTPUT_PHASE=full_eval",
+    "reuses_smoke_runner_classes_for_full_eval_inference": true,
+    "runner_file": "code/stwm/tools/external_baselines/run_external_baseline_eval_20260426.py",
+    "source_runner_file": "code/stwm/tools/external_baselines/run_external_baseline_smoke_20260426.py",
+    "uses_smoke_scores_as_full_eval": false
+  },
+  "created_at": "2026-04-27T17:03:00+0800",
+  "full_eval_validity_impact": "No numeric validity impact for current reports: the completed full eval path is the SmokeRunner-derived active inference path, not the conservative stub adapter files. The naming is confusing and should be cleaned later.",
+  "runner_class_evidence": {
+    "cotracker_runner_present": true,
+    "cutie_runner_present": true,
+    "full_eval_imports_smoke_runners": true,
+    "full_eval_iterates_manifest_items": true,
+    "sam2_runner_present": true
+  },
+  "stub_adapter_status": {
+    "cotracker_adapter": {
+      "conservative_stub": true,
+      "exists": true,
+      "path": "code/stwm/tools/external_baselines/cotracker_adapter_20260426.py",
+      "returns_explicit_failure_in_run_item": true,
+      "used_by_full_eval_runner": false
+    },
+    "cutie_adapter": {
+      "conservative_stub": true,
+      "exists": true,
+      "path": "code/stwm/tools/external_baselines/cutie_adapter_20260426.py",
+      "returns_explicit_failure_in_run_item": true,
+      "used_by_full_eval_runner": false
+    },
+    "sam2_adapter": {
+      "conservative_stub": true,
+      "exists": true,
+      "path": "code/stwm/tools/external_baselines/sam2_adapter_20260426.py",
+      "returns_explicit_failure_in_run_item": true,
+      "used_by_full_eval_runner": false
+    }
+  },
+  "todo": "Rename SmokeRunner classes to FullEvalRunner or unify adapter API so the active inference path and adapter filenames match."
+}
