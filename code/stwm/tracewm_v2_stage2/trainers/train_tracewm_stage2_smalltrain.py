@@ -51,6 +51,7 @@ from stwm.tracewm_v2_stage2.models.semantic_trace_world_head import (
     SemanticTraceStateHeadConfig,
     compute_future_semantic_state_losses,
 )
+from stwm.tracewm_v2_stage2.utils.visibility_reappearance_targets import build_future_visibility_reappearance_targets
 
 
 def now_iso() -> str:
@@ -279,6 +280,7 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-embedding-dim", type=int, default=256)
     p.add_argument("--future-semantic-loss-weight", type=float, default=0.0)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
     p.add_argument("--future-identity-belief-loss-weight", type=float, default=0.0)
     p.add_argument("--future-uncertainty-loss-weight", type=float, default=0.0)
     p.add_argument("--future-hypothesis-count", type=int, default=1)
@@ -3868,6 +3870,7 @@ def main() -> None:
         "future_semantic_embedding_dim": int(args.future_semantic_embedding_dim),
         "future_semantic_loss_weight": float(args.future_semantic_loss_weight),
         "future_visibility_loss_weight": float(args.future_visibility_loss_weight),
+        "future_reappearance_loss_weight": float(args.future_reappearance_loss_weight),
         "future_identity_belief_loss_weight": float(args.future_identity_belief_loss_weight),
         "future_uncertainty_loss_weight": float(args.future_uncertainty_loss_weight),
         "future_hypothesis_count": int(args.future_hypothesis_count),
@@ -4079,11 +4082,18 @@ def main() -> None:
     gate_history: List[float] = []
     future_semantic_state_loss_history: List[float] = []
     future_visibility_loss_history: List[float] = []
+    future_reappearance_loss_history: List[float] = []
     future_semantic_embedding_loss_history: List[float] = []
     future_identity_belief_loss_history: List[float] = []
     future_uncertainty_loss_history: List[float] = []
     future_hypothesis_loss_history: List[float] = []
     future_semantic_state_valid_history: List[float] = []
+    future_visibility_supervised_ratio_history: List[float] = []
+    future_reappearance_supervised_ratio_history: List[float] = []
+    future_visibility_positive_rate_history: List[float] = []
+    future_reappearance_positive_rate_history: List[float] = []
+    future_visibility_target_source_history: List[str] = []
+    future_visibility_target_quality_history: List[str] = []
     trace_unit_loss_history: List[float] = []
     trace_unit_assignment_entropy_history: List[float] = []
     trace_unit_top2_ratio_history: List[float] = []
@@ -4368,6 +4378,7 @@ def main() -> None:
         future_semantic_state_info: Dict[str, Any] = {
             "future_trace_coord_loss": 0.0,
             "future_visibility_loss": 0.0,
+            "future_reappearance_loss": 0.0,
             "future_semantic_embedding_loss": 0.0,
             "future_identity_belief_loss": 0.0,
             "future_uncertainty_loss": 0.0,
@@ -4377,22 +4388,34 @@ def main() -> None:
         }
         if future_semantic_state_head is not None and tf_out.get("future_semantic_trace_state") is not None:
             coord_error = torch.sqrt(((tf_out["pred_coord"] - tf_out["target_coord"]) ** 2).sum(dim=-1).clamp_min(1e-12))
+            visibility_targets = build_future_visibility_reappearance_targets(
+                batch=batch,
+                out=tf_out,
+                obs_len=int(args.obs_len),
+                fut_len=int(args.fut_len),
+                slot_count=int(tf_out["pred_coord"].shape[2]),
+            )
             future_semantic_state_loss, future_semantic_state_info = compute_future_semantic_state_losses(
                 state=tf_out["future_semantic_trace_state"],
                 semantic_target=tf_out["semantic_tokens"],
                 identity_target=tf_out["semantic_tokens"],
-                visibility_target=(batch["fut_valid"] & batch["token_mask"][:, None, :]),
+                visibility_target=visibility_targets.future_visibility_target,
                 valid_mask=tf_out["valid_mask"],
                 coord_error=coord_error.detach(),
                 instance_confidence=batch.get("semantic_entity_true_instance_confidence"),
                 cfg=FutureSemanticStateLossConfig(
                     semantic_loss_weight=float(args.future_semantic_loss_weight),
                     visibility_loss_weight=float(args.future_visibility_loss_weight),
+                    reappearance_loss_weight=float(args.future_reappearance_loss_weight),
                     identity_belief_loss_weight=float(args.future_identity_belief_loss_weight),
                     uncertainty_loss_weight=float(args.future_uncertainty_loss_weight),
                     hypothesis_loss_weight=float(args.future_hypothesis_loss_weight),
                     instance_conf_threshold=float(args.trace_unit_instance_conf_threshold),
                 ),
+                visibility_mask=visibility_targets.future_visibility_mask,
+                reappearance_target=visibility_targets.future_reappearance_target,
+                reappearance_mask=visibility_targets.future_reappearance_mask,
+                visibility_target_info=visibility_targets.to_loss_info(),
             )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = (
@@ -4464,11 +4487,18 @@ def main() -> None:
         gate_history.append(float(tf_out["gate_mean"]))
         future_semantic_state_loss_history.append(float(future_semantic_state_info.get("future_semantic_state_loss", 0.0)))
         future_visibility_loss_history.append(float(future_semantic_state_info.get("future_visibility_loss", 0.0)))
+        future_reappearance_loss_history.append(float(future_semantic_state_info.get("future_reappearance_loss", 0.0)))
         future_semantic_embedding_loss_history.append(float(future_semantic_state_info.get("future_semantic_embedding_loss", 0.0)))
         future_identity_belief_loss_history.append(float(future_semantic_state_info.get("future_identity_belief_loss", 0.0)))
         future_uncertainty_loss_history.append(float(future_semantic_state_info.get("future_uncertainty_loss", 0.0)))
         future_hypothesis_loss_history.append(float(future_semantic_state_info.get("future_hypothesis_loss", 0.0)))
         future_semantic_state_valid_history.append(1.0 if bool(future_semantic_state_info.get("future_semantic_state_output_valid", False)) else 0.0)
+        future_visibility_supervised_ratio_history.append(float(future_semantic_state_info.get("future_visibility_supervised_ratio", 0.0)))
+        future_reappearance_supervised_ratio_history.append(float(future_semantic_state_info.get("future_reappearance_supervised_ratio", 0.0)))
+        future_visibility_positive_rate_history.append(float(future_semantic_state_info.get("future_visibility_positive_rate", 0.0)))
+        future_reappearance_positive_rate_history.append(float(future_semantic_state_info.get("future_reappearance_positive_rate", 0.0)))
+        future_visibility_target_source_history.append(str(future_semantic_state_info.get("future_visibility_target_source", "")))
+        future_visibility_target_quality_history.append(str(future_semantic_state_info.get("future_visibility_target_quality", "")))
         trace_unit_loss_history.append(float(trace_unit_info.get("trace_unit_loss", 0.0)))
         trace_unit_assignment_entropy_history.append(float(trace_unit_info.get("assignment_entropy_mean", 0.0)))
         trace_unit_top2_ratio_history.append(float(trace_unit_info.get("actual_top2_assignment_ratio", 0.0)))
@@ -4898,18 +4928,26 @@ def main() -> None:
             "loss_weights_default_zero_preserve_official": bool(
                 float(args.future_semantic_loss_weight) == 0.0
                 and float(args.future_visibility_loss_weight) == 0.0
+                and float(args.future_reappearance_loss_weight) == 0.0
                 and float(args.future_identity_belief_loss_weight) == 0.0
                 and float(args.future_uncertainty_loss_weight) == 0.0
                 and float(args.future_hypothesis_loss_weight) == 0.0
             ),
             "future_trace_coord_loss_mean": 0.0,
             "future_visibility_loss_mean": float(sum(future_visibility_loss_history) / max(len(future_visibility_loss_history), 1)),
+            "future_reappearance_loss_mean": float(sum(future_reappearance_loss_history) / max(len(future_reappearance_loss_history), 1)),
             "future_semantic_embedding_loss_mean": float(sum(future_semantic_embedding_loss_history) / max(len(future_semantic_embedding_loss_history), 1)),
             "future_identity_belief_loss_mean": float(sum(future_identity_belief_loss_history) / max(len(future_identity_belief_loss_history), 1)),
             "future_uncertainty_loss_mean": float(sum(future_uncertainty_loss_history) / max(len(future_uncertainty_loss_history), 1)),
             "future_hypothesis_loss_mean": float(sum(future_hypothesis_loss_history) / max(len(future_hypothesis_loss_history), 1)),
             "future_semantic_state_loss_mean": float(sum(future_semantic_state_loss_history) / max(len(future_semantic_state_loss_history), 1)),
             "future_semantic_state_output_valid_ratio": float(sum(future_semantic_state_valid_history) / max(len(future_semantic_state_valid_history), 1)),
+            "future_visibility_target_source": next((x for x in reversed(future_visibility_target_source_history) if x), "unavailable"),
+            "future_visibility_target_quality": next((x for x in reversed(future_visibility_target_quality_history) if x), "weak_unavailable"),
+            "future_visibility_supervised_ratio_mean": float(sum(future_visibility_supervised_ratio_history) / max(len(future_visibility_supervised_ratio_history), 1)),
+            "future_reappearance_supervised_ratio_mean": float(sum(future_reappearance_supervised_ratio_history) / max(len(future_reappearance_supervised_ratio_history), 1)),
+            "future_visibility_positive_rate_mean": float(sum(future_visibility_positive_rate_history) / max(len(future_visibility_positive_rate_history), 1)),
+            "future_reappearance_positive_rate_mean": float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1)),
         },
         "trace_unit_metrics": {
             "enabled": bool(structure_mode == "trace_unit_semantic_binding"),

@@ -85,6 +85,22 @@ def binary_auc(scores: list[float], labels: list[int]) -> float | None:
     return wins / total
 
 
+def binary_ap(scores: list[float], labels: list[int]) -> float | None:
+    if not scores or len(scores) != len(labels):
+        return None
+    total_pos = sum(1 for y in labels if int(y) == 1)
+    if total_pos <= 0:
+        return None
+    order = sorted(range(len(scores)), key=lambda i: float(scores[i]), reverse=True)
+    hits = 0
+    precisions = []
+    for rank, idx in enumerate(order, start=1):
+        if int(labels[idx]) == 1:
+            hits += 1
+            precisions.append(hits / rank)
+    return sum(precisions) / max(total_pos, 1)
+
+
 def row_is_official(row: dict[str, Any]) -> bool:
     return (
         str(row.get("method_name")) == OFFICIAL_METHOD
@@ -326,6 +342,20 @@ def _safe_mean(values: list[float]) -> float | None:
     return sum(values) / len(values) if values else None
 
 
+def _flatten_numeric_list(value: Any) -> list[float]:
+    if not isinstance(value, list):
+        return []
+    out: list[float] = []
+    for raw in value:
+        if isinstance(raw, (int, float)) and math.isfinite(float(raw)):
+            out.append(float(raw))
+    return out
+
+
+def _both_classes(labels: list[int]) -> bool:
+    return bool(labels) and len({int(x) for x in labels}) >= 2
+
+
 def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
     if not items:
         return {
@@ -375,6 +405,37 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         for item in valid_items
         if item.get("target_visibility") is not None and isinstance(item.get("target_visibility"), (int, float))
     ]
+    visibility_scores: list[float] = []
+    visibility_labels: list[int] = []
+    reappearance_scores: list[float] = []
+    reappearance_labels: list[int] = []
+    target_qualities = []
+    target_sources = []
+    vis_supervised = []
+    rep_supervised = []
+    vis_positive = []
+    rep_positive = []
+    for item in valid_items:
+        target_qualities.append(str(item.get("future_visibility_target_quality", "")))
+        target_sources.append(str(item.get("future_visibility_target_source", "")))
+        if isinstance(item.get("future_visibility_supervised_ratio"), (int, float)):
+            vis_supervised.append(float(item["future_visibility_supervised_ratio"]))
+        if isinstance(item.get("future_reappearance_supervised_ratio"), (int, float)):
+            rep_supervised.append(float(item["future_reappearance_supervised_ratio"]))
+        if isinstance(item.get("future_visibility_target_positive_rate"), (int, float)):
+            vis_positive.append(float(item["future_visibility_target_positive_rate"]))
+        if isinstance(item.get("future_reappearance_target_positive_rate"), (int, float)):
+            rep_positive.append(float(item["future_reappearance_target_positive_rate"]))
+        vs = _flatten_numeric_list(item.get("future_visibility_prob_values"))
+        vl = [int(round(x)) for x in _flatten_numeric_list(item.get("future_visibility_target_values"))]
+        rs = _flatten_numeric_list(item.get("future_reappearance_prob_values"))
+        rl = [int(round(x)) for x in _flatten_numeric_list(item.get("future_reappearance_target_values"))]
+        if len(vs) == len(vl):
+            visibility_scores.extend(vs)
+            visibility_labels.extend(vl)
+        if len(rs) == len(rl):
+            reappearance_scores.extend(rs)
+            reappearance_labels.extend(rl)
     output_degenerate = bool(
         _safe_mean(semantic_var_unit) is None
         or float(_safe_mean(semantic_var_unit) or 0.0) <= 0.0
@@ -383,11 +444,29 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         or float(_safe_mean(visibility_std) or 0.0) <= 0.0
         or float(_safe_mean(uncertainty_std) or 0.0) <= 0.0
     )
-    visibility_scores = [x for x, _ in visibility_pairs]
-    visibility_labels = [y for _, y in visibility_pairs]
+    if not visibility_scores:
+        visibility_scores = [x for x, _ in visibility_pairs]
+        visibility_labels = [y for _, y in visibility_pairs]
     visibility_accuracy = None
-    if visibility_pairs:
-        visibility_accuracy = _safe_mean([1.0 if (score >= 0.5) == bool(label) else 0.0 for score, label in visibility_pairs])
+    if visibility_scores and len(visibility_scores) == len(visibility_labels):
+        visibility_accuracy = _safe_mean([1.0 if (score >= 0.5) == bool(label) else 0.0 for score, label in zip(visibility_scores, visibility_labels)])
+    reappearance_accuracy = None
+    if reappearance_scores and len(reappearance_scores) == len(reappearance_labels):
+        reappearance_accuracy = _safe_mean([1.0 if (score >= 0.5) == bool(label) else 0.0 for score, label in zip(reappearance_scores, reappearance_labels)])
+    target_quality = next((x for x in target_qualities if x), "weak_unavailable")
+    target_source = next((x for x in target_sources if x), "unavailable")
+    both_class_visibility = _both_classes(visibility_labels)
+    both_class_reappearance = _both_classes(reappearance_labels)
+    calibrated_visibility_available = bool(target_quality == "strong_slot_aligned" and both_class_visibility and binary_auc(visibility_scores, visibility_labels) is not None)
+    visibility_metric_status = (
+        "calibrated_visibility_available"
+        if calibrated_visibility_available
+        else "target_available_but_not_strong_slot_aligned"
+        if target_quality != "strong_slot_aligned" and target_quality != "weak_unavailable"
+        else "target_available_but_single_class"
+        if target_quality == "strong_slot_aligned" and not both_class_visibility
+        else "target_unavailable"
+    )
     return {
         "item_count": len(items),
         "valid_item_count": len(valid_items),
@@ -405,6 +484,23 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         "future_trace_coord_error": _safe_mean([y for _, y in coord_error_pairs]),
         "visibility_accuracy": visibility_accuracy,
         "visibility_AUROC": binary_auc(visibility_scores, visibility_labels),
+        "visibility_AP": binary_ap(visibility_scores, visibility_labels),
+        "future_visibility_accuracy": visibility_accuracy,
+        "future_visibility_AUROC": binary_auc(visibility_scores, visibility_labels),
+        "future_visibility_AP": binary_ap(visibility_scores, visibility_labels),
+        "future_reappearance_accuracy": reappearance_accuracy,
+        "future_reappearance_AUROC": binary_auc(reappearance_scores, reappearance_labels),
+        "future_reappearance_AP": binary_ap(reappearance_scores, reappearance_labels),
+        "future_visibility_target_source": target_source,
+        "future_visibility_target_quality": target_quality,
+        "future_visibility_supervised_ratio": _safe_mean(vis_supervised),
+        "future_reappearance_supervised_ratio": _safe_mean(rep_supervised),
+        "future_visibility_positive_rate": _safe_mean(vis_positive),
+        "future_reappearance_positive_rate": _safe_mean(rep_positive),
+        "both_class_visibility_available": both_class_visibility,
+        "both_class_reappearance_available": both_class_reappearance,
+        "calibrated_visibility_available": calibrated_visibility_available,
+        "visibility_metric_status": visibility_metric_status,
         "uncertainty_error_correlation": pearson([x for x, _ in coord_error_pairs], [y for _, y in coord_error_pairs]),
     }
 
@@ -464,8 +560,8 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
         "engineering_output_claimable": bool(engineering_output_claimable),
         "paper_world_model_claimable": False,
         "paper_world_model_claimable_reason": "requires medium-scale semantic-state signal judgement without trace rollout regression",
-        "visibility_metric_status": str(export.get("visibility_metric_status") or "smoke_only_simplified_target"),
-        "calibrated_visibility_available": False,
+        "visibility_metric_status": str(overall.get("visibility_metric_status") or export.get("visibility_metric_status") or "target_unavailable"),
+        "calibrated_visibility_available": bool(overall.get("calibrated_visibility_available")),
         "current_export_data_source": str(export.get("current_export_data_source") or "unknown"),
         "semantic_state_signal_positive": True if engineering_output_claimable else "unclear",
         "trace_rollout_regression_detected": trace_regression,

@@ -127,6 +127,7 @@ class SemanticTraceStateHead(torch.nn.Module):
 class FutureSemanticStateLossConfig:
     semantic_loss_weight: float = 0.0
     visibility_loss_weight: float = 0.0
+    reappearance_loss_weight: float = 0.0
     identity_belief_loss_weight: float = 0.0
     uncertainty_loss_weight: float = 0.0
     hypothesis_loss_weight: float = 0.0
@@ -190,6 +191,10 @@ def compute_future_semantic_state_losses(
     instance_confidence: torch.Tensor | None,
     cfg: FutureSemanticStateLossConfig,
     identity_target_source: str = "semantic_token_surrogate",
+    visibility_mask: torch.Tensor | None = None,
+    reappearance_target: torch.Tensor | None = None,
+    reappearance_mask: torch.Tensor | None = None,
+    visibility_target_info: dict[str, Any] | None = None,
 ) -> tuple[torch.Tensor, dict[str, Any]]:
     """Compute optional future-state losses; all weights default to zero."""
 
@@ -200,6 +205,7 @@ def compute_future_semantic_state_losses(
     identity_target_f = _expand_target_to_state(identity_target, state.future_identity_embedding)
     visibility_target_f = visibility_target.to(device=device, dtype=torch.float32)
     valid = valid_mask.to(device=device, dtype=torch.bool)
+    visibility_valid = visibility_mask.to(device=device, dtype=torch.bool) if visibility_mask is not None else valid
 
     semantic_loss = zero
     if float(cfg.semantic_loss_weight) > 0.0:
@@ -209,8 +215,16 @@ def compute_future_semantic_state_losses(
     visibility_loss = zero
     if float(cfg.visibility_loss_weight) > 0.0:
         bce = F.binary_cross_entropy_with_logits(state.future_visibility_logit, visibility_target_f, reduction="none")
-        visibility_loss = _masked_mean(bce, valid)
+        visibility_loss = _masked_mean(bce, visibility_valid)
         total = total + float(cfg.visibility_loss_weight) * visibility_loss
+
+    reappearance_loss = zero
+    if reappearance_target is not None and float(cfg.reappearance_loss_weight) > 0.0:
+        rep_target = reappearance_target.to(device=device, dtype=torch.float32)
+        rep_valid = reappearance_mask.to(device=device, dtype=torch.bool) if reappearance_mask is not None else visibility_valid
+        rep_bce = F.binary_cross_entropy_with_logits(state.future_visibility_logit, rep_target, reduction="none")
+        reappearance_loss = _masked_mean(rep_bce, rep_valid)
+        total = total + float(cfg.reappearance_loss_weight) * reappearance_loss
 
     identity_loss = zero
     id_valid, instance_confidence_broadcast = _broadcast_instance_confidence(
@@ -237,6 +251,7 @@ def compute_future_semantic_state_losses(
     info = {
         "future_trace_coord_loss": 0.0,
         "future_visibility_loss": float(visibility_loss.detach().cpu().item()),
+        "future_reappearance_loss": float(reappearance_loss.detach().cpu().item()),
         "future_semantic_embedding_loss": float(semantic_loss.detach().cpu().item()),
         "future_identity_belief_loss": float(identity_loss.detach().cpu().item()),
         "future_uncertainty_loss": float(uncertainty_loss.detach().cpu().item()),
@@ -244,6 +259,7 @@ def compute_future_semantic_state_losses(
         "future_semantic_state_loss": float(total.detach().cpu().item()),
         "future_semantic_loss_weight": float(cfg.semantic_loss_weight),
         "future_visibility_loss_weight": float(cfg.visibility_loss_weight),
+        "future_reappearance_loss_weight": float(cfg.reappearance_loss_weight),
         "future_identity_belief_loss_weight": float(cfg.identity_belief_loss_weight),
         "future_uncertainty_loss_weight": float(cfg.uncertainty_loss_weight),
         "future_hypothesis_loss_weight": float(cfg.hypothesis_loss_weight),
@@ -252,4 +268,6 @@ def compute_future_semantic_state_losses(
         "future_semantic_state_output_valid": bool(state.validate(strict=False)["valid"]),
         "future_semantic_state_shapes": {k: list(v) if v is not None else None for k, v in state.shape_dict().items()},
     }
+    if isinstance(visibility_target_info, dict):
+        info.update(visibility_target_info)
     return total, info

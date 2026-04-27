@@ -1,0 +1,28 @@
+{
+  "available_batch_fields_for_real_target": {
+    "candidate_valid_mask": "not part of Stage2SemanticDataset training batch; external manifest only",
+    "entity_valid": "represented by token_mask [B,K] plus obs_valid/fut_valid",
+    "fut_valid": "available [B,H,K], entity-slot aligned future visibility/presence mask",
+    "gt_candidate_id": "not available in Stage2SemanticDataset validation split",
+    "obs_valid": "available [B,Obs,K], observed visibility/presence mask used for reappearance gate",
+    "observed_future_instance_id": "semantic_entity_dominant_instance_id and point_ids available, but not needed for minimum slot-aligned fut_valid target",
+    "semantic_instance_valid": "available [B,K,T] but temporal window may be shorter than obs+future and is dataset-instance-source dependent",
+    "trace_valid_mask": "tf_out valid_mask available as fut_valid & token_mask"
+  },
+  "can_construct_B_H_1_or_broadcast_target": true,
+  "can_construct_B_H_K_target": true,
+  "current_target_audit_passed": true,
+  "current_target_visibility_construction": {
+    "eval_before_v1": "visibility_accuracy used item-level future_visibility_prob_mean vs sample-level target_visibility.",
+    "export_before_v1": "target_visibility=1 if valid_mask.any() else None, i.e. sample-level simplified target.",
+    "training_before_v1": "visibility_target=(batch[\"fut_valid\"] & batch[\"token_mask\"][:, None, :]) passed to compute_future_semantic_state_losses, but BCE was masked by tf_out[\"valid_mask\"], so negative future-invisible entries were not supervised."
+  },
+  "generated_at_utc": "2026-04-27T15:43:46.597450+00:00",
+  "implemented_target_builder": "code/stwm/tracewm_v2_stage2/utils/visibility_reappearance_targets.py",
+  "is_per_entity_or_slot_target_before_v1": false,
+  "is_per_time_target_before_v1": false,
+  "minimum_viable_target_definition": "future_visibility_target=fut_valid[B,H,K]; future_visibility_mask=token_mask broadcast to [B,H,K]; future_reappearance_target=fut_valid & ((not visible at observed endpoint) or observed-window occlusion) for each slot; target_source=fut_valid_slot_aligned; target_quality=strong_slot_aligned.",
+  "most_reliable_visibility_reappearance_target_source": "fut_valid_slot_aligned with obs_valid endpoint/occlusion gate for reappearance",
+  "training_loss_change": "future_visibility_loss now uses target builder visibility target and mask; future_reappearance_loss added with default weight 0.0.",
+  "why_visibility_accuracy_1p0_not_calibrated_reappearance_evidence": "The previous exported target was sample-level and almost always positive when any future entity existed; it did not test per-horizon invisibility, reappearance, or calibrated negative entries."
+}

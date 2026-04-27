@@ -25,6 +25,13 @@ def _bootstrap_repo_imports(repo_root: Path) -> None:
         sys.path.insert(0, str(code_dir))
 
 
+def _import_visibility_builder(repo_root: Path):
+    _bootstrap_repo_imports(repo_root)
+    from stwm.tracewm_v2_stage2.utils.visibility_reappearance_targets import build_future_visibility_reappearance_targets
+
+    return build_future_visibility_reappearance_targets
+
+
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -507,6 +514,7 @@ def _item_from_state(
     state: Any,
     target_coord: torch.Tensor | None,
     valid_mask: torch.Tensor | None,
+    visibility_targets: Any | None = None,
 ) -> dict[str, Any]:
     validation = state.validate(strict=False)
     visibility_prob = torch.sigmoid(state.future_visibility_logit)
@@ -526,7 +534,46 @@ def _item_from_state(
                 coord_error = float(sq[mask].mean().detach().cpu().item())
         else:
             coord_error = float(sq.mean().detach().cpu().item())
-    return {
+    target_fields: dict[str, Any] = {
+        "future_visibility_target_shape": None,
+        "future_visibility_target_positive_rate": None,
+        "future_visibility_target_source": "unavailable",
+        "future_visibility_target_quality": "weak_unavailable",
+        "future_visibility_supervised_ratio": 0.0,
+        "future_reappearance_target_shape": None,
+        "future_reappearance_target_positive_rate": None,
+        "future_reappearance_supervised_ratio": 0.0,
+        "future_reappearance_target_positive_rate": None,
+        "future_visibility_prob_values": [],
+        "future_visibility_target_values": [],
+        "future_reappearance_prob_values": [],
+        "future_reappearance_target_values": [],
+    }
+    if visibility_targets is not None:
+        vis_t = visibility_targets.future_visibility_target.detach().to(device=visibility_prob.device, dtype=torch.float32)
+        vis_m = visibility_targets.future_visibility_mask.detach().to(device=visibility_prob.device, dtype=torch.bool)
+        rep_t = visibility_targets.future_reappearance_target.detach().to(device=visibility_prob.device, dtype=torch.float32)
+        rep_m = visibility_targets.future_reappearance_mask.detach().to(device=visibility_prob.device, dtype=torch.bool)
+        vis_vals = visibility_prob.detach()[vis_m].float().cpu().tolist()
+        vis_labels = vis_t.detach()[vis_m].float().cpu().tolist()
+        rep_vals = visibility_prob.detach()[rep_m].float().cpu().tolist()
+        rep_labels = rep_t.detach()[rep_m].float().cpu().tolist()
+        target_fields = {
+            "future_visibility_target_shape": list(vis_t.shape),
+            "future_visibility_target_positive_rate": float(vis_t[vis_m].mean().detach().cpu().item()) if bool(vis_m.any().item()) else None,
+            "future_visibility_target_source": str(visibility_targets.target_source),
+            "future_visibility_target_quality": str(visibility_targets.target_quality),
+            "future_visibility_target_reason": str(visibility_targets.target_reason),
+            "future_visibility_supervised_ratio": float(vis_m.float().mean().detach().cpu().item()),
+            "future_reappearance_target_shape": list(rep_t.shape),
+            "future_reappearance_target_positive_rate": float(rep_t[rep_m].mean().detach().cpu().item()) if bool(rep_m.any().item()) else None,
+            "future_reappearance_supervised_ratio": float(rep_m.float().mean().detach().cpu().item()),
+            "future_visibility_prob_values": [float(x) for x in vis_vals],
+            "future_visibility_target_values": [int(round(float(x))) for x in vis_labels],
+            "future_reappearance_prob_values": [float(x) for x in rep_vals],
+            "future_reappearance_target_values": [int(round(float(x))) for x in rep_labels],
+        }
+    item = {
         "item_id": item_id,
         "protocol_item_id": protocol_item_id,
         "subset_tags": subset_tags,
@@ -563,6 +610,8 @@ def _item_from_state(
         "future_hypothesis_logits_mean": _tensor_stats(state.future_hypothesis_logits)["mean"] if state.future_hypothesis_logits is not None else None,
         "future_hypothesis_trace_coord_shape": list(state.future_hypothesis_trace_coord.shape) if state.future_hypothesis_trace_coord is not None else None,
     }
+    item.update(target_fields)
+    return item
 
 
 def export(
@@ -614,6 +663,7 @@ def export(
                 )
     elif mode in {"full_model_teacher_forced", "full_model_free_rollout"}:
         full = _build_full_model_from_checkpoint(repo_root, checkpoint, device, max_items)
+        build_visibility_targets = _import_visibility_builder(repo_root)
         checkpoint_payload = full["payload"]
         state_dict = checkpoint_payload["future_semantic_state_head_state_dict"]
         full_model_forward_executed = True
@@ -665,6 +715,13 @@ def export(
                 state = out.get("future_semantic_trace_state")
                 if state is None:
                     raise RuntimeError(f"{mode} did not return future_semantic_trace_state")
+                visibility_targets = build_visibility_targets(
+                    batch=batch,
+                    out=out,
+                    obs_len=int(args.obs_len),
+                    fut_len=int(args.fut_len),
+                    slot_count=int(state.future_trace_coord.shape[2]),
+                )
                 meta = (raw_batch.get("meta") or [{}])[0]
                 item_id = f"{meta.get('dataset', 'stage2')}::{meta.get('clip_id', count)}::{count}"
                 exported_items.append(
@@ -675,6 +732,7 @@ def export(
                         state=state,
                         target_coord=out.get("target_coord"),
                         valid_mask=out.get("valid_mask"),
+                        visibility_targets=visibility_targets,
                     )
                 )
                 count += 1
@@ -698,6 +756,37 @@ def export(
 
     valid_items = sum(1 for item in exported_items if bool(item.get("valid_output")))
     valid_ratio = valid_items / max(len(exported_items), 1)
+    target_sources = [str(item.get("future_visibility_target_source", "")) for item in exported_items if item.get("future_visibility_target_source")]
+    target_qualities = [str(item.get("future_visibility_target_quality", "")) for item in exported_items if item.get("future_visibility_target_quality")]
+    target_source = target_sources[0] if target_sources else "unavailable"
+    target_quality = target_qualities[0] if target_qualities else "weak_unavailable"
+    visibility_positive_rates = [
+        float(item["future_visibility_target_positive_rate"])
+        for item in exported_items
+        if isinstance(item.get("future_visibility_target_positive_rate"), (int, float))
+    ]
+    reappearance_positive_rates = [
+        float(item["future_reappearance_target_positive_rate"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_target_positive_rate"), (int, float))
+    ]
+    visibility_supervised_ratios = [
+        float(item["future_visibility_supervised_ratio"])
+        for item in exported_items
+        if isinstance(item.get("future_visibility_supervised_ratio"), (int, float))
+    ]
+    reappearance_supervised_ratios = [
+        float(item["future_reappearance_supervised_ratio"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_supervised_ratio"), (int, float))
+    ]
+    visibility_metric_status = (
+        "calibrated_visibility_available"
+        if target_quality == "strong_slot_aligned"
+        else "target_available_but_not_strong_slot_aligned"
+        if target_quality == "medium_broadcast"
+        else "target_unavailable"
+    )
     engineering_output_claimable = bool(
         mode != "head_only_surrogate"
         and full_model_forward_executed
@@ -737,8 +826,14 @@ def export(
         "paper_world_model_claimable": False,
         "world_model_output_claimable": bool(engineering_output_claimable),
         "world_model_output_claimable_scope": "engineering_output_only_not_paper_level",
-        "visibility_metric_status": "smoke_only_simplified_target",
-        "calibrated_visibility_available": False,
+        "visibility_metric_status": visibility_metric_status,
+        "calibrated_visibility_available": bool(target_quality == "strong_slot_aligned"),
+        "future_visibility_target_source": target_source,
+        "future_visibility_target_quality": target_quality,
+        "future_visibility_supervised_ratio": float(sum(visibility_supervised_ratios) / max(len(visibility_supervised_ratios), 1)),
+        "future_reappearance_supervised_ratio": float(sum(reappearance_supervised_ratios) / max(len(reappearance_supervised_ratios), 1)),
+        "future_visibility_positive_rate": float(sum(visibility_positive_rates) / max(len(visibility_positive_rates), 1)) if visibility_positive_rates else None,
+        "future_reappearance_positive_rate": float(sum(reappearance_positive_rates) / max(len(reappearance_positive_rates), 1)) if reappearance_positive_rates else None,
         "current_export_data_source": current_export_data_source,
         "old_association_report_used": False,
         "top1_mrr_false_confuser_exported": False,
