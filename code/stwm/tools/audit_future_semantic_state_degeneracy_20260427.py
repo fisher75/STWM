@@ -176,6 +176,19 @@ def audit(export_path: Path) -> dict[str, Any]:
         "target_metrics_available": target_metrics_available,
         "non_target_diagnostic_available": non_target_diagnostic_available,
         "semantic_state_degenerate": semantic_state_degenerate,
+        "engineering_output_claimable": bool(
+            full_model_mode
+            and bool(export.get("full_model_forward_executed"))
+            and not bool(export.get("random_hidden_used"))
+            and bool(export.get("semantic_state_from_model_hidden"))
+            and not semantic_state_degenerate
+            and raw_export_valid_ratio >= 0.95
+        ),
+        "paper_world_model_claimable": False,
+        "paper_world_model_claimable_reason": "degeneracy audit is an engineering gate; medium-scale signal judgement is required for paper-level claim",
+        "visibility_metric_status": str(export.get("visibility_metric_status") or "smoke_only_simplified_target"),
+        "calibrated_visibility_available": False,
+        "current_export_data_source": str(export.get("current_export_data_source") or "unknown"),
         "safe_for_medium_training": safe_for_medium_training,
         "exact_failure_reason": exact_failure_reason,
     }

@@ -697,6 +697,18 @@ def export(
         raise ValueError(f"unknown export mode: {mode}")
 
     valid_items = sum(1 for item in exported_items if bool(item.get("valid_output")))
+    valid_ratio = valid_items / max(len(exported_items), 1)
+    engineering_output_claimable = bool(
+        mode != "head_only_surrogate"
+        and full_model_forward_executed
+        and semantic_state_from_model_hidden
+        and valid_ratio >= 0.95
+    )
+    current_export_data_source = (
+        "Stage2SemanticDataset validation split from checkpoint args"
+        if mode in {"full_model_teacher_forced", "full_model_free_rollout"}
+        else "external/item manifest head-only surrogate sanity inputs"
+    )
     payload = {
         "generated_at_utc": now_iso(),
         "raw_export_schema_version": RAW_EXPORT_SCHEMA_VERSION,
@@ -721,12 +733,18 @@ def export(
         "full_free_rollout_executed": bool(full_free_rollout_executed),
         "semantic_state_from_model_hidden": bool(semantic_state_from_model_hidden),
         "free_rollout_used": bool(full_free_rollout_executed),
-        "world_model_output_claimable": bool(mode != "head_only_surrogate" and full_model_forward_executed and semantic_state_from_model_hidden),
+        "engineering_output_claimable": bool(engineering_output_claimable),
+        "paper_world_model_claimable": False,
+        "world_model_output_claimable": bool(engineering_output_claimable),
+        "world_model_output_claimable_scope": "engineering_output_only_not_paper_level",
+        "visibility_metric_status": "smoke_only_simplified_target",
+        "calibrated_visibility_available": False,
+        "current_export_data_source": current_export_data_source,
         "old_association_report_used": False,
         "top1_mrr_false_confuser_exported": False,
         "total_items": len(exported_items),
         "valid_items": valid_items,
-        "valid_ratio": valid_items / max(len(exported_items), 1),
+        "valid_ratio": valid_ratio,
         "full_model_loader_report": full_report,
         "items": exported_items,
     }

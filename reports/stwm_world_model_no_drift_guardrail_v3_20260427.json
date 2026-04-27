@@ -1,0 +1,27 @@
+{
+  "allowed": [
+    "FutureSemanticTraceState is the world-model output contract.",
+    "SAM2/CoTracker can only be external consumers or baselines.",
+    "Association/reacquisition is utility, not the model definition.",
+    "Medium training may validate semantic trajectory world-state output only after non-degenerate signal judgement."
+  ],
+  "current_export_data_source": "Stage2SemanticDataset validation split from checkpoint args for full-model export/eval in this pack",
+  "forbidden": [
+    "Calling STWM a SAM2 plugin.",
+    "Calling 16-item smoke a paper-level semantic trajectory world model.",
+    "Using simplified visibility_accuracy=1.0 as calibrated reappearance evidence.",
+    "Moving to 1B before medium semantic-state signal is positive.",
+    "Claiming external hard-case full-model export when export used Stage2 val split."
+  ],
+  "generated_at_utc": "2026-04-27T15:13:30.935511+00:00",
+  "paper_world_model_claim_requires": [
+    "valid_output_ratio >= 0.95",
+    "output_degenerate = false",
+    "trace_rollout_regression_detected = false",
+    "free_rollout_semantic_state_available = true",
+    "uncertainty or semantic consistency shows nontrivial signal compared with baseline"
+  ],
+  "purpose": "Guard STWM Medium Semantic-State Training V1 from drifting into tracker/plugin or overclaim territory.",
+  "version": "v3",
+  "visibility_metric_status": "smoke_only_simplified_target until real per-time/per-entity visibility/reappearance targets are implemented"
+}

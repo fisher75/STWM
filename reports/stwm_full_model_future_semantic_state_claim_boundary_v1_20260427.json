@@ -1,0 +1,28 @@
+{
+  "allowed_engineering_claims": [
+    "Full-model teacher-forced export is wired to Stage2 model hidden states.",
+    "Full-model free-rollout export is wired to Stage2 free-rollout hidden states.",
+    "The current output claim is engineering-level only pending medium-scale evaluation."
+  ],
+  "calibrated_visibility_not_yet_available": true,
+  "current_export_data_source": "Stage2SemanticDataset validation split from checkpoint args; not external_389_item_manifest",
+  "engineering_output_claimable": true,
+  "engineering_output_claimable_definition": "true only means full model teacher-forced/free-rollout produced valid non-degenerate FutureSemanticTraceState tensors in Stage2 validation smoke.",
+  "external_389_item_manifest_exported": false,
+  "forbidden_claims": [
+    "Do not claim calibrated visibility/reappearance from current visibility_accuracy=1.0.",
+    "Do not claim paper-level semantic trajectory world model from 16-item smoke.",
+    "Do not claim external hard-case full-model export unless export actually uses that manifest.",
+    "Do not describe STWM as a SAM2/CoTracker plugin."
+  ],
+  "generated_at_utc": "2026-04-27T15:11:56.249052+00:00",
+  "paper_world_model_claimable": false,
+  "paper_world_model_claimable_reason": "Medium-scale semantic-state eval must show non-degenerate semantic/uncertainty signal without trace regression before paper-level semantic trajectory world-model claims.",
+  "purpose": "Correct claim scope before Medium Semantic-State Training V1.",
+  "source_reports": {
+    "free_rollout_eval": "reports/stwm_full_model_free_rollout_semantic_state_eval_20260427.json",
+    "repair_v2_summary": "reports/stwm_full_model_future_semantic_state_export_repair_v2_summary_20260427.json",
+    "teacher_forced_eval": "reports/stwm_full_model_teacher_forced_semantic_state_eval_20260427.json"
+  },
+  "visibility_metric_status": "smoke_only_simplified_target"
+}

@@ -431,7 +431,7 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
     full_free_rollout = bool(export.get("full_free_rollout_executed"))
     random_hidden_used = bool(export.get("random_hidden_used"))
     semantic_state_from_model_hidden = bool(export.get("semantic_state_from_model_hidden"))
-    claimable = bool(
+    engineering_output_claimable = bool(
         full_model_mode
         and full_model_forward
         and not random_hidden_used
@@ -459,14 +459,21 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
         "full_free_rollout_executed": full_free_rollout,
         "random_hidden_used": random_hidden_used,
         "semantic_state_from_model_hidden": semantic_state_from_model_hidden,
-        "teacher_forced_future_semantic_state_available": bool(export_mode == "full_model_teacher_forced" and claimable),
-        "free_rollout_semantic_state_available": bool(export_mode == "full_model_free_rollout" and claimable),
-        "semantic_state_signal_positive": True if claimable else "unclear",
+        "teacher_forced_future_semantic_state_available": bool(export_mode == "full_model_teacher_forced" and engineering_output_claimable),
+        "free_rollout_semantic_state_available": bool(export_mode == "full_model_free_rollout" and engineering_output_claimable),
+        "engineering_output_claimable": bool(engineering_output_claimable),
+        "paper_world_model_claimable": False,
+        "paper_world_model_claimable_reason": "requires medium-scale semantic-state signal judgement without trace rollout regression",
+        "visibility_metric_status": str(export.get("visibility_metric_status") or "smoke_only_simplified_target"),
+        "calibrated_visibility_available": False,
+        "current_export_data_source": str(export.get("current_export_data_source") or "unknown"),
+        "semantic_state_signal_positive": True if engineering_output_claimable else "unclear",
         "trace_rollout_regression_detected": trace_regression,
         "overall": overall,
         "per_subset_breakdown": breakdown,
         "per_item_results_hash": hash_items(items),
-        "world_model_output_now_claimable": claimable,
+        "world_model_output_now_claimable": bool(engineering_output_claimable),
+        "world_model_output_now_claimable_scope": "engineering_output_only_not_paper_level",
     }
     write_json(out_report, payload)
     write_doc(out_doc, payload)

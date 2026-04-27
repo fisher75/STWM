@@ -1,0 +1,44 @@
+{
+  "best_checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_medium_semantic_state_v1_20260427/best.pt",
+  "checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_medium_semantic_state_v1_20260427/latest.pt",
+  "exact_config_and_command_line": "CUDA_VISIBLE_DEVICES=5 STWM_PROC_TITLE=python PYTHONPATH=code /home/chen034/miniconda3/envs/stwm/bin/python code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py --resume-from outputs/checkpoints/stage2_tusb_v3p1_worldmodel_v2_smalltrain_lr1e7_20260427/latest.pt --skip-resume-optimizer --predecode-cache-path /raid/chen034/workspace/stwm/data/processed/stage2_tusb_v3_predecode_cache_20260418 --teacher-semantic-cache-path /raid/chen034/workspace/stwm/data/processed/stage2_teacher_semantic_cache_v4_appearance_20260418 --stage2-structure-mode trace_unit_semantic_binding --trace-unit-use-instance-prior-bias --enable-future-semantic-state-head --future-semantic-loss-weight 0.03 --future-visibility-loss-weight 0.05 --future-identity-belief-loss-weight 0.01 --future-uncertainty-loss-weight 0.005 --future-hypothesis-count 1 --future-hypothesis-loss-weight 0.0 --lr 1e-7 --max-samples-train 32 --max-samples-val 16 --batch-size 1 --train-steps 11044 --eval-interval 10 --eval-max-batches 4 --save-every-n-steps 20 --output-dir outputs/checkpoints/stage2_tusb_v3p1_medium_semantic_state_v1_20260427 --run-name stage2_tusb_v3p1_medium_semantic_state_v1_20260427 --run-summary-json reports/stwm_medium_semantic_state_train_v1_summary_raw_20260427.json --progress-json reports/stwm_medium_semantic_state_train_v1_progress_20260427.json --seed 20260427",
+  "freeze_trainable_boundary": {
+    "boundary_ok": true,
+    "semantic_grad_norm_latest": 0.9999992984433875,
+    "semantic_trainable_parameter_count": 8169989,
+    "stage1_grad_detected_after_backward": false,
+    "stage1_trainable_parameter_count": 0
+  },
+  "future_semantic_losses": {
+    "future_hypothesis_loss_mean": 0.0,
+    "future_identity_belief_loss_mean": 0.45438844710588455,
+    "future_semantic_embedding_loss_mean": 1.045414799451828,
+    "future_semantic_state_loss_mean": 0.05453817546367645,
+    "future_uncertainty_loss_mean": 0.14590484453365207,
+    "future_visibility_loss_mean": 0.35804646015167235
+  },
+  "generated_at_utc": "2026-04-27T15:26:56.473742+00:00",
+  "global_step_completed": 11044,
+  "launch_report": "reports/stwm_medium_semantic_state_train_v1_launch_20260427.json",
+  "loss_finite_ratio": 1.0,
+  "medium_training_completed": true,
+  "medium_training_started": true,
+  "output_valid_ratio": 1.0,
+  "raw_training_budget": {
+    "batch_size": 1,
+    "eval_interval": 10,
+    "eval_max_batches": 4,
+    "optimizer_steps_this_invocation": 40,
+    "save_every_n_steps": 20,
+    "train_steps_completed": 11044,
+    "train_steps_target": 11044
+  },
+  "source_raw_summary": "reports/stwm_medium_semantic_state_train_v1_summary_raw_20260427.json",
+  "stage1_frozen_confirmed": true,
+  "tmux_session": "stwm_medium_semantic_state_v1_20260427",
+  "trace_readout_proxy_regression_basis": "128-item full_model_free_rollout future_trace_coord_error vs V2 pre-medium full_model_free_rollout export; threshold > max(0.01, 2%) worsened.",
+  "trace_readout_proxy_regression_vs_smalltrain_baseline": false,
+  "train_steps": 40,
+  "training_status": "completed",
+  "wall_time": null
+}
