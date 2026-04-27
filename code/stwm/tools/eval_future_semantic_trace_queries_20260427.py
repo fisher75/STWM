@@ -425,8 +425,18 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
         if subset_items:
             breakdown[subset] = aggregate_raw_export_items(subset_items)
     trace_regression = bool(export.get("trace_rollout_regression_detected", False))
+    export_mode = str(export.get("export_mode", "unknown"))
+    full_model_mode = export_mode in {"full_model_teacher_forced", "full_model_free_rollout"}
+    full_model_forward = bool(export.get("full_model_forward_executed"))
+    full_free_rollout = bool(export.get("full_free_rollout_executed"))
+    random_hidden_used = bool(export.get("random_hidden_used"))
+    semantic_state_from_model_hidden = bool(export.get("semantic_state_from_model_hidden"))
     claimable = bool(
-        overall["valid_output_ratio"] >= 0.95
+        full_model_mode
+        and full_model_forward
+        and not random_hidden_used
+        and semantic_state_from_model_hidden
+        and overall["valid_output_ratio"] >= 0.95
         and overall["output_degenerate"] is False
         and float(overall["semantic_embedding_var_unit_mean"] or 0.0) > 0.0
         and float(overall["visibility_prob_std_mean"] or 0.0) > 0.0
@@ -439,11 +449,19 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
         "mode": "consume_future_semantic_state_raw_export",
         "source_export": str(export_report),
         "raw_export_schema_version": export.get("raw_export_schema_version"),
+        "export_mode": export_mode,
         "semantic_state_eval_consumed_future_semantic_trace_state": True,
         "old_association_report_only": False,
         "old_association_report_used": False,
         "raw_export_consumed": True,
         "future_semantic_trace_field_available": bool(export.get("valid_ratio", 0.0) > 0.0),
+        "full_model_forward_executed": full_model_forward,
+        "full_free_rollout_executed": full_free_rollout,
+        "random_hidden_used": random_hidden_used,
+        "semantic_state_from_model_hidden": semantic_state_from_model_hidden,
+        "teacher_forced_future_semantic_state_available": bool(export_mode == "full_model_teacher_forced" and claimable),
+        "free_rollout_semantic_state_available": bool(export_mode == "full_model_free_rollout" and claimable),
+        "semantic_state_signal_positive": True if claimable else "unclear",
         "trace_rollout_regression_detected": trace_regression,
         "overall": overall,
         "per_subset_breakdown": breakdown,

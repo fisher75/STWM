@@ -80,6 +80,8 @@ def audit(export_path: Path) -> dict[str, Any]:
         raise ValueError(f"degeneracy audit repair v1 requires raw export schema, got {export.get('raw_export_schema_version')}")
     if bool(export.get("old_association_report_used")):
         raise ValueError("raw export reports old_association_report_used=true")
+    export_mode = str(export.get("export_mode", "unknown"))
+    full_model_mode = export_mode in {"full_model_teacher_forced", "full_model_free_rollout"}
     items = export.get("items")
     if not isinstance(items, list):
         raise ValueError("raw export missing item list")
@@ -123,14 +125,24 @@ def audit(export_path: Path) -> dict[str, Any]:
     )
     non_target_diagnostic_available = bool(valid_items)
     safe_for_medium_training = bool(
-        not semantic_state_degenerate
+        full_model_mode
+        and bool(export.get("full_model_forward_executed"))
+        and not bool(export.get("random_hidden_used"))
+        and bool(export.get("semantic_state_from_model_hidden"))
+        and not semantic_state_degenerate
         and raw_export_valid_ratio >= 0.95
         and not old_assoc
         and raw_export_consumed
         and (target_metrics_available or non_target_diagnostic_available)
     )
     exact_failure_reason = None
-    if semantic_state_degenerate:
+    if not full_model_mode:
+        exact_failure_reason = f"export_mode={export_mode} is not a full-model mode"
+    elif bool(export.get("random_hidden_used")):
+        exact_failure_reason = "random hidden was used"
+    elif not bool(export.get("semantic_state_from_model_hidden")):
+        exact_failure_reason = "semantic state did not come from model hidden"
+    elif semantic_state_degenerate:
         exact_failure_reason = "raw FutureSemanticTraceState statistics are degenerate or non-finite"
     elif raw_export_valid_ratio < 0.95:
         exact_failure_reason = f"raw_export_valid_ratio below threshold: {raw_export_valid_ratio}"
@@ -141,6 +153,11 @@ def audit(export_path: Path) -> dict[str, Any]:
     payload = {
         "generated_at_utc": now_iso(),
         "source_export": str(export_path),
+        "export_mode": export_mode,
+        "full_model_forward_executed": bool(export.get("full_model_forward_executed")),
+        "full_free_rollout_executed": bool(export.get("full_free_rollout_executed")),
+        "random_hidden_used": bool(export.get("random_hidden_used")),
+        "semantic_state_from_model_hidden": bool(export.get("semantic_state_from_model_hidden")),
         "raw_export_consumed": raw_export_consumed,
         "old_association_report_used": old_assoc,
         "item_count": len(items),
