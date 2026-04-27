@@ -1,0 +1,97 @@
+{
+  "audit_passed": true,
+  "coord_dim_policy": "MultiHypothesisTraceHead emits max_coord_dim=3 and slices to base_coord.shape[-1].",
+  "dynamic_coord_dim_supported": true,
+  "generated_at_utc": "2026-04-27T13:41:41.401254+00:00",
+  "identity_target_shapes_supported": [
+    "B,K,D",
+    "B,H,K,D"
+  ],
+  "identity_target_source_recorded": true,
+  "instance_confidence_shapes_supported": [
+    "B",
+    "B,K",
+    "B,H,K"
+  ],
+  "loss_cases": [
+    {
+      "confidence_shape": "B",
+      "finite": true,
+      "identity_target_source": "instance_identity_embedding",
+      "instance_confidence_broadcast": "batch_confidence_[B]",
+      "loss": 0.08272171020507812,
+      "target_shape": "B_K_D"
+    },
+    {
+      "confidence_shape": "B_K",
+      "finite": true,
+      "identity_target_source": "instance_identity_embedding",
+      "instance_confidence_broadcast": "slot_confidence_[B,K]",
+      "loss": 0.08272171020507812,
+      "target_shape": "B_K_D"
+    },
+    {
+      "confidence_shape": "B_H_K",
+      "finite": true,
+      "identity_target_source": "instance_identity_embedding",
+      "instance_confidence_broadcast": "temporal_slot_confidence_[B,H,K]",
+      "loss": 0.08272171020507812,
+      "target_shape": "B_K_D"
+    },
+    {
+      "confidence_shape": "B",
+      "finite": true,
+      "identity_target_source": "instance_identity_embedding",
+      "instance_confidence_broadcast": "batch_confidence_[B]",
+      "loss": 0.07869689166545868,
+      "target_shape": "B_H_K_D"
+    },
+    {
+      "confidence_shape": "B_K",
+      "finite": true,
+      "identity_target_source": "instance_identity_embedding",
+      "instance_confidence_broadcast": "slot_confidence_[B,K]",
+      "loss": 0.07869689166545868,
+      "target_shape": "B_H_K_D"
+    },
+    {
+      "confidence_shape": "B_H_K",
+      "finite": true,
+      "identity_target_source": "instance_identity_embedding",
+      "instance_confidence_broadcast": "temporal_slot_confidence_[B,H,K]",
+      "loss": 0.07869689166545868,
+      "target_shape": "B_H_K_D"
+    }
+  ],
+  "multi_hypothesis_cases": [
+    {
+      "case": "multi_hypothesis_dynamic_2d",
+      "coord_dim": 2,
+      "hypothesis_shape": [
+        2,
+        2,
+        3,
+        4,
+        2
+      ],
+      "valid": true
+    },
+    {
+      "case": "multi_hypothesis_dynamic_3d",
+      "coord_dim": 3,
+      "hypothesis_shape": [
+        2,
+        2,
+        3,
+        4,
+        3
+      ],
+      "valid": true
+    }
+  ],
+  "semantic_target_shapes_supported": [
+    "B,K,D",
+    "B,H,K,D"
+  ],
+  "target_file": "code/stwm/tracewm_v2_stage2/models/semantic_trace_world_head.py"
+}

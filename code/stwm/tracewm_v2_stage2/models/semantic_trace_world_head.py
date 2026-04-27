@@ -34,12 +34,13 @@ class FutureExtentHead(torch.nn.Module):
 
 
 class MultiHypothesisTraceHead(torch.nn.Module):
-    def __init__(self, hidden_dim: int, hypothesis_count: int) -> None:
+    def __init__(self, hidden_dim: int, hypothesis_count: int, max_coord_dim: int = 3) -> None:
         super().__init__()
         self.hypothesis_count = max(int(hypothesis_count), 1)
+        self.max_coord_dim = max(int(max_coord_dim), 2)
         self.trace_delta = torch.nn.Sequential(
             torch.nn.LayerNorm(int(hidden_dim)),
-            torch.nn.Linear(int(hidden_dim), self.hypothesis_count * 2),
+            torch.nn.Linear(int(hidden_dim), self.hypothesis_count * self.max_coord_dim),
         )
         self.logit_head = torch.nn.Sequential(
             torch.nn.LayerNorm(int(hidden_dim)),
@@ -48,9 +49,13 @@ class MultiHypothesisTraceHead(torch.nn.Module):
 
     def forward(self, hidden: torch.Tensor, base_coord: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         bsz, horizon, slots, _ = hidden.shape
+        coord_dim = int(base_coord.shape[-1])
+        if coord_dim < 2 or coord_dim > self.max_coord_dim:
+            raise ValueError(f"coord_dim must be in [2,{self.max_coord_dim}], got {coord_dim}")
         pooled = hidden.mean(dim=(1, 2))
         logits = self.logit_head(pooled)
-        delta = self.trace_delta(hidden).view(bsz, horizon, slots, self.hypothesis_count, 2)
+        raw_delta = self.trace_delta(hidden)[..., : self.hypothesis_count * coord_dim]
+        delta = raw_delta.view(bsz, horizon, slots, self.hypothesis_count, coord_dim)
         delta = delta.permute(0, 3, 1, 2, 4)
         coord = (base_coord[:, None] + 0.05 * torch.tanh(delta)).clamp(0.0, 1.0)
         return logits, coord
@@ -144,6 +149,36 @@ def _align_last_dim(target: torch.Tensor, dim: int) -> torch.Tensor:
     return out
 
 
+def _expand_target_to_state(target: torch.Tensor, state_tensor: torch.Tensor) -> torch.Tensor:
+    if target.ndim == 3:
+        target = target[:, None]
+    if target.ndim != 4:
+        raise ValueError(f"target must be [B,K,D] or [B,H,K,D], got {tuple(target.shape)}")
+    target = _align_last_dim(target, int(state_tensor.shape[-1]))
+    if target.shape[1] == 1:
+        return target.expand_as(state_tensor)
+    if tuple(target.shape[:3]) != tuple(state_tensor.shape[:3]):
+        raise ValueError(f"target shape {tuple(target.shape)} cannot align with state {tuple(state_tensor.shape)}")
+    return target
+
+
+def _broadcast_instance_confidence(instance_confidence: torch.Tensor | None, valid: torch.Tensor, threshold: float) -> tuple[torch.Tensor, str]:
+    if instance_confidence is None:
+        return valid, "none"
+    conf = instance_confidence.to(device=valid.device, dtype=torch.float32)
+    if conf.ndim == 1:
+        conf = conf[:, None, None]
+        source = "batch_confidence_[B]"
+    elif conf.ndim == 2:
+        conf = conf[:, None, :]
+        source = "slot_confidence_[B,K]"
+    elif conf.ndim == 3:
+        source = "temporal_slot_confidence_[B,H,K]"
+    else:
+        raise ValueError(f"instance_confidence must be [B], [B,K], or [B,H,K], got {tuple(conf.shape)}")
+    return valid & (conf.expand_as(valid.to(dtype=torch.float32)) >= float(threshold)), source
+
+
 def compute_future_semantic_state_losses(
     *,
     state: FutureSemanticTraceState,
@@ -154,16 +189,15 @@ def compute_future_semantic_state_losses(
     coord_error: torch.Tensor | None,
     instance_confidence: torch.Tensor | None,
     cfg: FutureSemanticStateLossConfig,
+    identity_target_source: str = "semantic_token_surrogate",
 ) -> tuple[torch.Tensor, dict[str, Any]]:
     """Compute optional future-state losses; all weights default to zero."""
 
     device = state.future_trace_coord.device
     zero = state.future_trace_coord.sum() * 0.0
     total = zero
-    semantic_target = _align_last_dim(semantic_target, int(state.future_semantic_embedding.shape[-1]))
-    identity_target = _align_last_dim(identity_target, int(state.future_identity_embedding.shape[-1]))
-    semantic_target_f = semantic_target[:, None].expand_as(state.future_semantic_embedding)
-    identity_target_f = identity_target[:, None].expand_as(state.future_identity_embedding)
+    semantic_target_f = _expand_target_to_state(semantic_target, state.future_semantic_embedding)
+    identity_target_f = _expand_target_to_state(identity_target, state.future_identity_embedding)
     visibility_target_f = visibility_target.to(device=device, dtype=torch.float32)
     valid = valid_mask.to(device=device, dtype=torch.bool)
 
@@ -179,9 +213,11 @@ def compute_future_semantic_state_losses(
         total = total + float(cfg.visibility_loss_weight) * visibility_loss
 
     identity_loss = zero
-    id_valid = valid
-    if instance_confidence is not None:
-        id_valid = id_valid & (instance_confidence[:, None].to(device=device) >= float(cfg.instance_conf_threshold))
+    id_valid, instance_confidence_broadcast = _broadcast_instance_confidence(
+        instance_confidence,
+        valid,
+        threshold=float(cfg.instance_conf_threshold),
+    )
     if float(cfg.identity_belief_loss_weight) > 0.0:
         identity_loss = _masked_mean(1.0 - F.cosine_similarity(state.future_identity_embedding, identity_target_f, dim=-1), id_valid)
         total = total + float(cfg.identity_belief_loss_weight) * identity_loss
@@ -211,6 +247,8 @@ def compute_future_semantic_state_losses(
         "future_identity_belief_loss_weight": float(cfg.identity_belief_loss_weight),
         "future_uncertainty_loss_weight": float(cfg.uncertainty_loss_weight),
         "future_hypothesis_loss_weight": float(cfg.hypothesis_loss_weight),
+        "identity_target_source": str(identity_target_source),
+        "instance_confidence_broadcast": str(instance_confidence_broadcast),
         "future_semantic_state_output_valid": bool(state.validate(strict=False)["valid"]),
         "future_semantic_state_shapes": {k: list(v) if v is not None else None for k, v in state.shape_dict().items()},
     }

@@ -8,14 +8,9 @@ from pathlib import Path
 from typing import Any
 import hashlib
 import json
+import math
+import os
 
-ROOT = Path("/home/chen034/workspace/stwm")
-REPORTS = ROOT / "reports"
-DOCS = ROOT / "docs"
-
-DEFAULT_SOURCE = REPORTS / "stwm_trace_belief_eval_20260424.json"
-DEFAULT_REPORT = REPORTS / "stwm_future_semantic_query_eval_20260427.json"
-DEFAULT_DOC = DOCS / "STWM_FUTURE_SEMANTIC_QUERY_EVAL_20260427.md"
 
 OFFICIAL_METHOD = "TUSB-v3.1::best_semantic_hard.pt"
 OFFICIAL_SCORING = "trace_belief_assoc"
@@ -32,6 +27,15 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def resolve_repo_root(value: str | None) -> Path:
+    if value:
+        return Path(value).expanduser().resolve()
+    env_root = os.environ.get("STWM_ROOT")
+    if env_root:
+        return Path(env_root).expanduser().resolve()
+    return Path.cwd().resolve()
+
+
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text())
 
@@ -39,33 +43,6 @@ def load_json(path: Path) -> Any:
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
-
-
-def write_doc(path: Path, payload: dict[str, Any]) -> None:
-    lines = [
-        "# STWM Future Semantic Query Eval 20260427",
-        "",
-        "This is a read-only utility evaluation over existing per-item reports. It does not train, rerun inference, or modify official results.",
-        "",
-        "## Overall",
-        f"- source_report: `{payload['source_report']}`",
-        f"- future_semantic_trace_field_available: `{payload['future_semantic_trace_field_available']}`",
-        f"- exact_blocking_reason_for_visibility_auroc: `{payload['exact_blocking_reason_for_visibility_auroc']}`",
-        f"- exact_blocking_reason_for_uncertainty_ece: `{payload['exact_blocking_reason_for_uncertainty_ece']}`",
-        "",
-        "## Panels",
-        "| panel | rows | top1 | MRR | false confuser | visibility metric | uncertainty metric |",
-        "|---|---:|---:|---:|---:|---|---|",
-    ]
-    for name, panel in payload.get("panels", {}).items():
-        overall = panel.get("overall", {})
-        lines.append(
-            f"| {name} | {overall.get('row_count', 0)} | {fmt(overall.get('top1'))} | "
-            f"{fmt(overall.get('MRR'))} | {fmt(overall.get('false_confuser_rate'))} | "
-            f"{overall.get('visibility_metric_status')} | {overall.get('uncertainty_metric_status')} |"
-        )
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(lines).rstrip() + "\n")
 
 
 def fmt(value: Any) -> str:
@@ -76,6 +53,38 @@ def fmt(value: Any) -> str:
     return str(value)
 
 
+def mean(values: list[float]) -> float | None:
+    return sum(values) / len(values) if values else None
+
+
+def pearson(xs: list[float], ys: list[float]) -> float | None:
+    if len(xs) < 2 or len(xs) != len(ys):
+        return None
+    mx, my = mean(xs), mean(ys)
+    if mx is None or my is None:
+        return None
+    vx = sum((x - mx) ** 2 for x in xs)
+    vy = sum((y - my) ** 2 for y in ys)
+    if vx <= 0.0 or vy <= 0.0:
+        return None
+    return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / math.sqrt(vx * vy)
+
+
+def binary_auc(scores: list[float], labels: list[int]) -> float | None:
+    if not scores or len(scores) != len(labels):
+        return None
+    positives = [s for s, y in zip(scores, labels) if int(y) == 1]
+    negatives = [s for s, y in zip(scores, labels) if int(y) == 0]
+    if not positives or not negatives:
+        return None
+    wins = 0.0
+    total = float(len(positives) * len(negatives))
+    for ps in positives:
+        for ns in negatives:
+            wins += 1.0 if ps > ns else 0.5 if ps == ns else 0.0
+    return wins / total
+
+
 def row_is_official(row: dict[str, Any]) -> bool:
     return (
         str(row.get("method_name")) == OFFICIAL_METHOD
@@ -83,7 +92,7 @@ def row_is_official(row: dict[str, Any]) -> bool:
     )
 
 
-def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def aggregate_old_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     if not rows:
         return {
             "row_count": 0,
@@ -102,9 +111,9 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "row_count": len(rows),
         "unique_item_count": len({str(r.get("protocol_item_id")) for r in rows}),
-        "top1": sum(top1) / max(len(top1), 1),
-        "MRR": sum(mrr) / max(len(mrr), 1),
-        "false_confuser_rate": 1.0 - (sum(top1) / max(len(top1), 1)),
+        "top1": mean(top1),
+        "MRR": mean(mrr),
+        "false_confuser_rate": 1.0 - float(mean(top1) or 0.0),
         "visibility_AUROC": None,
         "visibility_accuracy": None,
         "uncertainty_ECE": None,
@@ -119,6 +128,8 @@ def subset_rows(rows: list[dict[str, Any]], subset: str) -> list[dict[str, Any]]
     for row in rows:
         tags = row.get("subset_tags")
         if isinstance(tags, list) and subset in {str(x) for x in tags}:
+            out.append(row)
+        elif isinstance(tags, dict) and bool(tags.get(subset)):
             out.append(row)
     return out
 
@@ -138,7 +149,21 @@ def hash_rows(rows: list[dict[str, Any]]) -> str:
     return hashlib.sha256(json.dumps(compact, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
-def run(source_report: Path, out_report: Path, out_doc: Path) -> dict[str, Any]:
+def hash_items(items: list[dict[str, Any]]) -> str:
+    compact = [
+        {
+            "item_id": item.get("item_id"),
+            "protocol_item_id": item.get("protocol_item_id"),
+            "valid": item.get("future_semantic_trace_state_valid"),
+            "visibility": item.get("target_visibility"),
+            "coord_error": item.get("future_trace_coord_error"),
+        }
+        for item in items
+    ]
+    return hashlib.sha256(json.dumps(compact, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def run_old_report_mode(source_report: Path, out_report: Path, out_doc: Path, repo_root: Path) -> dict[str, Any]:
     source = load_json(source_report)
     panels_out: dict[str, Any] = {}
     all_rows: list[dict[str, Any]] = []
@@ -153,18 +178,22 @@ def run(source_report: Path, out_report: Path, out_doc: Path) -> dict[str, Any]:
                 "false_confuser_rejection": "measured as 1 - future target grounding top1",
                 "semantic_hard_subset_breakdown": SUBSETS,
             },
-            "overall": aggregate(rows),
-            "semantic_hard_subset_breakdown": {subset: aggregate(subset_rows(rows, subset)) for subset in SUBSETS},
+            "overall": aggregate_old_rows(rows),
+            "semantic_hard_subset_breakdown": {subset: aggregate_old_rows(subset_rows(rows, subset)) for subset in SUBSETS},
             "per_item_results_hash": hash_rows(rows),
         }
     payload = {
         "generated_at_utc": now_iso(),
+        "repo_root": str(repo_root),
+        "mode": "read_old_association_report",
         "source_report": str(source_report),
         "official_method": OFFICIAL_METHOD,
         "official_scoring_mode": OFFICIAL_SCORING,
         "fresh_eval_executed": False,
         "read_only_existing_per_item_eval": True,
         "future_semantic_trace_field_available": False,
+        "semantic_state_eval_consumed_future_semantic_trace_state": False,
+        "old_association_report_only": True,
         "future_semantic_query_eval_added": True,
         "task_metrics": [
             "top1",
@@ -174,10 +203,10 @@ def run(source_report: Path, out_report: Path, out_doc: Path) -> dict[str, Any]:
             "uncertainty_ECE_if_available",
             "gap_length_decay_if_available",
         ],
-        "exact_blocking_reason_for_visibility_auroc": "current official per-item reports do not contain explicit future_visibility_logit or visibility labels emitted by a FutureSemanticTraceState head",
-        "exact_blocking_reason_for_uncertainty_ece": "current official per-item reports do not contain calibrated future_uncertainty/confidence fields from a FutureSemanticTraceState head",
+        "exact_blocking_reason_for_visibility_auroc": "old association reports do not contain FutureSemanticTraceState future_visibility_logit outputs",
+        "exact_blocking_reason_for_uncertainty_ece": "old association reports do not contain FutureSemanticTraceState future_uncertainty outputs",
         "panels": panels_out,
-        "overall_all_panels": aggregate(all_rows),
+        "overall_all_panels": aggregate_old_rows(all_rows),
         "all_panels_per_item_results_hash": hash_rows(all_rows),
     }
     write_json(out_report, payload)
@@ -185,17 +214,142 @@ def run(source_report: Path, out_report: Path, out_doc: Path) -> dict[str, Any]:
     return payload
 
 
+def aggregate_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
+    valid_items = [it for it in items if bool(it.get("future_semantic_trace_state_valid", True))]
+    valid_ratio = len(valid_items) / max(len(items), 1)
+    visibility_probs = [float(it["future_visibility_prob"]) for it in valid_items if it.get("future_visibility_prob") is not None]
+    visibility_labels = [int(it["target_visibility"]) for it in valid_items if it.get("target_visibility") is not None and it.get("future_visibility_prob") is not None]
+    visibility_scores_for_labels = [float(it["future_visibility_prob"]) for it in valid_items if it.get("target_visibility") is not None and it.get("future_visibility_prob") is not None]
+    visibility_acc = None
+    if visibility_labels:
+        visibility_acc = mean([1.0 if (s >= 0.5) == bool(y) else 0.0 for s, y in zip(visibility_scores_for_labels, visibility_labels)])
+    coord_errors = [float(it["future_trace_coord_error"]) for it in valid_items if it.get("future_trace_coord_error") is not None]
+    uncertainties = [float(it["future_uncertainty_mean"]) for it in valid_items if it.get("future_uncertainty_mean") is not None]
+    paired_uncertainties = []
+    paired_errors = []
+    for it in valid_items:
+        if it.get("future_uncertainty_mean") is not None and it.get("future_trace_coord_error") is not None:
+            paired_uncertainties.append(float(it["future_uncertainty_mean"]))
+            paired_errors.append(float(it["future_trace_coord_error"]))
+    temporal_consistency = [float(it["semantic_embedding_temporal_consistency"]) for it in valid_items if it.get("semantic_embedding_temporal_consistency") is not None]
+    return {
+        "item_count": len(items),
+        "valid_item_count": len(valid_items),
+        "valid_output_ratio": valid_ratio,
+        "visibility_accuracy": visibility_acc,
+        "visibility_AUROC": binary_auc(visibility_scores_for_labels, visibility_labels),
+        "visibility_metric_available": bool(visibility_labels),
+        "future_trace_coord_error": mean(coord_errors),
+        "future_trace_coord_error_available": bool(coord_errors),
+        "uncertainty_error_correlation": pearson(paired_uncertainties, paired_errors),
+        "uncertainty_metric_available": len(paired_uncertainties) >= 2,
+        "semantic_embedding_temporal_consistency": mean(temporal_consistency),
+        "semantic_embedding_temporal_consistency_available": bool(temporal_consistency),
+        "future_visibility_prob_mean": mean(visibility_probs),
+    }
+
+
+def run_export_mode(export_report: Path, out_report: Path, out_doc: Path, repo_root: Path) -> dict[str, Any]:
+    export = load_json(export_report)
+    items = export.get("items") or []
+    if not isinstance(items, list):
+        items = []
+    breakdown = {}
+    for subset in SUBSETS:
+        subset_items = subset_rows(items, subset)
+        if subset_items:
+            breakdown[subset] = aggregate_export_items(subset_items)
+    payload = {
+        "generated_at_utc": now_iso(),
+        "repo_root": str(repo_root),
+        "mode": "consume_future_semantic_state_export",
+        "source_export": str(export_report),
+        "fresh_eval_executed": True,
+        "read_only_existing_per_item_eval": False,
+        "future_semantic_trace_field_available": bool(export.get("future_semantic_trace_field_available", bool(items))),
+        "semantic_state_eval_consumed_future_semantic_trace_state": True,
+        "old_association_report_only": False,
+        "export_forward_scope": export.get("forward_scope"),
+        "overall": aggregate_export_items(items),
+        "per_subset_breakdown": breakdown,
+        "per_item_results_hash": hash_items(items),
+        "exact_blocking_reason_for_visibility_auroc": None if any(it.get("target_visibility") is not None for it in items) else "export lacks target_visibility labels",
+        "exact_blocking_reason_for_uncertainty_ece": "ECE is not defined for continuous trace coord error; reported uncertainty-error correlation instead",
+    }
+    write_json(out_report, payload)
+    write_doc(out_doc, payload)
+    return payload
+
+
+def write_doc(path: Path, payload: dict[str, Any]) -> None:
+    lines = [
+        "# STWM Future Semantic Query Eval 20260427",
+        "",
+        f"- mode: `{payload.get('mode')}`",
+        f"- future_semantic_trace_field_available: `{payload.get('future_semantic_trace_field_available')}`",
+        f"- semantic_state_eval_consumed_future_semantic_trace_state: `{payload.get('semantic_state_eval_consumed_future_semantic_trace_state')}`",
+        f"- old_association_report_only: `{payload.get('old_association_report_only')}`",
+        "",
+    ]
+    if payload.get("mode") == "consume_future_semantic_state_export":
+        overall = payload.get("overall", {})
+        lines += [
+            "## Overall Semantic-State Metrics",
+            f"- item_count: `{overall.get('item_count')}`",
+            f"- valid_output_ratio: `{fmt(overall.get('valid_output_ratio'))}`",
+            f"- visibility_accuracy: `{fmt(overall.get('visibility_accuracy'))}`",
+            f"- visibility_AUROC: `{fmt(overall.get('visibility_AUROC'))}`",
+            f"- uncertainty_error_correlation: `{fmt(overall.get('uncertainty_error_correlation'))}`",
+            f"- semantic_embedding_temporal_consistency: `{fmt(overall.get('semantic_embedding_temporal_consistency'))}`",
+            f"- future_trace_coord_error: `{fmt(overall.get('future_trace_coord_error'))}`",
+            "",
+        ]
+    else:
+        lines += [
+            "## Old Association Report Panels",
+            "| panel | rows | top1 | MRR | false confuser | visibility metric | uncertainty metric |",
+            "|---|---:|---:|---:|---:|---|---|",
+        ]
+        for name, panel in payload.get("panels", {}).items():
+            overall = panel.get("overall", {})
+            lines.append(
+                f"| {name} | {overall.get('row_count', 0)} | {fmt(overall.get('top1'))} | "
+                f"{fmt(overall.get('MRR'))} | {fmt(overall.get('false_confuser_rate'))} | "
+                f"{overall.get('visibility_metric_status')} | {overall.get('uncertainty_metric_status')} |"
+            )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines).rstrip() + "\n")
+
+
 def parse_args() -> Any:
-    p = ArgumentParser(description="Evaluate future semantic trace query utility from existing STWM per-item reports.")
-    p.add_argument("--source-report", default=str(DEFAULT_SOURCE))
-    p.add_argument("--out-report", default=str(DEFAULT_REPORT))
-    p.add_argument("--out-doc", default=str(DEFAULT_DOC))
+    p = ArgumentParser(description="Evaluate STWM future semantic trace query outputs.")
+    p.add_argument("--repo-root", default=None)
+    p.add_argument(
+        "--mode",
+        default="read_old_association_report",
+        choices=["read_old_association_report", "consume_future_semantic_state_export"],
+    )
+    p.add_argument("--source-report", default=None)
+    p.add_argument("--semantic-state-export", default=None)
+    p.add_argument("--out-report", default=None)
+    p.add_argument("--out-doc", default=None)
     return p.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    run(Path(args.source_report), Path(args.out_report), Path(args.out_doc))
+    repo_root = resolve_repo_root(args.repo_root)
+    reports = repo_root / "reports"
+    docs = repo_root / "docs"
+    out_report = Path(args.out_report) if args.out_report else reports / "stwm_future_semantic_query_eval_20260427.json"
+    out_doc = Path(args.out_doc) if args.out_doc else docs / "STWM_FUTURE_SEMANTIC_QUERY_EVAL_20260427.md"
+    if args.mode == "read_old_association_report":
+        source = Path(args.source_report) if args.source_report else reports / "stwm_trace_belief_eval_20260424.json"
+        run_old_report_mode(source, out_report, out_doc, repo_root)
+    else:
+        if not args.semantic_state_export:
+            raise SystemExit("--semantic-state-export is required for consume_future_semantic_state_export mode")
+        run_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
 
 
 if __name__ == "__main__":

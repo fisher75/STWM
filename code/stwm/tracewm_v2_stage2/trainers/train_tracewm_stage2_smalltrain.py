@@ -592,6 +592,7 @@ def _teacher_forced_predict(
     semantic_encoder: SemanticEncoder,
     semantic_fusion: SemanticFusion,
     readout_head: torch.nn.Linear,
+    future_semantic_state_head: SemanticTraceStateHead | None,
     structure_mode: str,
     trace_unit_tokenizer: TraceUnitTokenizer | None,
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
@@ -602,7 +603,6 @@ def _teacher_forced_predict(
     obs_len: int,
     semantic_source_mainline: str,
     allow_stage1_grad: bool = False,
-    future_semantic_state_head: SemanticTraceStateHead | None = None,
 ) -> Dict[str, Any]:
     full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
     shifted = _prepare_shifted(full_state)
@@ -664,6 +664,7 @@ def _free_rollout_predict(
     semantic_encoder: SemanticEncoder,
     semantic_fusion: SemanticFusion,
     readout_head: torch.nn.Linear,
+    future_semantic_state_head: SemanticTraceStateHead | None,
     structure_mode: str,
     trace_unit_tokenizer: TraceUnitTokenizer | None,
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
@@ -729,13 +730,24 @@ def _free_rollout_predict(
     pred_future = state_seq[:, int(obs_len) :, :, 0:2]
     target_coord = batch["fut_state"][..., 0:2]
     valid_mask = batch["fut_valid"] & token_mask[:, None, :]
+    future_hidden = enhanced_hidden[:, int(obs_len) :]
+    future_semantic_trace_state = None
+    future_semantic_state_validation = {"valid": False, "shapes": {}, "errors": ["future_semantic_state_head_disabled"]}
+    if future_semantic_state_head is not None:
+        future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_future)
+        future_semantic_state_validation = future_semantic_trace_state.validate(strict=False)
 
     return {
         "pred_coord": pred_future,
         "target_coord": target_coord,
         "valid_mask": valid_mask,
         "gate_mean": float(sum(gate_vals) / max(len(gate_vals), 1)),
-        "future_hidden": enhanced_hidden[:, int(obs_len) :],
+        "future_hidden": future_hidden,
+        "future_semantic_trace_state": future_semantic_trace_state,
+        "future_semantic_state_shapes": future_semantic_state_validation.get("shapes", {}),
+        "future_semantic_state_output_valid": bool(future_semantic_state_validation.get("valid", False)),
+        "semantic_state_feedback_in_free_rollout": False,
+        "free_rollout_semantic_state_output": bool(future_semantic_trace_state is not None),
     }
 
 
@@ -1257,6 +1269,7 @@ def _evaluate(
     semantic_encoder: SemanticEncoder,
     semantic_fusion: SemanticFusion,
     readout_head: torch.nn.Linear,
+    future_semantic_state_head: SemanticTraceStateHead | None,
     structure_mode: str,
     trace_unit_tokenizer: TraceUnitTokenizer | None,
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
@@ -1274,6 +1287,8 @@ def _evaluate(
     semantic_encoder.eval()
     semantic_fusion.eval()
     readout_head.eval()
+    if future_semantic_state_head is not None:
+        future_semantic_state_head.eval()
 
     tf_sse = 0.0
     tf_count = 0.0
@@ -1285,6 +1300,8 @@ def _evaluate(
     batch_count = 0
     gate_vals: List[float] = []
     nonempty_count = 0
+    free_semantic_state_valid_count = 0
+    free_semantic_state_total_count = 0
 
     with torch.no_grad():
         for bi, raw_batch in enumerate(loader):
@@ -1297,6 +1314,7 @@ def _evaluate(
                 semantic_encoder=semantic_encoder,
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
+                future_semantic_state_head=future_semantic_state_head,
                 structure_mode=str(structure_mode),
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,
@@ -1312,6 +1330,7 @@ def _evaluate(
                 semantic_encoder=semantic_encoder,
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
+                future_semantic_state_head=future_semantic_state_head,
                 structure_mode=str(structure_mode),
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,
@@ -1323,6 +1342,8 @@ def _evaluate(
                 fut_len=int(fut_len),
                 semantic_source_mainline=str(semantic_source_mainline),
             )
+            free_semantic_state_total_count += 1
+            free_semantic_state_valid_count += int(bool(fr_out.get("future_semantic_state_output_valid", False)))
 
             tf_sq = ((tf_out["pred_coord"] - tf_out["target_coord"]) ** 2).sum(dim=-1)
             tf_mask = tf_out["valid_mask"].float()
@@ -1368,6 +1389,9 @@ def _evaluate(
             "eval_gate_mean": float(sum(gate_vals) / max(len(gate_vals), 1)),
             "semantic_input_nonempty_ratio": float(nonempty_count / max(batch_count, 1)),
             "eval_batches": int(batch_count),
+            "free_rollout_semantic_state_output": bool(future_semantic_state_head is not None),
+            "semantic_state_feedback_in_free_rollout": False,
+            "future_semantic_state_output_valid_ratio": float(free_semantic_state_valid_count / max(free_semantic_state_total_count, 1)),
         },
     }
 
@@ -4502,6 +4526,7 @@ def main() -> None:
                 semantic_encoder=semantic_encoder,
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
+                future_semantic_state_head=future_semantic_state_head,
                 structure_mode=str(structure_mode),
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4523,6 +4548,7 @@ def main() -> None:
                     semantic_encoder=semantic_encoder,
                     semantic_fusion=semantic_fusion,
                     readout_head=readout_head,
+                    future_semantic_state_head=future_semantic_state_head,
                     structure_mode=str(structure_mode),
                     trace_unit_tokenizer=trace_unit_tokenizer,
                     trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4635,6 +4661,7 @@ def main() -> None:
             semantic_encoder=semantic_encoder,
             semantic_fusion=semantic_fusion,
             readout_head=readout_head,
+            future_semantic_state_head=future_semantic_state_head,
             structure_mode=str(structure_mode),
             trace_unit_tokenizer=trace_unit_tokenizer,
             trace_unit_factorized_state=trace_unit_factorized_state,

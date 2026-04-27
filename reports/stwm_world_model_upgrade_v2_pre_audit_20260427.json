@@ -1,0 +1,53 @@
+{
+  "audit_passed": true,
+  "coord_3d_multi_hypothesis_potential_bug": "V1 MultiHypothesisTraceHead emitted hypothesis_count * 2 deltas only, so 3D base coords were not supported",
+  "current_world_model_level": [
+    "trace_future_state_backbone",
+    "semantic_conditioned_rollout_adapter"
+  ],
+  "files": {
+    "code/stwm/tools/eval_future_semantic_trace_queries_20260427.py": {
+      "exists": true,
+      "sha256": "90d2740e2ee1fe78045f93c3b627d720914aa95d1e7c7e337792221780c8c335"
+    },
+    "code/stwm/tracewm_v2_stage2/models/future_semantic_trace_state.py": {
+      "exists": true,
+      "sha256": "555264338b10c83d467d42a1da93c72390b11fff265261d97f537a0de153a2cd"
+    },
+    "code/stwm/tracewm_v2_stage2/models/semantic_trace_world_head.py": {
+      "exists": true,
+      "sha256": "0cc0c5b09c9b21823f46ab582b7124e37db7654b5f4a5e9810c01d4acd8aa7d5"
+    },
+    "code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py": {
+      "exists": true,
+      "sha256": "df74aa1b22e6edc3d8746d52334714c2861219fd3453080a61accd200c66c9c1"
+    },
+    "reports/stwm_future_semantic_query_eval_20260427.json": {
+      "exists": true,
+      "sha256": "a05515d1f14353e58e587be1010a51b249bf026cd4013e9b078cf02fc56e92b9"
+    },
+    "reports/stwm_future_semantic_trace_state_schema_20260427.json": {
+      "exists": true,
+      "sha256": "ee6142938424e46f956e50b6d67ab0de8221babc59e7496c20d0cd28535c8d81"
+    },
+    "reports/stwm_world_model_io_audit_20260427.json": {
+      "exists": true,
+      "sha256": "78c8d01af41694b37a0bbce5ec8f084e6e21f7fc13d707cbd0aab7bedf76569e"
+    },
+    "reports/stwm_world_model_upgrade_smoke_20260427.json": {
+      "exists": true,
+      "sha256": "04875a845c24e5bd3eeac27e21bc9e7b99a2ce28aa5e491c5e126ee28795dc59"
+    }
+  },
+  "free_rollout_semantic_state_head_connected": false,
+  "future_semantic_query_eval_consumes_future_semantic_trace_state": false,
+  "future_semantic_query_eval_is_old_association_report_only": true,
+  "future_semantic_trace_state_is_optional_head": true,
+  "generated_at": "2026-04-27T21:37:06+0800",
+  "hard_coded_repo_root_present": true,
+  "official_checkpoint_has_trained_future_semantic_state": false,
+  "shape_validation_potential_bugs": [
+    "V1 _expect did not enforce exact rank for required [B,H,K] tensors when suffix was empty",
+    "validate(strict=False) did not return coord_dim/horizon/slot_count"
+  ]
+}

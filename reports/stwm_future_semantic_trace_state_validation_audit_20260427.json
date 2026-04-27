@@ -1,0 +1,155 @@
+{
+  "generated_at_utc": "2026-04-27T13:41:41.385802+00:00",
+  "required_return_fields": [
+    "valid",
+    "errors",
+    "shapes",
+    "coord_dim",
+    "horizon",
+    "slot_count"
+  ],
+  "strict_rank_checks_added": true,
+  "synthetic_cases": [
+    {
+      "case": "valid_2d_case",
+      "coord_dim": 2,
+      "errors": [],
+      "expected_valid": true,
+      "observed_valid": true,
+      "shapes": {
+        "future_extent_box": [
+          2,
+          3,
+          4,
+          4
+        ],
+        "future_hypothesis_logits": [
+          2,
+          2
+        ],
+        "future_hypothesis_trace_coord": [
+          2,
+          2,
+          3,
+          4,
+          2
+        ],
+        "future_identity_embedding": [
+          2,
+          3,
+          4,
+          6
+        ],
+        "future_semantic_embedding": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "future_semantic_logits": [
+          2,
+          3,
+          4,
+          7
+        ],
+        "future_trace_coord": [
+          2,
+          3,
+          4,
+          2
+        ],
+        "future_uncertainty": [
+          2,
+          3,
+          4
+        ],
+        "future_visibility_logit": [
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "case": "valid_3d_case",
+      "coord_dim": 3,
+      "errors": [],
+      "expected_valid": true,
+      "observed_valid": true,
+      "shapes": {
+        "future_extent_box": [
+          2,
+          3,
+          4,
+          4
+        ],
+        "future_hypothesis_logits": [
+          2,
+          2
+        ],
+        "future_hypothesis_trace_coord": [
+          2,
+          2,
+          3,
+          4,
+          3
+        ],
+        "future_identity_embedding": [
+          2,
+          3,
+          4,
+          6
+        ],
+        "future_semantic_embedding": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "future_semantic_logits": [
+          2,
+          3,
+          4,
+          7
+        ],
+        "future_trace_coord": [
+          2,
+          3,
+          4,
+          3
+        ],
+        "future_uncertainty": [
+          2,
+          3,
+          4
+        ],
+        "future_visibility_logit": [
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "case": "invalid_scalar_rank_case",
+      "coord_dim": 2,
+      "errors": [
+        "future_visibility_logit must have rank 3, got ()"
+      ],
+      "expected_valid": false,
+      "observed_valid": false
+    },
+    {
+      "case": "invalid_hypothesis_coord_rank_case",
+      "coord_dim": 2,
+      "errors": [
+        "future_hypothesis_trace_coord must be [B,M,H,K,2], got (2, 2, 3, 4)"
+      ],
+      "expected_valid": false,
+      "observed_valid": false
+    }
+  ],
+  "target_file": "code/stwm/tracewm_v2_stage2/models/future_semantic_trace_state.py",
+  "validate_returns_required_metadata": true,
+  "validation_passed": true
+}

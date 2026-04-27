@@ -30,45 +30,59 @@ class FutureSemanticTraceState:
         coord_shape = tuple(self.future_trace_coord.shape)
         if len(coord_shape) != 4 or coord_shape[-1] not in (2, 3):
             errors.append(f"future_trace_coord must be [B,H,K,2 or 3], got {coord_shape}")
-            bsz = horizon = slots = None
+            bsz = horizon = slots = coord_dim = None
         else:
-            bsz, horizon, slots, _ = coord_shape
+            bsz, horizon, slots, coord_dim = coord_shape
 
-        def _expect(name: str, tensor: torch.Tensor, suffix: tuple[int | None, ...]) -> None:
+        def _expect_exact(name: str, tensor: torch.Tensor, suffix: tuple[int | None, ...]) -> None:
             if bsz is None:
                 return
             expected_prefix = (bsz, horizon, slots)
             actual = tuple(tensor.shape)
+            expected_rank = 3 + len(suffix)
+            if len(actual) != expected_rank:
+                errors.append(f"{name} must have rank {expected_rank}, got {actual}")
+                return
             if actual[:3] != expected_prefix:
                 errors.append(f"{name} must start with {expected_prefix}, got {actual}")
-            if suffix and len(actual) != 3 + len(suffix):
-                errors.append(f"{name} rank mismatch, got {actual}")
-                return
             for idx, value in enumerate(suffix):
                 if value is not None and actual[3 + idx] != value:
                     errors.append(f"{name} suffix mismatch at {idx}: expected {value}, got {actual}")
 
-        _expect("future_visibility_logit", self.future_visibility_logit, ())
-        _expect("future_semantic_embedding", self.future_semantic_embedding, (None,))
-        _expect("future_identity_embedding", self.future_identity_embedding, (None,))
-        _expect("future_uncertainty", self.future_uncertainty, ())
+        _expect_exact("future_visibility_logit", self.future_visibility_logit, ())
+        _expect_exact("future_semantic_embedding", self.future_semantic_embedding, (None,))
+        _expect_exact("future_identity_embedding", self.future_identity_embedding, (None,))
+        _expect_exact("future_uncertainty", self.future_uncertainty, ())
         if self.future_semantic_logits is not None:
-            _expect("future_semantic_logits", self.future_semantic_logits, (None,))
+            _expect_exact("future_semantic_logits", self.future_semantic_logits, (None,))
         if self.future_extent_box is not None:
-            _expect("future_extent_box", self.future_extent_box, (4,))
+            _expect_exact("future_extent_box", self.future_extent_box, (4,))
         if self.future_hypothesis_logits is not None:
             actual = tuple(self.future_hypothesis_logits.shape)
             if bsz is not None and (len(actual) != 2 or actual[0] != bsz):
                 errors.append(f"future_hypothesis_logits must be [B,M], got {actual}")
         if self.future_hypothesis_trace_coord is not None:
             actual = tuple(self.future_hypothesis_trace_coord.shape)
-            if bsz is not None and (len(actual) != 5 or actual[0] != bsz or actual[2:4] != (horizon, slots) or actual[-1] not in (2, 3)):
-                errors.append(f"future_hypothesis_trace_coord must be [B,M,H,K,2 or 3], got {actual}")
+            if bsz is not None and (
+                len(actual) != 5
+                or actual[0] != bsz
+                or actual[2:4] != (horizon, slots)
+                or actual[-1] not in (2, 3)
+                or actual[-1] != coord_dim
+            ):
+                errors.append(f"future_hypothesis_trace_coord must be [B,M,H,K,{coord_dim}], got {actual}")
 
         ok = not errors
         if strict and not ok:
             raise ValueError("; ".join(errors))
-        return {"valid": ok, "errors": errors, "shapes": self.shape_dict()}
+        return {
+            "valid": ok,
+            "errors": errors,
+            "shapes": self.shape_dict(),
+            "coord_dim": coord_dim,
+            "horizon": horizon,
+            "slot_count": slots,
+        }
 
     def shape_dict(self) -> dict[str, tuple[int, ...] | None]:
         return {
