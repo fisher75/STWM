@@ -1,0 +1,25 @@
+# STWM Reappearance Visibility Training V1 Signal Judgement
+
+- generated_at_utc: `2026-04-27T17:21:57Z`
+- reappearance_visibility_training_completed: `True`
+- head_only_signal_positive: `False`
+- joint_training_started: `False`
+- joint_signal_positive: `unclear`
+- joint_skipped_reason: `head_only warmup failed positive-signal gate; reappearance AUROC/AP worsened versus pre-warmup random-init baseline on matched 256-item free rollout eval.`
+- calibrated_visibility_available: `True`
+- calibrated_reappearance_available: `True`
+- reappearance_AUROC_pre: `0.6341318182937449`
+- reappearance_AUROC_head_only: `0.38254797577394906`
+- reappearance_AUROC_joint: `None`
+- reappearance_AP_pre: `0.04940293572430614`
+- reappearance_AP_head_only: `0.01227077340251688`
+- reappearance_AP_joint: `None`
+- reappearance_positive_rate: `0.017956543262698688`
+- reappearance_AP_gain_over_positive_rate: `0.6833594430174701`
+- trace_rollout_regression_detected: `False`
+- output_degenerate: `False`
+- future_semantic_trace_state_from_full_model_free_rollout: `True`
+- old_association_report_used: `False`
+- paper_world_model_claimable: `False`
+- paper_world_model_claimable_reason: `head-only reappearance signal is negative/unclear; joint training was not started.`
+- recommended_next_step_choice: `strengthen_reappearance_supervision`

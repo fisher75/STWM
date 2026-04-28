@@ -19,6 +19,19 @@ from torch.utils.data import DataLoader
 RAW_EXPORT_SCHEMA_VERSION = "future_semantic_trace_state_raw_export_v1"
 
 
+def _apply_process_title_normalization() -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode == "off":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", "python")).strip() or "python"
+    try:
+        import setproctitle  # type: ignore
+
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
+
+
 def _bootstrap_repo_imports(repo_root: Path) -> None:
     code_dir = repo_root / "code"
     if str(code_dir) not in sys.path:
@@ -915,6 +928,7 @@ def parse_args() -> Any:
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     args = parse_args()
     repo_root = resolve_repo_root(args.repo_root)
     mode = "full_model_free_rollout" if bool(args.use_free_rollout) and str(args.mode) == "head_only_surrogate" else str(args.mode)

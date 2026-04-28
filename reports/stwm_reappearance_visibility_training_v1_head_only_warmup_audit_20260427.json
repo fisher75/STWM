@@ -1,0 +1,21 @@
+{
+  "boundary_fail_policy": "trainer raises RuntimeError if non_future_semantic_head_trainable_params > 0 during head-only warmup",
+  "future_semantic_state_head_trainable_params": 605315,
+  "generated_at_utc": "2026-04-27T16:46:14Z",
+  "head_only_boundary_ok": true,
+  "missing_reappearance_head_weights_in_start_checkpoint": true,
+  "new_cli_args": [
+    "--future-semantic-head-only-warmup",
+    "--future-semantic-head-only-warmup-steps",
+    "--freeze-non-future-semantic-head-during-warmup"
+  ],
+  "non_future_semantic_head_trainable_params": 0,
+  "planned_freeze_non_future_semantic_head_during_warmup": true,
+  "planned_future_semantic_head_only_warmup": true,
+  "planned_warmup_steps": 100,
+  "start_checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_medium_semantic_state_v1_20260427/latest.pt",
+  "start_checkpoint_global_step": 11044,
+  "support_added_in_trainer": true,
+  "total_trainable_params": 605315,
+  "unexpected_keys": []
+}

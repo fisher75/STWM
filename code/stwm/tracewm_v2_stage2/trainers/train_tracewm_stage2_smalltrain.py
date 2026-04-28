@@ -289,6 +289,9 @@ def parse_args() -> Any:
     p.add_argument("--future-hypothesis-loss-weight", type=float, default=0.0)
     p.add_argument("--enable-future-extent-head", action="store_true")
     p.add_argument("--enable-future-multihypothesis-head", action="store_true")
+    p.add_argument("--future-semantic-head-only-warmup", action="store_true")
+    p.add_argument("--future-semantic-head-only-warmup-steps", type=int, default=0)
+    p.add_argument("--freeze-non-future-semantic-head-during-warmup", action="store_true")
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -3592,6 +3595,62 @@ def _checkpoint_payload(
     return payload
 
 
+def _count_trainable_params(module: torch.nn.Module | None) -> int:
+    if module is None:
+        return 0
+    return int(sum(p.numel() for p in module.parameters() if p.requires_grad))
+
+
+def _freeze_module(module: torch.nn.Module | None) -> None:
+    if module is None:
+        return
+    for param in module.parameters():
+        param.requires_grad = False
+
+
+def _build_future_semantic_head_only_audit(
+    *,
+    enabled: bool,
+    warmup_steps: int,
+    freeze_non_head: bool,
+    stage1_model: torch.nn.Module,
+    semantic_encoder: torch.nn.Module,
+    semantic_fusion: torch.nn.Module,
+    readout_head: torch.nn.Module,
+    future_semantic_state_head: torch.nn.Module | None,
+    semantic_rescue_heads: torch.nn.Module | None,
+    trace_unit_tokenizer: torch.nn.Module | None,
+    trace_unit_factorized_state: torch.nn.Module | None,
+    trace_unit_handshake: torch.nn.Module | None,
+    trace_unit_broadcast: torch.nn.Module | None,
+) -> dict[str, Any]:
+    head_trainable = _count_trainable_params(future_semantic_state_head)
+    non_head_modules = [
+        ("stage1_model", stage1_model),
+        ("semantic_encoder", semantic_encoder),
+        ("semantic_fusion", semantic_fusion),
+        ("readout_head", readout_head),
+        ("semantic_rescue_heads", semantic_rescue_heads),
+        ("trace_unit_tokenizer", trace_unit_tokenizer),
+        ("trace_unit_factorized_state", trace_unit_factorized_state),
+        ("trace_unit_handshake", trace_unit_handshake),
+        ("trace_unit_broadcast", trace_unit_broadcast),
+    ]
+    per_non_head = {name: _count_trainable_params(module) for name, module in non_head_modules}
+    non_head_trainable = int(sum(per_non_head.values()))
+    total_trainable = int(head_trainable + non_head_trainable)
+    return {
+        "future_semantic_head_only_warmup": bool(enabled),
+        "future_semantic_head_only_warmup_steps": int(warmup_steps),
+        "freeze_non_future_semantic_head_during_warmup": bool(freeze_non_head),
+        "total_trainable_params": total_trainable,
+        "future_semantic_state_head_trainable_params": head_trainable,
+        "non_future_semantic_head_trainable_params": non_head_trainable,
+        "non_future_semantic_head_trainable_params_by_module": per_non_head,
+        "head_only_boundary_ok": bool((not enabled) or (head_trainable > 0 and non_head_trainable == 0)),
+    }
+
+
 def main() -> None:
     _apply_process_title_normalization()
     args = parse_args()
@@ -3802,6 +3861,47 @@ def main() -> None:
             readout_dim=int(fusion_hidden_dim),
         ).to(device)
 
+    if bool(args.future_semantic_head_only_warmup):
+        if future_semantic_state_head is None:
+            raise ValueError("--future-semantic-head-only-warmup requires --enable-future-semantic-state-head")
+        if not bool(args.freeze_non_future_semantic_head_during_warmup):
+            raise ValueError(
+                "--future-semantic-head-only-warmup requires --freeze-non-future-semantic-head-during-warmup "
+                "so the rollout trunk cannot train accidentally"
+            )
+        for module in [
+            stage1_model,
+            semantic_encoder,
+            semantic_fusion,
+            readout_head,
+            semantic_rescue_heads,
+            trace_unit_tokenizer,
+            trace_unit_factorized_state,
+            trace_unit_handshake,
+            trace_unit_broadcast,
+        ]:
+            _freeze_module(module)
+        for param in future_semantic_state_head.parameters():
+            param.requires_grad = True
+
+    future_semantic_head_only_warmup_audit = _build_future_semantic_head_only_audit(
+        enabled=bool(args.future_semantic_head_only_warmup),
+        warmup_steps=int(args.future_semantic_head_only_warmup_steps),
+        freeze_non_head=bool(args.freeze_non_future_semantic_head_during_warmup),
+        stage1_model=stage1_model,
+        semantic_encoder=semantic_encoder,
+        semantic_fusion=semantic_fusion,
+        readout_head=readout_head,
+        future_semantic_state_head=future_semantic_state_head,
+        semantic_rescue_heads=semantic_rescue_heads,
+        trace_unit_tokenizer=trace_unit_tokenizer,
+        trace_unit_factorized_state=trace_unit_factorized_state,
+        trace_unit_handshake=trace_unit_handshake,
+        trace_unit_broadcast=trace_unit_broadcast,
+    )
+    if bool(args.future_semantic_head_only_warmup) and not bool(future_semantic_head_only_warmup_audit["head_only_boundary_ok"]):
+        raise RuntimeError(f"head-only warmup boundary failed: {future_semantic_head_only_warmup_audit}")
+
     trainable_params: List[torch.nn.Parameter] = []
     stage1_trainable_params: List[torch.nn.Parameter] = [p for p in stage1_model.parameters() if p.requires_grad]
     modules_for_training: List[torch.nn.Module] = [semantic_encoder, semantic_fusion, readout_head]
@@ -3873,12 +3973,18 @@ def main() -> None:
         "future_semantic_loss_weight": float(args.future_semantic_loss_weight),
         "future_visibility_loss_weight": float(args.future_visibility_loss_weight),
         "future_reappearance_loss_weight": float(args.future_reappearance_loss_weight),
+        "future_reappearance_pos_weight": str(args.future_reappearance_pos_weight),
+        "future_reappearance_pos_weight_max": float(args.future_reappearance_pos_weight_max),
         "future_identity_belief_loss_weight": float(args.future_identity_belief_loss_weight),
         "future_uncertainty_loss_weight": float(args.future_uncertainty_loss_weight),
         "future_hypothesis_count": int(args.future_hypothesis_count),
         "future_hypothesis_loss_weight": float(args.future_hypothesis_loss_weight),
         "enable_future_extent_head": bool(args.enable_future_extent_head),
         "enable_future_multihypothesis_head": bool(args.enable_future_multihypothesis_head),
+        "future_semantic_head_only_warmup": bool(args.future_semantic_head_only_warmup),
+        "future_semantic_head_only_warmup_steps": int(args.future_semantic_head_only_warmup_steps),
+        "freeze_non_future_semantic_head_during_warmup": bool(args.freeze_non_future_semantic_head_during_warmup),
+        "future_semantic_head_only_warmup_audit": future_semantic_head_only_warmup_audit,
         "future_semantic_state_head_default_enabled": False,
         "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
         "confidence_gating_margin_threshold": float(args.confidence_gating_margin_threshold),
@@ -4042,6 +4148,22 @@ def main() -> None:
         trace_unit_handshake.train()
     if trace_unit_broadcast is not None:
         trace_unit_broadcast.train()
+    if bool(args.future_semantic_head_only_warmup):
+        semantic_encoder.eval()
+        semantic_fusion.eval()
+        readout_head.eval()
+        if semantic_rescue_heads is not None:
+            semantic_rescue_heads.eval()
+        if trace_unit_tokenizer is not None:
+            trace_unit_tokenizer.eval()
+        if trace_unit_factorized_state is not None:
+            trace_unit_factorized_state.eval()
+        if trace_unit_handshake is not None:
+            trace_unit_handshake.eval()
+        if trace_unit_broadcast is not None:
+            trace_unit_broadcast.eval()
+        if future_semantic_state_head is not None:
+            future_semantic_state_head.train()
 
     train_iter = iter(train_loader)
     step_checkpoints: List[str] = sorted(str(p) for p in output_dir.glob("step_*.pt"))
@@ -4843,6 +4965,7 @@ def main() -> None:
             "semantic_grad_norm_latest": float(semantic_grad_norm_latest),
             "boundary_ok": bool(boundary_ok),
         },
+        "future_semantic_head_only_warmup_audit": future_semantic_head_only_warmup_audit,
         "semantic_branch_metrics": {
             "train_gate_mean": float(sum(gate_history) / max(len(gate_history), 1)),
             "train_semantic_input_nonempty_ratio": float(semantic_nonempty_count / max(len(gate_history), 1)),
