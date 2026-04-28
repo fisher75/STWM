@@ -1,0 +1,163 @@
+{
+  "aligned_predicted_state_improves_over_v6": false,
+  "alignment_probe_trained": true,
+  "candidate_feature_used_for_rollout": false,
+  "frozen_measurement_backbone_used": "openai_clip_vit_b_32_local",
+  "frozen_measurement_feature_available": true,
+  "future_candidate_used_as_input": false,
+  "generated_at_utc": "2026-04-28T16:57:41.287168+00:00",
+  "heldout_metrics": {
+    "distance_only": {
+      "candidate_AP": 0.09443771675701508,
+      "candidate_AUROC": 0.5652760965757578,
+      "candidate_MRR": 0.39072177887148335,
+      "candidate_positive_rate": 0.06876899696048633,
+      "candidate_record_count": 2632,
+      "candidate_top1": 0.19889502762430938,
+      "metric_items": 181
+    },
+    "posterior_v7": {
+      "candidate_AP": 0.10548108231554292,
+      "candidate_AUROC": 0.613760084394463,
+      "candidate_MRR": 0.4090721007698998,
+      "candidate_positive_rate": 0.06876899696048633,
+      "candidate_record_count": 2632,
+      "candidate_top1": 0.20441988950276244,
+      "metric_items": 181
+    },
+    "posterior_v7_no_predicted_state": {
+      "candidate_AP": 0.11551220090476644,
+      "candidate_AUROC": 0.6613086100836055,
+      "candidate_MRR": 0.4484078864307616,
+      "candidate_positive_rate": 0.06876899696048633,
+      "candidate_record_count": 2632,
+      "candidate_top1": 0.2596685082872928,
+      "metric_items": 181
+    },
+    "target_candidate_appearance_frozen": {
+      "candidate_AP": 0.2047032542889563,
+      "candidate_AUROC": 0.736440870903972,
+      "candidate_MRR": 0.6190282495079975,
+      "candidate_positive_rate": 0.06876899696048633,
+      "candidate_record_count": 2632,
+      "candidate_top1": 0.44751381215469616,
+      "metric_items": 181
+    }
+  },
+  "no_backbone_update": true,
+  "no_candidate_leakage_to_rollout": true,
+  "no_internet_download_attempted": true,
+  "old_association_report_used": false,
+  "paper_world_model_claimable": false,
+  "posterior_v7_improves_over_distance": true,
+  "posterior_v7_improves_over_frozen_appearance": false,
+  "posterior_v7_improves_over_no_predicted_state": false,
+  "posterior_v7_vs_distance_CI": {
+    "AP": {
+      "bootstrap_win_rate": 0.945,
+      "ci95_high": 0.02571222394846628,
+      "ci95_low": -0.0031270466580672293,
+      "count": 181,
+      "mean_delta": 0.011506089897849896,
+      "observed_delta": 0.011043365558527835,
+      "p_value_permutation": null,
+      "zero_excluded": false
+    },
+    "AUROC": {
+      "bootstrap_win_rate": 0.984,
+      "ci95_high": 0.08850926052348951,
+      "ci95_low": 0.006549051572394385,
+      "count": 181,
+      "mean_delta": 0.047003459068312804,
+      "observed_delta": 0.04848398781870511,
+      "p_value_permutation": null,
+      "zero_excluded": true
+    },
+    "top1": {
+      "bootstrap_win_rate": 0.541,
+      "ci95_high": 0.06629834254143646,
+      "ci95_low": -0.055248618784530384,
+      "count": 181,
+      "mean_delta": 0.006093922651933702,
+      "observed_delta": 0.005524861878453052,
+      "p_value_permutation": null,
+      "zero_excluded": false
+    }
+  },
+  "posterior_v7_vs_frozen_appearance_CI": {
+    "AP": {
+      "bootstrap_win_rate": 0.0,
+      "ci95_high": -0.06496655874929351,
+      "ci95_low": -0.15277842324842178,
+      "count": 181,
+      "mean_delta": -0.10306228418598028,
+      "observed_delta": -0.09922217197341339,
+      "p_value_permutation": null,
+      "zero_excluded": true
+    },
+    "AUROC": {
+      "bootstrap_win_rate": 0.0,
+      "ci95_high": -0.07469599920744355,
+      "ci95_low": -0.17238268006676905,
+      "count": 181,
+      "mean_delta": -0.12333561369081954,
+      "observed_delta": -0.12268078650950909,
+      "p_value_permutation": null,
+      "zero_excluded": true
+    },
+    "top1": {
+      "bootstrap_win_rate": 0.0,
+      "ci95_high": -0.15469613259668508,
+      "ci95_low": -0.32610497237569064,
+      "count": 181,
+      "mean_delta": -0.24413812154696116,
+      "observed_delta": -0.24309392265193372,
+      "p_value_permutation": null,
+      "zero_excluded": true
+    }
+  },
+  "posterior_v7_vs_no_predicted_state_CI": {
+    "AP": {
+      "bootstrap_win_rate": 0.091,
+      "ci95_high": 0.003972106636760328,
+      "ci95_low": -0.023923714161205145,
+      "count": 181,
+      "mean_delta": -0.00918976346587583,
+      "observed_delta": -0.010031118589223523,
+      "p_value_permutation": null,
+      "zero_excluded": false
+    },
+    "AUROC": {
+      "bootstrap_win_rate": 0.008,
+      "ci95_high": -0.009833378510829258,
+      "ci95_low": -0.0859690117039768,
+      "count": 181,
+      "mean_delta": -0.04678952740786293,
+      "observed_delta": -0.047548525689142584,
+      "p_value_permutation": null,
+      "zero_excluded": true
+    },
+    "top1": {
+      "bootstrap_win_rate": 0.033,
+      "ci95_high": 0.005524861878453052,
+      "ci95_low": -0.1160220994475138,
+      "count": 181,
+      "mean_delta": -0.05401104972375691,
+      "observed_delta": -0.055248618784530384,
+      "p_value_permutation": null,
+      "zero_excluded": false
+    }
+  },
+  "predicted_state_load_bearing_robust": false,
+  "rationale": "Local CLIP frozen measurement is available and substantially improves appearance measurement, but posterior_v7 is worse than posterior_v7_no_predicted_state on heldout AP/top1/AUROC; predicted FutureSemanticTraceState is therefore not robustly load-bearing under V7. Keep branch as appendix diagnostic; do not claim paper-level world model.",
+  "recommended_next_step_choice": "keep_as_appendix_diagnostic",
+  "semantic_state_branch_status": "appendix_diagnostic",
+  "stage2_val_fallback_used": false,
+  "subset_signal_positive": {
+    "OOD_hard": false,
+    "appearance_change": false,
+    "crossing_ambiguity": false,
+    "long_gap_persistence": false,
+    "occlusion_reappearance": false
+  }
+}

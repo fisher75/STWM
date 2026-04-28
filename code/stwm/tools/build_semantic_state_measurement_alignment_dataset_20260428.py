@@ -86,6 +86,15 @@ def _cosine01(a: torch.Tensor, b: torch.Tensor) -> float:
     return float(((torch.dot(aa, bb) / denom).clamp(-1.0, 1.0) * 0.5 + 0.5).item())
 
 
+def _cache_feature(cache: dict[str, Any], item_id: str, candidate_id: str) -> tuple[torch.Tensor, torch.Tensor, float | None, dict[str, Any]]:
+    item_cache = (cache.get("features_by_item") or {}).get(str(item_id), {}) if isinstance(cache, dict) else {}
+    observed = item_cache.get("observed_target_frozen_feature") if isinstance(item_cache, dict) else []
+    candidate = ((item_cache.get("candidates") or {}).get(str(candidate_id), {}) if isinstance(item_cache, dict) else {})
+    cand_vec = candidate.get("candidate_frozen_feature") if isinstance(candidate, dict) else []
+    sim = candidate.get("target_candidate_frozen_similarity") if isinstance(candidate, dict) else None
+    return _as_tensor(cand_vec), _as_tensor(observed), (float(sim) if isinstance(sim, (int, float)) else None), candidate if isinstance(candidate, dict) else {}
+
+
 def _candidate_center(candidate: dict[str, Any], image_size: Any) -> tuple[float, float] | None:
     bbox = candidate.get("bbox") if isinstance(candidate, dict) else None
     if not isinstance(bbox, list) or len(bbox) != 4:
@@ -132,6 +141,7 @@ def build_dataset(
     device_name: str,
     mode: str,
     candidate_measurement_feature_mode: str,
+    frozen_measurement_cache: Path | None = None,
 ) -> dict[str, Any]:
     _apply_process_title_normalization()
     code_dir = repo_root / "code"
@@ -147,6 +157,11 @@ def build_dataset(
 
     device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
     manifest = load_json(candidate_manifest)
+    frozen_cache: dict[str, Any] = {}
+    if str(candidate_measurement_feature_mode) == "frozen_measurement_v7":
+        if frozen_measurement_cache is None:
+            raise ValueError("frozen_measurement_v7 requires --frozen-measurement-cache")
+        frozen_cache = load_json(frozen_measurement_cache)
     records = manifest.get("records") if isinstance(manifest, dict) else []
     records = [x for x in records if isinstance(x, dict)]
     grouped_items = group_candidate_records(records)
@@ -247,7 +262,9 @@ def build_dataset(
                     semantic_encoder=full["semantic_encoder"],
                     device=device,
                     crop_size=int(args.semantic_crop_size),
-                    feature_mode=str(candidate_measurement_feature_mode),
+                    feature_mode="crop_encoder_feature"
+                    if str(candidate_measurement_feature_mode) == "frozen_measurement_v7"
+                    else str(candidate_measurement_feature_mode),
                 )
                 pred_coord = state.future_trace_coord[0, -1, 0, :2].detach().float().cpu()
                 pred_sem = state.future_semantic_embedding[0, :, 0].detach().mean(dim=0).float().cpu()
@@ -273,12 +290,21 @@ def build_dataset(
                     feature = (measurement_cache.get("candidate_features", {}) or {}).get(cid, {})
                     cand_feat = _as_tensor(feature.get("feature_vector"))
                     obs_feat = _as_tensor(feature.get("observed_target_feature_vector"))
-                    if cand_feat.numel() == 0:
+                    frozen_cand_feat = torch.zeros((0,), dtype=torch.float32)
+                    frozen_obs_feat = torch.zeros((0,), dtype=torch.float32)
+                    frozen_similarity = None
+                    frozen_meta: dict[str, Any] = {}
+                    if str(candidate_measurement_feature_mode) == "frozen_measurement_v7":
+                        frozen_cand_feat, frozen_obs_feat, frozen_similarity, frozen_meta = _cache_feature(frozen_cache, item_id, cid)
+                    if cand_feat.numel() == 0 and frozen_cand_feat.numel() == 0:
                         continue
                     if dim_stats["candidate_crop_feature_dim"] is None:
                         dim_stats["candidate_crop_feature_dim"] = int(cand_feat.numel())
                     if dim_stats["observed_target_crop_feature_dim"] is None:
                         dim_stats["observed_target_crop_feature_dim"] = int(obs_feat.numel())
+                    if str(candidate_measurement_feature_mode) == "frozen_measurement_v7":
+                        dim_stats["candidate_frozen_feature_dim"] = dim_stats.get("candidate_frozen_feature_dim") or int(frozen_cand_feat.numel())
+                        dim_stats["observed_target_frozen_feature_dim"] = dim_stats.get("observed_target_frozen_feature_dim") or int(frozen_obs_feat.numel())
                     center = _candidate_center(cand, item.get("image_size"))
                     if center is None:
                         dist_score = 0.0
@@ -287,6 +313,13 @@ def build_dataset(
                         dy = float(pred_coord[1].item()) - float(center[1])
                         dist_score = float(math.exp(-8.0 * math.sqrt(dx * dx + dy * dy)))
                     appearance_score = _cosine01(obs_feat, cand_feat)
+                    appearance_score_frozen = (
+                        float(frozen_similarity)
+                        if isinstance(frozen_similarity, (int, float))
+                        else _cosine01(frozen_obs_feat, frozen_cand_feat)
+                        if frozen_obs_feat.numel() and frozen_cand_feat.numel()
+                        else None
+                    )
                     label = int(labels[idx]) if idx < len(labels) else 0
                     row = {
                         "item_id": item_id,
@@ -298,12 +331,24 @@ def build_dataset(
                         "predicted_identity_embedding": _round_list(pred_id),
                         "candidate_crop_feature": [round(float(x), 6) for x in cand_feat.view(-1).tolist()],
                         "observed_target_crop_feature": [round(float(x), 6) for x in obs_feat.view(-1).tolist()],
+                        "candidate_frozen_feature": [round(float(x), 6) for x in frozen_cand_feat.view(-1).tolist()],
+                        "observed_target_frozen_feature": [round(float(x), 6) for x in frozen_obs_feat.view(-1).tolist()],
                         "distance_score": round(float(dist_score), 8),
                         "appearance_score": round(float(appearance_score), 8),
+                        "appearance_score_crop_encoder": round(float(appearance_score), 8),
+                        "appearance_score_frozen": round(float(appearance_score_frozen), 8) if appearance_score_frozen is not None else None,
+                        "target_candidate_frozen_similarity": round(float(appearance_score_frozen), 8) if appearance_score_frozen is not None else None,
                         "future_visibility_prob": round(float(visibility_prob), 8),
                         "future_reappearance_event_prob": round(float(reappearance_prob), 8),
                         "subset_tags": tags,
-                        "candidate_feature_source": str(feature.get("feature_source") or measurement_cache.get("candidate_feature_source") or "unknown"),
+                        "candidate_feature_source": (
+                            str(frozen_cache.get("selected_backbone") or "frozen_measurement_v7")
+                            if str(candidate_measurement_feature_mode) == "frozen_measurement_v7"
+                            else str(feature.get("feature_source") or measurement_cache.get("candidate_feature_source") or "unknown")
+                        ),
+                        "candidate_frozen_feature_available": bool(frozen_cand_feat.numel() > 0),
+                        "observed_target_frozen_feature_available": bool(frozen_obs_feat.numel() > 0),
+                        "frozen_feature_meta": frozen_meta,
                         "future_candidate_used_as_input": False,
                         "candidate_feature_used_for_rollout": False,
                         "candidate_feature_used_for_scoring": True,
@@ -324,16 +369,30 @@ def build_dataset(
                     norm_stats["candidate_crop_feature_norm"].append(float(cand_feat.norm().item()))
                     norm_stats["observed_target_crop_feature_norm"].append(float(obs_feat.norm().item()))
                     norm_stats["appearance_score"].append(float(appearance_score))
+                    if frozen_cand_feat.numel():
+                        norm_stats["candidate_frozen_feature_norm"].append(float(frozen_cand_feat.norm().item()))
+                    if frozen_obs_feat.numel():
+                        norm_stats["observed_target_frozen_feature_norm"].append(float(frozen_obs_feat.norm().item()))
+                    if appearance_score_frozen is not None:
+                        norm_stats["appearance_score_frozen"].append(float(appearance_score_frozen))
             except Exception as exc:
                 item_failures.append({"item_id": item_id, "failure_reason": repr(exc)})
 
     payload = {
         "generated_at_utc": now_iso(),
-        "schema_version": "semantic_state_measurement_alignment_dataset_v1",
+        "schema_version": "semantic_state_measurement_alignment_dataset_v7"
+        if str(candidate_measurement_feature_mode) == "frozen_measurement_v7"
+        else "semantic_state_measurement_alignment_dataset_v1",
         "repo_root": str(repo_root),
         "checkpoint_path": str(checkpoint),
         "candidate_manifest": str(candidate_manifest),
+        "frozen_measurement_cache": str(frozen_measurement_cache) if frozen_measurement_cache else None,
         "candidate_measurement_feature_mode": str(candidate_measurement_feature_mode),
+        "frozen_measurement_feature_available": bool(
+            str(candidate_measurement_feature_mode) == "frozen_measurement_v7"
+            and bool(frozen_cache.get("frozen_measurement_feature_available"))
+        ),
+        "selected_frozen_backbone": frozen_cache.get("selected_backbone") if isinstance(frozen_cache, dict) else None,
         "mode": str(mode),
         "full_model_forward_executed": bool(full_model_forward_executed),
         "full_free_rollout_executed": bool(full_free_rollout_executed),
@@ -381,6 +440,7 @@ def main() -> None:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--mode", choices=["full_model_teacher_forced", "full_model_free_rollout"], default="full_model_free_rollout")
     parser.add_argument("--candidate-measurement-feature-mode", default="crop_encoder_feature")
+    parser.add_argument("--frozen-measurement-cache", default=None)
     args = parser.parse_args()
     build_dataset(
         repo_root=Path(args.repo_root).expanduser().resolve(),
@@ -392,6 +452,7 @@ def main() -> None:
         device_name=str(args.device),
         mode=str(args.mode),
         candidate_measurement_feature_mode=str(args.candidate_measurement_feature_mode),
+        frozen_measurement_cache=Path(args.frozen_measurement_cache) if args.frozen_measurement_cache else None,
     )
 
 

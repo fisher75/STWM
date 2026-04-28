@@ -144,6 +144,7 @@ def train_one_probe(
     probe: ListwiseProbe,
     items: list[dict[str, Any]],
     state_key: str,
+    candidate_feature_key: str,
     epochs: int,
     lr: float,
     seed: int,
@@ -160,7 +161,7 @@ def train_one_probe(
         for item in dev_items:
             rows = item["rows"]
             state_vec = tensor(rows[0][state_key])
-            candidates = torch.stack([tensor(r["candidate_crop_feature"]) for r in rows], dim=0)
+            candidates = torch.stack([tensor(r[candidate_feature_key]) for r in rows], dim=0)
             target = torch.tensor([int(item["positive_index"])], dtype=torch.long)
             logits = probe(state_vec, candidates).view(1, -1)
             loss = F.cross_entropy(logits, target)
@@ -173,14 +174,14 @@ def train_one_probe(
     return losses, probe
 
 
-def score_probe(probe: ListwiseProbe, items: list[dict[str, Any]], state_key: str) -> dict[str, list[float]]:
+def score_probe(probe: ListwiseProbe, items: list[dict[str, Any]], state_key: str, candidate_feature_key: str) -> dict[str, list[float]]:
     scores: dict[str, list[float]] = {}
     probe.eval()
     with torch.no_grad():
         for item in items:
             rows = item["rows"]
             state_vec = tensor(rows[0][state_key])
-            candidates = torch.stack([tensor(r["candidate_crop_feature"]) for r in rows], dim=0)
+            candidates = torch.stack([tensor(r[candidate_feature_key]) for r in rows], dim=0)
             item_scores = torch.sigmoid(probe(state_vec, candidates)).detach().cpu().tolist()
             scores[item["item_id"]] = [float(x) for x in item_scores]
     return scores
@@ -234,6 +235,7 @@ def combine_scores(
     semantic_scores: dict[str, list[float]],
     identity_scores: dict[str, list[float]],
     weights: dict[str, float],
+    appearance_score_key: str = "appearance_score",
 ) -> dict[str, list[float]]:
     combined: dict[str, list[float]] = {}
     denom = max(sum(abs(x) for x in weights.values()), 1e-8)
@@ -244,7 +246,7 @@ def combine_scores(
         vals: list[float] = []
         for idx, row in enumerate(rows):
             d = float(row.get("distance_score", 0.0))
-            app = float(row.get("appearance_score", 0.5))
+            app = float(row.get(appearance_score_key, 0.5) if row.get(appearance_score_key) is not None else 0.5)
             pri = 0.5 * float(row.get("future_visibility_prob", 0.5)) + 0.5 * float(row.get("future_reappearance_event_prob", 0.5))
             vals.append(
                 (
@@ -263,11 +265,12 @@ def combine_scores(
 def primitive_score(items: list[dict[str, Any]], key: str) -> dict[str, list[float]]:
     out: dict[str, list[float]] = {}
     for item in items:
-        out[item["item_id"]] = [float(r.get(key, 0.0)) for r in item["rows"]]
+        out[item["item_id"]] = [float(r.get(key, 0.0) if r.get(key) is not None else 0.0) for r in item["rows"]]
     return out
 
 
 def write_eval(path: Path, mode: str, items: list[dict[str, Any]], scores: dict[str, list[float]]) -> dict[str, Any]:
+    score_values = list(scores.values())
     payload = {
         "generated_at_utc": now_iso(),
         "mode": mode,
@@ -279,6 +282,14 @@ def write_eval(path: Path, mode: str, items: list[dict[str, Any]], scores: dict[
         "old_association_report_used": False,
         "full_model_forward_executed": True,
         "full_free_rollout_executed": True,
+        "score_tie_rate": mean([
+            1.0 if len(vals) > 1 and max(float(x) for x in vals) - min(float(x) for x in vals) <= 1e-12 else 0.0
+            for vals in score_values
+        ]),
+        "predicted_candidate_index_0_ratio": mean([
+            1.0 if vals and max(range(len(vals)), key=lambda i: float(vals[i])) == 0 else 0.0
+            for vals in score_values
+        ]),
         **evaluate(items, scores),
         "dev": evaluate(items, scores, split="dev"),
         "heldout": evaluate(items, scores, split="heldout"),
@@ -300,6 +311,10 @@ def run(
     epochs: int,
     lr: float,
     bottleneck_dim: int,
+    version_tag: str = "v6",
+    candidate_feature_key: str = "candidate_crop_feature",
+    appearance_score_key: str = "appearance_score",
+    crop_appearance_score_key: str = "appearance_score_crop_encoder",
 ) -> dict[str, Any]:
     dataset = load_json(dataset_path)
     records = [r for r in dataset.get("records", []) if isinstance(r, dict)]
@@ -309,7 +324,7 @@ def run(
         raise RuntimeError("no dev items for listwise training")
     sem_dim = len(dev_items[0]["rows"][0]["predicted_semantic_embedding"])
     id_dim = len(dev_items[0]["rows"][0]["predicted_identity_embedding"])
-    cand_dim = len(dev_items[0]["rows"][0]["candidate_crop_feature"])
+    cand_dim = len(dev_items[0]["rows"][0][candidate_feature_key])
     probe_output_dir.mkdir(parents=True, exist_ok=True)
     seed_reports: list[dict[str, Any]] = []
     seed_score_tables: dict[int, dict[str, dict[str, list[float]]]] = {}
@@ -317,14 +332,27 @@ def run(
     for seed in seeds:
         torch.manual_seed(int(seed))
         random.seed(int(seed))
-        sem_probe = ListwiseProbe(sem_dim, cand_dim, hidden_dim=0)
-        id_probe = ListwiseProbe(id_dim, cand_dim, hidden_dim=0)
+        single_hidden = int(bottleneck_dim) if str(version_tag) == "v7" else 0
+        sem_probe = ListwiseProbe(sem_dim, cand_dim, hidden_dim=single_hidden)
+        id_probe = ListwiseProbe(id_dim, cand_dim, hidden_dim=single_hidden)
         si_probe = ListwiseProbe(sem_dim + id_dim, cand_dim, hidden_dim=int(bottleneck_dim))
         sem_losses, sem_probe = train_one_probe(
-            probe=sem_probe, items=dev_items, state_key="predicted_semantic_embedding", epochs=epochs, lr=lr, seed=seed
+            probe=sem_probe,
+            items=dev_items,
+            state_key="predicted_semantic_embedding",
+            candidate_feature_key=candidate_feature_key,
+            epochs=epochs,
+            lr=lr,
+            seed=seed,
         )
         id_losses, id_probe = train_one_probe(
-            probe=id_probe, items=dev_items, state_key="predicted_identity_embedding", epochs=epochs, lr=lr, seed=seed + 1000
+            probe=id_probe,
+            items=dev_items,
+            state_key="predicted_identity_embedding",
+            candidate_feature_key=candidate_feature_key,
+            epochs=epochs,
+            lr=lr,
+            seed=seed + 1000,
         )
         # Add concat features lazily to rows for the semantic-identity probe.
         for item in items:
@@ -334,48 +362,73 @@ def run(
             probe=si_probe,
             items=dev_items,
             state_key="predicted_semantic_identity_embedding",
+            candidate_feature_key=candidate_feature_key,
             epochs=epochs,
             lr=lr,
             seed=seed + 2000,
         )
-        sem_scores = score_probe(sem_probe, items, "predicted_semantic_embedding")
-        id_scores = score_probe(id_probe, items, "predicted_identity_embedding")
-        si_scores = score_probe(si_probe, items, "predicted_semantic_identity_embedding")
+        sem_scores = score_probe(sem_probe, items, "predicted_semantic_embedding", candidate_feature_key)
+        id_scores = score_probe(id_probe, items, "predicted_identity_embedding", candidate_feature_key)
+        si_scores = score_probe(si_probe, items, "predicted_semantic_identity_embedding", candidate_feature_key)
         posterior_v6 = combine_scores(
             items,
             semantic_scores=sem_scores,
             identity_scores=id_scores,
             weights={"distance": 0.25, "appearance": 0.25, "semantic": 0.20, "identity": 0.15, "priors": 0.15},
+            appearance_score_key=appearance_score_key,
         )
         no_pred = combine_scores(
             items,
             semantic_scores=sem_scores,
             identity_scores=id_scores,
             weights={"distance": 0.40, "appearance": 0.40, "priors": 0.20},
+            appearance_score_key=appearance_score_key,
         )
         no_app = combine_scores(
             items,
             semantic_scores=sem_scores,
             identity_scores=id_scores,
             weights={"distance": 0.35, "semantic": 0.25, "identity": 0.20, "priors": 0.20},
+            appearance_score_key=appearance_score_key,
         )
         no_dist = combine_scores(
             items,
             semantic_scores=sem_scores,
             identity_scores=id_scores,
             weights={"appearance": 0.35, "semantic": 0.25, "identity": 0.20, "priors": 0.20},
+            appearance_score_key=appearance_score_key,
         )
-        modes = {
-            "aligned_listwise_semantic": sem_scores,
-            "aligned_listwise_identity": id_scores,
-            "aligned_listwise_semantic_identity": si_scores,
-            "posterior_v6": posterior_v6,
-            "posterior_v6_no_predicted_state": no_pred,
-            "posterior_v6_no_appearance": no_app,
-            "posterior_v6_no_distance": no_dist,
-            "distance_only": primitive_score(items, "distance_score"),
-            "appearance_only": primitive_score(items, "appearance_score"),
-        }
+        if str(version_tag) == "v7":
+            no_frozen_app = combine_scores(
+                items,
+                semantic_scores=sem_scores,
+                identity_scores=id_scores,
+                weights={"distance": 0.25, "appearance": 0.25, "semantic": 0.20, "identity": 0.15, "priors": 0.15},
+                appearance_score_key=crop_appearance_score_key,
+            )
+            modes = {
+                "distance_only": primitive_score(items, "distance_score"),
+                "target_candidate_appearance_crop_encoder": primitive_score(items, crop_appearance_score_key),
+                "target_candidate_appearance_frozen": primitive_score(items, appearance_score_key),
+                "aligned_predicted_semantic_identity_v7": si_scores,
+                "posterior_v7": posterior_v6,
+                "posterior_v7_no_predicted_state": no_pred,
+                "posterior_v7_no_appearance": no_app,
+                "posterior_v7_no_distance": no_dist,
+                "posterior_v7_no_frozen_appearance": no_frozen_app,
+            }
+        else:
+            modes = {
+                "aligned_listwise_semantic": sem_scores,
+                "aligned_listwise_identity": id_scores,
+                "aligned_listwise_semantic_identity": si_scores,
+                "posterior_v6": posterior_v6,
+                "posterior_v6_no_predicted_state": no_pred,
+                "posterior_v6_no_appearance": no_app,
+                "posterior_v6_no_distance": no_dist,
+                "distance_only": primitive_score(items, "distance_score"),
+                "appearance_only": primitive_score(items, "appearance_score"),
+            }
         seed_score_tables[int(seed)] = modes
         report = {
             "seed": int(seed),
@@ -418,18 +471,32 @@ def run(
         value = report.get("dev", {}).get(mode, {}).get("candidate_AP")
         return float(value) if isinstance(value, (int, float)) else -1.0
 
-    best = max(seed_reports, key=lambda r: held_ap(r, "posterior_v6"))
+    selection_mode = "posterior_v7" if str(version_tag) == "v7" else "posterior_v6"
+    best = max(seed_reports, key=lambda r: held_ap(r, selection_mode))
     best_seed = int(best["seed"])
     selected_scores = seed_score_tables[best_seed]
-    eval_paths = {
-        "aligned_listwise_semantic": output_dir / "stwm_external_candidate_scoring_v6_aligned_listwise_semantic_eval_20260428.json",
-        "aligned_listwise_identity": output_dir / "stwm_external_candidate_scoring_v6_aligned_listwise_identity_eval_20260428.json",
-        "aligned_listwise_semantic_identity": output_dir / "stwm_external_candidate_scoring_v6_aligned_listwise_semantic_identity_eval_20260428.json",
-        "posterior_v6": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_eval_20260428.json",
-        "posterior_v6_no_predicted_state": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_no_predicted_state_eval_20260428.json",
-        "posterior_v6_no_appearance": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_no_appearance_eval_20260428.json",
-        "posterior_v6_no_distance": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_no_distance_eval_20260428.json",
-    }
+    if str(version_tag) == "v7":
+        eval_paths = {
+            "distance_only": output_dir / "stwm_external_candidate_scoring_v7_distance_only_eval_20260428.json",
+            "target_candidate_appearance_crop_encoder": output_dir / "stwm_external_candidate_scoring_v7_appearance_crop_encoder_eval_20260428.json",
+            "target_candidate_appearance_frozen": output_dir / "stwm_external_candidate_scoring_v7_appearance_frozen_eval_20260428.json",
+            "aligned_predicted_semantic_identity_v7": output_dir / "stwm_external_candidate_scoring_v7_aligned_predicted_semantic_identity_eval_20260428.json",
+            "posterior_v7": output_dir / "stwm_external_candidate_scoring_v7_posterior_v7_eval_20260428.json",
+            "posterior_v7_no_predicted_state": output_dir / "stwm_external_candidate_scoring_v7_posterior_v7_no_predicted_state_eval_20260428.json",
+            "posterior_v7_no_appearance": output_dir / "stwm_external_candidate_scoring_v7_posterior_v7_no_appearance_eval_20260428.json",
+            "posterior_v7_no_distance": output_dir / "stwm_external_candidate_scoring_v7_posterior_v7_no_distance_eval_20260428.json",
+            "posterior_v7_no_frozen_appearance": output_dir / "stwm_external_candidate_scoring_v7_posterior_v7_no_frozen_appearance_eval_20260428.json",
+        }
+    else:
+        eval_paths = {
+            "aligned_listwise_semantic": output_dir / "stwm_external_candidate_scoring_v6_aligned_listwise_semantic_eval_20260428.json",
+            "aligned_listwise_identity": output_dir / "stwm_external_candidate_scoring_v6_aligned_listwise_identity_eval_20260428.json",
+            "aligned_listwise_semantic_identity": output_dir / "stwm_external_candidate_scoring_v6_aligned_listwise_semantic_identity_eval_20260428.json",
+            "posterior_v6": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_eval_20260428.json",
+            "posterior_v6_no_predicted_state": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_no_predicted_state_eval_20260428.json",
+            "posterior_v6_no_appearance": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_no_appearance_eval_20260428.json",
+            "posterior_v6_no_distance": output_dir / "stwm_external_candidate_scoring_v6_posterior_v6_no_distance_eval_20260428.json",
+        }
     eval_payloads = {mode: write_eval(path, mode, items, selected_scores[mode]) for mode, path in eval_paths.items()}
 
     def seed_metric(mode: str, metric: str) -> list[float]:
@@ -458,7 +525,10 @@ def run(
         "seed_count": len(seeds),
         "seeds": [int(x) for x in seeds],
         "selected_seed": best_seed,
-        "selected_by": "dev posterior_v6 candidate_AP",
+        "selected_by": f"dev {selection_mode} candidate_AP",
+        "version_tag": str(version_tag),
+        "candidate_feature_key": str(candidate_feature_key),
+        "appearance_score_key": str(appearance_score_key),
         "seed_mean_std": seed_stats,
         "selected_seed_metrics": {
             mode: {"all": payload, "dev": payload.get("dev"), "heldout": payload.get("heldout")}
@@ -466,7 +536,11 @@ def run(
         },
         "all_seed_reports": seed_reports,
     }
-    dev_path = output_dir / "stwm_external_candidate_scoring_v6_dev_heldout_summary_20260428.json"
+    dev_path = output_dir / (
+        "stwm_external_candidate_scoring_v7_dev_heldout_summary_20260428.json"
+        if str(version_tag) == "v7"
+        else "stwm_external_candidate_scoring_v6_dev_heldout_summary_20260428.json"
+    )
     write_json(dev_path, dev_heldout)
     write_doc(dev_path.with_suffix(".md"), "STWM External Candidate Scoring V6 Dev Heldout Summary", dev_heldout)
 
@@ -485,13 +559,19 @@ def run(
             for item in items
         ],
     }
-    score_table_path = output_dir / "stwm_semantic_state_alignment_v6_score_table_20260428.json"
+    score_table_path = output_dir / (
+        "stwm_semantic_state_alignment_v7_score_table_20260428.json"
+        if str(version_tag) == "v7"
+        else "stwm_semantic_state_alignment_v6_score_table_20260428.json"
+    )
     write_json(score_table_path, score_table)
 
-    p6 = eval_payloads["posterior_v6"]["heldout"]
-    np = eval_payloads["posterior_v6_no_predicted_state"]["heldout"]
+    main_mode = "posterior_v7" if str(version_tag) == "v7" else "posterior_v6"
+    no_pred_mode = "posterior_v7_no_predicted_state" if str(version_tag) == "v7" else "posterior_v6_no_predicted_state"
+    p6 = eval_payloads[main_mode]["heldout"]
+    np = eval_payloads[no_pred_mode]["heldout"]
     dist = evaluate(items, primitive_score(items, "distance_score"), split="heldout")
-    app = evaluate(items, primitive_score(items, "appearance_score"), split="heldout")
+    app = evaluate(items, primitive_score(items, appearance_score_key), split="heldout")
     listwise_signal = bool(
         isinstance(p6.get("candidate_AP"), (int, float))
         and isinstance(np.get("candidate_AP"), (int, float))
@@ -503,6 +583,7 @@ def run(
     train_payload = {
         "generated_at_utc": now_iso(),
         "listwise_probe_trained": True,
+        "version_tag": str(version_tag),
         "dataset": str(dataset_path),
         "seed_count": len(seeds),
         "seeds": [int(x) for x in seeds],
@@ -510,6 +591,8 @@ def run(
         "epochs": int(epochs),
         "lr": float(lr),
         "bottleneck_dim": int(bottleneck_dim),
+        "candidate_feature_key": str(candidate_feature_key),
+        "appearance_score_key": str(appearance_score_key),
         "no_backbone_update": True,
         "no_candidate_leakage_to_rollout": True,
         "future_candidate_used_as_input": False,
@@ -518,6 +601,9 @@ def run(
         "probe_weight_paths_selected_seed": best.get("probe_weight_paths"),
         "all_seed_reports": seed_reports,
         "score_table_path": str(score_table_path),
+        f"{main_mode}_improves_over_no_predicted_state": bool(p6.get("candidate_AP") > np.get("candidate_AP")),
+        f"{main_mode}_improves_over_distance": bool(p6.get("candidate_AP") > dist.get("candidate_AP")),
+        f"{main_mode}_improves_over_appearance": bool(p6.get("candidate_AP") > app.get("candidate_AP")),
         "posterior_v6_improves_over_no_predicted_state": bool(p6.get("candidate_AP") > np.get("candidate_AP")),
         "posterior_v6_improves_over_distance": bool(p6.get("candidate_AP") > dist.get("candidate_AP")),
         "posterior_v6_improves_over_appearance": bool(p6.get("candidate_AP") > app.get("candidate_AP")),
@@ -539,6 +625,10 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=120)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--bottleneck-dim", type=int, default=128)
+    parser.add_argument("--version-tag", default="v6", choices=["v6", "v7"])
+    parser.add_argument("--candidate-feature-key", default="candidate_crop_feature")
+    parser.add_argument("--appearance-score-key", default="appearance_score")
+    parser.add_argument("--crop-appearance-score-key", default="appearance_score_crop_encoder")
     args = parser.parse_args()
     seeds = [int(x.strip()) for x in str(args.seeds).split(",") if x.strip()]
     run(
@@ -551,6 +641,10 @@ def main() -> None:
         epochs=int(args.epochs),
         lr=float(args.lr),
         bottleneck_dim=int(args.bottleneck_dim),
+        version_tag=str(args.version_tag),
+        candidate_feature_key=str(args.candidate_feature_key),
+        appearance_score_key=str(args.appearance_score_key),
+        crop_appearance_score_key=str(args.crop_appearance_score_key),
     )
 
 

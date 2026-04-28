@@ -29,8 +29,9 @@ def write_json(path: Path, payload: Any) -> None:
 
 def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
-        "# STWM Semantic-State Alignment V6 Significance V1",
+        "# STWM Semantic-State Alignment Significance",
         "",
+        f"- version_tag: `{payload.get('version_tag')}`",
         f"- bootstrap_unit: `{payload.get('bootstrap_unit')}`",
         f"- split: `{payload.get('split')}`",
         f"- bootstrap_samples: `{payload.get('bootstrap_samples')}`",
@@ -167,17 +168,28 @@ def bootstrap_compare(items: list[dict[str, Any]], a: str, b: str, samples: int,
     return {"mode_a": a, "mode_b": b, "observed_delta": observed, "metrics": metrics}
 
 
-def run(score_table: Path, output: Path, doc: Path, split: str, samples: int, seed: int) -> dict[str, Any]:
-    table = load_json(score_table)
-    records = [r for r in table.get("records", []) if isinstance(r, dict)]
-    if split != "all":
-        records = [r for r in records if r.get("split") == split]
-    comparisons = {
+def _comparisons_for_version(version_tag: str) -> dict[str, tuple[str, str]]:
+    if str(version_tag) == "v7":
+        return {
+            "posterior_v7_vs_posterior_v7_no_predicted_state": ("posterior_v7", "posterior_v7_no_predicted_state"),
+            "posterior_v7_vs_distance_only": ("posterior_v7", "distance_only"),
+            "posterior_v7_vs_target_candidate_appearance_frozen": ("posterior_v7", "target_candidate_appearance_frozen"),
+            "aligned_predicted_semantic_identity_v7_vs_distance_only": ("aligned_predicted_semantic_identity_v7", "distance_only"),
+        }
+    return {
         "posterior_v6_vs_posterior_v6_no_predicted_state": ("posterior_v6", "posterior_v6_no_predicted_state"),
         "posterior_v6_vs_distance_only": ("posterior_v6", "distance_only"),
         "posterior_v6_vs_appearance_only": ("posterior_v6", "appearance_only"),
         "aligned_listwise_semantic_identity_vs_distance_only": ("aligned_listwise_semantic_identity", "distance_only"),
     }
+
+
+def run(score_table: Path, output: Path, doc: Path, split: str, samples: int, seed: int, version_tag: str = "v6") -> dict[str, Any]:
+    table = load_json(score_table)
+    records = [r for r in table.get("records", []) if isinstance(r, dict)]
+    if split != "all":
+        records = [r for r in records if r.get("split") == split]
+    comparisons = _comparisons_for_version(str(version_tag))
     comp_payload = {name: bootstrap_compare(records, a, b, samples, seed + idx * 17) for idx, (name, (a, b)) in enumerate(comparisons.items())}
     subset_payload: dict[str, Any] = {}
     for subset in SUBSETS:
@@ -189,6 +201,7 @@ def run(score_table: Path, output: Path, doc: Path, split: str, samples: int, se
     payload = {
         "generated_at_utc": now_iso(),
         "score_table": str(score_table),
+        "version_tag": str(version_tag),
         "bootstrap_unit": "item",
         "split": split,
         "bootstrap_samples": int(samples),
@@ -197,7 +210,7 @@ def run(score_table: Path, output: Path, doc: Path, split: str, samples: int, se
         "subset_comparisons": subset_payload,
         "v5_item_level_scores_available": False,
         "v5_signal_significant": "unclear",
-        "v5_missing_item_level_reason": "Original V5 report was aggregate-only after raw export cleanup; V6 significance is computed from the compact V6 score table.",
+        "v5_missing_item_level_reason": "Original V5 report was aggregate-only after raw export cleanup; significance is computed from the compact current score table.",
     }
     write_json(output, payload)
     write_doc(doc, payload)
@@ -212,8 +225,17 @@ def main() -> None:
     parser.add_argument("--split", default="heldout", choices=["heldout", "dev", "all"])
     parser.add_argument("--bootstrap-samples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=123)
+    parser.add_argument("--version-tag", default="v6", choices=["v6", "v7"])
     args = parser.parse_args()
-    run(Path(args.score_table), Path(args.output), Path(args.doc), str(args.split), int(args.bootstrap_samples), int(args.seed))
+    run(
+        Path(args.score_table),
+        Path(args.output),
+        Path(args.doc),
+        str(args.split),
+        int(args.bootstrap_samples),
+        int(args.seed),
+        str(args.version_tag),
+    )
 
 
 if __name__ == "__main__":

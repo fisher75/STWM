@@ -1,0 +1,57 @@
+{
+  "appearance_only_stronger_than_posterior_v6": true,
+  "available_frozen_feature_model_or_cache": {
+    "huggingface_clip_cache": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/home/chen034/.cache/huggingface/hub/models--openai--clip-vit-base-patch32"
+      ],
+      "python_module_available": true
+    },
+    "local_openai_clip_vit_b_32": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/home/chen034/.cache/clip/ViT-B-32.pt",
+        "/home/chen034/.cache/clip/ViT-B-16.pt"
+      ],
+      "python_module_available": true
+    },
+    "local_sam2_code_or_cache": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/raid/chen034/workspace/stwm/third_party/sam2"
+      ],
+      "python_module_available": false
+    },
+    "stwm_crop_visual_encoder": {
+      "available": true,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    }
+  },
+  "fallback_if_none": "crop_encoder_feature_only",
+  "generated_at_utc": "2026-04-28T16:57:41.287168+00:00",
+  "no_internet_download_attempted": true,
+  "paper_level_world_model_claim_currently_allowed": false,
+  "reason_for_frozen_measurement_features": "V6 showed AUROC-level predicted-state signal but AP/top1 CIs crossed zero and crop_encoder appearance dominated; frozen VLM measurement tests whether measurement-space quality was the bottleneck.",
+  "selected_backbone": "local_openai_clip_vit_b_32",
+  "v6_candidate_feature_is_strong_foundation_feature": false,
+  "v6_candidate_feature_source": "crop_encoder_feature",
+  "v6_posterior_vs_no_predicted_state_heldout_gain": {
+    "AP": 0.011984960820902515,
+    "AUROC": 0.05752077740284156,
+    "top1": 0.011049723756906077
+  },
+  "v6_subset_positive": {
+    "OOD_hard": false,
+    "appearance_change": false,
+    "crossing_ambiguity": true,
+    "long_gap_persistence": false,
+    "occlusion_reappearance": false
+  },
+  "v6_zero_excluded": {
+    "AP": false,
+    "AUROC": true,
+    "top1": false
+  }
+}

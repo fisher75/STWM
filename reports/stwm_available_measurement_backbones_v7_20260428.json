@@ -1,0 +1,88 @@
+{
+  "available_backbones": {
+    "huggingface_clip_cache": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/home/chen034/.cache/huggingface/hub/models--openai--clip-vit-base-patch32"
+      ],
+      "python_module_available": true
+    },
+    "local_openai_clip_vit_b_32": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/home/chen034/.cache/clip/ViT-B-32.pt",
+        "/home/chen034/.cache/clip/ViT-B-16.pt"
+      ],
+      "python_module_available": true
+    },
+    "local_sam2_code_or_cache": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/raid/chen034/workspace/stwm/third_party/sam2"
+      ],
+      "python_module_available": false
+    },
+    "stwm_crop_visual_encoder": {
+      "available": true,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    }
+  },
+  "fallback_if_none": "crop_encoder_feature_only",
+  "generated_at_utc": "2026-04-28T16:29:15.081491+00:00",
+  "no_internet_download_attempted": true,
+  "probes": {
+    "huggingface_clip_cache": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/home/chen034/.cache/huggingface/hub/models--openai--clip-vit-base-patch32"
+      ],
+      "python_module_available": true
+    },
+    "huggingface_dinov2_cache": {
+      "available": false,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    },
+    "huggingface_siglip_cache": {
+      "available": false,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    },
+    "local_openai_clip_vit_b_32": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/home/chen034/.cache/clip/ViT-B-32.pt",
+        "/home/chen034/.cache/clip/ViT-B-16.pt"
+      ],
+      "python_module_available": true
+    },
+    "local_sam2_code_or_cache": {
+      "available": true,
+      "cache_or_weight_paths": [
+        "/raid/chen034/workspace/stwm/third_party/sam2"
+      ],
+      "python_module_available": false
+    },
+    "stwm_crop_visual_encoder": {
+      "available": true,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    }
+  },
+  "repo_root": "/raid/chen034/workspace/stwm",
+  "selected_backbone": "local_openai_clip_vit_b_32",
+  "selection_reason": "highest-priority locally available frozen measurement backbone",
+  "unavailable_backbones": {
+    "huggingface_dinov2_cache": {
+      "available": false,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    },
+    "huggingface_siglip_cache": {
+      "available": false,
+      "cache_or_weight_paths": [],
+      "python_module_available": true
+    }
+  }
+}
