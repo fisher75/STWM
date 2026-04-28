@@ -1,0 +1,49 @@
+{
+  "allowed_to_enter_external_hardcase_semantic_state_eval": false,
+  "can_construct_event_level_reappearance_target": true,
+  "can_construct_future_identity_association_target": true,
+  "can_construct_hardcase_event_target": true,
+  "can_construct_per_horizon_visibility_target": false,
+  "can_construct_strong_slot_aligned_target": false,
+  "current_export_tool_behavior": "full_model modes ignore manifest items and use Stage2SemanticDataset validation split from checkpoint args; head_only mode can read manifest but is not full model output",
+  "current_export_tool_supports_external_manifest_full_model": false,
+  "exact_blocking_reasons": [
+    "export_future_semantic_trace_state_20260427.py full_model modes build Stage2SemanticDataset from checkpoint args and do not consume external manifest items",
+    "external manifest has observed prompt and single future-frame candidates, but no per-horizon [H,K] visibility sequence",
+    "external candidates are not aligned to Stage2 model entity slots/fut_valid tensors"
+  ],
+  "expected_item_count_389": true,
+  "external_389_manifest_exists": true,
+  "external_hardcase_eval_can_truly_consume_future_semantic_state": false,
+  "external_hardcase_target_quality": "unavailable_without_full_model_manifest_support",
+  "generated_at_utc": "2026-04-28T10:25:36.649013+00:00",
+  "item_count": 389,
+  "items_with_frame_paths": 389,
+  "items_with_future_candidates": 389,
+  "items_with_future_frame_index": 389,
+  "items_with_gt_candidate_id": 389,
+  "items_with_gt_candidate_id_in_future_candidates": 389,
+  "items_with_observed_target": 389,
+  "minimum_required_changes_for_true_external_hardcase_export": [
+    "build Stage2-compatible batch/features from external manifest raw frames and masks",
+    "map external future candidates to semantic-state slots or add candidate-conditioned consumer head",
+    "create hardcase_event/candidate-aligned labels without Stage2 fut_valid",
+    "ensure current_export_data_source=external_389_hardcase_manifest and external_manifest_consumed=true"
+  ],
+  "per_subset_counts": {
+    "appearance_change": 161,
+    "crossing_ambiguity": 302,
+    "long_gap_persistence": 52,
+    "occlusion_reappearance": 127,
+    "small_object": 346
+  },
+  "report_name": "stwm_external_hardcase_semantic_state_feasibility_audit_v1",
+  "source_files_checked": {
+    "code/stwm/tools/eval_future_semantic_trace_queries_20260427.py": true,
+    "code/stwm/tools/export_future_semantic_trace_state_20260427.py": true,
+    "code/stwm/tracewm_v2_stage2/utils/visibility_reappearance_targets.py": true,
+    "reports/stwm_external_baseline_full_eval_decision_20260426.json": true,
+    "reports/stwm_external_baseline_item_manifest_20260426.json": true,
+    "reports/stwm_external_baseline_result_interpretation_20260426.json": true
+  }
+}
