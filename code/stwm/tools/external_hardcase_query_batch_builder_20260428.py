@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from pathlib import Path
 from typing import Any
 import math
@@ -13,6 +13,8 @@ from stwm.tracewm_v2.constants import STATE_DIM
 
 
 SEMANTIC_FEATURE_DIM = 10
+_IMAGE_CACHE: OrderedDict[str, Image.Image] = OrderedDict()
+_IMAGE_CACHE_MAX = 4
 
 
 def _bbox(value: Any) -> list[float] | None:
@@ -28,6 +30,11 @@ def _image_size(item: dict[str, Any]) -> tuple[int, int]:
     size = item.get("image_size")
     if isinstance(size, list) and len(size) >= 2:
         return int(size[0]), int(size[1])
+    if isinstance(size, dict):
+        width = size.get("width")
+        height = size.get("height")
+        if width is not None and height is not None:
+            return int(width), int(height)
     frames = item.get("frame_paths")
     if isinstance(frames, list) and frames:
         try:
@@ -63,19 +70,32 @@ def _crop_rgb(frame_path: str, bbox: list[float] | None, crop_size: int) -> torc
     if not frame_path or bbox is None:
         return out
     try:
-        with Image.open(frame_path) as im:
-            im = im.convert("RGB")
-            w, h = im.size
-            x1, y1, x2, y2 = bbox
-            x1 = max(0, min(int(round(x1)), w - 1))
-            y1 = max(0, min(int(round(y1)), h - 1))
-            x2 = max(x1 + 1, min(int(round(x2)), w))
-            y2 = max(y1 + 1, min(int(round(y2)), h))
-            crop = im.crop((x1, y1, x2, y2)).resize((int(crop_size), int(crop_size)), Image.BILINEAR)
-            arr = np.asarray(crop, dtype=np.float32) / 255.0
-            return torch.from_numpy(arr).permute(2, 0, 1).contiguous()
+        im = _load_rgb_image_cached(frame_path)
+        w, h = im.size
+        x1, y1, x2, y2 = bbox
+        x1 = max(0, min(int(round(x1)), w - 1))
+        y1 = max(0, min(int(round(y1)), h - 1))
+        x2 = max(x1 + 1, min(int(round(x2)), w))
+        y2 = max(y1 + 1, min(int(round(y2)), h))
+        crop = im.crop((x1, y1, x2, y2)).resize((int(crop_size), int(crop_size)), Image.BILINEAR)
+        arr = np.asarray(crop, dtype=np.float32) / 255.0
+        return torch.from_numpy(arr).permute(2, 0, 1).contiguous()
     except Exception:
         return out
+
+
+def _load_rgb_image_cached(frame_path: str) -> Image.Image:
+    cached = _IMAGE_CACHE.get(frame_path)
+    if cached is not None:
+        _IMAGE_CACHE.move_to_end(frame_path)
+        return cached
+    with Image.open(frame_path) as im:
+        rgb = im.convert("RGB").copy()
+    _IMAGE_CACHE[frame_path] = rgb
+    _IMAGE_CACHE.move_to_end(frame_path)
+    while len(_IMAGE_CACHE) > _IMAGE_CACHE_MAX:
+        _IMAGE_CACHE.popitem(last=False)
+    return rgb
 
 
 def _semantic_features_from_bbox(bbox: list[float] | None, image_w: int, image_h: int) -> torch.Tensor:
@@ -90,6 +110,95 @@ def _semantic_features_from_bbox(bbox: list[float] | None, image_w: int, image_h
     area = bw * bh
     feat[:10] = torch.tensor([cx, cy, bw, bh, area, math.sqrt(max(area, 0.0)), 1.0, 0.0, 0.0, 0.0], dtype=torch.float32)
     return feat
+
+
+def _frame_path_for_index(frame_paths: list[Any], frame_index: Any) -> str | None:
+    if not frame_paths:
+        return None
+    try:
+        idx = int(frame_index)
+    except Exception:
+        idx = len(frame_paths) - 1
+    idx = max(0, min(idx, len(frame_paths) - 1))
+    return str(frame_paths[idx])
+
+
+def build_candidate_measurement_features(
+    item: dict[str, Any],
+    candidate: dict[str, Any],
+    frame_paths: list[Any] | None = None,
+    future_frame_index: Any | None = None,
+    crop_size: int = 64,
+) -> dict[str, Any]:
+    """Build deterministic candidate measurement features for scoring only.
+
+    The returned feature vector is intentionally kept outside the model batch:
+    it is a posterior measurement likelihood term, not rollout input.
+    """
+
+    paths = frame_paths if isinstance(frame_paths, list) else item.get("frame_paths")
+    paths = paths if isinstance(paths, list) else []
+    frame_idx = item.get("future_frame_index") if future_frame_index is None else future_frame_index
+    frame_path = _frame_path_for_index(paths, frame_idx)
+    image_w, image_h = _image_size(item)
+    bbox = _bbox(candidate.get("bbox") if isinstance(candidate, dict) else None)
+    if bbox is None:
+        return {
+            "feature_source": "missing_candidate_bbox",
+            "feature_vector": [0.0] * 18,
+            "future_frame_path": frame_path,
+            "candidate_feature_used_for_scoring": True,
+            "candidate_feature_used_for_rollout": False,
+        }
+    x1, y1, x2, y2 = bbox
+    cx = ((x1 + x2) * 0.5) / max(float(image_w), 1.0)
+    cy = ((y1 + y2) * 0.5) / max(float(image_h), 1.0)
+    bw = max((x2 - x1) / max(float(image_w), 1.0), 0.0)
+    bh = max((y2 - y1) / max(float(image_h), 1.0), 0.0)
+    area = bw * bh
+    aspect = bw / max(bh, 1e-6)
+    mean_rgb = [0.0, 0.0, 0.0]
+    std_rgb = [0.0, 0.0, 0.0]
+    feature_source = "bbox_stats_only"
+    if frame_path:
+        crop = _crop_rgb(frame_path, bbox, int(crop_size))
+        if torch.isfinite(crop).all() and float(crop.abs().sum().item()) > 0.0:
+            flat = crop.view(3, -1)
+            mean_rgb = [float(x) for x in flat.mean(dim=1).tolist()]
+            std_rgb = [float(x) for x in flat.std(dim=1, unbiased=False).tolist()]
+            feature_source = "weak_rgb_bbox_stats"
+    mask_area = 0.0
+    rle = candidate.get("mask_rle") if isinstance(candidate, dict) else None
+    if isinstance(rle, dict) and isinstance(rle.get("size"), list) and len(rle.get("size")) >= 2:
+        # RLE decoding is intentionally avoided here; bbox area is the safe
+        # deterministic proxy used for this V1 measurement feature.
+        mask_area = area
+    feat = [
+        float(max(0.0, min(1.0, cx))),
+        float(max(0.0, min(1.0, cy))),
+        float(max(0.0, min(1.0, bw))),
+        float(max(0.0, min(1.0, bh))),
+        float(max(0.0, min(1.0, area))),
+        float(max(0.0, min(10.0, aspect)) / 10.0),
+        float(max(0.0, min(1.0, math.sqrt(max(area, 0.0))))),
+        float(max(0.0, min(1.0, mask_area))),
+        *mean_rgb,
+        *std_rgb,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+    ]
+    return {
+        "feature_source": feature_source,
+        "feature_vector": [float(x) for x in feat],
+        "future_frame_path": frame_path,
+        "bbox_stats": {"cx": feat[0], "cy": feat[1], "w": feat[2], "h": feat[3], "area": feat[4], "aspect_scaled": feat[5]},
+        "mean_rgb": mean_rgb,
+        "std_rgb": std_rgb,
+        "candidate_feature_used_for_scoring": True,
+        "candidate_feature_used_for_rollout": False,
+    }
 
 
 def group_candidate_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:

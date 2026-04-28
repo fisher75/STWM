@@ -1,0 +1,35 @@
+{
+  "candidate_feature_source": "weak_rgb_bbox_stats_deterministic_projection",
+  "candidate_semantic_features_available": true,
+  "generated_at_utc": "2026-04-28T13:42:04.224822+00:00",
+  "heldout_signal_positive": false,
+  "metrics": {
+    "distance_only": {
+      "candidate_AP": 0.08032519870192689,
+      "candidate_AUROC": 0.5337086696109037,
+      "candidate_MRR": 0.3651036922702645,
+      "candidate_top1": 0.16839378238341968
+    },
+    "posterior_v1": {
+      "candidate_AP": 0.08013408099440913,
+      "candidate_AUROC": 0.5281418843705344,
+      "candidate_MRR": 0.36154645600544094,
+      "candidate_top1": 0.16321243523316062
+    }
+  },
+  "paper_world_model_claimable": false,
+  "posterior_v1_improves_over_distance_only": false,
+  "posterior_v1_signal_positive": true,
+  "rationale": "Candidate measurement features removed tie/index-0 bias, but fixed posterior_v1 does not improve over corrected distance_only on overall or heldout metrics. Semantic/identity compatibility is wired but weak; branch should remain diagnostic and candidate measurement should be improved before any claim or training.",
+  "recommended_next_step_choice": "improve_candidate_measurement_features",
+  "scoring_failure_confirmed": true,
+  "semantic_identity_scoring_used": true,
+  "semantic_state_branch_status": "appendix_diagnostic",
+  "subset_signal_positive": {
+    "OOD_hard": false,
+    "appearance_change": false,
+    "crossing_ambiguity": true,
+    "long_gap_persistence": true,
+    "occlusion_reappearance": false
+  }
+}

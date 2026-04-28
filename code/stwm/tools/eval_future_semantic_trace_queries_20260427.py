@@ -803,6 +803,9 @@ def run_external_query_export_mode(export_report: Path, out_report: Path, out_do
     valid_output_items = 0
     metric_eligible_items = 0
     score_components: set[str] = set()
+    score_equal_flags: list[float] = []
+    score_stds: list[float] = []
+    predicted_zero_flags: list[float] = []
     subset_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
     subset_flat: dict[str, dict[str, list[Any]]] = defaultdict(lambda: {"scores": [], "labels": [], "top1": [], "rr": []})
 
@@ -828,6 +831,12 @@ def run_external_query_export_mode(export_report: Path, out_report: Path, out_do
         if not bool(item.get("valid_output")):
             continue
         valid_output_items += 1
+        if len(clean_scores) > 1:
+            score_equal_flags.append(1.0 if bool(item.get("all_candidate_score_equal")) else 0.0)
+        if isinstance(item.get("candidate_score_std"), (int, float)):
+            score_stds.append(float(item.get("candidate_score_std")))
+        if isinstance(item.get("predicted_candidate_index"), int):
+            predicted_zero_flags.append(1.0 if int(item.get("predicted_candidate_index")) == 0 else 0.0)
         if clean_scores and 1 in clean_labels and 0 in clean_labels:
             metric_eligible_items += 1
             flat_scores.extend(clean_scores)
@@ -912,11 +921,16 @@ def run_external_query_export_mode(export_report: Path, out_report: Path, out_do
         "negative_candidate_records": negative_candidate_records,
         "metric_eligible_items": metric_eligible_items,
         "target_quality": "external_candidate_expanded",
+        "candidate_score_mode": str(export.get("candidate_score_mode") or "unknown"),
         "candidate_top1": candidate_top1,
         "candidate_MRR": candidate_mrr,
         "candidate_AP": candidate_ap,
         "candidate_AUROC": candidate_auc,
         "candidate_positive_rate": positive_candidate_records / max(total_candidate_records, 1),
+        "all_candidate_score_equal_ratio": mean(score_equal_flags),
+        "score_tie_rate": mean(score_equal_flags),
+        "score_std_mean": mean(score_stds),
+        "predicted_candidate_index_0_ratio": mean(predicted_zero_flags),
         "score_components_used": sorted(score_components),
         "score_has_future_semantic_state_probabilities": bool(score_has_future_semantic_state_probs),
         "per_subset_breakdown": {subset: subset_summary(subset) for subset in SUBSETS},
@@ -975,6 +989,10 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
             f"- candidate_MRR: `{fmt(payload.get('candidate_MRR'))}`",
             f"- candidate_AP: `{fmt(payload.get('candidate_AP'))}`",
             f"- candidate_AUROC: `{fmt(payload.get('candidate_AUROC'))}`",
+            f"- candidate_score_mode: `{payload.get('candidate_score_mode')}`",
+            f"- all_candidate_score_equal_ratio: `{fmt(payload.get('all_candidate_score_equal_ratio'))}`",
+            f"- predicted_candidate_index_0_ratio: `{fmt(payload.get('predicted_candidate_index_0_ratio'))}`",
+            f"- score_std_mean: `{fmt(payload.get('score_std_mean'))}`",
             f"- score_components_used: `{payload.get('score_components_used')}`",
             f"- external_query_eval_available: `{payload.get('external_query_eval_available')}`",
             f"- external_query_signal_positive: `{payload.get('external_query_signal_positive')}`",
