@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from argparse import ArgumentParser
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -677,6 +677,106 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
     return payload
 
 
+def run_external_hardcase_export_mode(export_report: Path, out_report: Path, out_doc: Path, repo_root: Path) -> dict[str, Any]:
+    export = load_json(export_report)
+    if export.get("raw_export_schema_version") != "future_semantic_trace_state_raw_export_v1":
+        raise ValueError(f"not a FutureSemanticTraceState raw export: {export_report}")
+    if export.get("manifest_mode") != "external_hardcase_semantic_state":
+        raise ValueError("external hardcase eval requires manifest_mode=external_hardcase_semantic_state")
+    if bool(export.get("old_association_report_used")):
+        raise ValueError("external hardcase export unexpectedly used old association report")
+    if bool(export.get("stage2_val_fallback_used")):
+        raise ValueError("external hardcase export used Stage2 val fallback")
+    items = export.get("items")
+    if not isinstance(items, list):
+        raise ValueError("external hardcase export missing item list")
+
+    target_type_counts: dict[str, int] = defaultdict(int)
+    subset_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    event_scores: list[float] = []
+    event_labels: list[int] = []
+    candidate_correct: list[float] = []
+    candidate_rr: list[float] = []
+    exported_valid = 0
+    metric_eligible = 0
+    for item in items:
+        target_type = str(item.get("target_type") or "unavailable")
+        target_type_counts[target_type] += 1
+        if bool(item.get("valid_output")):
+            exported_valid += 1
+        tags = item.get("subset_tags") if isinstance(item.get("subset_tags"), dict) else {}
+        for subset in SUBSETS:
+            if bool(tags.get(subset)):
+                subset_items[subset].append(item)
+        if not bool(item.get("valid_output")):
+            continue
+        if target_type in {"external_candidate_aligned", "hardcase_event", "weak_event_only"}:
+            # Future implementation can provide an event score; strict blocked
+            # exports intentionally do not fabricate one.
+            score = item.get("event_reappearance_score")
+            label = item.get("event_reappearance_target")
+            if isinstance(score, (int, float)) and label in {0, 1, True, False}:
+                event_scores.append(float(score))
+                event_labels.append(int(label))
+                metric_eligible += 1
+        if target_type == "external_candidate_aligned":
+            pred = item.get("predicted_candidate_index")
+            target = item.get("candidate_match_target")
+            scores = item.get("candidate_scores")
+            if isinstance(pred, int) and isinstance(target, int):
+                candidate_correct.append(1.0 if pred == target else 0.0)
+                metric_eligible += 1
+            if isinstance(scores, list) and isinstance(target, int) and 0 <= target < len(scores):
+                order = sorted(range(len(scores)), key=lambda i: float(scores[i]), reverse=True)
+                rank = order.index(target) + 1 if target in order else None
+                if rank:
+                    candidate_rr.append(1.0 / float(rank))
+
+    def subset_summary(sub_items: list[dict[str, Any]]) -> dict[str, Any]:
+        return {
+            "item_count": len(sub_items),
+            "valid_output_count": sum(1 for x in sub_items if bool(x.get("valid_output"))),
+            "target_type_counts": dict(Counter(str(x.get("target_type") or "unavailable") for x in sub_items)),
+        }
+
+    low_sample_warning = bool(metric_eligible < 50)
+    event_ap = binary_ap(event_scores, event_labels) if _both_classes(event_labels) else None
+    event_auc = binary_auc(event_scores, event_labels) if _both_classes(event_labels) else None
+    candidate_top1 = mean(candidate_correct)
+    candidate_mrr = mean(candidate_rr)
+    signal_positive: bool | str = "unclear"
+    if metric_eligible >= 50 and (event_ap is not None or candidate_top1 is not None):
+        signal_positive = bool((event_ap is not None and event_ap > mean(event_labels or [0]) + 0.05) or (candidate_top1 is not None and candidate_top1 > 0.0))
+
+    payload = {
+        "generated_at_utc": now_iso(),
+        "repo_root": str(repo_root),
+        "mode": "consume_external_hardcase_semantic_state_export",
+        "source_export": str(export_report),
+        "old_association_report_used": False,
+        "stage2_val_fallback_used": False,
+        "external_manifest_consumed": bool(export.get("external_manifest_consumed")),
+        "total_items": len(items),
+        "exported_valid_items": exported_valid,
+        "valid_output_ratio": exported_valid / max(len(items), 1),
+        "metric_eligible_items": metric_eligible,
+        "target_type_counts": dict(target_type_counts),
+        "low_sample_warning": low_sample_warning,
+        "event_AP": event_ap,
+        "event_AUROC": event_auc,
+        "candidate_top1": candidate_top1,
+        "candidate_MRR": candidate_mrr,
+        "per_subset_breakdown": {subset: subset_summary(xs) for subset, xs in subset_items.items()},
+        "external_hardcase_eval_available": bool(metric_eligible > 0 and not low_sample_warning),
+        "external_hardcase_signal_positive": signal_positive,
+        "exact_block_reason": export.get("blocked_due_to_no_model_input_mapping_reason") if exported_valid == 0 else None,
+        "paper_world_model_claimable": False,
+    }
+    write_json(out_report, payload)
+    write_doc(out_doc, payload)
+    return payload
+
+
 def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
         "# STWM Future Semantic Query Eval 20260427",
@@ -687,7 +787,23 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
         f"- old_association_report_only: `{payload.get('old_association_report_only')}`",
         "",
     ]
-    if payload.get("mode") in {"consume_future_semantic_state_export", "consume_future_semantic_state_raw_export"}:
+    if payload.get("mode") == "consume_external_hardcase_semantic_state_export":
+        lines += [
+            "## External Hardcase Metrics",
+            f"- total_items: `{payload.get('total_items')}`",
+            f"- exported_valid_items: `{payload.get('exported_valid_items')}`",
+            f"- metric_eligible_items: `{payload.get('metric_eligible_items')}`",
+            f"- stage2_val_fallback_used: `{payload.get('stage2_val_fallback_used')}`",
+            f"- old_association_report_used: `{payload.get('old_association_report_used')}`",
+            f"- event_AP: `{fmt(payload.get('event_AP'))}`",
+            f"- event_AUROC: `{fmt(payload.get('event_AUROC'))}`",
+            f"- candidate_top1: `{fmt(payload.get('candidate_top1'))}`",
+            f"- candidate_MRR: `{fmt(payload.get('candidate_MRR'))}`",
+            f"- external_hardcase_eval_available: `{payload.get('external_hardcase_eval_available')}`",
+            f"- exact_block_reason: `{payload.get('exact_block_reason')}`",
+            "",
+        ]
+    elif payload.get("mode") in {"consume_future_semantic_state_export", "consume_future_semantic_state_raw_export"}:
         overall = payload.get("overall", {})
         lines += [
             "## Overall Semantic-State Metrics",
@@ -742,6 +858,7 @@ def parse_args() -> Any:
             "read_old_association_report",
             "consume_future_semantic_state_export",
             "consume_future_semantic_state_raw_export",
+            "consume_external_hardcase_semantic_state_export",
         ],
     )
     p.add_argument("--source-report", default=None)
@@ -767,8 +884,11 @@ def main() -> None:
         run_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
     else:
         if not args.semantic_state_export:
-            raise SystemExit("--semantic-state-export is required for consume_future_semantic_state_raw_export mode")
-        run_raw_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
+            raise SystemExit("--semantic-state-export is required for this mode")
+        if args.mode == "consume_external_hardcase_semantic_state_export":
+            run_external_hardcase_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
+        else:
+            run_raw_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,88 @@
+{
+  "candidate_aligned_target_possible_count": 389,
+  "event_target_possible_count": 389,
+  "external_manifest_exists": true,
+  "field_definitions": {
+    "candidate_aligned_target": "gt_candidate_id maps to an index in future_candidates",
+    "event_level_reappearance_target": "gt_candidate_id appears in future candidate list; this is candidate/event target, not calibrated per-horizon visibility",
+    "mappable_to_stage2_sample": "requires verified Stage2SemanticDataset/cache mapping key; absent in current manifest"
+  },
+  "full_model_forward_possible_count": 0,
+  "generated_at_utc": "2026-04-28T10:36:37.756755+00:00",
+  "hard_blockers": {
+    "full_model_forward_not_possible_from_external_raw_payload_currently": 389,
+    "missing_per_horizon_visibility_sequence": 389,
+    "missing_stage2_dataset_mapping_key": 389
+  },
+  "item_count_by_available_field": {
+    "candidate_aligned_target_constructible": 389,
+    "event_level_reappearance_target_constructible": 389,
+    "future_candidate_boxes_masks_ids": 389,
+    "future_candidate_list": 389,
+    "future_frame_index_or_horizon": 389,
+    "ground_truth_matching_candidate_id": 389,
+    "gt_id_in_future_candidates": 389,
+    "item_id": 389,
+    "observed_frame_range": 389,
+    "observed_target_box_mask_point": 389,
+    "observed_target_id": 389,
+    "source_dataset_video_sample": 389,
+    "subset_tags": 389
+  },
+  "mappable_to_stage2_count": 0,
+  "per_horizon_target_possible_count": 0,
+  "sample_items": [
+    {
+      "dataset": "BURST",
+      "future_frame_index": 15,
+      "gt_candidate_id": "3",
+      "item_id": "burst::ArgoVerse::043aeba7-14e5-3cde-8a5c-639389b6d3a6::3",
+      "subset_tags": {
+        "appearance_change": true,
+        "small_object": true
+      },
+      "video_id": "ArgoVerse/043aeba7-14e5-3cde-8a5c-639389b6d3a6"
+    },
+    {
+      "dataset": "BURST",
+      "future_frame_index": 15,
+      "gt_candidate_id": "5",
+      "item_id": "burst::ArgoVerse::043aeba7-14e5-3cde-8a5c-639389b6d3a6::5",
+      "subset_tags": {
+        "appearance_change": true,
+        "crossing_ambiguity": true
+      },
+      "video_id": "ArgoVerse/043aeba7-14e5-3cde-8a5c-639389b6d3a6"
+    },
+    {
+      "dataset": "BURST",
+      "future_frame_index": 15,
+      "gt_candidate_id": "1",
+      "item_id": "burst::ArgoVerse::10b8dee6-778f-33e4-a946-d842d2d9c3d7::1",
+      "subset_tags": {
+        "crossing_ambiguity": true,
+        "small_object": true
+      },
+      "video_id": "ArgoVerse/10b8dee6-778f-33e4-a946-d842d2d9c3d7"
+    }
+  ],
+  "source_files_checked": {
+    "code/stwm/tools/eval_future_semantic_trace_queries_20260427.py": true,
+    "code/stwm/tools/export_future_semantic_trace_state_20260427.py": true,
+    "code/stwm/tracewm_v2_stage2/trainers/train_tracewm_stage2_smalltrain.py": true,
+    "code/stwm/tracewm_v2_stage2/utils/visibility_reappearance_targets.py": true,
+    "reports/stwm_external_baseline_full_eval_decision_20260426.json": true,
+    "reports/stwm_external_baseline_item_manifest_20260426.json": true,
+    "reports/stwm_external_baseline_paper_decision_20260426.json": true,
+    "reports/stwm_external_baseline_result_interpretation_20260426.json": true
+  },
+  "source_manifest": "reports/stwm_external_baseline_item_manifest_20260426.json",
+  "subset_counts": {
+    "appearance_change": 161,
+    "crossing_ambiguity": 302,
+    "long_gap_persistence": 52,
+    "occlusion_reappearance": 127,
+    "small_object": 346
+  },
+  "total_items": 389
+}

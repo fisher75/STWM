@@ -1,0 +1,57 @@
+{
+  "candidate_MRR": null,
+  "candidate_top1": null,
+  "current_best_is_feedback_mechanism": false,
+  "current_best_semantic_state_checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_semantic_state_feedback_v1_20260427/latest.pt",
+  "event_AP": null,
+  "event_AUROC": null,
+  "exact_block_reason": "semantic-state manifest items are external raw payloads without verified Stage2SemanticDataset/cache mapping; strict mode forbids fallback",
+  "exported_valid_items": 0,
+  "external_hardcase_eval_available": false,
+  "external_hardcase_signal_positive": "unclear",
+  "external_manifest_exists": true,
+  "generated_at_utc": "2026-04-28T10:38:04.182189+00:00",
+  "metric_eligible_items": 0,
+  "old_association_report_used": false,
+  "original_item_count": 389,
+  "report_name": "stwm_external_hardcase_semantic_state_bridge_v1_smoke_summary",
+  "semantic_state_manifest_item_count": 389,
+  "stage2_val_fallback_used": false,
+  "subset_breakdown": {
+    "appearance_change": {
+      "item_count": 36,
+      "target_type_counts": {
+        "external_candidate_aligned": 36
+      },
+      "valid_output_count": 0
+    },
+    "crossing_ambiguity": {
+      "item_count": 41,
+      "target_type_counts": {
+        "external_candidate_aligned": 41
+      },
+      "valid_output_count": 0
+    },
+    "long_gap_persistence": {
+      "item_count": 14,
+      "target_type_counts": {
+        "external_candidate_aligned": 14
+      },
+      "valid_output_count": 0
+    },
+    "occlusion_reappearance": {
+      "item_count": 26,
+      "target_type_counts": {
+        "external_candidate_aligned": 26
+      },
+      "valid_output_count": 0
+    }
+  },
+  "target_type_counts": {
+    "external_candidate_aligned": 389
+  },
+  "usable_for_candidate_eval_count": 389,
+  "usable_for_event_eval_count": 389,
+  "usable_for_full_model_export_count": 0,
+  "valid_output_ratio": 0.0
+}

@@ -802,7 +802,92 @@ def export(
     semantic_state_feedback_alpha: float = 0.05,
     semantic_state_feedback_mode: str = "readout_only",
     semantic_state_feedback_stopgrad_state: bool = True,
+    manifest_mode: str = "stage2_val",
+    external_semantic_state_manifest: Path | None = None,
+    strict_no_fallback: bool = False,
 ) -> dict[str, Any]:
+    if str(manifest_mode) == "external_hardcase_semantic_state":
+        if external_semantic_state_manifest is None:
+            raise RuntimeError("--external-semantic-state-manifest is required for external_hardcase_semantic_state mode")
+        if not bool(strict_no_fallback):
+            raise RuntimeError("--strict-no-fallback is required for external_hardcase_semantic_state mode")
+        external = load_json(external_semantic_state_manifest)
+        external_items = external.get("items") if isinstance(external, dict) else []
+        if not isinstance(external_items, list):
+            external_items = []
+        selected_items = external_items[: int(max_items)]
+        exported_items: list[dict[str, Any]] = []
+        target_type_counts: dict[str, int] = {}
+        metric_eligible_count = 0
+        for item in selected_items:
+            if not isinstance(item, dict):
+                continue
+            target_type = str(item.get("target_type") or "unavailable")
+            target_type_counts[target_type] = target_type_counts.get(target_type, 0) + 1
+            metric_eligible = bool(item.get("usable_for_event_eval") or item.get("usable_for_candidate_eval"))
+            if metric_eligible:
+                metric_eligible_count += 1
+            exported_items.append(
+                {
+                    "item_id": item.get("item_id"),
+                    "protocol_item_id": item.get("sample_key") or item.get("item_id"),
+                    "subset_tags": item.get("subset_tags") if isinstance(item.get("subset_tags"), dict) else {},
+                    "valid_output": False,
+                    "future_semantic_trace_state_valid": False,
+                    "failure_reason": item.get("exclusion_reason") or "missing_stage2_dataset_mapping_for_full_model_forward",
+                    "target_type": target_type,
+                    "event_reappearance_target": item.get("event_reappearance_target"),
+                    "candidate_match_target": item.get("candidate_match_target"),
+                    "gt_candidate_id": item.get("gt_candidate_id"),
+                    "future_candidate_count": len(item.get("future_candidates") or []),
+                    "metric_eligible": metric_eligible,
+                    "model_input_source": item.get("model_input_source"),
+                    "stage2_dataset_mapping_key": item.get("stage2_dataset_mapping_key"),
+                    "visibility_target_available": bool(item.get("visibility_target_available")),
+                    "per_horizon_visibility_available": bool(item.get("per_horizon_visibility_available")),
+                }
+            )
+
+        payload = {
+            "generated_at_utc": now_iso(),
+            "raw_export_schema_version": RAW_EXPORT_SCHEMA_VERSION,
+            "export_mode": str(mode),
+            "manifest_mode": "external_hardcase_semantic_state",
+            "repo_root": str(repo_root),
+            "checkpoint_path": str(checkpoint),
+            "checkpoint_exists": checkpoint.exists(),
+            "checkpoint_loaded": False,
+            "checkpoint_loaded_reason": "blocked_before_model_load_due_to_missing_external_to_stage2_mapping",
+            "manifest": str(manifest),
+            "external_semantic_state_manifest": str(external_semantic_state_manifest),
+            "current_export_data_source": "external_389_hardcase_semantic_state_manifest",
+            "external_manifest_consumed": True,
+            "stage2_val_fallback_used": False,
+            "strict_no_fallback": True,
+            "blocked_due_to_no_model_input_mapping": True,
+            "blocked_due_to_no_model_input_mapping_reason": "semantic-state manifest items are external raw payloads without verified Stage2SemanticDataset/cache mapping; strict mode forbids fallback",
+            "full_model_forward_executed": False,
+            "full_stage1_stage2_forward_executed": False,
+            "full_free_rollout_executed": False,
+            "semantic_state_from_model_hidden": False,
+            "random_hidden_used": False,
+            "old_association_report_used": False,
+            "top1_mrr_false_confuser_exported": False,
+            "manifest_item_count": len(external_items),
+            "total_items": len(exported_items),
+            "exported_item_count": len(exported_items),
+            "valid_items": 0,
+            "valid_ratio": 0.0,
+            "metric_eligible_items": metric_eligible_count,
+            "target_type_counts": target_type_counts,
+            "target_quality": "external_candidate_aligned" if target_type_counts.get("external_candidate_aligned") else "unavailable",
+            "strong_slot_aligned": False,
+            "items": exported_items,
+        }
+        write_json(output, payload)
+        write_doc(output.with_suffix(".md"), payload)
+        return payload
+
     device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
     exported_items: list[dict[str, Any]] = []
     full_report: dict[str, Any] = {}
@@ -1161,6 +1246,9 @@ def parse_args() -> Any:
     p.add_argument("--repo-root", default=None)
     p.add_argument("--checkpoint", required=True)
     p.add_argument("--manifest", required=True)
+    p.add_argument("--manifest-mode", default="stage2_val", choices=["stage2_val", "external_hardcase_semantic_state"])
+    p.add_argument("--external-semantic-state-manifest", default=None)
+    p.add_argument("--strict-no-fallback", action="store_true")
     p.add_argument("--output", required=True)
     p.add_argument("--max-items", "--item-limit", dest="max_items", type=int, default=32)
     p.add_argument("--device", default="cpu")
@@ -1196,6 +1284,9 @@ def main() -> None:
         semantic_state_feedback_alpha=float(args.semantic_state_feedback_alpha),
         semantic_state_feedback_mode=str(args.semantic_state_feedback_mode),
         semantic_state_feedback_stopgrad_state=bool(args.semantic_state_feedback_stopgrad_state),
+        manifest_mode=str(args.manifest_mode),
+        external_semantic_state_manifest=Path(args.external_semantic_state_manifest) if args.external_semantic_state_manifest else None,
+        strict_no_fallback=bool(args.strict_no_fallback),
     )
 
 
