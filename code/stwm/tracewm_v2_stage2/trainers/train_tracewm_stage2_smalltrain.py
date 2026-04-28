@@ -14,7 +14,7 @@ import shutil
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from stwm.tracewm_v2.constants import STATE_DIM
 from stwm.tracewm_v2.models.causal_trace_transformer import (
@@ -281,8 +281,13 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-loss-weight", type=float, default=0.0)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-reappearance-event-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-pos-weight", default="auto")
     p.add_argument("--future-reappearance-pos-weight-max", type=float, default=50.0)
+    p.add_argument("--future-reappearance-mask-policy", default="at_risk_only", choices=["at_risk_only", "all_slots"])
+    p.add_argument("--reappearance-positive-oversample", action="store_true")
+    p.add_argument("--reappearance-positive-min-batch-ratio", type=float, default=0.30)
+    p.add_argument("--reappearance-positive-index-cache", default="")
     p.add_argument("--future-identity-belief-loss-weight", type=float, default=0.0)
     p.add_argument("--future-uncertainty-loss-weight", type=float, default=0.0)
     p.add_argument("--future-hypothesis-count", type=int, default=1)
@@ -3651,6 +3656,61 @@ def _build_future_semantic_head_only_audit(
     }
 
 
+def _sample_has_reappearance_positive(sample: dict[str, Any], obs_len: int, fut_len: int, slot_count: int) -> bool:
+    fut_valid = sample.get("fut_valid")
+    obs_valid = sample.get("obs_valid")
+    token_mask = sample.get("semantic_mask", sample.get("token_mask"))
+    if not isinstance(fut_valid, torch.Tensor) or fut_valid.ndim != 2:
+        return False
+    if not isinstance(obs_valid, torch.Tensor) or obs_valid.ndim != 2:
+        return False
+    h = min(int(fut_len), int(fut_valid.shape[0]))
+    k = min(int(slot_count), int(fut_valid.shape[1]), int(obs_valid.shape[1]))
+    if h <= 0 or k <= 0:
+        return False
+    future_visibility = fut_valid[:h, :k].to(dtype=torch.bool)
+    obs = obs_valid[: int(obs_len), :k].to(dtype=torch.bool)
+    obs_seen_any = obs.any(dim=0)
+    obs_endpoint_visible = obs[-1] if obs.shape[0] > 0 else torch.zeros_like(obs_seen_any)
+    obs_occluded = obs_seen_any & (~obs.all(dim=0))
+    gate = ((~obs_endpoint_visible) | obs_occluded) & obs_seen_any
+    if isinstance(token_mask, torch.Tensor) and token_mask.ndim == 1:
+        gate = gate & token_mask[:k].to(dtype=torch.bool)
+    return bool((future_visibility & gate[None, :]).any().item())
+
+
+def _build_reappearance_positive_sampling_plan(
+    dataset: Stage2SemanticDataset,
+    *,
+    obs_len: int,
+    fut_len: int,
+    slot_count: int,
+    target_min_batch_ratio: float,
+) -> dict[str, Any]:
+    positives: list[int] = []
+    total = int(len(dataset))
+    for idx in range(total):
+        try:
+            if _sample_has_reappearance_positive(dataset[idx], obs_len=obs_len, fut_len=fut_len, slot_count=slot_count):
+                positives.append(idx)
+        except Exception:
+            continue
+    sample_positive_rate = float(len(positives) / max(total, 1))
+    if sample_positive_rate <= 0.0:
+        oversample_factor = 1.0
+    else:
+        oversample_factor = max(1.0, float(target_min_batch_ratio) * (1.0 - sample_positive_rate) / (sample_positive_rate * max(1.0 - float(target_min_batch_ratio), 1e-6)))
+    return {
+        "total_train_samples": total,
+        "samples_with_reappearance_positive": int(len(positives)),
+        "positive_indices": positives,
+        "sample_positive_rate": sample_positive_rate,
+        "estimated_batches_with_positive_under_batch_size_1": sample_positive_rate,
+        "target_min_batch_ratio": float(target_min_batch_ratio),
+        "recommended_oversample_factor": float(oversample_factor),
+    }
+
+
 def main() -> None:
     _apply_process_title_normalization()
     args = parse_args()
@@ -3747,15 +3807,33 @@ def main() -> None:
     pin_memory = bool(runtime_meta.get("pin_memory", False))
     persistent_workers = bool(runtime_meta.get("persistent_workers", False))
     prefetch_factor = int(runtime_meta.get("prefetch_factor", 2))
+    reappearance_positive_sampling_plan = _build_reappearance_positive_sampling_plan(
+        train_ds,
+        obs_len=int(args.obs_len),
+        fut_len=int(args.fut_len),
+        slot_count=int(args.max_tokens),
+        target_min_batch_ratio=float(args.reappearance_positive_min_batch_ratio),
+    )
+    train_sampler = None
+    train_shuffle = True
+    if bool(args.reappearance_positive_oversample):
+        positive_indices = set(int(x) for x in reappearance_positive_sampling_plan.get("positive_indices", []))
+        if positive_indices:
+            factor = float(reappearance_positive_sampling_plan.get("recommended_oversample_factor", 1.0))
+            weights = [factor if idx in positive_indices else 1.0 for idx in range(len(train_ds))]
+            train_sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
+            train_shuffle = False
 
     train_loader_kwargs: Dict[str, Any] = {
         "dataset": train_ds,
         "batch_size": int(args.batch_size),
-        "shuffle": True,
+        "shuffle": bool(train_shuffle),
         "num_workers": int(num_workers),
         "pin_memory": bool(pin_memory),
         "collate_fn": stage2_semantic_collate_fn,
     }
+    if train_sampler is not None:
+        train_loader_kwargs["sampler"] = train_sampler
     if num_workers > 0:
         train_loader_kwargs["persistent_workers"] = bool(persistent_workers)
         train_loader_kwargs["prefetch_factor"] = int(prefetch_factor)
@@ -3973,8 +4051,13 @@ def main() -> None:
         "future_semantic_loss_weight": float(args.future_semantic_loss_weight),
         "future_visibility_loss_weight": float(args.future_visibility_loss_weight),
         "future_reappearance_loss_weight": float(args.future_reappearance_loss_weight),
+        "future_reappearance_event_loss_weight": float(args.future_reappearance_event_loss_weight),
         "future_reappearance_pos_weight": str(args.future_reappearance_pos_weight),
         "future_reappearance_pos_weight_max": float(args.future_reappearance_pos_weight_max),
+        "future_reappearance_mask_policy": str(args.future_reappearance_mask_policy),
+        "reappearance_positive_oversample": bool(args.reappearance_positive_oversample),
+        "reappearance_positive_min_batch_ratio": float(args.reappearance_positive_min_batch_ratio),
+        "reappearance_positive_sampling_plan": reappearance_positive_sampling_plan,
         "future_identity_belief_loss_weight": float(args.future_identity_belief_loss_weight),
         "future_uncertainty_loss_weight": float(args.future_uncertainty_loss_weight),
         "future_hypothesis_count": int(args.future_hypothesis_count),
@@ -4207,6 +4290,7 @@ def main() -> None:
     future_semantic_state_loss_history: List[float] = []
     future_visibility_loss_history: List[float] = []
     future_reappearance_loss_history: List[float] = []
+    future_reappearance_event_loss_history: List[float] = []
     future_semantic_embedding_loss_history: List[float] = []
     future_identity_belief_loss_history: List[float] = []
     future_uncertainty_loss_history: List[float] = []
@@ -4216,9 +4300,15 @@ def main() -> None:
     future_reappearance_supervised_ratio_history: List[float] = []
     future_visibility_positive_rate_history: List[float] = []
     future_reappearance_positive_rate_history: List[float] = []
+    future_reappearance_event_positive_rate_history: List[float] = []
+    future_reappearance_risk_entry_ratio_history: List[float] = []
+    future_reappearance_risk_slot_ratio_history: List[float] = []
     future_reappearance_pos_weight_history: List[float] = []
+    future_reappearance_event_pos_weight_history: List[float] = []
     future_reappearance_head_available_history: List[float] = []
+    future_reappearance_event_head_available_history: List[float] = []
     future_reappearance_loss_uses_independent_logit_history: List[float] = []
+    future_reappearance_event_loss_uses_independent_logit_history: List[float] = []
     future_visibility_target_source_history: List[str] = []
     future_visibility_target_quality_history: List[str] = []
     trace_unit_loss_history: List[float] = []
@@ -4506,6 +4596,7 @@ def main() -> None:
             "future_trace_coord_loss": 0.0,
             "future_visibility_loss": 0.0,
             "future_reappearance_loss": 0.0,
+            "future_reappearance_event_loss": 0.0,
             "future_semantic_embedding_loss": 0.0,
             "future_identity_belief_loss": 0.0,
             "future_uncertainty_loss": 0.0,
@@ -4521,6 +4612,7 @@ def main() -> None:
                 obs_len=int(args.obs_len),
                 fut_len=int(args.fut_len),
                 slot_count=int(tf_out["pred_coord"].shape[2]),
+                reappearance_mask_policy=str(args.future_reappearance_mask_policy),
             )
             future_semantic_state_loss, future_semantic_state_info = compute_future_semantic_state_losses(
                 state=tf_out["future_semantic_trace_state"],
@@ -4534,6 +4626,7 @@ def main() -> None:
                     semantic_loss_weight=float(args.future_semantic_loss_weight),
                     visibility_loss_weight=float(args.future_visibility_loss_weight),
                     reappearance_loss_weight=float(args.future_reappearance_loss_weight),
+                    reappearance_event_loss_weight=float(args.future_reappearance_event_loss_weight),
                     reappearance_pos_weight=args.future_reappearance_pos_weight,
                     reappearance_pos_weight_max=float(args.future_reappearance_pos_weight_max),
                     identity_belief_loss_weight=float(args.future_identity_belief_loss_weight),
@@ -4544,6 +4637,8 @@ def main() -> None:
                 visibility_mask=visibility_targets.future_visibility_mask,
                 reappearance_target=visibility_targets.future_reappearance_target,
                 reappearance_mask=visibility_targets.future_reappearance_mask,
+                reappearance_event_target=visibility_targets.future_reappearance_event_target,
+                reappearance_event_mask=visibility_targets.future_reappearance_event_mask,
                 visibility_target_info=visibility_targets.to_loss_info(),
             )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
@@ -4617,6 +4712,7 @@ def main() -> None:
         future_semantic_state_loss_history.append(float(future_semantic_state_info.get("future_semantic_state_loss", 0.0)))
         future_visibility_loss_history.append(float(future_semantic_state_info.get("future_visibility_loss", 0.0)))
         future_reappearance_loss_history.append(float(future_semantic_state_info.get("future_reappearance_loss", 0.0)))
+        future_reappearance_event_loss_history.append(float(future_semantic_state_info.get("future_reappearance_event_loss", 0.0)))
         future_semantic_embedding_loss_history.append(float(future_semantic_state_info.get("future_semantic_embedding_loss", 0.0)))
         future_identity_belief_loss_history.append(float(future_semantic_state_info.get("future_identity_belief_loss", 0.0)))
         future_uncertainty_loss_history.append(float(future_semantic_state_info.get("future_uncertainty_loss", 0.0)))
@@ -4626,13 +4722,24 @@ def main() -> None:
         future_reappearance_supervised_ratio_history.append(float(future_semantic_state_info.get("future_reappearance_supervised_ratio", 0.0)))
         future_visibility_positive_rate_history.append(float(future_semantic_state_info.get("future_visibility_positive_rate", 0.0)))
         future_reappearance_positive_rate_history.append(float(future_semantic_state_info.get("future_reappearance_positive_rate", 0.0)))
+        future_reappearance_event_positive_rate_history.append(float(future_semantic_state_info.get("future_reappearance_event_positive_rate", 0.0)))
+        future_reappearance_risk_entry_ratio_history.append(float(future_semantic_state_info.get("future_reappearance_risk_entry_ratio", 0.0)))
+        future_reappearance_risk_slot_ratio_history.append(float(future_semantic_state_info.get("future_reappearance_risk_slot_ratio", 0.0)))
         if future_semantic_state_info.get("future_reappearance_pos_weight") is not None:
             future_reappearance_pos_weight_history.append(float(future_semantic_state_info.get("future_reappearance_pos_weight", 0.0)))
+        if future_semantic_state_info.get("future_reappearance_event_pos_weight") is not None:
+            future_reappearance_event_pos_weight_history.append(float(future_semantic_state_info.get("future_reappearance_event_pos_weight", 0.0)))
         future_reappearance_head_available_history.append(
             1.0 if bool(future_semantic_state_info.get("future_reappearance_head_available", False)) else 0.0
         )
+        future_reappearance_event_head_available_history.append(
+            1.0 if bool(future_semantic_state_info.get("future_reappearance_event_head_available", False)) else 0.0
+        )
         future_reappearance_loss_uses_independent_logit_history.append(
             1.0 if bool(future_semantic_state_info.get("future_reappearance_loss_uses_independent_logit", False)) else 0.0
+        )
+        future_reappearance_event_loss_uses_independent_logit_history.append(
+            1.0 if bool(future_semantic_state_info.get("future_reappearance_event_loss_uses_independent_logit", False)) else 0.0
         )
         future_visibility_target_source_history.append(str(future_semantic_state_info.get("future_visibility_target_source", "")))
         future_visibility_target_quality_history.append(str(future_semantic_state_info.get("future_visibility_target_quality", "")))
@@ -5074,6 +5181,7 @@ def main() -> None:
             "future_trace_coord_loss_mean": 0.0,
             "future_visibility_loss_mean": float(sum(future_visibility_loss_history) / max(len(future_visibility_loss_history), 1)),
             "future_reappearance_loss_mean": float(sum(future_reappearance_loss_history) / max(len(future_reappearance_loss_history), 1)),
+            "future_reappearance_event_loss_mean": float(sum(future_reappearance_event_loss_history) / max(len(future_reappearance_event_loss_history), 1)),
             "future_semantic_embedding_loss_mean": float(sum(future_semantic_embedding_loss_history) / max(len(future_semantic_embedding_loss_history), 1)),
             "future_identity_belief_loss_mean": float(sum(future_identity_belief_loss_history) / max(len(future_identity_belief_loss_history), 1)),
             "future_uncertainty_loss_mean": float(sum(future_uncertainty_loss_history) / max(len(future_uncertainty_loss_history), 1)),
@@ -5086,17 +5194,31 @@ def main() -> None:
             "future_reappearance_supervised_ratio_mean": float(sum(future_reappearance_supervised_ratio_history) / max(len(future_reappearance_supervised_ratio_history), 1)),
             "future_visibility_positive_rate_mean": float(sum(future_visibility_positive_rate_history) / max(len(future_visibility_positive_rate_history), 1)),
             "future_reappearance_positive_rate_mean": float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1)),
+            "future_reappearance_event_positive_rate_mean": float(sum(future_reappearance_event_positive_rate_history) / max(len(future_reappearance_event_positive_rate_history), 1)),
+            "future_reappearance_risk_entry_ratio_mean": float(sum(future_reappearance_risk_entry_ratio_history) / max(len(future_reappearance_risk_entry_ratio_history), 1)),
+            "future_reappearance_risk_slot_ratio_mean": float(sum(future_reappearance_risk_slot_ratio_history) / max(len(future_reappearance_risk_slot_ratio_history), 1)),
+            "future_reappearance_mask_policy": str(args.future_reappearance_mask_policy),
             "future_reappearance_head_available": bool(
                 sum(future_reappearance_head_available_history) / max(len(future_reappearance_head_available_history), 1) > 0.5
+            ),
+            "future_reappearance_event_head_available": bool(
+                sum(future_reappearance_event_head_available_history) / max(len(future_reappearance_event_head_available_history), 1) > 0.5
             ),
             "future_reappearance_loss_uses_independent_logit": bool(
                 sum(future_reappearance_loss_uses_independent_logit_history)
                 / max(len(future_reappearance_loss_uses_independent_logit_history), 1)
                 > 0.5
             ),
+            "future_reappearance_event_loss_uses_independent_logit": bool(
+                sum(future_reappearance_event_loss_uses_independent_logit_history)
+                / max(len(future_reappearance_event_loss_uses_independent_logit_history), 1)
+                > 0.5
+            ),
             "future_reappearance_pos_weight_mean": float(sum(future_reappearance_pos_weight_history) / max(len(future_reappearance_pos_weight_history), 1)),
+            "future_reappearance_event_pos_weight_mean": float(sum(future_reappearance_event_pos_weight_history) / max(len(future_reappearance_event_pos_weight_history), 1)),
             "future_reappearance_pos_weight_setting": str(args.future_reappearance_pos_weight),
             "future_reappearance_pos_weight_max": float(args.future_reappearance_pos_weight_max),
+            "reappearance_positive_sampling_plan": reappearance_positive_sampling_plan,
         },
         "trace_unit_metrics": {
             "enabled": bool(structure_mode == "trace_unit_semantic_binding"),

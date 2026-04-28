@@ -12,15 +12,24 @@ class FutureVisibilityReappearanceTargets:
     future_reappearance_target: torch.Tensor
     future_visibility_mask: torch.Tensor
     future_reappearance_mask: torch.Tensor
+    future_reappearance_risk_mask: torch.Tensor
+    future_reappearance_event_target: torch.Tensor
+    future_reappearance_event_mask: torch.Tensor
     target_source: str
     target_quality: str
     target_reason: str
+    reappearance_mask_policy: str = "at_risk_only"
+    reappearance_negative_policy: str = "future-invisible within at-risk slots only"
 
     def to_loss_info(self) -> dict[str, Any]:
         vis_mask_f = self.future_visibility_mask.to(dtype=torch.float32)
         rep_mask_f = self.future_reappearance_mask.to(dtype=torch.float32)
+        risk_mask_f = self.future_reappearance_risk_mask.to(dtype=torch.float32)
+        event_mask_f = self.future_reappearance_event_mask.to(dtype=torch.float32)
         vis_denom = vis_mask_f.sum().clamp_min(1.0)
         rep_denom = rep_mask_f.sum().clamp_min(1.0)
+        risk_denom = risk_mask_f.sum().clamp_min(1.0)
+        event_denom = event_mask_f.sum().clamp_min(1.0)
         return {
             "future_visibility_target_source": self.target_source,
             "future_visibility_target_quality": self.target_quality,
@@ -29,6 +38,14 @@ class FutureVisibilityReappearanceTargets:
             "future_reappearance_supervised_ratio": float(rep_mask_f.mean().detach().cpu().item()),
             "future_visibility_positive_rate": float((self.future_visibility_target.to(dtype=torch.float32) * vis_mask_f).sum().detach().cpu().item() / float(vis_denom.detach().cpu().item())),
             "future_reappearance_positive_rate": float((self.future_reappearance_target.to(dtype=torch.float32) * rep_mask_f).sum().detach().cpu().item() / float(rep_denom.detach().cpu().item())),
+            "future_reappearance_risk_slot_ratio": float(self.future_reappearance_event_mask.to(dtype=torch.float32).mean().detach().cpu().item()),
+            "future_reappearance_risk_entry_ratio": float(risk_mask_f.mean().detach().cpu().item()),
+            "future_reappearance_positive_rate_all_slots": float((self.future_reappearance_target.to(dtype=torch.float32) * vis_mask_f).sum().detach().cpu().item() / float(vis_denom.detach().cpu().item())),
+            "future_reappearance_positive_rate_at_risk": float((self.future_reappearance_target.to(dtype=torch.float32) * risk_mask_f).sum().detach().cpu().item() / float(risk_denom.detach().cpu().item())),
+            "future_reappearance_event_positive_rate": float((self.future_reappearance_event_target.to(dtype=torch.float32) * event_mask_f).sum().detach().cpu().item() / float(event_denom.detach().cpu().item())),
+            "future_reappearance_event_supervised_ratio": float(event_mask_f.mean().detach().cpu().item()),
+            "future_reappearance_mask_policy": self.reappearance_mask_policy,
+            "future_reappearance_negative_policy": self.reappearance_negative_policy,
         }
 
 
@@ -42,6 +59,7 @@ def build_future_visibility_reappearance_targets(
     obs_len: int,
     fut_len: int,
     slot_count: int,
+    reappearance_mask_policy: str = "at_risk_only",
 ) -> FutureVisibilityReappearanceTargets:
     """Build per-horizon/per-entity visibility and reappearance targets.
 
@@ -80,14 +98,27 @@ def build_future_visibility_reappearance_targets(
         else:
             reappearance_gate = torch.ones((visibility.shape[0], visibility.shape[2]), device=device, dtype=torch.bool)
         reappearance = visibility & reappearance_gate[:, None, :]
+        risk_mask = supervision_mask & reappearance_gate[:, None, :]
+        policy = str(reappearance_mask_policy or "at_risk_only").strip().lower()
+        if policy not in {"at_risk_only", "all_slots"}:
+            raise ValueError(f"unknown future reappearance mask policy: {reappearance_mask_policy}")
+        reappearance_mask = risk_mask if policy == "at_risk_only" else supervision_mask
+        slot_mask = token_mask[:, : int(slot_count)].to(device=device, dtype=torch.bool) if isinstance(token_mask, torch.Tensor) and token_mask.ndim == 2 else torch.ones_like(reappearance_gate)
+        event_target = visibility.any(dim=1) & reappearance_gate
+        event_mask = reappearance_gate & slot_mask
         return FutureVisibilityReappearanceTargets(
             future_visibility_target=visibility,
             future_reappearance_target=reappearance,
             future_visibility_mask=supervision_mask,
-            future_reappearance_mask=supervision_mask,
+            future_reappearance_mask=reappearance_mask,
+            future_reappearance_risk_mask=risk_mask,
+            future_reappearance_event_target=event_target,
+            future_reappearance_event_mask=event_mask,
             target_source="fut_valid_slot_aligned",
             target_quality="strong_slot_aligned",
-            target_reason="Stage2 fut_valid is [B,H,K] entity-slot aligned and supervises both visible and invisible future horizon entries.",
+            target_reason="Stage2 fut_valid is [B,H,K] entity-slot aligned; reappearance supervision is restricted to observed at-risk entities by default.",
+            reappearance_mask_policy=policy,
+            reappearance_negative_policy="future-invisible within at-risk slots only" if policy == "at_risk_only" else "future-invisible across all supervised slots",
         )
 
     # Conservative fallback: if only valid_mask exists, treat it as medium-quality
@@ -97,14 +128,20 @@ def build_future_visibility_reappearance_targets(
         visibility = valid_mask[:, : int(fut_len), : int(slot_count)].to(dtype=torch.bool)
         supervision_mask = torch.ones_like(visibility, dtype=torch.bool)
         reappearance = torch.zeros_like(visibility, dtype=torch.bool)
+        event = torch.zeros((visibility.shape[0], visibility.shape[2]), device=visibility.device, dtype=torch.bool)
         return FutureVisibilityReappearanceTargets(
             future_visibility_target=visibility,
             future_reappearance_target=reappearance,
             future_visibility_mask=supervision_mask,
-            future_reappearance_mask=supervision_mask,
+            future_reappearance_mask=torch.zeros_like(supervision_mask, dtype=torch.bool),
+            future_reappearance_risk_mask=torch.zeros_like(supervision_mask, dtype=torch.bool),
+            future_reappearance_event_target=event,
+            future_reappearance_event_mask=torch.zeros_like(event, dtype=torch.bool),
             target_source="future_valid_broadcast",
             target_quality="medium_broadcast",
             target_reason="Only future valid mask was available; reappearance is not strongly slot-aligned.",
+            reappearance_mask_policy=str(reappearance_mask_policy or "at_risk_only"),
+            reappearance_negative_policy="unavailable",
         )
 
     device = fut_valid.device if isinstance(fut_valid, torch.Tensor) else torch.device("cpu")
@@ -114,7 +151,12 @@ def build_future_visibility_reappearance_targets(
         future_reappearance_target=empty,
         future_visibility_mask=torch.zeros_like(empty, dtype=torch.bool),
         future_reappearance_mask=torch.zeros_like(empty, dtype=torch.bool),
+        future_reappearance_risk_mask=torch.zeros_like(empty, dtype=torch.bool),
+        future_reappearance_event_target=torch.zeros((1, int(slot_count)), device=device, dtype=torch.bool),
+        future_reappearance_event_mask=torch.zeros((1, int(slot_count)), device=device, dtype=torch.bool),
         target_source="unavailable",
         target_quality="weak_unavailable",
         target_reason="No per-time future valid or slot-aligned visibility field is available.",
+        reappearance_mask_policy=str(reappearance_mask_policy or "at_risk_only"),
+        reappearance_negative_policy="unavailable",
     )

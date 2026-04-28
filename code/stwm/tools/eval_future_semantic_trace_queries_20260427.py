@@ -409,38 +409,68 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
     visibility_labels: list[int] = []
     reappearance_scores: list[float] = []
     reappearance_labels: list[int] = []
+    reappearance_event_scores: list[float] = []
+    reappearance_event_labels: list[int] = []
     target_qualities = []
     target_sources = []
     vis_supervised = []
     rep_supervised = []
+    rep_event_supervised = []
+    rep_risk_slot = []
+    rep_risk_entry = []
+    rep_positive_all = []
+    rep_positive_at_risk = []
     vis_positive = []
     rep_positive = []
+    rep_event_positive = []
     reappearance_head_flags: list[bool] = []
+    reappearance_event_head_flags: list[bool] = []
     reappearance_prob_sources: list[str] = []
+    mask_policies: list[str] = []
     for item in valid_items:
         target_qualities.append(str(item.get("future_visibility_target_quality", "")))
         target_sources.append(str(item.get("future_visibility_target_source", "")))
         reappearance_head_flags.append(bool(item.get("future_reappearance_head_available")))
+        reappearance_event_head_flags.append(bool(item.get("future_reappearance_event_head_available")))
         if item.get("reappearance_prob_source"):
             reappearance_prob_sources.append(str(item.get("reappearance_prob_source")))
+        if item.get("future_reappearance_mask_policy"):
+            mask_policies.append(str(item.get("future_reappearance_mask_policy")))
         if isinstance(item.get("future_visibility_supervised_ratio"), (int, float)):
             vis_supervised.append(float(item["future_visibility_supervised_ratio"]))
         if isinstance(item.get("future_reappearance_supervised_ratio"), (int, float)):
             rep_supervised.append(float(item["future_reappearance_supervised_ratio"]))
+        if isinstance(item.get("future_reappearance_event_supervised_ratio"), (int, float)):
+            rep_event_supervised.append(float(item["future_reappearance_event_supervised_ratio"]))
+        if isinstance(item.get("future_reappearance_risk_slot_ratio"), (int, float)):
+            rep_risk_slot.append(float(item["future_reappearance_risk_slot_ratio"]))
+        if isinstance(item.get("future_reappearance_risk_entry_ratio"), (int, float)):
+            rep_risk_entry.append(float(item["future_reappearance_risk_entry_ratio"]))
         if isinstance(item.get("future_visibility_target_positive_rate"), (int, float)):
             vis_positive.append(float(item["future_visibility_target_positive_rate"]))
         if isinstance(item.get("future_reappearance_target_positive_rate"), (int, float)):
             rep_positive.append(float(item["future_reappearance_target_positive_rate"]))
+        if isinstance(item.get("future_reappearance_positive_rate_all_slots"), (int, float)):
+            rep_positive_all.append(float(item["future_reappearance_positive_rate_all_slots"]))
+        if isinstance(item.get("future_reappearance_positive_rate_at_risk"), (int, float)):
+            rep_positive_at_risk.append(float(item["future_reappearance_positive_rate_at_risk"]))
+        if isinstance(item.get("future_reappearance_event_target_positive_rate"), (int, float)):
+            rep_event_positive.append(float(item["future_reappearance_event_target_positive_rate"]))
         vs = _flatten_numeric_list(item.get("future_visibility_prob_values"))
         vl = [int(round(x)) for x in _flatten_numeric_list(item.get("future_visibility_target_values"))]
         rs = _flatten_numeric_list(item.get("future_reappearance_prob_values"))
         rl = [int(round(x)) for x in _flatten_numeric_list(item.get("future_reappearance_target_values"))]
+        es = _flatten_numeric_list(item.get("future_reappearance_event_prob_values"))
+        el = [int(round(x)) for x in _flatten_numeric_list(item.get("future_reappearance_event_target_values"))]
         if len(vs) == len(vl):
             visibility_scores.extend(vs)
             visibility_labels.extend(vl)
         if len(rs) == len(rl):
             reappearance_scores.extend(rs)
             reappearance_labels.extend(rl)
+        if len(es) == len(el):
+            reappearance_event_scores.extend(es)
+            reappearance_event_labels.extend(el)
     output_degenerate = bool(
         _safe_mean(semantic_var_unit) is None
         or float(_safe_mean(semantic_var_unit) or 0.0) <= 0.0
@@ -462,12 +492,15 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
     target_source = next((x for x in target_sources if x), "unavailable")
     both_class_visibility = _both_classes(visibility_labels)
     both_class_reappearance = _both_classes(reappearance_labels)
+    both_class_reappearance_event = _both_classes(reappearance_event_labels)
     reappearance_head_available = bool(reappearance_head_flags and all(reappearance_head_flags))
+    reappearance_event_head_available = bool(reappearance_event_head_flags and all(reappearance_event_head_flags))
     reappearance_prob_source = (
         "future_reappearance_logit"
         if reappearance_prob_sources and all(x == "future_reappearance_logit" for x in reappearance_prob_sources)
         else next((x for x in reappearance_prob_sources if x), "missing_reappearance_head")
     )
+    mask_policy = next((x for x in mask_policies if x), "unavailable")
     calibrated_visibility_available = bool(target_quality == "strong_slot_aligned" and both_class_visibility and binary_auc(visibility_scores, visibility_labels) is not None)
     calibrated_reappearance_available = bool(
         target_quality == "strong_slot_aligned"
@@ -475,6 +508,12 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         and reappearance_head_available
         and reappearance_prob_source == "future_reappearance_logit"
         and binary_auc(reappearance_scores, reappearance_labels) is not None
+    )
+    calibrated_reappearance_event_available = bool(
+        target_quality == "strong_slot_aligned"
+        and both_class_reappearance_event
+        and reappearance_event_head_available
+        and binary_auc(reappearance_event_scores, reappearance_event_labels) is not None
     )
     visibility_metric_status = (
         "calibrated_visibility_available"
@@ -522,19 +561,37 @@ def aggregate_raw_export_items(items: list[dict[str, Any]]) -> dict[str, Any]:
         "future_reappearance_accuracy": reappearance_accuracy,
         "future_reappearance_AUROC": binary_auc(reappearance_scores, reappearance_labels),
         "future_reappearance_AP": binary_ap(reappearance_scores, reappearance_labels),
+        "future_reappearance_event_AUROC": binary_auc(reappearance_event_scores, reappearance_event_labels),
+        "future_reappearance_event_AP": binary_ap(reappearance_event_scores, reappearance_event_labels),
+        "future_reappearance_event_accuracy": _safe_mean(
+            [1.0 if (score >= 0.5) == bool(label) else 0.0 for score, label in zip(reappearance_event_scores, reappearance_event_labels)]
+        )
+        if reappearance_event_scores and len(reappearance_event_scores) == len(reappearance_event_labels)
+        else None,
         "future_reappearance_head_available": reappearance_head_available,
+        "future_reappearance_event_head_available": reappearance_event_head_available,
         "reappearance_head_available": reappearance_head_available,
+        "reappearance_event_head_available": reappearance_event_head_available,
         "reappearance_prob_source": reappearance_prob_source,
         "future_visibility_target_source": target_source,
         "future_visibility_target_quality": target_quality,
         "future_visibility_supervised_ratio": _safe_mean(vis_supervised),
         "future_reappearance_supervised_ratio": _safe_mean(rep_supervised),
+        "future_reappearance_event_supervised_ratio": _safe_mean(rep_event_supervised),
+        "future_reappearance_risk_slot_ratio": _safe_mean(rep_risk_slot),
+        "future_reappearance_risk_entry_ratio": _safe_mean(rep_risk_entry),
+        "future_reappearance_mask_policy": mask_policy,
         "future_visibility_positive_rate": _safe_mean(vis_positive),
         "future_reappearance_positive_rate": _safe_mean(rep_positive),
+        "future_reappearance_positive_rate_all_slots": _safe_mean(rep_positive_all),
+        "future_reappearance_positive_rate_at_risk": _safe_mean(rep_positive_at_risk),
+        "future_reappearance_event_positive_rate": _safe_mean(rep_event_positive),
         "both_class_visibility_available": both_class_visibility,
         "both_class_reappearance_available": both_class_reappearance,
+        "both_class_reappearance_event_available": both_class_reappearance_event,
         "calibrated_visibility_available": calibrated_visibility_available,
         "calibrated_reappearance_available": calibrated_reappearance_available,
+        "calibrated_reappearance_event_available": calibrated_reappearance_event_available,
         "visibility_metric_status": visibility_metric_status,
         "reappearance_metric_status": reappearance_metric_status,
         "uncertainty_error_correlation": pearson([x for x, _ in coord_error_pairs], [y for _, y in coord_error_pairs]),
@@ -600,8 +657,11 @@ def run_raw_export_mode(export_report: Path, out_report: Path, out_doc: Path, re
         "calibrated_visibility_available": bool(overall.get("calibrated_visibility_available")),
         "reappearance_metric_status": str(overall.get("reappearance_metric_status") or "head_missing"),
         "calibrated_reappearance_available": bool(overall.get("calibrated_reappearance_available")),
+        "calibrated_reappearance_event_available": bool(overall.get("calibrated_reappearance_event_available")),
         "future_reappearance_head_available": bool(overall.get("future_reappearance_head_available")),
+        "future_reappearance_event_head_available": bool(overall.get("future_reappearance_event_head_available")),
         "reappearance_head_available": bool(overall.get("reappearance_head_available")),
+        "reappearance_event_head_available": bool(overall.get("reappearance_event_head_available")),
         "reappearance_prob_source": str(overall.get("reappearance_prob_source") or "missing_reappearance_head"),
         "current_export_data_source": str(export.get("current_export_data_source") or "unknown"),
         "semantic_state_signal_positive": True if engineering_output_claimable else "unclear",
@@ -646,7 +706,10 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
             f"- reappearance_prob_source: `{payload.get('reappearance_prob_source')}`",
             f"- future_reappearance_AUROC: `{fmt(overall.get('future_reappearance_AUROC'))}`",
             f"- future_reappearance_AP: `{fmt(overall.get('future_reappearance_AP'))}`",
+            f"- future_reappearance_event_AUROC: `{fmt(overall.get('future_reappearance_event_AUROC'))}`",
+            f"- future_reappearance_event_AP: `{fmt(overall.get('future_reappearance_event_AP'))}`",
             f"- calibrated_reappearance_available: `{payload.get('calibrated_reappearance_available')}`",
+            f"- calibrated_reappearance_event_available: `{payload.get('calibrated_reappearance_event_available')}`",
             f"- uncertainty_error_correlation: `{fmt(overall.get('uncertainty_error_correlation'))}`",
             f"- semantic_embedding_temporal_consistency: `{fmt(overall.get('semantic_embedding_temporal_consistency'))}`",
             f"- future_trace_coord_error: `{fmt(overall.get('future_trace_coord_error'))}`",

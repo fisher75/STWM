@@ -81,8 +81,12 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
         f"- valid_items: `{payload.get('valid_items')}`",
         f"- valid_ratio: `{payload.get('valid_ratio')}`",
         f"- future_reappearance_head_available: `{payload.get('future_reappearance_head_available')}`",
+        f"- future_reappearance_event_head_available: `{payload.get('future_reappearance_event_head_available')}`",
         f"- reappearance_prob_source: `{payload.get('reappearance_prob_source')}`",
         f"- reappearance_head_weights_random_init: `{payload.get('reappearance_head_weights_random_init')}`",
+        f"- future_reappearance_mask_policy: `{payload.get('future_reappearance_mask_policy')}`",
+        f"- future_reappearance_positive_rate_at_risk: `{payload.get('future_reappearance_positive_rate_at_risk')}`",
+        f"- future_reappearance_event_positive_rate: `{payload.get('future_reappearance_event_positive_rate')}`",
         "",
         "The export contains raw-output-derived shape/stat/variance fields for FutureSemanticTraceState. It does not export association top1/MRR/false-confuser metrics.",
     ]
@@ -185,7 +189,30 @@ def _scalar_or_none(value: torch.Tensor) -> float | None:
     return float(value.detach().cpu().item())
 
 
-def _load_head_from_checkpoint(repo_root: Path, checkpoint: Path, device: torch.device):
+def _reset_reappearance_heads(head: torch.nn.Module, seed: int) -> list[str]:
+    """Reset only reappearance heads for random-head baseline sweeps."""
+
+    reset_names: list[str] = []
+    torch.manual_seed(int(seed))
+    for name in ["reappearance_head", "reappearance_event_head"]:
+        module = getattr(head, name, None)
+        if module is None:
+            continue
+        for child in module.modules():
+            if hasattr(child, "reset_parameters"):
+                child.reset_parameters()  # type: ignore[attr-defined]
+        reset_names.append(name)
+    return reset_names
+
+
+def _load_head_from_checkpoint(
+    repo_root: Path,
+    checkpoint: Path,
+    device: torch.device,
+    *,
+    reappearance_random_seed: int | None = None,
+    force_random_reappearance_head: bool = False,
+):
     _bootstrap_repo_imports(repo_root)
     from stwm.tracewm_v2_stage2.models.semantic_trace_world_head import SemanticTraceStateHead, SemanticTraceStateHeadConfig
 
@@ -225,8 +252,11 @@ def _load_head_from_checkpoint(repo_root: Path, checkpoint: Path, device: torch.
     )
     head = SemanticTraceStateHead(cfg).to(device)
     missing, unexpected = head.load_state_dict(state_dict, strict=False)
+    reset_reappearance_heads: list[str] = []
+    if force_random_reappearance_head and reappearance_random_seed is not None:
+        reset_reappearance_heads = _reset_reappearance_heads(head, int(reappearance_random_seed))
     head.eval()
-    return head, payload, state_dict, cfg, list(missing), list(unexpected)
+    return head, payload, state_dict, cfg, list(missing), list(unexpected), reset_reappearance_heads
 
 
 def _args_from_checkpoint_payload(payload: dict[str, Any], repo_root: Path, max_items: int) -> Any:
@@ -281,7 +311,15 @@ def _args_from_checkpoint_payload(payload: dict[str, Any], repo_root: Path, max_
     return SimpleNamespace(**raw_args)
 
 
-def _build_full_model_from_checkpoint(repo_root: Path, checkpoint: Path, device: torch.device, max_items: int) -> dict[str, Any]:
+def _build_full_model_from_checkpoint(
+    repo_root: Path,
+    checkpoint: Path,
+    device: torch.device,
+    max_items: int,
+    *,
+    reappearance_random_seed: int | None = None,
+    force_random_reappearance_head: bool = False,
+) -> dict[str, Any]:
     _bootstrap_repo_imports(repo_root)
     from stwm.tracewm_v2_stage2.trainers import train_tracewm_stage2_smalltrain as trainer
 
@@ -372,6 +410,10 @@ def _build_full_model_from_checkpoint(repo_root: Path, checkpoint: Path, device:
     load_report["readout_head"] = {"loaded_keys": len(payload.get("readout_head_state_dict", {}) or {}), "missing": len(missing), "unexpected": len(unexpected)}
     missing, unexpected = future_semantic_state_head.load_state_dict(payload.get("future_semantic_state_head_state_dict", {}), strict=False)
     missing_reappearance = [str(k) for k in missing if str(k).startswith("reappearance_head.")]
+    missing_reappearance_event = [str(k) for k in missing if str(k).startswith("reappearance_event_head.")]
+    reset_reappearance_heads: list[str] = []
+    if force_random_reappearance_head and reappearance_random_seed is not None:
+        reset_reappearance_heads = _reset_reappearance_heads(future_semantic_state_head, int(reappearance_random_seed))
     load_report["future_semantic_state_head"] = {
         "loaded_keys": len(payload.get("future_semantic_state_head_state_dict", {}) or {}),
         "missing": len(missing),
@@ -380,6 +422,11 @@ def _build_full_model_from_checkpoint(repo_root: Path, checkpoint: Path, device:
         "unexpected_keys": [str(k) for k in unexpected],
         "missing_reappearance_head_weights": bool(missing_reappearance),
         "missing_reappearance_head_weight_keys": missing_reappearance,
+        "missing_reappearance_event_head_weights": bool(missing_reappearance_event),
+        "missing_reappearance_event_head_weight_keys": missing_reappearance_event,
+        "force_random_reappearance_head": bool(force_random_reappearance_head),
+        "reappearance_random_seed": reappearance_random_seed,
+        "reset_reappearance_heads": reset_reappearance_heads,
     }
     optional = [
         ("trace_unit_tokenizer", trace_unit_tokenizer, "trace_unit_tokenizer_state_dict"),
@@ -478,6 +525,8 @@ def _item_forward(
         visibility_prob = torch.sigmoid(state.future_visibility_logit)
         reappearance_head_available = state.future_reappearance_logit is not None
         reappearance_prob = torch.sigmoid(state.future_reappearance_logit) if reappearance_head_available else None
+        reappearance_event_head_available = state.future_reappearance_event_logit is not None
+        reappearance_event_prob = torch.sigmoid(state.future_reappearance_event_logit) if reappearance_event_head_available else None
         uncertainty = F.softplus(state.future_uncertainty)
         sem = state.future_semantic_embedding
         ident = state.future_identity_embedding
@@ -515,6 +564,14 @@ def _item_forward(
             "future_reappearance_prob_min": _tensor_stats(reappearance_prob)["min"] if reappearance_prob is not None else None,
             "future_reappearance_prob_max": _tensor_stats(reappearance_prob)["max"] if reappearance_prob is not None else None,
             "future_reappearance_prob_values": [],
+            "future_reappearance_event_head_available": bool(reappearance_event_head_available),
+            "future_reappearance_event_logit_shape": list(state.future_reappearance_event_logit.shape) if reappearance_event_head_available else None,
+            "future_reappearance_event_prob_shape": list(reappearance_event_prob.shape) if reappearance_event_prob is not None else None,
+            "future_reappearance_event_prob_mean": _tensor_stats(reappearance_event_prob)["mean"] if reappearance_event_prob is not None else None,
+            "future_reappearance_event_prob_std": _tensor_stats(reappearance_event_prob)["std"] if reappearance_event_prob is not None else None,
+            "future_reappearance_event_prob_min": _tensor_stats(reappearance_event_prob)["min"] if reappearance_event_prob is not None else None,
+            "future_reappearance_event_prob_max": _tensor_stats(reappearance_event_prob)["max"] if reappearance_event_prob is not None else None,
+            "future_reappearance_event_prob_values": [],
             "future_semantic_embedding_shape": list(sem.shape),
             "future_semantic_embedding_norm_mean": _tensor_stats(sem_norm)["mean"],
             "future_semantic_embedding_norm_std": _tensor_stats(sem_norm)["std"],
@@ -552,6 +609,8 @@ def _item_from_state(
     visibility_prob = torch.sigmoid(state.future_visibility_logit)
     reappearance_head_available = state.future_reappearance_logit is not None
     reappearance_prob = torch.sigmoid(state.future_reappearance_logit) if reappearance_head_available else None
+    reappearance_event_head_available = state.future_reappearance_event_logit is not None
+    reappearance_event_prob = torch.sigmoid(state.future_reappearance_event_logit) if reappearance_event_head_available else None
     uncertainty = F.softplus(state.future_uncertainty)
     sem = state.future_semantic_embedding
     ident = state.future_identity_embedding
@@ -582,6 +641,17 @@ def _item_from_state(
         "future_visibility_target_values": [],
         "future_reappearance_prob_values": [],
         "future_reappearance_target_values": [],
+        "future_reappearance_event_target_shape": None,
+        "future_reappearance_event_target_positive_rate": None,
+        "future_reappearance_event_supervised_ratio": 0.0,
+        "future_reappearance_event_prob_values": [],
+        "future_reappearance_event_target_values": [],
+        "future_reappearance_risk_slot_ratio": 0.0,
+        "future_reappearance_risk_entry_ratio": 0.0,
+        "future_reappearance_positive_rate_all_slots": None,
+        "future_reappearance_positive_rate_at_risk": None,
+        "future_reappearance_mask_policy": "unavailable",
+        "future_reappearance_negative_policy": "unavailable",
         "reappearance_prob_source": "future_reappearance_logit" if reappearance_head_available else "missing_reappearance_head",
     }
     if visibility_targets is not None:
@@ -589,10 +659,15 @@ def _item_from_state(
         vis_m = visibility_targets.future_visibility_mask.detach().to(device=visibility_prob.device, dtype=torch.bool)
         rep_t = visibility_targets.future_reappearance_target.detach().to(device=visibility_prob.device, dtype=torch.float32)
         rep_m = visibility_targets.future_reappearance_mask.detach().to(device=visibility_prob.device, dtype=torch.bool)
+        event_t = visibility_targets.future_reappearance_event_target.detach().to(device=visibility_prob.device, dtype=torch.float32)
+        event_m = visibility_targets.future_reappearance_event_mask.detach().to(device=visibility_prob.device, dtype=torch.bool)
         vis_vals = visibility_prob.detach()[vis_m].float().cpu().tolist()
         vis_labels = vis_t.detach()[vis_m].float().cpu().tolist()
         rep_vals = reappearance_prob.detach()[rep_m].float().cpu().tolist() if reappearance_prob is not None else []
         rep_labels = rep_t.detach()[rep_m].float().cpu().tolist()
+        event_vals = reappearance_event_prob.detach()[event_m].float().cpu().tolist() if reappearance_event_prob is not None else []
+        event_labels = event_t.detach()[event_m].float().cpu().tolist()
+        loss_info = visibility_targets.to_loss_info()
         target_fields = {
             "future_visibility_target_shape": list(vis_t.shape),
             "future_visibility_target_positive_rate": float(vis_t[vis_m].mean().detach().cpu().item()) if bool(vis_m.any().item()) else None,
@@ -607,6 +682,17 @@ def _item_from_state(
             "future_visibility_target_values": [int(round(float(x))) for x in vis_labels],
             "future_reappearance_prob_values": [float(x) for x in rep_vals],
             "future_reappearance_target_values": [int(round(float(x))) for x in rep_labels],
+            "future_reappearance_event_target_shape": list(event_t.shape),
+            "future_reappearance_event_target_positive_rate": float(event_t[event_m].mean().detach().cpu().item()) if bool(event_m.any().item()) else None,
+            "future_reappearance_event_supervised_ratio": float(event_m.float().mean().detach().cpu().item()),
+            "future_reappearance_event_prob_values": [float(x) for x in event_vals],
+            "future_reappearance_event_target_values": [int(round(float(x))) for x in event_labels],
+            "future_reappearance_risk_slot_ratio": loss_info.get("future_reappearance_risk_slot_ratio"),
+            "future_reappearance_risk_entry_ratio": loss_info.get("future_reappearance_risk_entry_ratio"),
+            "future_reappearance_positive_rate_all_slots": loss_info.get("future_reappearance_positive_rate_all_slots"),
+            "future_reappearance_positive_rate_at_risk": loss_info.get("future_reappearance_positive_rate_at_risk"),
+            "future_reappearance_mask_policy": loss_info.get("future_reappearance_mask_policy"),
+            "future_reappearance_negative_policy": loss_info.get("future_reappearance_negative_policy"),
             "reappearance_prob_source": "future_reappearance_logit" if reappearance_head_available else "missing_reappearance_head",
         }
     item = {
@@ -634,6 +720,13 @@ def _item_from_state(
         "future_reappearance_prob_std": _tensor_stats(reappearance_prob)["std"] if reappearance_prob is not None else None,
         "future_reappearance_prob_min": _tensor_stats(reappearance_prob)["min"] if reappearance_prob is not None else None,
         "future_reappearance_prob_max": _tensor_stats(reappearance_prob)["max"] if reappearance_prob is not None else None,
+        "future_reappearance_event_head_available": bool(reappearance_event_head_available),
+        "future_reappearance_event_logit_shape": list(state.future_reappearance_event_logit.shape) if reappearance_event_head_available else None,
+        "future_reappearance_event_prob_shape": list(reappearance_event_prob.shape) if reappearance_event_prob is not None else None,
+        "future_reappearance_event_prob_mean": _tensor_stats(reappearance_event_prob)["mean"] if reappearance_event_prob is not None else None,
+        "future_reappearance_event_prob_std": _tensor_stats(reappearance_event_prob)["std"] if reappearance_event_prob is not None else None,
+        "future_reappearance_event_prob_min": _tensor_stats(reappearance_event_prob)["min"] if reappearance_event_prob is not None else None,
+        "future_reappearance_event_prob_max": _tensor_stats(reappearance_event_prob)["max"] if reappearance_event_prob is not None else None,
         "future_semantic_embedding_shape": list(sem.shape),
         "future_semantic_embedding_norm_mean": _tensor_stats(sem_norm)["mean"],
         "future_semantic_embedding_norm_std": _tensor_stats(sem_norm)["std"],
@@ -667,6 +760,9 @@ def export(
     max_items: int,
     device_name: str,
     mode: str,
+    reappearance_mask_policy: str = "at_risk_only",
+    reappearance_random_seed: int | None = None,
+    force_random_reappearance_head: bool = False,
 ) -> dict[str, Any]:
     device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
     exported_items: list[dict[str, Any]] = []
@@ -677,8 +773,15 @@ def export(
     full_model_forward_executed = False
     full_free_rollout_executed = False
     semantic_state_from_model_hidden = False
+    reset_reappearance_heads: list[str] = []
     if mode == "head_only_surrogate":
-        head, checkpoint_payload, state_dict, cfg, missing, unexpected = _load_head_from_checkpoint(repo_root, checkpoint, device)
+        head, checkpoint_payload, state_dict, cfg, missing, unexpected, reset_reappearance_heads = _load_head_from_checkpoint(
+            repo_root,
+            checkpoint,
+            device,
+            reappearance_random_seed=reappearance_random_seed,
+            force_random_reappearance_head=force_random_reappearance_head,
+        )
         raw_items = _extract_manifest_items(manifest, max_items)
         random_hidden_used = True
         for raw in raw_items:
@@ -706,7 +809,14 @@ def export(
                     }
                 )
     elif mode in {"full_model_teacher_forced", "full_model_free_rollout"}:
-        full = _build_full_model_from_checkpoint(repo_root, checkpoint, device, max_items)
+        full = _build_full_model_from_checkpoint(
+            repo_root,
+            checkpoint,
+            device,
+            max_items,
+            reappearance_random_seed=reappearance_random_seed,
+            force_random_reappearance_head=force_random_reappearance_head,
+        )
         build_visibility_targets = _import_visibility_builder(repo_root)
         checkpoint_payload = full["payload"]
         state_dict = checkpoint_payload["future_semantic_state_head_state_dict"]
@@ -765,6 +875,7 @@ def export(
                     obs_len=int(args.obs_len),
                     fut_len=int(args.fut_len),
                     slot_count=int(state.future_trace_coord.shape[2]),
+                    reappearance_mask_policy=str(reappearance_mask_policy),
                 )
                 meta = (raw_batch.get("meta") or [{}])[0]
                 item_id = f"{meta.get('dataset', 'stage2')}::{meta.get('clip_id', count)}::{count}"
@@ -795,6 +906,11 @@ def export(
             "dataset_summary": full.get("dataset_summary"),
             "load_report": full.get("load_report"),
         }
+        reset_reappearance_heads = (
+            full.get("load_report", {})
+            .get("future_semantic_state_head", {})
+            .get("reset_reappearance_heads", [])
+        )
     else:
         raise ValueError(f"unknown export mode: {mode}")
 
@@ -814,6 +930,31 @@ def export(
         for item in exported_items
         if isinstance(item.get("future_reappearance_target_positive_rate"), (int, float))
     ]
+    reappearance_positive_rates_all_slots = [
+        float(item["future_reappearance_positive_rate_all_slots"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_positive_rate_all_slots"), (int, float))
+    ]
+    reappearance_positive_rates_at_risk = [
+        float(item["future_reappearance_positive_rate_at_risk"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_positive_rate_at_risk"), (int, float))
+    ]
+    reappearance_event_positive_rates = [
+        float(item["future_reappearance_event_target_positive_rate"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_event_target_positive_rate"), (int, float))
+    ]
+    reappearance_risk_slot_ratios = [
+        float(item["future_reappearance_risk_slot_ratio"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_risk_slot_ratio"), (int, float))
+    ]
+    reappearance_risk_entry_ratios = [
+        float(item["future_reappearance_risk_entry_ratio"])
+        for item in exported_items
+        if isinstance(item.get("future_reappearance_risk_entry_ratio"), (int, float))
+    ]
     visibility_supervised_ratios = [
         float(item["future_visibility_supervised_ratio"])
         for item in exported_items
@@ -827,6 +968,9 @@ def export(
     reappearance_head_available = bool(
         exported_items and all(bool(item.get("future_reappearance_head_available")) for item in exported_items if bool(item.get("valid_output")))
     )
+    reappearance_event_head_available = bool(
+        exported_items and all(bool(item.get("future_reappearance_event_head_available")) for item in exported_items if bool(item.get("valid_output")))
+    )
     reappearance_sources = [str(item.get("reappearance_prob_source", "")) for item in exported_items if item.get("reappearance_prob_source")]
     reappearance_prob_source = "future_reappearance_logit" if reappearance_sources and all(x == "future_reappearance_logit" for x in reappearance_sources) else (
         reappearance_sources[0] if reappearance_sources else "missing_reappearance_head"
@@ -838,6 +982,11 @@ def export(
             .get("future_semantic_state_head", {})
             .get("missing_reappearance_head_weights", missing_reappearance_head_weights)
         )
+    missing_reappearance_event_head_weights = bool(
+        full_report.get("load_report", {})
+        .get("future_semantic_state_head", {})
+        .get("missing_reappearance_event_head_weights", False)
+    ) if full_report else bool(any(str(k).startswith("reappearance_event_head.") for k in locals().get("missing", [])))
     visibility_metric_status = (
         "calibrated_visibility_available"
         if target_quality == "strong_slot_aligned"
@@ -872,8 +1021,14 @@ def export(
         "state_dict_missing_keys": [str(x) for x in locals().get("missing", [])],
         "state_dict_unexpected_keys": [str(x) for x in locals().get("unexpected", [])],
         "missing_reappearance_head_weights": bool(missing_reappearance_head_weights),
+        "missing_reappearance_event_head_weights": bool(missing_reappearance_event_head_weights),
         "reappearance_head_weights_random_init": bool(missing_reappearance_head_weights and reappearance_head_available),
+        "reappearance_event_head_weights_random_init": bool(missing_reappearance_event_head_weights and reappearance_event_head_available),
+        "force_random_reappearance_head": bool(force_random_reappearance_head),
+        "reappearance_random_seed": reappearance_random_seed,
+        "reset_reappearance_heads": list(reset_reappearance_heads) if isinstance(reset_reappearance_heads, list) else [],
         "future_reappearance_head_available": bool(reappearance_head_available),
+        "future_reappearance_event_head_available": bool(reappearance_event_head_available),
         "reappearance_prob_source": reappearance_prob_source,
         "manifest": str(manifest),
         "device": str(device),
@@ -896,6 +1051,12 @@ def export(
         "future_reappearance_supervised_ratio": float(sum(reappearance_supervised_ratios) / max(len(reappearance_supervised_ratios), 1)),
         "future_visibility_positive_rate": float(sum(visibility_positive_rates) / max(len(visibility_positive_rates), 1)) if visibility_positive_rates else None,
         "future_reappearance_positive_rate": float(sum(reappearance_positive_rates) / max(len(reappearance_positive_rates), 1)) if reappearance_positive_rates else None,
+        "future_reappearance_positive_rate_all_slots": float(sum(reappearance_positive_rates_all_slots) / max(len(reappearance_positive_rates_all_slots), 1)) if reappearance_positive_rates_all_slots else None,
+        "future_reappearance_positive_rate_at_risk": float(sum(reappearance_positive_rates_at_risk) / max(len(reappearance_positive_rates_at_risk), 1)) if reappearance_positive_rates_at_risk else None,
+        "future_reappearance_event_positive_rate": float(sum(reappearance_event_positive_rates) / max(len(reappearance_event_positive_rates), 1)) if reappearance_event_positive_rates else None,
+        "future_reappearance_risk_slot_ratio": float(sum(reappearance_risk_slot_ratios) / max(len(reappearance_risk_slot_ratios), 1)) if reappearance_risk_slot_ratios else None,
+        "future_reappearance_risk_entry_ratio": float(sum(reappearance_risk_entry_ratios) / max(len(reappearance_risk_entry_ratios), 1)) if reappearance_risk_entry_ratios else None,
+        "future_reappearance_mask_policy": str(reappearance_mask_policy),
         "current_export_data_source": current_export_data_source,
         "old_association_report_used": False,
         "top1_mrr_false_confuser_exported": False,
@@ -924,6 +1085,9 @@ def parse_args() -> Any:
     p.add_argument("--max-items", "--item-limit", dest="max_items", type=int, default=32)
     p.add_argument("--device", default="cpu")
     p.add_argument("--use-free-rollout", action="store_true", help="Deprecated alias for --mode full_model_free_rollout.")
+    p.add_argument("--future-reappearance-mask-policy", default="at_risk_only", choices=["at_risk_only", "all_slots"])
+    p.add_argument("--reappearance-random-seed", type=int, default=None)
+    p.add_argument("--force-random-reappearance-head", action="store_true")
     return p.parse_args()
 
 
@@ -940,6 +1104,9 @@ def main() -> None:
         max_items=int(args.max_items),
         device_name=str(args.device),
         mode=mode,
+        reappearance_mask_policy=str(args.future_reappearance_mask_policy),
+        reappearance_random_seed=args.reappearance_random_seed,
+        force_random_reappearance_head=bool(args.force_random_reappearance_head),
     )
 
 

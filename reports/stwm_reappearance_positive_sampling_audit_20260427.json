@@ -1,0 +1,43 @@
+{
+  "checkpoint": "/raid/chen034/workspace/stwm/outputs/checkpoints/stage2_tusb_v3p1_medium_semantic_state_v1_20260427/latest.pt",
+  "checkpoint_exists": true,
+  "dataset_summary": {
+    "VIPSeg": {
+      "full_dataset_used": false,
+      "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg",
+      "requested_max_samples_per_dataset": 64,
+      "sample_count": 64,
+      "source_count_before_limit": 2806,
+      "split": "train",
+      "used_in_bootstrap_eval": true,
+      "used_in_bootstrap_train": true
+    },
+    "VSPW": {
+      "full_dataset_used": false,
+      "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW",
+      "requested_max_samples_per_dataset": 64,
+      "sample_count": 64,
+      "source_count_before_limit": 2806,
+      "split": "train",
+      "used_in_bootstrap_eval": true,
+      "used_in_bootstrap_train": true
+    }
+  },
+  "estimated_batches_with_positive_under_batch_size_1": 0.2421875,
+  "exact_blocking_reason": null,
+  "generated_at_utc": "2026-04-28T04:22:53.258565+00:00",
+  "positive_indices_count": 31,
+  "positive_sampling_ready": true,
+  "recommended_oversample_factor": 1.3410138248847925,
+  "repo_root": "/raid/chen034/workspace/stwm",
+  "sample_positive_rate": 0.2421875,
+  "sampler_cli": [
+    "--reappearance-positive-oversample",
+    "--reappearance-positive-min-batch-ratio",
+    "0.3"
+  ],
+  "sampler_cli_available": true,
+  "samples_with_reappearance_positive": 31,
+  "target_min_batch_ratio": 0.3,
+  "total_train_samples": 128
+}
