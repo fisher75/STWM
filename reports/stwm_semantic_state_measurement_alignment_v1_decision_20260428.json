@@ -1,0 +1,96 @@
+{
+  "aligned_predicted_state_improves_over_distance": false,
+  "aligned_predicted_state_improves_over_unaligned": true,
+  "alignment_probe_trained": true,
+  "generated_at_utc": "2026-04-28T15:19:08.989151+00:00",
+  "heldout_metrics": {
+    "aligned_predicted_semantic_identity": {
+      "candidate_AP": 0.08021704790296627,
+      "candidate_AUROC": 0.49573832917533384,
+      "candidate_MRR": 0.31830170697051435,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.11049723756906077,
+      "metric_items": 181
+    },
+    "distance_only": {
+      "candidate_AP": 0.09603295402598074,
+      "candidate_AUROC": 0.5682346672374162,
+      "candidate_MRR": 0.39072177887148335,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.19889502762430938,
+      "metric_items": 181
+    },
+    "posterior_v4": {
+      "candidate_AP": 0.09863751640294846,
+      "candidate_AUROC": 0.5855845612251496,
+      "candidate_MRR": 0.4042810604739581,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.22099447513812154,
+      "metric_items": 181
+    },
+    "posterior_v5": {
+      "candidate_AP": 0.09912804540199162,
+      "candidate_AUROC": 0.5869556977970406,
+      "candidate_MRR": 0.40550267386008654,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.22099447513812154,
+      "metric_items": 181
+    },
+    "posterior_v5_no_appearance": {
+      "candidate_AP": 0.09680166269765651,
+      "candidate_AUROC": 0.5784947818778106,
+      "candidate_MRR": 0.3996750360698116,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.2154696132596685,
+      "metric_items": 181
+    },
+    "posterior_v5_no_predicted_state": {
+      "candidate_AP": 0.0984847347295908,
+      "candidate_AUROC": 0.5783208816296683,
+      "candidate_MRR": 0.3936648077157853,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.19889502762430938,
+      "metric_items": 181
+    },
+    "target_candidate_appearance_only": {
+      "candidate_AP": 0.24057486639858602,
+      "candidate_AUROC": 0.6380790265153289,
+      "candidate_MRR": 0.5441842271532399,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.34806629834254144,
+      "metric_items": 181
+    },
+    "unaligned_predicted_semantic_identity": {
+      "candidate_AP": 0.07273122355596505,
+      "candidate_AUROC": 0.4774843768462967,
+      "candidate_MRR": 0.3861773365634879,
+      "candidate_positive_rate": 0.06947608200455581,
+      "candidate_record_count": 2634,
+      "candidate_top1": 0.1712707182320442,
+      "metric_items": 181
+    }
+  },
+  "heldout_signal_positive": true,
+  "no_backbone_update": true,
+  "no_candidate_leakage_to_rollout": true,
+  "paper_world_model_claimable": "unclear",
+  "posterior_v5_improves_over_no_predicted_state": true,
+  "posterior_v5_improves_over_posterior_v4": true,
+  "predicted_state_load_bearing": true,
+  "recommended_next_step_choice": "proceed_to_paper_assets_with_semantic_state_auxiliary",
+  "semantic_state_branch_status": "appendix_diagnostic",
+  "subset_signal_positive": {
+    "OOD_hard": false,
+    "appearance_change": true,
+    "crossing_ambiguity": true,
+    "long_gap_persistence": true,
+    "occlusion_reappearance": true
+  }
+}

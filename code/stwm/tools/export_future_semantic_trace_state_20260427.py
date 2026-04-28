@@ -19,6 +19,15 @@ from torch.utils.data import DataLoader
 
 RAW_EXPORT_SCHEMA_VERSION = "future_semantic_trace_state_raw_export_v1"
 _MEASUREMENT_PROJECTION_CACHE: dict[tuple[str, int, int], torch.Tensor] = {}
+ALIGNMENT_PROBE_SCORE_MODES = {
+    "aligned_predicted_semantic_to_candidate",
+    "aligned_predicted_identity_to_candidate",
+    "aligned_predicted_semantic_identity_to_candidate",
+    "posterior_v5",
+    "posterior_v5_no_appearance",
+    "posterior_v5_no_predicted_state",
+    "posterior_v5_no_distance",
+}
 
 
 def _apply_process_title_normalization() -> None:
@@ -1365,6 +1374,11 @@ def export(
             raise RuntimeError("--external-candidate-expanded-manifest is required for external_hardcase_query mode")
         if not bool(strict_no_fallback):
             raise RuntimeError("--strict-no-fallback is required for external_hardcase_query mode")
+        if str(candidate_score_mode) in ALIGNMENT_PROBE_SCORE_MODES:
+            raise RuntimeError(
+                f"{candidate_score_mode} requires a trained measurement-alignment probe; "
+                "use train_semantic_state_measurement_alignment_20260428.py instead of fabricating aligned scores in raw export"
+            )
         device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
         candidate_manifest = load_json(external_candidate_expanded_manifest)
         records = candidate_manifest.get("records") if isinstance(candidate_manifest, dict) else []
@@ -2002,6 +2016,13 @@ def parse_args() -> Any:
             "posterior_v4_no_distance",
             "posterior_v4_no_semantic_identity",
             "posterior_v4_no_target_candidate_appearance",
+            "aligned_predicted_semantic_to_candidate",
+            "aligned_predicted_identity_to_candidate",
+            "aligned_predicted_semantic_identity_to_candidate",
+            "posterior_v5",
+            "posterior_v5_no_appearance",
+            "posterior_v5_no_predicted_state",
+            "posterior_v5_no_distance",
         ],
     )
     p.add_argument(

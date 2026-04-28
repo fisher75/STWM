@@ -1,0 +1,89 @@
+{
+  "candidate_AP": 0.08438478953557457,
+  "candidate_AUROC": 0.5511790985004528,
+  "candidate_MRR": 0.37220441242945346,
+  "candidate_feature_used_for_rollout": false,
+  "candidate_feature_used_for_scoring": true,
+  "candidate_positive_rate": 0.06858251057827927,
+  "candidate_record_count": 5672,
+  "candidate_top1": 0.17098445595854922,
+  "dev": {
+    "candidate_AP": 0.07529919765859172,
+    "candidate_AUROC": 0.527624650320882,
+    "candidate_MRR": 0.3532564536644486,
+    "candidate_positive_rate": 0.06780776826859776,
+    "candidate_record_count": 3038,
+    "candidate_top1": 0.14634146341463414,
+    "metric_items": 205
+  },
+  "full_free_rollout_executed": true,
+  "full_model_forward_executed": true,
+  "future_candidate_used_as_input": false,
+  "generated_at_utc": "2026-04-28T15:19:03.950875+00:00",
+  "heldout": {
+    "candidate_AP": 0.0984847347295908,
+    "candidate_AUROC": 0.5783208816296683,
+    "candidate_MRR": 0.3936648077157853,
+    "candidate_positive_rate": 0.06947608200455581,
+    "candidate_record_count": 2634,
+    "candidate_top1": 0.19889502762430938,
+    "metric_items": 181
+  },
+  "metric_items": 386,
+  "mode": "posterior_v5_no_predicted_state",
+  "old_association_report_used": false,
+  "per_subset_breakdown": {
+    "OOD_hard": {
+      "candidate_AP": null,
+      "candidate_AUROC": null,
+      "candidate_MRR": null,
+      "candidate_positive_rate": null,
+      "candidate_record_count": 0,
+      "candidate_top1": null,
+      "metric_items": 0
+    },
+    "appearance_change": {
+      "candidate_AP": 0.14373516392278912,
+      "candidate_AUROC": 0.4833273714675945,
+      "candidate_MRR": 0.4596270871980185,
+      "candidate_positive_rate": 0.1442652329749104,
+      "candidate_record_count": 1116,
+      "candidate_top1": 0.24050632911392406,
+      "metric_items": 158
+    },
+    "crossing_ambiguity": {
+      "candidate_AP": 0.07880619314200316,
+      "candidate_AUROC": 0.5825692740399225,
+      "candidate_MRR": 0.3350924780650872,
+      "candidate_positive_rate": 0.05753476852733854,
+      "candidate_record_count": 5249,
+      "candidate_top1": 0.1456953642384106,
+      "metric_items": 302
+    },
+    "long_gap_persistence": {
+      "candidate_AP": 0.2466292593793281,
+      "candidate_AUROC": 0.5007276507276507,
+      "candidate_MRR": 0.5098214285714284,
+      "candidate_positive_rate": 0.21940928270042195,
+      "candidate_record_count": 237,
+      "candidate_top1": 0.25,
+      "metric_items": 52
+    },
+    "occlusion_reappearance": {
+      "candidate_AP": 0.12403951423154436,
+      "candidate_AUROC": 0.4589215821706497,
+      "candidate_MRR": 0.4519529244063084,
+      "candidate_positive_rate": 0.12932790224032586,
+      "candidate_record_count": 982,
+      "candidate_top1": 0.2125984251968504,
+      "metric_items": 127
+    }
+  },
+  "score_components_used": [
+    "distance_score",
+    "target_candidate_appearance_score",
+    "visibility_reappearance_priors"
+  ],
+  "source_dataset": "reports/stwm_semantic_state_measurement_alignment_dataset_v1_20260428.json",
+  "stage2_val_fallback_used": false
+}

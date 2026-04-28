@@ -1,0 +1,63 @@
+{
+  "crop_encoder_feature_dim": 256,
+  "current_projection_status": "V4 crop_encoder_feature has same dimensionality, but predicted semantic/identity heads were not explicitly aligned to candidate crop measurement space; earlier weak feature modes used deterministic projection when dimensions differed.",
+  "deterministic_projection_used_in_v4_crop_encoder_feature": false,
+  "dev_split_alignment_possible": true,
+  "diagnosis_conclusion": "Proceed with a small dev-only alignment probe; do not update STWM backbone and do not treat target-candidate appearance-only as world-model evidence.",
+  "feature_collapse_or_low_variance_risk": true,
+  "feature_variance_diagnostics": {
+    "appearance_score_mean": 0.987310298470247,
+    "appearance_score_variance": 0.00026687849740941874,
+    "candidate_crop_feature_norm_variance": 2.8768272767541846e-05,
+    "predicted_identity_norm_variance": 4.878851490628021e-05,
+    "predicted_semantic_norm_variance": 0.00023650260102833103
+  },
+  "future_identity_embedding_dim": 256,
+  "future_semantic_embedding_dim": 256,
+  "generated_at_utc": "2026-04-28T15:09:58.539879+00:00",
+  "heldout_evaluation_once_only": true,
+  "learnable_alignment_head_needed": true,
+  "no_leakage_conditions": {
+    "candidate_feature_used_for_rollout": false,
+    "full_free_rollout_executed": true,
+    "full_model_forward_executed": true,
+    "future_candidate_used_as_input": false,
+    "old_association_report_used": false,
+    "stage2_val_fallback_used": false
+  },
+  "predicted_identity_to_candidate_low_reason": "The identity embedding is similarly uncalibrated to the external candidate crop encoder space and has no dev-split measurement alignment layer.",
+  "predicted_semantic_to_candidate_low_reason": "The predicted semantic embedding is a future-state readout trained with surrogate/internal targets, not a contrastive candidate crop measurement embedding; cosine to crop_encoder_feature is therefore uncalibrated.",
+  "same_dimensionality": true,
+  "same_space_before_alignment": false,
+  "scale_norm_mismatch": {
+    "candidate_crop_feature_norm_mean": 15.939883562506338,
+    "observed_target_crop_feature_norm_mean": 15.939543676981637,
+    "predicted_identity_norm_mean": 8.881098040908954,
+    "predicted_semantic_norm_mean": 9.583194917785097
+  },
+  "source_dataset": "reports/stwm_semantic_state_measurement_alignment_dataset_v1_20260428.json",
+  "target_candidate_appearance_strong_reason": "Observed target crop and future candidate crop are encoded by the same crop encoder, so their cosine is a direct same-space appearance measurement.",
+  "v4_decision": "reports/stwm_external_candidate_scoring_v4_decision_20260428.json",
+  "v4_metrics": {
+    "distance_only": {
+      "candidate_AP": 0.08032519870192689,
+      "candidate_AUROC": 0.5337086696109037,
+      "candidate_top1": 0.16839378238341968
+    },
+    "posterior_v4": {
+      "candidate_AP": 0.08219281358306543,
+      "candidate_AUROC": 0.5439997685409942,
+      "candidate_top1": 0.17098445595854922
+    },
+    "predicted_semantic_identity_to_candidate": {
+      "candidate_AP": 0.07186769104105367,
+      "candidate_AUROC": 0.47078492064192606,
+      "candidate_top1": 0.18652849740932642
+    },
+    "target_candidate_appearance_only": {
+      "candidate_AP": 0.2468106769359425,
+      "candidate_AUROC": 0.665786435913807,
+      "candidate_top1": 0.39378238341968913
+    }
+  }
+}

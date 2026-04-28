@@ -1,0 +1,88 @@
+{
+  "candidate_AP": 0.08741384770237991,
+  "candidate_AUROC": 0.5605896490026943,
+  "candidate_MRR": 0.35235541205031917,
+  "candidate_feature_used_for_rollout": false,
+  "candidate_feature_used_for_scoring": true,
+  "candidate_positive_rate": 0.06858251057827927,
+  "candidate_record_count": 5672,
+  "candidate_top1": 0.15025906735751296,
+  "dev": {
+    "candidate_AP": 0.09853835894602225,
+    "candidate_AUROC": 0.6048720242992704,
+    "candidate_MRR": 0.37894447653506375,
+    "candidate_positive_rate": 0.06780776826859776,
+    "candidate_record_count": 3038,
+    "candidate_top1": 0.17560975609756097,
+    "metric_items": 205
+  },
+  "full_free_rollout_executed": true,
+  "full_model_forward_executed": true,
+  "future_candidate_used_as_input": false,
+  "generated_at_utc": "2026-04-28T15:19:02.339929+00:00",
+  "heldout": {
+    "candidate_AP": 0.07804585783798461,
+    "candidate_AUROC": 0.5105934234493337,
+    "candidate_MRR": 0.32224072575544344,
+    "candidate_positive_rate": 0.06947608200455581,
+    "candidate_record_count": 2634,
+    "candidate_top1": 0.12154696132596685,
+    "metric_items": 181
+  },
+  "metric_items": 386,
+  "mode": "aligned_predicted_identity_to_candidate",
+  "old_association_report_used": false,
+  "per_subset_breakdown": {
+    "OOD_hard": {
+      "candidate_AP": null,
+      "candidate_AUROC": null,
+      "candidate_MRR": null,
+      "candidate_positive_rate": null,
+      "candidate_record_count": 0,
+      "candidate_top1": null,
+      "metric_items": 0
+    },
+    "appearance_change": {
+      "candidate_AP": 0.16432591371067518,
+      "candidate_AUROC": 0.527852752756008,
+      "candidate_MRR": 0.4663223463095585,
+      "candidate_positive_rate": 0.1442652329749104,
+      "candidate_record_count": 1116,
+      "candidate_top1": 0.24050632911392406,
+      "metric_items": 158
+    },
+    "crossing_ambiguity": {
+      "candidate_AP": 0.0661224242188829,
+      "candidate_AUROC": 0.5537622641054784,
+      "candidate_MRR": 0.3117881232690312,
+      "candidate_positive_rate": 0.05753476852733854,
+      "candidate_record_count": 5249,
+      "candidate_top1": 0.12582781456953643,
+      "metric_items": 302
+    },
+    "long_gap_persistence": {
+      "candidate_AP": 0.2764268733175857,
+      "candidate_AUROC": 0.5698544698544699,
+      "candidate_MRR": 0.540911172161172,
+      "candidate_positive_rate": 0.21940928270042195,
+      "candidate_record_count": 237,
+      "candidate_top1": 0.28846153846153844,
+      "metric_items": 52
+    },
+    "occlusion_reappearance": {
+      "candidate_AP": 0.1472664770902681,
+      "candidate_AUROC": 0.5114702767417231,
+      "candidate_MRR": 0.4775023428151478,
+      "candidate_positive_rate": 0.12932790224032586,
+      "candidate_record_count": 982,
+      "candidate_top1": 0.25196850393700787,
+      "metric_items": 127
+    }
+  },
+  "score_components_used": [
+    "aligned_predicted_identity_embedding",
+    "candidate_crop_feature"
+  ],
+  "source_dataset": "reports/stwm_semantic_state_measurement_alignment_dataset_v1_20260428.json",
+  "stage2_val_fallback_used": false
+}

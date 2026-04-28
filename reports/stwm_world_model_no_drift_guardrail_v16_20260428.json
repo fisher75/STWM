@@ -1,0 +1,16 @@
+{
+  "allowed": [
+    "Alignment probe maps predicted world-state embeddings to measurement space for eval.",
+    "Candidate crop features are measurement observations only.",
+    "STWM rollout remains candidate-free."
+  ],
+  "forbidden": [
+    "Updating STWM backbone with future candidates.",
+    "Using heldout to train alignment.",
+    "Claiming target-candidate appearance as world-model evidence.",
+    "Claiming paper-world-model status without predicted-state load-bearing.",
+    "Calling STWM a SAM2/CoTracker plugin."
+  ],
+  "generated_at_utc": "2026-04-28T15:19:08.989712+00:00",
+  "guardrail_version": "v16"
+}
