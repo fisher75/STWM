@@ -1,0 +1,33 @@
+{
+  "report_name": "stwm_semantic_state_feedback_rollout_v1_feasibility_audit",
+  "source_reports": {
+    "joint_signal": "reports/stwm_reappearance_visibility_joint_v1_signal_judgement_20260427.json",
+    "joint_comparison": "reports/stwm_reappearance_visibility_joint_v1_baseline_comparison_20260427.json",
+    "joint_summary": "reports/stwm_reappearance_visibility_joint_v1_summary_20260427.json"
+  },
+  "current_future_semantic_trace_state_source": "SemanticTraceStateHead consumes future_hidden and predicted future_trace_coord from teacher-forced/free-rollout Stage2 paths.",
+  "current_free_rollout_is_future_hidden_to_semantic_state_readout": true,
+  "semantic_state_feedback_to_future_hidden_or_rollout_hidden_present_before_v1": false,
+  "safe_feedback_locations": {
+    "readout_only": "safe V1 default; modifies semantic-state readout hidden but does not change autoregressive state_seq update.",
+    "hidden_residual": "allowed V1 ablation; recomputes readout from feedback-enhanced future_hidden.",
+    "next_step_rollout_feedback": "not implemented in V1; requires separate smoke because it changes autoregressive rollout."
+  },
+  "allowed_trainable_modules": [
+    "semantic_state_feedback_adapter",
+    "future_semantic_state_head",
+    "semantic_fusion.semantic_proj",
+    "readout_head"
+  ],
+  "frozen_modules": [
+    "Stage1",
+    "trace backbone/TUSB trunk",
+    "trace unit tokenizer/factorized/handshake/broadcast parameters",
+    "semantic encoder full body",
+    "SAM2/CoTracker external modules"
+  ],
+  "can_attach_gated_residual_without_stage1_or_tusb_unfreeze": true,
+  "minimal_v1_scheme": "SemanticStateFeedbackAdapter with small alpha, readout_only or hidden_residual, default-off CLI flags.",
+  "joint_v1_signal_positive": true,
+  "paper_world_model_claimable_before_feedback": "unclear"
+}

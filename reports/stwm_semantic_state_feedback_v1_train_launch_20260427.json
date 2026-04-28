@@ -1,0 +1,31 @@
+{
+  "created_at": "2026-04-28T09:00:57.730863+00:00",
+  "feedback_training_started": true,
+  "gpu": "1",
+  "hard_boundaries": {
+    "no_full_autoregressive_next_step_feedback": true,
+    "no_large_training": true,
+    "no_multi_hypothesis": true,
+    "no_sam2_cotracker_plugin": true,
+    "stage1_frozen": true,
+    "trace_backbone_frozen": true
+  },
+  "intended_optimizer_steps_this_invocation": 120,
+  "launch_script": "/tmp/stwm_semantic_state_feedback_v1_20260427.sh",
+  "log_path": "logs/stwm_semantic_state_feedback_v1_20260427.log",
+  "output_dir": "outputs/checkpoints/stage2_tusb_v3p1_semantic_state_feedback_v1_20260427",
+  "process_title_policy": {
+    "STWM_PROC_TITLE": "python",
+    "STWM_PROC_TITLE_MODE": "generic"
+  },
+  "progress_path": "reports/stwm_semantic_state_feedback_v1_train_progress_20260427.json",
+  "raw_summary_path": "reports/stwm_semantic_state_feedback_v1_train_summary_raw_20260427.json",
+  "report_name": "stwm_semantic_state_feedback_v1_train_launch",
+  "resume_from": "outputs/checkpoints/stage2_tusb_v3p1_reappearance_visibility_joint_v1_20260427_run2/latest.pt",
+  "resume_global_step": 11294,
+  "semantic_state_feedback_alpha": 0.05,
+  "semantic_state_feedback_mode": "readout_only",
+  "target_global_step": 11414,
+  "tmux_session": "stwm_semantic_state_feedback_v1_20260427",
+  "train_steps_cli_semantics": "absolute_global_step_target"
+}

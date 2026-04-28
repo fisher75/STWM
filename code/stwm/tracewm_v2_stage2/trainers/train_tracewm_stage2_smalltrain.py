@@ -51,6 +51,10 @@ from stwm.tracewm_v2_stage2.models.semantic_trace_world_head import (
     SemanticTraceStateHeadConfig,
     compute_future_semantic_state_losses,
 )
+from stwm.tracewm_v2_stage2.models.semantic_state_feedback import (
+    SemanticStateFeedbackAdapter,
+    SemanticStateFeedbackConfig,
+)
 from stwm.tracewm_v2_stage2.utils.visibility_reappearance_targets import build_future_visibility_reappearance_targets
 
 
@@ -300,6 +304,11 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-controlled-joint", action="store_true")
     p.add_argument("--future-semantic-joint-train-semantic-fusion-proj", action="store_true")
     p.add_argument("--future-semantic-joint-train-readout-head", action="store_true")
+    p.add_argument("--enable-semantic-state-feedback", action="store_true")
+    p.add_argument("--semantic-state-feedback-alpha", type=float, default=0.05)
+    p.add_argument("--semantic-state-feedback-stopgrad-state", action="store_true", default=True)
+    p.add_argument("--no-semantic-state-feedback-stopgrad-state", action="store_false", dest="semantic_state_feedback_stopgrad_state")
+    p.add_argument("--semantic-state-feedback-mode", default="readout_only", choices=["readout_only", "hidden_residual"])
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -618,6 +627,11 @@ def _teacher_forced_predict(
     obs_len: int,
     semantic_source_mainline: str,
     allow_stage1_grad: bool = False,
+    semantic_state_feedback_adapter: SemanticStateFeedbackAdapter | None = None,
+    semantic_state_feedback_enabled: bool = False,
+    semantic_state_feedback_alpha: float = 0.05,
+    semantic_state_feedback_stopgrad_state: bool = True,
+    semantic_state_feedback_mode: str = "readout_only",
 ) -> Dict[str, Any]:
     full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
     shifted = _prepare_shifted(full_state)
@@ -653,8 +667,31 @@ def _teacher_forced_predict(
     pred_coord = readout_head(enhanced_hidden[:, int(obs_len) :])
     future_hidden = enhanced_hidden[:, int(obs_len) :]
     future_semantic_trace_state = None
+    feedback_info: Dict[str, Any] = {
+        "semantic_state_feedback_enabled": False,
+        "semantic_state_feedback_mode": str(semantic_state_feedback_mode),
+        "semantic_state_feedback_alpha": float(semantic_state_feedback_alpha),
+        "feedback_gate_mean": 0.0,
+        "feedback_gate_std": 0.0,
+        "feedback_gate_saturation_ratio": 0.0,
+        "feedback_delta_norm": 0.0,
+    }
     if future_semantic_state_head is not None:
         future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_coord)
+        if bool(semantic_state_feedback_enabled) and semantic_state_feedback_adapter is not None:
+            fb = semantic_state_feedback_adapter(
+                future_hidden,
+                future_semantic_trace_state,
+                alpha=float(semantic_state_feedback_alpha),
+                stopgrad_state=bool(semantic_state_feedback_stopgrad_state),
+            )
+            future_hidden = fb.enhanced_future_hidden
+            mode = str(semantic_state_feedback_mode).strip().lower()
+            if mode == "hidden_residual":
+                pred_coord = readout_head(future_hidden)
+            future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_coord)
+            feedback_info = dict(fb.feedback_info)
+            feedback_info["semantic_state_feedback_mode"] = mode
 
     target_coord = batch["fut_state"][..., 0:2]
     valid_mask = batch["fut_valid"] & token_mask[:, None, :]
@@ -666,6 +703,7 @@ def _teacher_forced_predict(
         "semantic_tokens": sem_enc,
         "future_fused_hidden": future_hidden,
         "future_semantic_trace_state": future_semantic_trace_state,
+        "semantic_state_feedback_info": feedback_info,
         "gate_mean": float(aux.get("gate_mean", 0.0)),
         "gate_std": float(aux.get("gate_std", 0.0)),
         "semantic_input_nonempty": bool((batch["semantic_mask"] & token_mask).any().item()),
@@ -691,6 +729,11 @@ def _free_rollout_predict(
     fut_len: int,
     semantic_source_mainline: str,
     allow_stage1_grad: bool = False,
+    semantic_state_feedback_adapter: SemanticStateFeedbackAdapter | None = None,
+    semantic_state_feedback_enabled: bool = False,
+    semantic_state_feedback_alpha: float = 0.05,
+    semantic_state_feedback_stopgrad_state: bool = True,
+    semantic_state_feedback_mode: str = "readout_only",
 ) -> Dict[str, Any]:
     token_mask = batch["token_mask"]
     obs_state = batch["obs_state"]
@@ -747,9 +790,32 @@ def _free_rollout_predict(
     valid_mask = batch["fut_valid"] & token_mask[:, None, :]
     future_hidden = enhanced_hidden[:, int(obs_len) :]
     future_semantic_trace_state = None
+    feedback_info: Dict[str, Any] = {
+        "semantic_state_feedback_enabled": False,
+        "semantic_state_feedback_mode": str(semantic_state_feedback_mode),
+        "semantic_state_feedback_alpha": float(semantic_state_feedback_alpha),
+        "feedback_gate_mean": 0.0,
+        "feedback_gate_std": 0.0,
+        "feedback_gate_saturation_ratio": 0.0,
+        "feedback_delta_norm": 0.0,
+    }
     future_semantic_state_validation = {"valid": False, "shapes": {}, "errors": ["future_semantic_state_head_disabled"]}
     if future_semantic_state_head is not None:
         future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_future)
+        if bool(semantic_state_feedback_enabled) and semantic_state_feedback_adapter is not None:
+            fb = semantic_state_feedback_adapter(
+                future_hidden,
+                future_semantic_trace_state,
+                alpha=float(semantic_state_feedback_alpha),
+                stopgrad_state=bool(semantic_state_feedback_stopgrad_state),
+            )
+            future_hidden = fb.enhanced_future_hidden
+            mode = str(semantic_state_feedback_mode).strip().lower()
+            if mode == "hidden_residual":
+                pred_future = readout_head(future_hidden)
+            future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_future)
+            feedback_info = dict(fb.feedback_info)
+            feedback_info["semantic_state_feedback_mode"] = mode
         future_semantic_state_validation = future_semantic_trace_state.validate(strict=False)
 
     return {
@@ -759,6 +825,7 @@ def _free_rollout_predict(
         "gate_mean": float(sum(gate_vals) / max(len(gate_vals), 1)),
         "future_hidden": future_hidden,
         "future_semantic_trace_state": future_semantic_trace_state,
+        "semantic_state_feedback_info": feedback_info,
         "future_semantic_state_shapes": future_semantic_state_validation.get("shapes", {}),
         "future_semantic_state_output_valid": bool(future_semantic_state_validation.get("valid", False)),
         "semantic_state_feedback_in_free_rollout": False,
@@ -1298,12 +1365,19 @@ def _evaluate(
     fut_len: int,
     max_batches: int,
     semantic_source_mainline: str,
+    semantic_state_feedback_adapter: SemanticStateFeedbackAdapter | None = None,
+    semantic_state_feedback_enabled: bool = False,
+    semantic_state_feedback_alpha: float = 0.05,
+    semantic_state_feedback_stopgrad_state: bool = True,
+    semantic_state_feedback_mode: str = "readout_only",
 ) -> Dict[str, Any]:
     semantic_encoder.eval()
     semantic_fusion.eval()
     readout_head.eval()
     if future_semantic_state_head is not None:
         future_semantic_state_head.eval()
+    if semantic_state_feedback_adapter is not None:
+        semantic_state_feedback_adapter.eval()
 
     tf_sse = 0.0
     tf_count = 0.0
@@ -1330,6 +1404,11 @@ def _evaluate(
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
                 future_semantic_state_head=future_semantic_state_head,
+                semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+                semantic_state_feedback_enabled=semantic_state_feedback_enabled,
+                semantic_state_feedback_alpha=semantic_state_feedback_alpha,
+                semantic_state_feedback_stopgrad_state=semantic_state_feedback_stopgrad_state,
+                semantic_state_feedback_mode=semantic_state_feedback_mode,
                 structure_mode=str(structure_mode),
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,
@@ -1346,6 +1425,11 @@ def _evaluate(
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
                 future_semantic_state_head=future_semantic_state_head,
+                semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+                semantic_state_feedback_enabled=semantic_state_feedback_enabled,
+                semantic_state_feedback_alpha=semantic_state_feedback_alpha,
+                semantic_state_feedback_stopgrad_state=semantic_state_feedback_stopgrad_state,
+                semantic_state_feedback_mode=semantic_state_feedback_mode,
                 structure_mode=str(structure_mode),
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,
@@ -3560,6 +3644,7 @@ def _checkpoint_payload(
     semantic_fusion: SemanticFusion,
     readout_head: torch.nn.Linear,
     future_semantic_state_head: SemanticTraceStateHead | None,
+    semantic_state_feedback_adapter: SemanticStateFeedbackAdapter | None,
     semantic_rescue_heads: SemanticRescueAuxHeads | None,
     trace_unit_tokenizer: TraceUnitTokenizer | None,
     trace_unit_factorized_state: TraceUnitFactorizedState | None,
@@ -3583,6 +3668,8 @@ def _checkpoint_payload(
     }
     if future_semantic_state_head is not None:
         payload["future_semantic_state_head_state_dict"] = future_semantic_state_head.state_dict()
+    if semantic_state_feedback_adapter is not None:
+        payload["semantic_state_feedback_adapter_state_dict"] = semantic_state_feedback_adapter.state_dict()
     if semantic_rescue_heads is not None:
         payload["semantic_rescue_heads_state_dict"] = semantic_rescue_heads.state_dict()
     if trace_unit_tokenizer is not None:
@@ -3632,6 +3719,7 @@ def _build_future_semantic_head_only_audit(
     semantic_fusion: torch.nn.Module,
     readout_head: torch.nn.Module,
     future_semantic_state_head: torch.nn.Module | None,
+    semantic_state_feedback_adapter: torch.nn.Module | None,
     semantic_rescue_heads: torch.nn.Module | None,
     trace_unit_tokenizer: torch.nn.Module | None,
     trace_unit_factorized_state: torch.nn.Module | None,
@@ -3644,6 +3732,7 @@ def _build_future_semantic_head_only_audit(
         ("semantic_encoder", semantic_encoder),
         ("semantic_fusion", semantic_fusion),
         ("readout_head", readout_head),
+        ("semantic_state_feedback_adapter", semantic_state_feedback_adapter),
         ("semantic_rescue_heads", semantic_rescue_heads),
         ("trace_unit_tokenizer", trace_unit_tokenizer),
         ("trace_unit_factorized_state", trace_unit_factorized_state),
@@ -3680,6 +3769,7 @@ def _build_future_semantic_controlled_joint_audit(
     semantic_fusion: torch.nn.Module,
     readout_head: torch.nn.Module,
     future_semantic_state_head: torch.nn.Module | None,
+    semantic_state_feedback_adapter: torch.nn.Module | None,
     semantic_rescue_heads: torch.nn.Module | None,
     trace_unit_tokenizer: torch.nn.Module | None,
     trace_unit_factorized_state: torch.nn.Module | None,
@@ -3695,6 +3785,7 @@ def _build_future_semantic_controlled_joint_audit(
         "semantic_fusion.norm": getattr(semantic_fusion, "norm", None),
         "readout_head": readout_head,
         "future_semantic_state_head": future_semantic_state_head,
+        "semantic_state_feedback_adapter": semantic_state_feedback_adapter,
         "semantic_rescue_heads": semantic_rescue_heads,
         "trace_unit_tokenizer": trace_unit_tokenizer,
         "trace_unit_factorized_state": trace_unit_factorized_state,
@@ -3708,6 +3799,7 @@ def _build_future_semantic_controlled_joint_audit(
         "future_semantic_state_head",
         "semantic_fusion.semantic_proj",
         "readout_head",
+        "semantic_state_feedback_adapter",
     }
     disallowed_trainable = {
         name: count
@@ -3756,6 +3848,7 @@ def _build_future_semantic_controlled_joint_audit(
         "stage1_trainable_param_count": stage1_trainable,
         "trace_backbone_trainable": bool(trace_main_trainable),
         "future_semantic_state_head_trainable": bool(head_trainable),
+        "semantic_state_feedback_adapter_trainable": bool(int(trainable_by_module["semantic_state_feedback_adapter"]) > 0),
         "disallowed_trainable_param_count_by_module": disallowed_trainable,
         "controlled_joint_boundary_ok": boundary_ok,
     }
@@ -3768,6 +3861,7 @@ def _configure_future_semantic_controlled_joint_trainability(
     semantic_fusion: torch.nn.Module,
     readout_head: torch.nn.Module,
     future_semantic_state_head: torch.nn.Module | None,
+    semantic_state_feedback_adapter: torch.nn.Module | None,
     semantic_rescue_heads: torch.nn.Module | None,
     trace_unit_tokenizer: torch.nn.Module | None,
     trace_unit_factorized_state: torch.nn.Module | None,
@@ -3782,6 +3876,7 @@ def _configure_future_semantic_controlled_joint_trainability(
         semantic_fusion,
         readout_head,
         future_semantic_state_head,
+        semantic_state_feedback_adapter,
         semantic_rescue_heads,
         trace_unit_tokenizer,
         trace_unit_factorized_state,
@@ -3790,6 +3885,7 @@ def _configure_future_semantic_controlled_joint_trainability(
     ]:
         _freeze_module(module)
     _unfreeze_module(future_semantic_state_head)
+    _unfreeze_module(semantic_state_feedback_adapter)
     if bool(train_semantic_fusion_proj):
         _unfreeze_module(getattr(semantic_fusion, "semantic_proj", None))
     if bool(train_readout_head):
@@ -4023,6 +4119,16 @@ def main() -> None:
                 or int(args.future_hypothesis_count) > 1,
             )
         ).to(device)
+    semantic_state_feedback_adapter: SemanticStateFeedbackAdapter | None = None
+    if bool(args.enable_semantic_state_feedback):
+        semantic_state_feedback_adapter = SemanticStateFeedbackAdapter(
+            SemanticStateFeedbackConfig(
+                hidden_dim=int(fusion_hidden_dim),
+                semantic_embedding_dim=int(args.future_semantic_embedding_dim),
+                identity_embedding_dim=int(args.future_semantic_embedding_dim),
+                alpha=float(args.semantic_state_feedback_alpha),
+            )
+        ).to(device)
     trace_unit_tokenizer: TraceUnitTokenizer | None = None
     trace_unit_factorized_state: TraceUnitFactorizedState | None = None
     trace_unit_handshake: TraceUnitHandshake | None = None
@@ -4100,6 +4206,7 @@ def main() -> None:
             trace_unit_factorized_state,
             trace_unit_handshake,
             trace_unit_broadcast,
+            semantic_state_feedback_adapter,
         ]:
             _freeze_module(module)
         for param in future_semantic_state_head.parameters():
@@ -4113,6 +4220,7 @@ def main() -> None:
             semantic_fusion=semantic_fusion,
             readout_head=readout_head,
             future_semantic_state_head=future_semantic_state_head,
+            semantic_state_feedback_adapter=semantic_state_feedback_adapter,
             semantic_rescue_heads=semantic_rescue_heads,
             trace_unit_tokenizer=trace_unit_tokenizer,
             trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4121,6 +4229,9 @@ def main() -> None:
             train_semantic_fusion_proj=bool(args.future_semantic_joint_train_semantic_fusion_proj),
             train_readout_head=bool(args.future_semantic_joint_train_readout_head),
         )
+        if semantic_state_feedback_adapter is not None:
+            for param in semantic_state_feedback_adapter.parameters():
+                param.requires_grad = True
 
     future_semantic_head_only_warmup_audit = _build_future_semantic_head_only_audit(
         enabled=bool(args.future_semantic_head_only_warmup),
@@ -4131,6 +4242,7 @@ def main() -> None:
         semantic_fusion=semantic_fusion,
         readout_head=readout_head,
         future_semantic_state_head=future_semantic_state_head,
+        semantic_state_feedback_adapter=semantic_state_feedback_adapter,
         semantic_rescue_heads=semantic_rescue_heads,
         trace_unit_tokenizer=trace_unit_tokenizer,
         trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4146,6 +4258,7 @@ def main() -> None:
         semantic_fusion=semantic_fusion,
         readout_head=readout_head,
         future_semantic_state_head=future_semantic_state_head,
+        semantic_state_feedback_adapter=semantic_state_feedback_adapter,
         semantic_rescue_heads=semantic_rescue_heads,
         trace_unit_tokenizer=trace_unit_tokenizer,
         trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4160,6 +4273,8 @@ def main() -> None:
     modules_for_training: List[torch.nn.Module] = [semantic_encoder, semantic_fusion, readout_head]
     if future_semantic_state_head is not None:
         modules_for_training.append(future_semantic_state_head)
+    if semantic_state_feedback_adapter is not None:
+        modules_for_training.append(semantic_state_feedback_adapter)
     if semantic_rescue_heads is not None:
         modules_for_training.append(semantic_rescue_heads)
     for optional_module in [
@@ -4247,6 +4362,12 @@ def main() -> None:
         "future_semantic_joint_train_semantic_fusion_proj": bool(args.future_semantic_joint_train_semantic_fusion_proj),
         "future_semantic_joint_train_readout_head": bool(args.future_semantic_joint_train_readout_head),
         "future_semantic_controlled_joint_audit": future_semantic_controlled_joint_audit,
+        "semantic_state_feedback_enabled": bool(args.enable_semantic_state_feedback),
+        "semantic_state_feedback_mode": str(args.semantic_state_feedback_mode),
+        "semantic_state_feedback_alpha": float(args.semantic_state_feedback_alpha),
+        "semantic_state_feedback_stopgrad_state": bool(args.semantic_state_feedback_stopgrad_state),
+        "semantic_state_feedback_trainable_params": _count_trainable_params(semantic_state_feedback_adapter),
+        "semantic_state_feedback_total_params": _count_total_params(semantic_state_feedback_adapter),
         "future_semantic_state_head_default_enabled": False,
         "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
         "confidence_gating_margin_threshold": float(args.confidence_gating_margin_threshold),
@@ -4364,6 +4485,8 @@ def main() -> None:
         readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
         if future_semantic_state_head is not None and isinstance(payload.get("future_semantic_state_head_state_dict", None), dict):
             future_semantic_state_head.load_state_dict(payload["future_semantic_state_head_state_dict"], strict=False)
+        if semantic_state_feedback_adapter is not None and isinstance(payload.get("semantic_state_feedback_adapter_state_dict", None), dict):
+            semantic_state_feedback_adapter.load_state_dict(payload["semantic_state_feedback_adapter_state_dict"], strict=False)
         if trace_unit_tokenizer is not None and isinstance(payload.get("trace_unit_tokenizer_state_dict", None), dict):
             trace_unit_tokenizer.load_state_dict(payload["trace_unit_tokenizer_state_dict"], strict=False)
         if trace_unit_factorized_state is not None and isinstance(payload.get("trace_unit_factorized_state_state_dict", None), dict):
@@ -4400,6 +4523,8 @@ def main() -> None:
     readout_head.train()
     if future_semantic_state_head is not None:
         future_semantic_state_head.train()
+    if semantic_state_feedback_adapter is not None:
+        semantic_state_feedback_adapter.train()
     if semantic_rescue_heads is not None:
         semantic_rescue_heads.train()
     if trace_unit_tokenizer is not None:
@@ -4424,6 +4549,8 @@ def main() -> None:
             trace_unit_handshake.eval()
         if trace_unit_broadcast is not None:
             trace_unit_broadcast.eval()
+        if semantic_state_feedback_adapter is not None:
+            semantic_state_feedback_adapter.eval()
         if future_semantic_state_head is not None:
             future_semantic_state_head.train()
     elif bool(args.future_semantic_controlled_joint):
@@ -4446,6 +4573,8 @@ def main() -> None:
             trace_unit_broadcast.train()
         if future_semantic_state_head is not None:
             future_semantic_state_head.train()
+        if semantic_state_feedback_adapter is not None:
+            semantic_state_feedback_adapter.train()
 
     train_iter = iter(train_loader)
     step_checkpoints: List[str] = sorted(str(p) for p in output_dir.glob("step_*.pt"))
@@ -4608,6 +4737,7 @@ def main() -> None:
             semantic_fusion=semantic_fusion,
             readout_head=readout_head,
             future_semantic_state_head=future_semantic_state_head,
+            semantic_state_feedback_adapter=semantic_state_feedback_adapter,
             semantic_rescue_heads=semantic_rescue_heads,
             trace_unit_tokenizer=trace_unit_tokenizer,
             trace_unit_factorized_state=trace_unit_factorized_state,
@@ -4679,6 +4809,11 @@ def main() -> None:
             semantic_source_mainline=str(args.semantic_source_mainline),
             allow_stage1_grad=bool(pre_stage1_trainable_parameter_count > 0),
             future_semantic_state_head=future_semantic_state_head,
+            semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+            semantic_state_feedback_enabled=bool(args.enable_semantic_state_feedback),
+            semantic_state_feedback_alpha=float(args.semantic_state_feedback_alpha),
+            semantic_state_feedback_stopgrad_state=bool(args.semantic_state_feedback_stopgrad_state),
+            semantic_state_feedback_mode=str(args.semantic_state_feedback_mode),
         )
 
         main_rollout_reweight_strength = 0.0 if str(rescue_mode).startswith("v2") else float(args.semantic_hard_curriculum_weight)
@@ -5013,6 +5148,11 @@ def main() -> None:
                 fut_len=int(args.fut_len),
                 max_batches=int(args.eval_max_batches),
                 semantic_source_mainline=str(args.semantic_source_mainline),
+                semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+                semantic_state_feedback_enabled=bool(args.enable_semantic_state_feedback),
+                semantic_state_feedback_alpha=float(args.semantic_state_feedback_alpha),
+                semantic_state_feedback_stopgrad_state=bool(args.semantic_state_feedback_stopgrad_state),
+                semantic_state_feedback_mode=str(args.semantic_state_feedback_mode),
             )
             semantic_hard_payload: Dict[str, Any] | None = None
             if semantic_hard_loader is not None:
@@ -5035,6 +5175,11 @@ def main() -> None:
                     fut_len=int(args.fut_len),
                     max_batches=-1,
                     semantic_source_mainline=str(args.semantic_source_mainline),
+                    semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+                    semantic_state_feedback_enabled=bool(args.enable_semantic_state_feedback),
+                    semantic_state_feedback_alpha=float(args.semantic_state_feedback_alpha),
+                    semantic_state_feedback_stopgrad_state=bool(args.semantic_state_feedback_stopgrad_state),
+                    semantic_state_feedback_mode=str(args.semantic_state_feedback_mode),
                 )
                 semantic_hard_payload = {
                     "metrics": hard_metrics,
@@ -5065,6 +5210,7 @@ def main() -> None:
                     semantic_fusion=semantic_fusion,
                     readout_head=readout_head,
                     future_semantic_state_head=future_semantic_state_head,
+                    semantic_state_feedback_adapter=semantic_state_feedback_adapter,
                     semantic_rescue_heads=semantic_rescue_heads,
                     trace_unit_tokenizer=trace_unit_tokenizer,
                     trace_unit_factorized_state=trace_unit_factorized_state,
@@ -5094,6 +5240,7 @@ def main() -> None:
                         semantic_fusion=semantic_fusion,
                         readout_head=readout_head,
                         future_semantic_state_head=future_semantic_state_head,
+                        semantic_state_feedback_adapter=semantic_state_feedback_adapter,
                         semantic_rescue_heads=semantic_rescue_heads,
                         trace_unit_tokenizer=trace_unit_tokenizer,
                         trace_unit_factorized_state=trace_unit_factorized_state,
@@ -5175,6 +5322,7 @@ def main() -> None:
                 semantic_fusion=semantic_fusion,
                 readout_head=readout_head,
                 future_semantic_state_head=future_semantic_state_head,
+                semantic_state_feedback_adapter=semantic_state_feedback_adapter,
                 semantic_rescue_heads=semantic_rescue_heads,
                 trace_unit_tokenizer=trace_unit_tokenizer,
                 trace_unit_factorized_state=trace_unit_factorized_state,

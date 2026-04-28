@@ -319,6 +319,8 @@ def _build_full_model_from_checkpoint(
     *,
     reappearance_random_seed: int | None = None,
     force_random_reappearance_head: bool = False,
+    enable_semantic_state_feedback: bool = False,
+    semantic_state_feedback_alpha: float = 0.05,
 ) -> dict[str, Any]:
     _bootstrap_repo_imports(repo_root)
     from stwm.tracewm_v2_stage2.trainers import train_tracewm_stage2_smalltrain as trainer
@@ -357,6 +359,16 @@ def _build_full_model_from_checkpoint(
             or int(args.future_hypothesis_count) > 1,
         )
     ).to(device)
+    semantic_state_feedback_adapter = None
+    if bool(enable_semantic_state_feedback) or isinstance(payload.get("semantic_state_feedback_adapter_state_dict"), dict):
+        semantic_state_feedback_adapter = trainer.SemanticStateFeedbackAdapter(
+            trainer.SemanticStateFeedbackConfig(
+                hidden_dim=fusion_hidden_dim,
+                semantic_embedding_dim=int(args.future_semantic_embedding_dim),
+                identity_embedding_dim=int(args.future_semantic_embedding_dim),
+                alpha=float(semantic_state_feedback_alpha),
+            )
+        ).to(device)
 
     structure_mode = str(args.stage2_structure_mode).strip().lower()
     trace_unit_tokenizer = trace_unit_factorized_state = trace_unit_handshake = trace_unit_broadcast = None
@@ -428,6 +440,19 @@ def _build_full_model_from_checkpoint(
         "reappearance_random_seed": reappearance_random_seed,
         "reset_reappearance_heads": reset_reappearance_heads,
     }
+    if semantic_state_feedback_adapter is not None:
+        missing, unexpected = semantic_state_feedback_adapter.load_state_dict(
+            payload.get("semantic_state_feedback_adapter_state_dict", {}),
+            strict=False,
+        )
+        load_report["semantic_state_feedback_adapter"] = {
+            "loaded_keys": len(payload.get("semantic_state_feedback_adapter_state_dict", {}) or {}),
+            "missing": len(missing),
+            "unexpected": len(unexpected),
+            "missing_keys": [str(k) for k in missing],
+            "unexpected_keys": [str(k) for k in unexpected],
+            "random_init": not isinstance(payload.get("semantic_state_feedback_adapter_state_dict"), dict),
+        }
     optional = [
         ("trace_unit_tokenizer", trace_unit_tokenizer, "trace_unit_tokenizer_state_dict"),
         ("trace_unit_factorized_state", trace_unit_factorized_state, "trace_unit_factorized_state_state_dict"),
@@ -445,6 +470,7 @@ def _build_full_model_from_checkpoint(
         semantic_fusion,
         readout_head,
         future_semantic_state_head,
+        semantic_state_feedback_adapter,
         trace_unit_tokenizer,
         trace_unit_factorized_state,
         trace_unit_handshake,
@@ -487,6 +513,7 @@ def _build_full_model_from_checkpoint(
         "semantic_fusion": semantic_fusion,
         "readout_head": readout_head,
         "future_semantic_state_head": future_semantic_state_head,
+        "semantic_state_feedback_adapter": semantic_state_feedback_adapter,
         "trace_unit_tokenizer": trace_unit_tokenizer,
         "trace_unit_factorized_state": trace_unit_factorized_state,
         "trace_unit_handshake": trace_unit_handshake,
@@ -604,6 +631,7 @@ def _item_from_state(
     target_coord: torch.Tensor | None,
     valid_mask: torch.Tensor | None,
     visibility_targets: Any | None = None,
+    feedback_info: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     validation = state.validate(strict=False)
     visibility_prob = torch.sigmoid(state.future_visibility_logit)
@@ -743,6 +771,13 @@ def _item_from_state(
         "future_uncertainty_max": _tensor_stats(uncertainty)["max"],
         "future_trace_coord_error": coord_error,
         "target_visibility": 1 if valid_mask is not None and bool(valid_mask.any().item()) else None,
+        "semantic_state_feedback_enabled": bool((feedback_info or {}).get("semantic_state_feedback_enabled", False)),
+        "semantic_state_feedback_mode": (feedback_info or {}).get("semantic_state_feedback_mode"),
+        "semantic_state_feedback_alpha": (feedback_info or {}).get("semantic_state_feedback_alpha"),
+        "feedback_gate_mean": (feedback_info or {}).get("feedback_gate_mean", 0.0),
+        "feedback_gate_std": (feedback_info or {}).get("feedback_gate_std", 0.0),
+        "feedback_gate_saturation_ratio": (feedback_info or {}).get("feedback_gate_saturation_ratio", 0.0),
+        "feedback_delta_norm": (feedback_info or {}).get("feedback_delta_norm", 0.0),
         "future_hypothesis_logits_shape": list(state.future_hypothesis_logits.shape) if state.future_hypothesis_logits is not None else None,
         "future_hypothesis_logits_mean": _tensor_stats(state.future_hypothesis_logits)["mean"] if state.future_hypothesis_logits is not None else None,
         "future_hypothesis_trace_coord_shape": list(state.future_hypothesis_trace_coord.shape) if state.future_hypothesis_trace_coord is not None else None,
@@ -763,6 +798,10 @@ def export(
     reappearance_mask_policy: str = "at_risk_only",
     reappearance_random_seed: int | None = None,
     force_random_reappearance_head: bool = False,
+    enable_semantic_state_feedback: bool = False,
+    semantic_state_feedback_alpha: float = 0.05,
+    semantic_state_feedback_mode: str = "readout_only",
+    semantic_state_feedback_stopgrad_state: bool = True,
 ) -> dict[str, Any]:
     device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
     exported_items: list[dict[str, Any]] = []
@@ -816,6 +855,8 @@ def export(
             max_items,
             reappearance_random_seed=reappearance_random_seed,
             force_random_reappearance_head=force_random_reappearance_head,
+            enable_semantic_state_feedback=bool(enable_semantic_state_feedback),
+            semantic_state_feedback_alpha=float(semantic_state_feedback_alpha),
         )
         build_visibility_targets = _import_visibility_builder(repo_root)
         checkpoint_payload = full["payload"]
@@ -838,6 +879,11 @@ def export(
                         semantic_fusion=full["semantic_fusion"],
                         readout_head=full["readout_head"],
                         future_semantic_state_head=full["future_semantic_state_head"],
+                        semantic_state_feedback_adapter=full.get("semantic_state_feedback_adapter"),
+                        semantic_state_feedback_enabled=bool(enable_semantic_state_feedback),
+                        semantic_state_feedback_alpha=float(semantic_state_feedback_alpha),
+                        semantic_state_feedback_stopgrad_state=bool(semantic_state_feedback_stopgrad_state),
+                        semantic_state_feedback_mode=str(semantic_state_feedback_mode),
                         structure_mode=str(full["structure_mode"]),
                         trace_unit_tokenizer=full["trace_unit_tokenizer"],
                         trace_unit_factorized_state=full["trace_unit_factorized_state"],
@@ -855,6 +901,11 @@ def export(
                         semantic_fusion=full["semantic_fusion"],
                         readout_head=full["readout_head"],
                         future_semantic_state_head=full["future_semantic_state_head"],
+                        semantic_state_feedback_adapter=full.get("semantic_state_feedback_adapter"),
+                        semantic_state_feedback_enabled=bool(enable_semantic_state_feedback),
+                        semantic_state_feedback_alpha=float(semantic_state_feedback_alpha),
+                        semantic_state_feedback_stopgrad_state=bool(semantic_state_feedback_stopgrad_state),
+                        semantic_state_feedback_mode=str(semantic_state_feedback_mode),
                         structure_mode=str(full["structure_mode"]),
                         trace_unit_tokenizer=full["trace_unit_tokenizer"],
                         trace_unit_factorized_state=full["trace_unit_factorized_state"],
@@ -888,6 +939,7 @@ def export(
                         target_coord=out.get("target_coord"),
                         valid_mask=out.get("valid_mask"),
                         visibility_targets=visibility_targets,
+                        feedback_info=out.get("semantic_state_feedback_info", {}),
                     )
                 )
                 count += 1
@@ -944,6 +996,26 @@ def export(
         float(item["future_reappearance_event_target_positive_rate"])
         for item in exported_items
         if isinstance(item.get("future_reappearance_event_target_positive_rate"), (int, float))
+    ]
+    feedback_gate_means = [
+        float(item["feedback_gate_mean"])
+        for item in exported_items
+        if isinstance(item.get("feedback_gate_mean"), (int, float))
+    ]
+    feedback_gate_stds = [
+        float(item["feedback_gate_std"])
+        for item in exported_items
+        if isinstance(item.get("feedback_gate_std"), (int, float))
+    ]
+    feedback_delta_norms = [
+        float(item["feedback_delta_norm"])
+        for item in exported_items
+        if isinstance(item.get("feedback_delta_norm"), (int, float))
+    ]
+    feedback_gate_saturations = [
+        float(item["feedback_gate_saturation_ratio"])
+        for item in exported_items
+        if isinstance(item.get("feedback_gate_saturation_ratio"), (int, float))
     ]
     reappearance_risk_slot_ratios = [
         float(item["future_reappearance_risk_slot_ratio"])
@@ -1057,6 +1129,14 @@ def export(
         "future_reappearance_risk_slot_ratio": float(sum(reappearance_risk_slot_ratios) / max(len(reappearance_risk_slot_ratios), 1)) if reappearance_risk_slot_ratios else None,
         "future_reappearance_risk_entry_ratio": float(sum(reappearance_risk_entry_ratios) / max(len(reappearance_risk_entry_ratios), 1)) if reappearance_risk_entry_ratios else None,
         "future_reappearance_mask_policy": str(reappearance_mask_policy),
+        "semantic_state_feedback_enabled": bool(enable_semantic_state_feedback),
+        "semantic_state_feedback_mode": str(semantic_state_feedback_mode),
+        "semantic_state_feedback_alpha": float(semantic_state_feedback_alpha),
+        "semantic_state_feedback_stopgrad_state": bool(semantic_state_feedback_stopgrad_state),
+        "feedback_gate_mean": float(sum(feedback_gate_means) / max(len(feedback_gate_means), 1)),
+        "feedback_gate_std": float(sum(feedback_gate_stds) / max(len(feedback_gate_stds), 1)),
+        "feedback_gate_saturation_ratio": float(sum(feedback_gate_saturations) / max(len(feedback_gate_saturations), 1)),
+        "feedback_delta_norm": float(sum(feedback_delta_norms) / max(len(feedback_delta_norms), 1)),
         "current_export_data_source": current_export_data_source,
         "old_association_report_used": False,
         "top1_mrr_false_confuser_exported": False,
@@ -1088,6 +1168,11 @@ def parse_args() -> Any:
     p.add_argument("--future-reappearance-mask-policy", default="at_risk_only", choices=["at_risk_only", "all_slots"])
     p.add_argument("--reappearance-random-seed", type=int, default=None)
     p.add_argument("--force-random-reappearance-head", action="store_true")
+    p.add_argument("--enable-semantic-state-feedback", action="store_true")
+    p.add_argument("--semantic-state-feedback-alpha", type=float, default=0.05)
+    p.add_argument("--semantic-state-feedback-mode", default="readout_only", choices=["readout_only", "hidden_residual"])
+    p.add_argument("--semantic-state-feedback-stopgrad-state", action="store_true", default=True)
+    p.add_argument("--no-semantic-state-feedback-stopgrad-state", action="store_false", dest="semantic_state_feedback_stopgrad_state")
     return p.parse_args()
 
 
@@ -1107,6 +1192,10 @@ def main() -> None:
         reappearance_mask_policy=str(args.future_reappearance_mask_policy),
         reappearance_random_seed=args.reappearance_random_seed,
         force_random_reappearance_head=bool(args.force_random_reappearance_head),
+        enable_semantic_state_feedback=bool(args.enable_semantic_state_feedback),
+        semantic_state_feedback_alpha=float(args.semantic_state_feedback_alpha),
+        semantic_state_feedback_mode=str(args.semantic_state_feedback_mode),
+        semantic_state_feedback_stopgrad_state=bool(args.semantic_state_feedback_stopgrad_state),
     )
 
 
