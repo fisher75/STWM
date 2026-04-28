@@ -276,7 +276,10 @@ def train_and_eval(
     epochs: int,
     lr: float,
     hidden_dim: int,
+    seed: int = 0,
+    probe_output_dir: Path | None = None,
 ) -> dict[str, Any]:
+    torch.manual_seed(int(seed))
     dataset = load_json(dataset_path)
     records = dataset.get("records") if isinstance(dataset, dict) else []
     records = [r for r in records if isinstance(r, dict)]
@@ -421,10 +424,43 @@ def train_and_eval(
         b = no_state_subset.get(subset, {}).get("candidate_AP")
         subset_signal[subset] = bool(isinstance(a, (int, float)) and isinstance(b, (int, float)) and float(a) > float(b))
 
+    probe_dir = probe_output_dir or Path("outputs/alignment_probes/stwm_semantic_state_alignment_v6")
+    probe_dir.mkdir(parents=True, exist_ok=True)
+    probe_paths = {
+        "semantic_probe": probe_dir / f"semantic_probe_seed{int(seed)}.pt",
+        "identity_probe": probe_dir / f"identity_probe_seed{int(seed)}.pt",
+        "semantic_identity_probe": probe_dir / f"semantic_identity_probe_seed{int(seed)}.pt",
+        "config": probe_dir / f"alignment_probe_config_seed{int(seed)}.json",
+    }
+    common_cfg = {
+        "dataset": str(dataset_path),
+        "seed": int(seed),
+        "semantic_input_dim": int(sem_all.shape[1]),
+        "identity_input_dim": int(ident_all.shape[1]),
+        "semantic_identity_input_dim": int(si_all.shape[1]),
+        "candidate_output_dim": int(cand_all.shape[1]),
+        "hidden_dim": int(hidden_dim),
+        "epochs": int(epochs),
+        "lr": float(lr),
+        "split_rule": dataset.get("split_rule"),
+        "no_backbone_update": True,
+        "no_rollout_candidate_leakage": True,
+    }
+    torch.save({"state_dict": sem_model.state_dict(), "config": {**common_cfg, "probe": "semantic_alignment_probe"}}, probe_paths["semantic_probe"])
+    torch.save({"state_dict": id_model.state_dict(), "config": {**common_cfg, "probe": "identity_alignment_probe"}}, probe_paths["identity_probe"])
+    torch.save(
+        {"state_dict": si_model.state_dict(), "config": {**common_cfg, "probe": "semantic_identity_alignment_probe"}},
+        probe_paths["semantic_identity_probe"],
+    )
+    write_json(probe_paths["config"], common_cfg)
+
     train_payload = {
         "generated_at_utc": now_iso(),
         "dataset": str(dataset_path),
         "alignment_probe_trained": True,
+        "alignment_probe_weights_saved": True,
+        "alignment_probe_weight_paths": {k: str(v) for k, v in probe_paths.items()},
+        "seed": int(seed),
         "no_backbone_update": True,
         "no_rollout_candidate_leakage": True,
         "train_split_size": len(dev_records),
@@ -520,6 +556,8 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=250)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--hidden-dim", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--probe-output-dir", default="outputs/alignment_probes/stwm_semantic_state_alignment_v6")
     args = parser.parse_args()
     train_and_eval(
         dataset_path=Path(args.dataset),
@@ -529,6 +567,8 @@ def main() -> None:
         epochs=int(args.epochs),
         lr=float(args.lr),
         hidden_dim=int(args.hidden_dim),
+        seed=int(args.seed),
+        probe_output_dir=Path(args.probe_output_dir),
     )
 
 

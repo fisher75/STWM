@@ -1,0 +1,44 @@
+{
+  "aligned_predicted_state_vs_unaligned_heldout_gains": {
+    "AP": 0.0074858243470012215,
+    "AUROC": 0.01825395232903715,
+    "top1": -0.06077348066298344
+  },
+  "current_evidence_strong_enough_for_paper_claim": false,
+  "current_probe_loss_type": "pointwise_BCE_over_candidate_records",
+  "expected_conclusion": "weak_positive_needs_robustness",
+  "generated_at_utc": "2026-04-28T15:47:36.866600+00:00",
+  "heldout_used_for_training_or_tuning": false,
+  "listwise_per_item_loss_used": false,
+  "model_weights_saved_for_reproducibility": false,
+  "notes": "V5 posterior gain over no_predicted_state is positive but very small; appearance-only remains much stronger, so listwise and paired significance are required before auxiliary paper use.",
+  "paper_world_model_claimable": false,
+  "posterior_v5_vs_appearance_only_heldout_gap": {
+    "AP": -0.1414468209965944,
+    "AUROC": -0.051123328718288286,
+    "top1": -0.1270718232044199
+  },
+  "posterior_v5_vs_distance_only_heldout_gains": {
+    "AP": 0.0030950913760108834,
+    "AUROC": 0.018721030559624374,
+    "top1": 0.022099447513812154
+  },
+  "posterior_v5_vs_no_predicted_state_heldout_gains": {
+    "AP": 0.0006433106724008236,
+    "AUROC": 0.008634816167372272,
+    "top1": 0.022099447513812154
+  },
+  "probe_trainable_params": {
+    "identity_alignment_probe": 66305,
+    "semantic_alignment_probe": 66305,
+    "semantic_identity_alignment_probe": 132353
+  },
+  "semantic_identity_probe_exceeds_100k_params": true,
+  "sources": [
+    "reports/stwm_semantic_state_measurement_alignment_v1_decision_20260428.json",
+    "reports/stwm_external_candidate_scoring_v5_dev_heldout_summary_20260428.json",
+    "reports/stwm_semantic_state_measurement_alignment_probe_train_v1_20260428.json",
+    "reports/stwm_external_candidate_scoring_v5_posterior_v5_eval_20260428.json",
+    "reports/stwm_external_candidate_scoring_v5_posterior_v5_no_predicted_state_eval_20260428.json"
+  ]
+}

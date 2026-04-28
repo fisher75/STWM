@@ -1,0 +1,17 @@
+{
+  "allowed": [
+    "Alignment probe is a measurement-space calibration for evaluating FutureSemanticTraceState.",
+    "Listwise loss is allowed because candidate identity is an evaluation measurement, not rollout input.",
+    "Candidate features are never used in rollout."
+  ],
+  "forbidden": [
+    "Updating STWM backbone with future candidates.",
+    "Training on heldout.",
+    "Claiming weak AP gain as paper proof without bootstrap.",
+    "Hiding appearance-only dominance.",
+    "Calling STWM a SAM2/CoTracker plugin.",
+    "Claiming external overall SOTA."
+  ],
+  "generated_at_utc": "2026-04-28T16:04:44.879450+00:00",
+  "guardrail_version": "v17"
+}
