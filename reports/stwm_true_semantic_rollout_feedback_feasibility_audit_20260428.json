@@ -1,0 +1,30 @@
+{
+  "current_readout_only_feedback_is_true_rollout_feedback": false,
+  "generated_at_utc": "2026-04-28T10:06:33.924448+00:00",
+  "minimal_scheme": [
+    "At each future step t, compute provisional semantic state for step t.",
+    "Apply a small gated residual into hidden/readout before committing state_seq[t].",
+    "Use stopgrad on semantic state initially.",
+    "Start with teacher-forced one-step feedback, then free-rollout smoke."
+  ],
+  "readout_only_attribution_positive": false,
+  "recommend_immediate_implementation": "no",
+  "recommendation_condition": "Only implement true rollout feedback after readout-only attribution becomes positive or after a new adapter-only mechanism shows measurable effect.",
+  "recommended_insertion_point": "inside _free_rollout_predict loop before writing state_seq[t] or before using the step hidden for the next transition",
+  "report_name": "stwm_true_semantic_rollout_feedback_feasibility_audit",
+  "risks": [
+    "trace rollout drift",
+    "feedback collapse",
+    "error accumulation",
+    "loss entanglement"
+  ],
+  "safe_implementation_proposal": {
+    "adapter_only_trainable_initially": true,
+    "alpha_max": 0.02,
+    "free_rollout_smoke_second": true,
+    "one_step_feedback_only": true,
+    "stage1_frozen": true,
+    "teacher_forced_first": true
+  },
+  "why_not_true_rollout_feedback": "The adapter is applied after the rollout loop to future_hidden/readout and does not affect autoregressive state_seq or next-step hidden dynamics."
+}

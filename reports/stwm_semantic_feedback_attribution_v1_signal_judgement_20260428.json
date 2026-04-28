@@ -1,0 +1,26 @@
+{
+  "adapter_only_signal_positive": false,
+  "adapter_only_skipped_reason": "same-checkpoint enabled, disabled, zero-delta, and alpha sweep metrics are identical; no measurable adapter residual effect to justify adapter-only training",
+  "adapter_only_training_started": false,
+  "alpha_sensitivity_observed": false,
+  "alpha_sweep_report": "reports/stwm_semantic_feedback_v1_ablation_alpha_sweep_20260428.json",
+  "claim_correction_report": "reports/stwm_semantic_feedback_v1_claim_correction_20260428.json",
+  "current_feedback_claim_level": "no_adapter_effect",
+  "enabled_minus_disabled_event_AP": 0.0,
+  "enabled_minus_disabled_per_horizon_AP": 0.0,
+  "enabled_minus_zero_delta_event_AP": 0.0,
+  "generated_at_utc": "2026-04-28T10:06:33.924448+00:00",
+  "notes": [
+    "Feedback V1 checkpoint can be described as readout refinement, but not as adapter feedback attribution.",
+    "True autoregressive semantic feedback remains untested."
+  ],
+  "paper_world_model_claimable": "false",
+  "recommended_next_step_choice": "keep_feedback_v1_as_readout_refinement",
+  "report_name": "stwm_semantic_feedback_attribution_v1_signal_judgement",
+  "same_checkpoint_disabled_event_AP": 0.8094325751004988,
+  "same_checkpoint_disabled_per_horizon_AP": 0.16470854114510228,
+  "same_checkpoint_enabled_event_AP": 0.8094325751004988,
+  "same_checkpoint_enabled_per_horizon_AP": 0.16470854114510228,
+  "same_checkpoint_zero_delta_event_AP": 0.8094325751004988,
+  "true_rollout_feedback_ready_to_implement": "false"
+}

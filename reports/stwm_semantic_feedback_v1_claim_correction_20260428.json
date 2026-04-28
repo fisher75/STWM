@@ -1,0 +1,23 @@
+{
+  "allowed_claims": [
+    "readout-only semantic feedback setting gives a small feasibility signal without trace regression",
+    "current mechanism is semantic-state-informed readout refinement"
+  ],
+  "current_feedback_mode": "readout_only",
+  "current_improvement_cannot_yet_be_attributed_solely_to_feedback_adapter": true,
+  "current_mechanism": "semantic_state_informed_readout_refinement",
+  "forbidden_claims": [
+    "semantic-state feedback rollout is validated",
+    "semantic state affects autoregressive rollout",
+    "feedback adapter alone improves results",
+    "readout_only feedback is true rollout feedback"
+  ],
+  "generated_at_utc": "2026-04-28T09:32:34.367042+00:00",
+  "mechanism_detail": "SemanticStateFeedbackAdapter is applied after the free-rollout loop to future_hidden/readout; it does not alter autoregressive state_seq or next-step rollout dynamics.",
+  "next_required_evidence": "same-checkpoint enabled/disabled/zero-delta attribution before expanding feedback training",
+  "paper_world_model_claimable": "unclear",
+  "reason": "Feedback V1 training updated future_semantic_state_head, semantic_state_feedback_adapter, semantic_fusion.semantic_proj, and readout_head; same-checkpoint enabled/disabled attribution is required.",
+  "report_name": "stwm_semantic_feedback_v1_claim_correction",
+  "semantic_state_feedback_in_free_rollout": false,
+  "true_autoregressive_semantic_feedback": false
+}
