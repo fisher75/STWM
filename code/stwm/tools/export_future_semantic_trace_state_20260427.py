@@ -50,12 +50,18 @@ def _import_visibility_builder(repo_root: Path):
 def _import_external_query_builder(repo_root: Path):
     _bootstrap_repo_imports(repo_root)
     from stwm.tools.external_hardcase_query_batch_builder_20260428 import (
+        build_item_candidate_measurement_cache,
         build_candidate_measurement_features,
         build_query_batch_from_item,
         group_candidate_records,
     )
 
-    return build_query_batch_from_item, group_candidate_records, build_candidate_measurement_features
+    return (
+        build_query_batch_from_item,
+        group_candidate_records,
+        build_candidate_measurement_features,
+        build_item_candidate_measurement_cache,
+    )
 
 
 def now_iso() -> str:
@@ -233,6 +239,9 @@ def _score_external_candidates(
     item: dict[str, Any],
     candidate_score_mode: str = "posterior_v1",
     candidate_feature_builder: Any | None = None,
+    candidate_measurement_cache: dict[str, Any] | None = None,
+    candidate_measurement_feature_mode: str = "weak_rgb_bbox_stats",
+    posterior_v4_weights: dict[str, float] | None = None,
 ) -> dict[str, Any]:
     import math
 
@@ -253,18 +262,40 @@ def _score_external_candidates(
     distance_scores: list[float] = []
     semantic_scores: list[float] = []
     identity_scores: list[float] = []
+    target_appearance_scores: list[float] = []
+    predicted_semantic_scores: list[float] = []
+    predicted_identity_scores: list[float] = []
     prior_scores: list[float] = []
     posterior_scores: list[float] = []
+    posterior_v4_scores: list[float] = []
     distances: list[float | None] = []
     candidate_features: list[dict[str, Any]] = []
     feature_sources: list[str] = []
     mode = str(candidate_score_mode)
+    weights = {
+        "distance": 0.30,
+        "target_appearance": 0.25,
+        "predicted_semantic": 0.20,
+        "predicted_identity": 0.15,
+        "priors": 0.10,
+    }
+    if isinstance(posterior_v4_weights, dict):
+        weights.update({k: float(v) for k, v in posterior_v4_weights.items() if k in weights})
     feature_needed = mode in {
         "semantic_only",
         "identity_only",
         "posterior_v1",
         "posterior_no_distance",
         "posterior_no_semantic",
+        "weak_posterior_v3",
+        "target_candidate_appearance_only",
+        "predicted_semantic_to_candidate",
+        "predicted_identity_to_candidate",
+        "predicted_semantic_identity_to_candidate",
+        "posterior_v4",
+        "posterior_v4_no_distance",
+        "posterior_v4_no_semantic_identity",
+        "posterior_v4_no_target_candidate_appearance",
     }
     for cand in candidates:
         center = _candidate_center(cand if isinstance(cand, dict) else {}, image_size)
@@ -273,8 +304,12 @@ def _score_external_candidates(
             distance_scores.append(0.0)
             semantic_scores.append(0.5)
             identity_scores.append(0.5)
+            target_appearance_scores.append(0.5)
+            predicted_semantic_scores.append(0.5)
+            predicted_identity_scores.append(0.5)
             prior_scores.append(0.5)
             posterior_scores.append(0.0)
+            posterior_v4_scores.append(0.0)
             scores.append(0.0)
             continue
         dx = float(pred[0].item()) - float(center[0])
@@ -285,10 +320,18 @@ def _score_external_candidates(
         feature: dict[str, Any] = {
             "feature_source": "candidate_measurement_unavailable",
             "feature_vector": [],
+            "observed_target_feature_vector": [],
             "candidate_feature_used_for_scoring": False,
             "candidate_feature_used_for_rollout": False,
         }
-        if feature_needed and candidate_feature_builder is not None:
+        cid = str(cand.get("candidate_id")) if isinstance(cand, dict) else ""
+        if feature_needed and isinstance(candidate_measurement_cache, dict):
+            feature = (
+                candidate_measurement_cache.get("candidate_features", {}).get(cid)
+                if isinstance(candidate_measurement_cache.get("candidate_features"), dict)
+                else None
+            ) or feature
+        elif feature_needed and candidate_feature_builder is not None:
             feature = candidate_feature_builder(
                 item,
                 cand if isinstance(cand, dict) else {},
@@ -296,29 +339,89 @@ def _score_external_candidates(
                 item.get("future_frame_index"),
             )
         feature_vector = feature.get("feature_vector") if isinstance(feature.get("feature_vector"), list) else []
+        observed_feature_vector = (
+            feature.get("observed_target_feature_vector")
+            if isinstance(feature.get("observed_target_feature_vector"), list)
+            else []
+        )
         if feature_vector:
-            sem_measure = _project_measurement_feature([float(x) for x in feature_vector], int(sem_vec.numel()), "semantic_measurement_v3")
-            id_measure = _project_measurement_feature([float(x) for x in feature_vector], int(ident_vec.numel()), "identity_measurement_v3")
+            if len(feature_vector) == int(sem_vec.numel()):
+                sem_measure = torch.tensor([float(x) for x in feature_vector], dtype=torch.float32)
+            else:
+                sem_measure = _project_measurement_feature([float(x) for x in feature_vector], int(sem_vec.numel()), "semantic_measurement_v4")
+            if len(feature_vector) == int(ident_vec.numel()):
+                id_measure = torch.tensor([float(x) for x in feature_vector], dtype=torch.float32)
+            else:
+                id_measure = _project_measurement_feature([float(x) for x in feature_vector], int(ident_vec.numel()), "identity_measurement_v4")
             semantic_score = _cosine01(sem_vec, sem_measure)
             identity_score = _cosine01(ident_vec, id_measure)
             feature["candidate_feature_used_for_scoring"] = True
         else:
             semantic_score = 0.5
             identity_score = 0.5
+        if feature_vector and observed_feature_vector and len(feature_vector) == len(observed_feature_vector):
+            target_appearance_score = _cosine01(
+                torch.tensor([float(x) for x in observed_feature_vector], dtype=torch.float32),
+                torch.tensor([float(x) for x in feature_vector], dtype=torch.float32),
+            )
+        else:
+            target_appearance_score = 0.5
         posterior_score = (
             0.45 * dist_score
             + 0.20 * semantic_score
             + 0.20 * identity_score
             + 0.15 * prior_score
         )
+        posterior_v4_score = (
+            weights["distance"] * dist_score
+            + weights["target_appearance"] * target_appearance_score
+            + weights["predicted_semantic"] * semantic_score
+            + weights["predicted_identity"] * identity_score
+            + weights["priors"] * prior_score
+        )
         if mode == "distance_only":
             score = dist_score
+        elif mode == "weak_posterior_v3":
+            score = posterior_score
         elif mode == "priors_only":
             score = prior_score
         elif mode == "semantic_only":
             score = semantic_score
         elif mode == "identity_only":
             score = identity_score
+        elif mode == "target_candidate_appearance_only":
+            score = target_appearance_score
+        elif mode == "predicted_semantic_to_candidate":
+            score = semantic_score
+        elif mode == "predicted_identity_to_candidate":
+            score = identity_score
+        elif mode == "predicted_semantic_identity_to_candidate":
+            score = 0.5 * semantic_score + 0.5 * identity_score
+        elif mode == "posterior_v4":
+            score = posterior_v4_score
+        elif mode == "posterior_v4_no_distance":
+            denom = max(weights["target_appearance"] + weights["predicted_semantic"] + weights["predicted_identity"] + weights["priors"], 1e-6)
+            score = (
+                weights["target_appearance"] * target_appearance_score
+                + weights["predicted_semantic"] * semantic_score
+                + weights["predicted_identity"] * identity_score
+                + weights["priors"] * prior_score
+            ) / denom
+        elif mode == "posterior_v4_no_semantic_identity":
+            denom = max(weights["distance"] + weights["target_appearance"] + weights["priors"], 1e-6)
+            score = (
+                weights["distance"] * dist_score
+                + weights["target_appearance"] * target_appearance_score
+                + weights["priors"] * prior_score
+            ) / denom
+        elif mode == "posterior_v4_no_target_candidate_appearance":
+            denom = max(weights["distance"] + weights["predicted_semantic"] + weights["predicted_identity"] + weights["priors"], 1e-6)
+            score = (
+                weights["distance"] * dist_score
+                + weights["predicted_semantic"] * semantic_score
+                + weights["predicted_identity"] * identity_score
+                + weights["priors"] * prior_score
+            ) / denom
         elif mode == "posterior_no_distance":
             score = 0.40 * semantic_score + 0.40 * identity_score + 0.20 * prior_score
         elif mode == "posterior_no_semantic":
@@ -329,8 +432,12 @@ def _score_external_candidates(
         distance_scores.append(dist_score)
         semantic_scores.append(semantic_score)
         identity_scores.append(identity_score)
+        target_appearance_scores.append(target_appearance_score)
+        predicted_semantic_scores.append(semantic_score)
+        predicted_identity_scores.append(identity_score)
         prior_scores.append(prior_score)
         posterior_scores.append(posterior_score)
+        posterior_v4_scores.append(posterior_v4_score)
         scores.append(score)
         candidate_features.append(feature)
         feature_sources.append(str(feature.get("feature_source") or "unknown"))
@@ -369,17 +476,69 @@ def _score_external_candidates(
             "future_reappearance_event_prob",
             "future_visibility_prob",
         ],
+        "weak_posterior_v3": [
+            "future_trace_coord_distance",
+            "future_semantic_embedding",
+            "future_identity_embedding",
+            "weak_candidate_measurement_feature",
+            "future_reappearance_event_prob",
+            "future_visibility_prob",
+        ],
+        "target_candidate_appearance_only": ["observed_target_crop_feature", "future_candidate_crop_feature"],
+        "predicted_semantic_to_candidate": ["future_semantic_embedding", "future_candidate_crop_feature"],
+        "predicted_identity_to_candidate": ["future_identity_embedding", "future_candidate_crop_feature"],
+        "predicted_semantic_identity_to_candidate": [
+            "future_semantic_embedding",
+            "future_identity_embedding",
+            "future_candidate_crop_feature",
+        ],
+        "posterior_v4": [
+            "future_trace_coord_distance",
+            "future_visibility_prob",
+            "future_reappearance_event_prob",
+            "observed_target_crop_feature",
+            "future_semantic_embedding",
+            "future_identity_embedding",
+            "future_candidate_crop_feature",
+        ],
+        "posterior_v4_no_distance": [
+            "future_visibility_prob",
+            "future_reappearance_event_prob",
+            "observed_target_crop_feature",
+            "future_semantic_embedding",
+            "future_identity_embedding",
+            "future_candidate_crop_feature",
+        ],
+        "posterior_v4_no_semantic_identity": [
+            "future_trace_coord_distance",
+            "future_visibility_prob",
+            "future_reappearance_event_prob",
+            "observed_target_crop_feature",
+        ],
+        "posterior_v4_no_target_candidate_appearance": [
+            "future_trace_coord_distance",
+            "future_visibility_prob",
+            "future_reappearance_event_prob",
+            "future_semantic_embedding",
+            "future_identity_embedding",
+            "future_candidate_crop_feature",
+        ],
     }
     return {
         "candidate_scores": scores,
         "candidate_distance_scores": distance_scores,
         "candidate_semantic_scores": semantic_scores,
         "candidate_identity_scores": identity_scores,
+        "candidate_target_appearance_scores": target_appearance_scores,
+        "candidate_predicted_semantic_scores": predicted_semantic_scores,
+        "candidate_predicted_identity_scores": predicted_identity_scores,
         "candidate_prior_scores": prior_scores,
         "candidate_posterior_scores": posterior_scores,
+        "candidate_posterior_v4_scores": posterior_v4_scores,
         "candidate_center_distances": distances,
         "candidate_measurement_features": candidate_features,
         "candidate_feature_source": "mixed:" + ",".join(sorted(set(feature_sources))) if feature_sources else "candidate_measurement_unavailable",
+        "candidate_measurement_feature_mode": str(candidate_measurement_feature_mode),
         "candidate_feature_used_for_scoring": bool(any(bool(f.get("candidate_feature_used_for_scoring")) for f in candidate_features)),
         "candidate_feature_used_for_rollout": False,
         "candidate_labels": labels,
@@ -402,6 +561,9 @@ def _external_query_item_from_state(
     builder_meta: dict[str, Any],
     candidate_score_mode: str = "posterior_v1",
     candidate_feature_builder: Any | None = None,
+    candidate_measurement_cache: dict[str, Any] | None = None,
+    candidate_measurement_feature_mode: str = "weak_rgb_bbox_stats",
+    posterior_v4_weights: dict[str, float] | None = None,
     feedback_info: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     validation = state.validate(strict=False)
@@ -416,6 +578,9 @@ def _external_query_item_from_state(
         item=item,
         candidate_score_mode=str(candidate_score_mode),
         candidate_feature_builder=candidate_feature_builder,
+        candidate_measurement_cache=candidate_measurement_cache,
+        candidate_measurement_feature_mode=str(candidate_measurement_feature_mode),
+        posterior_v4_weights=posterior_v4_weights,
     )
     out = {
         "item_id": item.get("item_id"),
@@ -1111,6 +1276,7 @@ def export(
     external_candidate_expanded_manifest: Path | None = None,
     strict_no_fallback: bool = False,
     candidate_score_mode: str = "posterior_v1",
+    candidate_measurement_feature_mode: str = "weak_rgb_bbox_stats",
 ) -> dict[str, Any]:
     if str(manifest_mode) == "external_hardcase_semantic_state":
         if external_semantic_state_manifest is None:
@@ -1204,7 +1370,12 @@ def export(
         records = candidate_manifest.get("records") if isinstance(candidate_manifest, dict) else []
         if not isinstance(records, list):
             records = []
-        build_query_batch_from_item, group_candidate_records, build_candidate_measurement_features = _import_external_query_builder(repo_root)
+        (
+            build_query_batch_from_item,
+            group_candidate_records,
+            build_candidate_measurement_features,
+            build_item_candidate_measurement_cache,
+        ) = _import_external_query_builder(repo_root)
         grouped_items = group_candidate_records([x for x in records if isinstance(x, dict)])
         selected_items = grouped_items[: int(max_items)]
         exported_items: list[dict[str, Any]] = []
@@ -1315,12 +1486,21 @@ def export(
                         state = out.get("future_semantic_trace_state")
                         if state is None:
                             raise RuntimeError(f"{mode} did not return future_semantic_trace_state")
+                        measurement_cache = build_item_candidate_measurement_cache(
+                            item,
+                            semantic_encoder=full["semantic_encoder"],
+                            device=device,
+                            crop_size=int(args.semantic_crop_size),
+                            feature_mode=str(candidate_measurement_feature_mode),
+                        )
                         exported = _external_query_item_from_state(
                             item=item,
                             state=state,
                             builder_meta=builder_meta,
                             candidate_score_mode=str(candidate_score_mode),
                             candidate_feature_builder=build_candidate_measurement_features,
+                            candidate_measurement_cache=measurement_cache,
+                            candidate_measurement_feature_mode=str(candidate_measurement_feature_mode),
                             feedback_info=out.get("semantic_state_feedback_info", {}),
                         )
                         score_components.update(str(x) for x in exported.get("score_components_used", []) if x)
@@ -1406,6 +1586,7 @@ def export(
             "target_quality": "external_candidate_expanded",
             "target_type": "external_candidate_expanded",
             "candidate_score_mode": str(candidate_score_mode),
+            "candidate_measurement_feature_mode": str(candidate_measurement_feature_mode),
             "manifest_item_count": candidate_manifest.get("original_item_count", len(grouped_items)) if isinstance(candidate_manifest, dict) else len(grouped_items),
             "selected_original_item_count": len(selected_items),
             "candidate_record_count": candidate_record_count,
@@ -1812,7 +1993,21 @@ def parse_args() -> Any:
             "posterior_v1",
             "posterior_no_distance",
             "posterior_no_semantic",
+            "weak_posterior_v3",
+            "target_candidate_appearance_only",
+            "predicted_semantic_to_candidate",
+            "predicted_identity_to_candidate",
+            "predicted_semantic_identity_to_candidate",
+            "posterior_v4",
+            "posterior_v4_no_distance",
+            "posterior_v4_no_semantic_identity",
+            "posterior_v4_no_target_candidate_appearance",
         ],
+    )
+    p.add_argument(
+        "--candidate-measurement-feature-mode",
+        default="weak_rgb_bbox_stats",
+        choices=["weak_rgb_bbox_stats", "crop_encoder_feature", "hybrid_crop_bbox_feature", "frozen_vlm_crop_feature"],
     )
     p.add_argument("--output", required=True)
     p.add_argument("--max-items", "--item-limit", dest="max_items", type=int, default=32)
@@ -1856,6 +2051,7 @@ def main() -> None:
         else None,
         strict_no_fallback=bool(args.strict_no_fallback),
         candidate_score_mode=str(args.candidate_score_mode),
+        candidate_measurement_feature_mode=str(args.candidate_measurement_feature_mode),
     )
 
 

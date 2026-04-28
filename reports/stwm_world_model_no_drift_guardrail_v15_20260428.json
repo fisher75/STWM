@@ -1,0 +1,23 @@
+{
+  "allowed": [
+    "Future candidate crops are measurement observations used only for posterior scoring.",
+    "Rollout remains candidate-free.",
+    "Candidate measurement features test whether FutureSemanticTraceState is externally useful."
+  ],
+  "current_status": {
+    "paper_world_model_claimable": false,
+    "predicted_identity_load_bearing": false,
+    "predicted_semantic_load_bearing": false,
+    "target_candidate_appearance_load_bearing": true
+  },
+  "forbidden": [
+    "Feeding future candidates into rollout input.",
+    "Calling weak bbox/RGB stats strong semantic evidence.",
+    "Claiming semantic-state branch if only target-candidate appearance helps.",
+    "Tuning weights on heldout.",
+    "Claiming SAM2/CoTracker plugin.",
+    "Continuing training before measurement problem is solved."
+  ],
+  "generated_at_utc": "2026-04-28T14:15:30.004811+00:00",
+  "guardrail_version": "v15"
+}

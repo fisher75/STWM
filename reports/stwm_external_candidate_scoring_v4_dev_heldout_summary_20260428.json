@@ -1,0 +1,719 @@
+{
+  "generated_at_utc": "2026-04-28T14:15:30.004811+00:00",
+  "modes": {
+    "distance_only": {
+      "all": {
+        "candidate_AP": 0.08032519870192684,
+        "candidate_AUROC": 0.5337086696109037,
+        "candidate_MRR": 0.3651036922702644,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.16839378238341968,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.08438603065645953,
+        "candidate_AUROC": 0.5327349953831948,
+        "candidate_MRR": 0.36715101297041897,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.1695906432748538,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.08063408993774426,
+        "candidate_AUROC": 0.5351444291609353,
+        "candidate_MRR": 0.363475358132002,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.16744186046511628,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.13770055115860427,
+          "candidate_AUROC": 0.4767844124859169,
+          "candidate_MRR": 0.4550914589431537,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.22784810126582278,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.07557882939227949,
+          "candidate_AUROC": 0.5592070650886148,
+          "candidate_MRR": 0.32815677712087954,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1456953642384106,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.24313814868800482,
+          "candidate_AUROC": 0.4954261954261954,
+          "candidate_MRR": 0.5088369963369963,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.25,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.12098333513348296,
+          "candidate_AUROC": 0.44607450384491415,
+          "candidate_MRR": 0.4352104457895163,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.1968503937007874,
+          "metric_items": 127
+        }
+      }
+    },
+    "posterior_v4": {
+      "all": {
+        "candidate_AP": 0.08219281358306546,
+        "candidate_AUROC": 0.5439997685409942,
+        "candidate_MRR": 0.3708592472964557,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.17098445595854922,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.08549907608546206,
+        "candidate_AUROC": 0.5402253000923362,
+        "candidate_MRR": 0.36236833072967034,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.15789473684210525,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.0824619562809554,
+        "candidate_AUROC": 0.5473737244489939,
+        "candidate_MRR": 0.3776124879146897,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.1813953488372093,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.13845554972258423,
+          "candidate_AUROC": 0.47728809066207173,
+          "candidate_MRR": 0.4608980308219519,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.24050632911392406,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.07818285559158861,
+          "candidate_AUROC": 0.5785491775736716,
+          "candidate_MRR": 0.33441778418806406,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1490066225165563,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.2452151942943634,
+          "candidate_AUROC": 0.49532224532224534,
+          "candidate_MRR": 0.511584249084249,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.25,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.12308901919105188,
+          "candidate_AUROC": 0.455339135239674,
+          "candidate_MRR": 0.45561629797634656,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.2204724409448819,
+          "metric_items": 127
+        }
+      }
+    },
+    "posterior_v4_no_distance": {
+      "all": {
+        "candidate_AP": 0.11016368953968954,
+        "candidate_AUROC": 0.58173003837708,
+        "candidate_MRR": 0.4565917776396706,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.24611398963730569,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.1202150849501435,
+        "candidate_AUROC": 0.6062739304401354,
+        "candidate_MRR": 0.47386899572598623,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.27485380116959063,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.10743556996213524,
+        "candidate_AUROC": 0.5630370109721378,
+        "candidate_MRR": 0.44285036232450803,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.22325581395348837,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.15042354145070794,
+          "candidate_AUROC": 0.4983365365498045,
+          "candidate_MRR": 0.4940132641001602,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.2721518987341772,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.11065762049345626,
+          "candidate_AUROC": 0.6220935291574129,
+          "candidate_MRR": 0.42772121563342325,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.23178807947019867,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.2597018393574487,
+          "candidate_AUROC": 0.5354469854469854,
+          "candidate_MRR": 0.5261675824175824,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.25,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.18398839240268755,
+          "candidate_AUROC": 0.5894828935856702,
+          "candidate_MRR": 0.5323303337082864,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.2992125984251969,
+          "metric_items": 127
+        }
+      }
+    },
+    "posterior_v4_no_semantic_identity": {
+      "all": {
+        "candidate_AP": 0.08243738043123239,
+        "candidate_AUROC": 0.5459196033028023,
+        "candidate_MRR": 0.37209119304671306,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.17098445595854922,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.0854829114710343,
+        "candidate_AUROC": 0.5405946445060018,
+        "candidate_MRR": 0.3613097394578363,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.15789473684210525,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.08289542601105332,
+        "candidate_AUROC": 0.5505310130833947,
+        "candidate_MRR": 0.3806662096220523,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.1813953488372093,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.13810222057175534,
+          "candidate_AUROC": 0.47535953343495263,
+          "candidate_MRR": 0.45768903579794146,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.23417721518987342,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.07827074418643931,
+          "candidate_AUROC": 0.5791080820940379,
+          "candidate_MRR": 0.3346553443894265,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1456953642384106,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.24580605667068486,
+          "candidate_AUROC": 0.4984407484407484,
+          "candidate_MRR": 0.5109661172161173,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.25,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.12340878427828343,
+          "candidate_AUROC": 0.4566929133858268,
+          "candidate_MRR": 0.45198499179116547,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.2125984251968504,
+          "metric_items": 127
+        }
+      }
+    },
+    "posterior_v4_no_target_candidate_appearance": {
+      "all": {
+        "candidate_AP": 0.0801189717968217,
+        "candidate_AUROC": 0.5313205226658193,
+        "candidate_MRR": 0.3624779131832982,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.16321243523316062,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.08433651672747794,
+        "candidate_AUROC": 0.5304819944598338,
+        "candidate_MRR": 0.35929933872779524,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.15789473684210525,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.08033694301139732,
+        "candidate_AUROC": 0.5325309491059147,
+        "candidate_MRR": 0.36500598868046563,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.16744186046511628,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.13775087515567994,
+          "candidate_AUROC": 0.4758764662999536,
+          "candidate_MRR": 0.45435510000686924,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.22784810126582278,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.07560014950436628,
+          "candidate_AUROC": 0.5595531173485302,
+          "candidate_MRR": 0.3277807813342273,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1456953642384106,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.24180018115875884,
+          "candidate_AUROC": 0.4905405405405405,
+          "candidate_MRR": 0.50376221001221,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.23076923076923078,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.12063199516803892,
+          "candidate_AUROC": 0.4425104756642262,
+          "candidate_MRR": 0.4379743847673431,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.1968503937007874,
+          "metric_items": 127
+        }
+      }
+    },
+    "predicted_identity_to_candidate": {
+      "all": {
+        "candidate_AP": 0.07168667694978575,
+        "candidate_AUROC": 0.46311612474855807,
+        "candidate_MRR": 0.3797604766756331,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.18134715025906736,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.07451464339460939,
+        "candidate_AUROC": 0.47235703293321024,
+        "candidate_MRR": 0.37608870018823787,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.1871345029239766,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.07220651502146477,
+        "candidate_AUROC": 0.4556484117590608,
+        "candidate_MRR": 0.38268081983537533,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.17674418604651163,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.1464131035879648,
+          "candidate_AUROC": 0.4840214725959308,
+          "candidate_MRR": 0.48302400556925473,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.25316455696202533,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.065209567810393,
+          "candidate_AUROC": 0.48222583223225796,
+          "candidate_MRR": 0.3366039178683519,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1456953642384106,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.23224301443300704,
+          "candidate_AUROC": 0.4796257796257796,
+          "candidate_MRR": 0.5245955433455434,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.2692307692307692,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.14849871334605902,
+          "candidate_AUROC": 0.5112308329879818,
+          "candidate_MRR": 0.47343112995891923,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.25196850393700787,
+          "metric_items": 127
+        }
+      }
+    },
+    "predicted_semantic_identity_to_candidate": {
+      "all": {
+        "candidate_AP": 0.0718676910410537,
+        "candidate_AUROC": 0.47078492064192606,
+        "candidate_MRR": 0.38643841197656503,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.18652849740932642,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.07584216498024784,
+        "candidate_AUROC": 0.483402893197907,
+        "candidate_MRR": 0.37476718608877546,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.1871345029239766,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.07082611567024248,
+        "candidate_AUROC": 0.46057467771344485,
+        "candidate_MRR": 0.3957211079152256,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.18604651162790697,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.15108383177295945,
+          "candidate_AUROC": 0.49538736828152957,
+          "candidate_MRR": 0.49606319868228593,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.26582278481012656,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.06485919533341909,
+          "candidate_AUROC": 0.48906856386304093,
+          "candidate_MRR": 0.34038075803879475,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1490066225165563,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.23412059059556484,
+          "candidate_AUROC": 0.4811850311850312,
+          "candidate_MRR": 0.5415827228327228,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.28846153846153844,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.15026347357236502,
+          "candidate_AUROC": 0.5135792236496753,
+          "candidate_MRR": 0.4918939761563052,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.28346456692913385,
+          "metric_items": 127
+        }
+      }
+    },
+    "predicted_semantic_to_candidate": {
+      "all": {
+        "candidate_AP": 0.07004501973213854,
+        "candidate_AUROC": 0.48602566252688506,
+        "candidate_MRR": 0.39371877126790933,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.19689119170984457,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.0752959364783633,
+        "candidate_AUROC": 0.49979193598030164,
+        "candidate_MRR": 0.3885985579557437,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.2046783625730994,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.06870825098209644,
+        "candidate_AUROC": 0.47470170499984005,
+        "candidate_MRR": 0.3977911269720039,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.19069767441860466,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.15575984074661775,
+          "candidate_AUROC": 0.5137053482669495,
+          "candidate_MRR": 0.5321898583367387,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.310126582278481,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.060874306745017474,
+          "candidate_AUROC": 0.501176376879693,
+          "candidate_MRR": 0.3463176153294564,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.16225165562913907,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.2442772996889781,
+          "candidate_AUROC": 0.48305613305613304,
+          "candidate_MRR": 0.5511981074481075,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.3076923076923077,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.1512465958652628,
+          "candidate_AUROC": 0.5074089423032647,
+          "candidate_MRR": 0.5011388469835919,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.29133858267716534,
+          "metric_items": 127
+        }
+      }
+    },
+    "target_candidate_appearance_only": {
+      "all": {
+        "candidate_AP": 0.2468106769359428,
+        "candidate_AUROC": 0.665786435913807,
+        "candidate_MRR": 0.5821300212132888,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.39378238341968913,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.26656353014776213,
+        "candidate_AUROC": 0.674709756848261,
+        "candidate_MRR": 0.5841653797794149,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.40350877192982454,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.23288312688694196,
+        "candidate_AUROC": 0.6588544832219059,
+        "candidate_MRR": 0.5805112011444165,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.386046511627907,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.14760917192950188,
+          "candidate_AUROC": 0.49090728345152096,
+          "candidate_MRR": 0.48570086429194853,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.25949367088607594,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.2650655849184314,
+          "candidate_AUROC": 0.712737802159848,
+          "candidate_MRR": 0.5821382768771554,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.4105960264900662,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.37888558978284786,
+          "candidate_AUROC": 0.5998960498960499,
+          "candidate_MRR": 0.6296932234432234,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.4230769230769231,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.2714830031827291,
+          "candidate_AUROC": 0.6156835658700557,
+          "candidate_MRR": 0.6198287714035745,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.41732283464566927,
+          "metric_items": 127
+        }
+      }
+    },
+    "weak_posterior_v3": {
+      "all": {
+        "candidate_AP": 0.08015940583770344,
+        "candidate_AUROC": 0.531582875564304,
+        "candidate_MRR": 0.36342863024726646,
+        "candidate_positive_rate": 0.06808961016052213,
+        "candidate_top1": 0.16580310880829016,
+        "metric_items": 386
+      },
+      "dev": {
+        "candidate_AP": 0.08442708739477614,
+        "candidate_AUROC": 0.5308734995383195,
+        "candidate_MRR": 0.3585355393595166,
+        "candidate_positive_rate": 0.06716417910447761,
+        "candidate_top1": 0.15789473684210525,
+        "metric_items": 171
+      },
+      "heldout": {
+        "candidate_AP": 0.08038611715221164,
+        "candidate_AUROC": 0.5328732286235245,
+        "candidate_MRR": 0.36732034439519773,
+        "candidate_positive_rate": 0.06884406019852705,
+        "candidate_top1": 0.17209302325581396,
+        "metric_items": 215
+      },
+      "subset": {
+        "OOD_hard": {
+          "candidate_AP": null,
+          "candidate_AUROC": null,
+          "candidate_MRR": null,
+          "candidate_positive_rate": null,
+          "candidate_top1": null,
+          "metric_items": 0
+        },
+        "appearance_change": {
+          "candidate_AP": 0.1377118857191172,
+          "candidate_AUROC": 0.4757372920670687,
+          "candidate_MRR": 0.45460427066743225,
+          "candidate_positive_rate": 0.14195867026055706,
+          "candidate_top1": 0.22784810126582278,
+          "metric_items": 158
+        },
+        "crossing_ambiguity": {
+          "candidate_AP": 0.07561170873728472,
+          "candidate_AUROC": 0.5593516439825059,
+          "candidate_MRR": 0.3271195565660984,
+          "candidate_positive_rate": 0.05753476852733854,
+          "candidate_top1": 0.1456953642384106,
+          "metric_items": 302
+        },
+        "long_gap_persistence": {
+          "candidate_AP": 0.24212175955482426,
+          "candidate_AUROC": 0.4917879417879418,
+          "candidate_MRR": 0.5117750305250305,
+          "candidate_positive_rate": 0.21940928270042195,
+          "candidate_top1": 0.25,
+          "metric_items": 52
+        },
+        "occlusion_reappearance": {
+          "candidate_AP": 0.12063462673039328,
+          "candidate_AUROC": 0.4429525256711332,
+          "candidate_MRR": 0.4415102459761813,
+          "candidate_positive_rate": 0.12932790224032586,
+          "candidate_top1": 0.2047244094488189,
+          "metric_items": 127
+        }
+      }
+    }
+  },
+  "no_heldout_tuning": true,
+  "overfit_warning": false,
+  "selected_all_metrics": {
+    "candidate_AP": 0.18823100632640014,
+    "candidate_AUROC": 0.6617942584435951,
+    "candidate_MRR": 0.5643983168318356,
+    "candidate_positive_rate": 0.06808961016052213,
+    "candidate_top1": 0.3601036269430052,
+    "metric_items": 386
+  },
+  "selected_dev_metrics": {
+    "candidate_AP": 0.21211445705468956,
+    "candidate_AUROC": 0.6769566020313943,
+    "candidate_MRR": 0.5736406648429352,
+    "candidate_positive_rate": 0.06716417910447761,
+    "candidate_top1": 0.3742690058479532,
+    "metric_items": 171
+  },
+  "selected_heldout_metrics": {
+    "candidate_AP": 0.17215546078564506,
+    "candidate_AUROC": 0.6503726688205752,
+    "candidate_MRR": 0.5570474260881237,
+    "candidate_positive_rate": 0.06884406019852705,
+    "candidate_top1": 0.3488372093023256,
+    "metric_items": 215
+  },
+  "selected_posterior_v4_weights": {
+    "distance": 0.0,
+    "predicted_identity": 0.1,
+    "predicted_semantic": 0.0,
+    "priors": 0.24999999999999997,
+    "target_appearance": 0.65
+  },
+  "split_rule": "sha256(item_id)%2"
+}

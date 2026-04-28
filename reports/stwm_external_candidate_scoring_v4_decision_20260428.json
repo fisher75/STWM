@@ -1,0 +1,50 @@
+{
+  "candidate_feature_source": "crop_encoder_feature",
+  "generated_at_utc": "2026-04-28T14:15:30.004811+00:00",
+  "heldout_signal_positive": true,
+  "metrics": {
+    "distance_only": {
+      "candidate_AP": 0.08032519870192689,
+      "candidate_AUROC": 0.5337086696109037,
+      "candidate_top1": 0.16839378238341968
+    },
+    "posterior_v4": {
+      "candidate_AP": 0.08219281358306543,
+      "candidate_AUROC": 0.5439997685409942,
+      "candidate_top1": 0.17098445595854922
+    },
+    "predicted_semantic_identity_to_candidate": {
+      "candidate_AP": 0.07186769104105367,
+      "candidate_AUROC": 0.47078492064192606,
+      "candidate_top1": 0.18652849740932642
+    },
+    "target_candidate_appearance_only": {
+      "candidate_AP": 0.2468106769359425,
+      "candidate_AUROC": 0.665786435913807,
+      "candidate_top1": 0.39378238341968913
+    }
+  },
+  "paper_world_model_claimable": false,
+  "posterior_v4_improves_over_distance_only": true,
+  "posterior_v4_improves_over_weak_posterior_v3": true,
+  "predicted_identity_load_bearing": false,
+  "predicted_semantic_load_bearing": false,
+  "rationale": "Strong crop-encoder candidate measurement is available and target-candidate appearance is clearly load-bearing, but predicted FutureSemanticTraceState semantic/identity components do not beat appearance-only; paper-level world-model claim remains unsupported.",
+  "recommended_next_step_choice": "improve_candidate_measurement_with_vlm_features",
+  "score_components_load_bearing": {
+    "predicted_identity": false,
+    "predicted_semantic": false,
+    "target_candidate_appearance": true,
+    "trace_distance": true
+  },
+  "semantic_state_branch_status": "appendix_diagnostic",
+  "strong_candidate_measurement_available": true,
+  "subset_signal_positive": {
+    "OOD_hard": false,
+    "appearance_change": false,
+    "crossing_ambiguity": true,
+    "long_gap_persistence": false,
+    "occlusion_reappearance": false
+  },
+  "target_candidate_appearance_load_bearing": true
+}

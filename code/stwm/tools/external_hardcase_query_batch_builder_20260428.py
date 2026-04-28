@@ -201,6 +201,144 @@ def build_candidate_measurement_features(
     }
 
 
+def _feature_stats_vector(candidate: dict[str, Any], item: dict[str, Any], frame_path: str | None, crop_size: int) -> tuple[list[float], dict[str, Any]]:
+    image_w, image_h = _image_size(item)
+    bbox = _bbox(candidate.get("bbox") if isinstance(candidate, dict) else None)
+    if bbox is None:
+        return [0.0] * 18, {"feature_source": "missing_candidate_bbox", "bbox_used": False, "mask_used": False}
+    x1, y1, x2, y2 = bbox
+    cx = ((x1 + x2) * 0.5) / max(float(image_w), 1.0)
+    cy = ((y1 + y2) * 0.5) / max(float(image_h), 1.0)
+    bw = max((x2 - x1) / max(float(image_w), 1.0), 0.0)
+    bh = max((y2 - y1) / max(float(image_h), 1.0), 0.0)
+    area = bw * bh
+    aspect = bw / max(bh, 1e-6)
+    mean_rgb = [0.0, 0.0, 0.0]
+    std_rgb = [0.0, 0.0, 0.0]
+    source = "bbox_stats_only"
+    if frame_path:
+        crop = _crop_rgb(frame_path, bbox, int(crop_size))
+        if torch.isfinite(crop).all() and float(crop.abs().sum().item()) > 0.0:
+            flat = crop.view(3, -1)
+            mean_rgb = [float(x) for x in flat.mean(dim=1).tolist()]
+            std_rgb = [float(x) for x in flat.std(dim=1, unbiased=False).tolist()]
+            source = "weak_rgb_bbox_stats"
+    mask_used = isinstance(candidate.get("mask_rle") if isinstance(candidate, dict) else None, dict) or bool(candidate.get("mask_path") if isinstance(candidate, dict) else None)
+    vec = [
+        float(max(0.0, min(1.0, cx))),
+        float(max(0.0, min(1.0, cy))),
+        float(max(0.0, min(1.0, bw))),
+        float(max(0.0, min(1.0, bh))),
+        float(max(0.0, min(1.0, area))),
+        float(max(0.0, min(10.0, aspect)) / 10.0),
+        float(max(0.0, min(1.0, math.sqrt(max(area, 0.0))))),
+        float(max(0.0, min(1.0, area if mask_used else 0.0))),
+        *mean_rgb,
+        *std_rgb,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+    ]
+    return [float(x) for x in vec], {"feature_source": source, "bbox_used": True, "mask_used": bool(mask_used)}
+
+
+def build_item_candidate_measurement_cache(
+    item: dict[str, Any],
+    *,
+    semantic_encoder: Any | None = None,
+    device: Any | None = None,
+    crop_size: int = 64,
+    feature_mode: str = "crop_encoder_feature",
+) -> dict[str, Any]:
+    """Build candidate measurement features for one item.
+
+    Candidate features are posterior measurement observations only. They are
+    deliberately not returned in the model batch and must not be fed to rollout.
+    """
+
+    frame_paths = item.get("frame_paths") if isinstance(item.get("frame_paths"), list) else []
+    future_frame_path = _frame_path_for_index(frame_paths, item.get("future_frame_index"))
+    observed_indices = item.get("observed_frame_indices") if isinstance(item.get("observed_frame_indices"), list) else [0]
+    observed_frame_path = _frame_path_for_index(frame_paths, observed_indices[0] if observed_indices else 0)
+    observed_target = item.get("observed_target") if isinstance(item.get("observed_target"), dict) else {}
+    candidates = item.get("future_candidates") if isinstance(item.get("future_candidates"), list) else []
+    crop_items: list[tuple[str, dict[str, Any], str | None]] = [("__observed_target__", observed_target, observed_frame_path)]
+    for cand in candidates:
+        if isinstance(cand, dict):
+            crop_items.append((str(cand.get("candidate_id")), cand, future_frame_path))
+
+    stats: dict[str, list[float]] = {}
+    meta: dict[str, dict[str, Any]] = {}
+    rgb_crops = []
+    mask_crops = []
+    for cid, obj, frame_path in crop_items:
+        vec, info = _feature_stats_vector(obj, item, frame_path, int(crop_size))
+        stats[cid] = vec
+        meta[cid] = info
+        bbox = _bbox(obj.get("bbox") if isinstance(obj, dict) else None)
+        rgb_crops.append(_crop_rgb(frame_path or "", bbox, int(crop_size)))
+        mask_crops.append(torch.ones((1, int(crop_size), int(crop_size)), dtype=torch.float32))
+
+    encoded: dict[str, list[float]] = {}
+    feature_source = "weak_rgb_bbox_stats"
+    if str(feature_mode) in {"crop_encoder_feature", "hybrid_crop_bbox_feature"} and semantic_encoder is not None:
+        try:
+            rgb = torch.stack(rgb_crops, dim=0).unsqueeze(0)
+            mask = torch.stack(mask_crops, dim=0).unsqueeze(0)
+            if device is not None:
+                rgb = rgb.to(device)
+                mask = mask.to(device)
+            with torch.no_grad():
+                token = semantic_encoder(
+                    semantic_rgb_crop=rgb,
+                    semantic_mask_crop=mask,
+                    source_mode="crop_visual_encoder",
+                )[0].detach().float().cpu()
+            for idx, (cid, _, _) in enumerate(crop_items):
+                encoded[cid] = [float(x) for x in token[idx].tolist()]
+            feature_source = "crop_encoder_feature" if str(feature_mode) == "crop_encoder_feature" else "hybrid_crop_bbox_feature"
+        except Exception as exc:
+            feature_source = f"crop_encoder_blocked_fallback_weak_rgb_bbox_stats:{type(exc).__name__}"
+
+    observed_feature = encoded.get("__observed_target__", stats.get("__observed_target__", []))
+    features: dict[str, dict[str, Any]] = {}
+    for cand in candidates:
+        if not isinstance(cand, dict):
+            continue
+        cid = str(cand.get("candidate_id"))
+        crop_vec = encoded.get(cid)
+        stats_vec = stats.get(cid, [0.0] * 18)
+        if str(feature_mode) == "hybrid_crop_bbox_feature" and crop_vec is not None:
+            vec = [float(x) for x in crop_vec] + [float(x) for x in stats_vec]
+        elif crop_vec is not None:
+            vec = [float(x) for x in crop_vec]
+        else:
+            vec = [float(x) for x in stats_vec]
+        features[cid] = {
+            "feature_source": feature_source if crop_vec is not None else meta.get(cid, {}).get("feature_source", "weak_rgb_bbox_stats"),
+            "feature_vector": vec,
+            "observed_target_feature_vector": observed_feature,
+            "feature_dim": len(vec),
+            "observed_target_feature_available": bool(observed_feature),
+            "future_candidate_feature_available": bool(vec),
+            "mask_used": bool(meta.get(cid, {}).get("mask_used", False)),
+            "bbox_used": bool(meta.get(cid, {}).get("bbox_used", False)),
+            "candidate_feature_used_for_scoring": True,
+            "candidate_feature_used_for_rollout": False,
+            "future_candidate_used_for_scoring": True,
+            "future_candidate_used_for_rollout": False,
+        }
+    return {
+        "feature_mode": str(feature_mode),
+        "candidate_feature_source": feature_source,
+        "observed_target_feature_available": bool(observed_feature),
+        "candidate_features": features,
+        "future_candidate_used_for_rollout": False,
+        "future_candidate_used_for_scoring": True,
+    }
+
+
 def group_candidate_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for rec in records:
