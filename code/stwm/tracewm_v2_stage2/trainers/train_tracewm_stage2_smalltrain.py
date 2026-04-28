@@ -297,6 +297,9 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-head-only-warmup", action="store_true")
     p.add_argument("--future-semantic-head-only-warmup-steps", type=int, default=0)
     p.add_argument("--freeze-non-future-semantic-head-during-warmup", action="store_true")
+    p.add_argument("--future-semantic-controlled-joint", action="store_true")
+    p.add_argument("--future-semantic-joint-train-semantic-fusion-proj", action="store_true")
+    p.add_argument("--future-semantic-joint-train-readout-head", action="store_true")
 
     p.add_argument("--output-dir", required=True)
     p.add_argument("--resume-from", default="")
@@ -3606,6 +3609,12 @@ def _count_trainable_params(module: torch.nn.Module | None) -> int:
     return int(sum(p.numel() for p in module.parameters() if p.requires_grad))
 
 
+def _count_total_params(module: torch.nn.Module | None) -> int:
+    if module is None:
+        return 0
+    return int(sum(p.numel() for p in module.parameters()))
+
+
 def _freeze_module(module: torch.nn.Module | None) -> None:
     if module is None:
         return
@@ -3654,6 +3663,137 @@ def _build_future_semantic_head_only_audit(
         "non_future_semantic_head_trainable_params_by_module": per_non_head,
         "head_only_boundary_ok": bool((not enabled) or (head_trainable > 0 and non_head_trainable == 0)),
     }
+
+
+def _unfreeze_module(module: torch.nn.Module | None) -> None:
+    if module is None:
+        return
+    for param in module.parameters():
+        param.requires_grad = True
+
+
+def _build_future_semantic_controlled_joint_audit(
+    *,
+    enabled: bool,
+    stage1_model: torch.nn.Module,
+    semantic_encoder: torch.nn.Module,
+    semantic_fusion: torch.nn.Module,
+    readout_head: torch.nn.Module,
+    future_semantic_state_head: torch.nn.Module | None,
+    semantic_rescue_heads: torch.nn.Module | None,
+    trace_unit_tokenizer: torch.nn.Module | None,
+    trace_unit_factorized_state: torch.nn.Module | None,
+    trace_unit_handshake: torch.nn.Module | None,
+    trace_unit_broadcast: torch.nn.Module | None,
+) -> dict[str, Any]:
+    modules = {
+        "stage1_model": stage1_model,
+        "semantic_encoder": semantic_encoder,
+        "semantic_fusion": semantic_fusion,
+        "semantic_fusion.semantic_proj": getattr(semantic_fusion, "semantic_proj", None),
+        "semantic_fusion.gate": getattr(semantic_fusion, "gate", None),
+        "semantic_fusion.norm": getattr(semantic_fusion, "norm", None),
+        "readout_head": readout_head,
+        "future_semantic_state_head": future_semantic_state_head,
+        "semantic_rescue_heads": semantic_rescue_heads,
+        "trace_unit_tokenizer": trace_unit_tokenizer,
+        "trace_unit_factorized_state": trace_unit_factorized_state,
+        "trace_unit_handshake": trace_unit_handshake,
+        "trace_unit_broadcast": trace_unit_broadcast,
+    }
+    trainable_by_module = {name: _count_trainable_params(module) for name, module in modules.items()}
+    total_by_module = {name: _count_total_params(module) for name, module in modules.items()}
+    frozen_by_module = {name: int(total_by_module[name] - trainable_by_module[name]) for name in modules}
+    allowed_positive = {
+        "future_semantic_state_head",
+        "semantic_fusion.semantic_proj",
+        "readout_head",
+    }
+    disallowed_trainable = {
+        name: count
+        for name, count in trainable_by_module.items()
+        if int(count) > 0 and name not in allowed_positive and not name.startswith("semantic_fusion.")
+    }
+    semantic_fusion_disallowed = {
+        name: count
+        for name, count in trainable_by_module.items()
+        if name in {"semantic_fusion.gate", "semantic_fusion.norm"} and int(count) > 0
+    }
+    # The aggregate semantic_fusion module includes semantic_proj trainable params;
+    # keep detailed submodule checks authoritative.
+    disallowed_trainable.pop("semantic_fusion", None)
+    disallowed_trainable.update(semantic_fusion_disallowed)
+    stage1_trainable = int(trainable_by_module["stage1_model"])
+    trace_main_trainable = any(
+        int(trainable_by_module[name]) > 0
+        for name in [
+            "trace_unit_tokenizer",
+            "trace_unit_factorized_state",
+            "trace_unit_handshake",
+            "trace_unit_broadcast",
+        ]
+    )
+    head_trainable = int(trainable_by_module["future_semantic_state_head"]) > 0
+    boundary_ok = bool((not enabled) or (stage1_trainable == 0 and not trace_main_trainable and head_trainable and not disallowed_trainable))
+    return {
+        "future_semantic_controlled_joint": bool(enabled),
+        "joint_training_scope": "minimal_adapter_readout",
+        "allowed_trainable_modules": sorted(allowed_positive),
+        "forbidden_trainable_modules": [
+            "stage1_model",
+            "semantic_encoder",
+            "semantic_fusion.gate",
+            "semantic_fusion.norm",
+            "semantic_rescue_heads",
+            "trace_unit_tokenizer",
+            "trace_unit_factorized_state",
+            "trace_unit_handshake",
+            "trace_unit_broadcast",
+        ],
+        "trainable_param_count_total": int(sum(trainable_by_module.values()) - trainable_by_module["semantic_fusion"]),
+        "trainable_param_count_by_module": trainable_by_module,
+        "frozen_param_count_by_module": frozen_by_module,
+        "stage1_trainable_param_count": stage1_trainable,
+        "trace_backbone_trainable": bool(trace_main_trainable),
+        "future_semantic_state_head_trainable": bool(head_trainable),
+        "disallowed_trainable_param_count_by_module": disallowed_trainable,
+        "controlled_joint_boundary_ok": boundary_ok,
+    }
+
+
+def _configure_future_semantic_controlled_joint_trainability(
+    *,
+    stage1_model: torch.nn.Module,
+    semantic_encoder: torch.nn.Module,
+    semantic_fusion: torch.nn.Module,
+    readout_head: torch.nn.Module,
+    future_semantic_state_head: torch.nn.Module | None,
+    semantic_rescue_heads: torch.nn.Module | None,
+    trace_unit_tokenizer: torch.nn.Module | None,
+    trace_unit_factorized_state: torch.nn.Module | None,
+    trace_unit_handshake: torch.nn.Module | None,
+    trace_unit_broadcast: torch.nn.Module | None,
+    train_semantic_fusion_proj: bool,
+    train_readout_head: bool,
+) -> None:
+    for module in [
+        stage1_model,
+        semantic_encoder,
+        semantic_fusion,
+        readout_head,
+        future_semantic_state_head,
+        semantic_rescue_heads,
+        trace_unit_tokenizer,
+        trace_unit_factorized_state,
+        trace_unit_handshake,
+        trace_unit_broadcast,
+    ]:
+        _freeze_module(module)
+    _unfreeze_module(future_semantic_state_head)
+    if bool(train_semantic_fusion_proj):
+        _unfreeze_module(getattr(semantic_fusion, "semantic_proj", None))
+    if bool(train_readout_head):
+        _unfreeze_module(readout_head)
 
 
 def _sample_has_reappearance_positive(sample: dict[str, Any], obs_len: int, fut_len: int, slot_count: int) -> bool:
@@ -3939,6 +4079,9 @@ def main() -> None:
             readout_dim=int(fusion_hidden_dim),
         ).to(device)
 
+    if bool(args.future_semantic_head_only_warmup) and bool(args.future_semantic_controlled_joint):
+        raise ValueError("--future-semantic-head-only-warmup and --future-semantic-controlled-joint are mutually exclusive")
+
     if bool(args.future_semantic_head_only_warmup):
         if future_semantic_state_head is None:
             raise ValueError("--future-semantic-head-only-warmup requires --enable-future-semantic-state-head")
@@ -3961,6 +4104,23 @@ def main() -> None:
             _freeze_module(module)
         for param in future_semantic_state_head.parameters():
             param.requires_grad = True
+    elif bool(args.future_semantic_controlled_joint):
+        if future_semantic_state_head is None:
+            raise ValueError("--future-semantic-controlled-joint requires --enable-future-semantic-state-head")
+        _configure_future_semantic_controlled_joint_trainability(
+            stage1_model=stage1_model,
+            semantic_encoder=semantic_encoder,
+            semantic_fusion=semantic_fusion,
+            readout_head=readout_head,
+            future_semantic_state_head=future_semantic_state_head,
+            semantic_rescue_heads=semantic_rescue_heads,
+            trace_unit_tokenizer=trace_unit_tokenizer,
+            trace_unit_factorized_state=trace_unit_factorized_state,
+            trace_unit_handshake=trace_unit_handshake,
+            trace_unit_broadcast=trace_unit_broadcast,
+            train_semantic_fusion_proj=bool(args.future_semantic_joint_train_semantic_fusion_proj),
+            train_readout_head=bool(args.future_semantic_joint_train_readout_head),
+        )
 
     future_semantic_head_only_warmup_audit = _build_future_semantic_head_only_audit(
         enabled=bool(args.future_semantic_head_only_warmup),
@@ -3979,6 +4139,21 @@ def main() -> None:
     )
     if bool(args.future_semantic_head_only_warmup) and not bool(future_semantic_head_only_warmup_audit["head_only_boundary_ok"]):
         raise RuntimeError(f"head-only warmup boundary failed: {future_semantic_head_only_warmup_audit}")
+    future_semantic_controlled_joint_audit = _build_future_semantic_controlled_joint_audit(
+        enabled=bool(args.future_semantic_controlled_joint),
+        stage1_model=stage1_model,
+        semantic_encoder=semantic_encoder,
+        semantic_fusion=semantic_fusion,
+        readout_head=readout_head,
+        future_semantic_state_head=future_semantic_state_head,
+        semantic_rescue_heads=semantic_rescue_heads,
+        trace_unit_tokenizer=trace_unit_tokenizer,
+        trace_unit_factorized_state=trace_unit_factorized_state,
+        trace_unit_handshake=trace_unit_handshake,
+        trace_unit_broadcast=trace_unit_broadcast,
+    )
+    if bool(args.future_semantic_controlled_joint) and not bool(future_semantic_controlled_joint_audit["controlled_joint_boundary_ok"]):
+        raise RuntimeError(f"controlled joint boundary failed: {future_semantic_controlled_joint_audit}")
 
     trainable_params: List[torch.nn.Parameter] = []
     stage1_trainable_params: List[torch.nn.Parameter] = [p for p in stage1_model.parameters() if p.requires_grad]
@@ -4068,6 +4243,10 @@ def main() -> None:
         "future_semantic_head_only_warmup_steps": int(args.future_semantic_head_only_warmup_steps),
         "freeze_non_future_semantic_head_during_warmup": bool(args.freeze_non_future_semantic_head_during_warmup),
         "future_semantic_head_only_warmup_audit": future_semantic_head_only_warmup_audit,
+        "future_semantic_controlled_joint": bool(args.future_semantic_controlled_joint),
+        "future_semantic_joint_train_semantic_fusion_proj": bool(args.future_semantic_joint_train_semantic_fusion_proj),
+        "future_semantic_joint_train_readout_head": bool(args.future_semantic_joint_train_readout_head),
+        "future_semantic_controlled_joint_audit": future_semantic_controlled_joint_audit,
         "future_semantic_state_head_default_enabled": False,
         "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
         "confidence_gating_margin_threshold": float(args.confidence_gating_margin_threshold),
@@ -4245,6 +4424,26 @@ def main() -> None:
             trace_unit_handshake.eval()
         if trace_unit_broadcast is not None:
             trace_unit_broadcast.eval()
+        if future_semantic_state_head is not None:
+            future_semantic_state_head.train()
+    elif bool(args.future_semantic_controlled_joint):
+        semantic_encoder.eval()
+        semantic_fusion.train()
+        readout_head.train() if bool(args.future_semantic_joint_train_readout_head) else readout_head.eval()
+        if semantic_rescue_heads is not None:
+            semantic_rescue_heads.eval()
+        # Controlled joint training keeps these trunks parameter-frozen, but the
+        # future-state losses still backpropagate through their hidden states to
+        # the tiny adapter/readout slice. cuDNN RNN backward requires train mode
+        # even when the recurrent parameters themselves are frozen.
+        if trace_unit_tokenizer is not None:
+            trace_unit_tokenizer.train()
+        if trace_unit_factorized_state is not None:
+            trace_unit_factorized_state.train()
+        if trace_unit_handshake is not None:
+            trace_unit_handshake.train()
+        if trace_unit_broadcast is not None:
+            trace_unit_broadcast.train()
         if future_semantic_state_head is not None:
             future_semantic_state_head.train()
 
@@ -5019,10 +5218,45 @@ def main() -> None:
     epochs_completed = 0.0
     if train_total_count > 0:
         epochs_completed = float(optimizer_steps_this_run * effective_batch) / float(train_total_count)
+    finite_loss_values = [
+        *teacher_loss_history,
+        *future_semantic_state_loss_history,
+        *future_visibility_loss_history,
+        *future_reappearance_loss_history,
+        *future_reappearance_event_loss_history,
+        *future_semantic_embedding_loss_history,
+        *future_identity_belief_loss_history,
+        *future_uncertainty_loss_history,
+    ]
+    loss_finite_ratio = (
+        float(sum(1 for value in finite_loss_values if np.isfinite(float(value))) / max(len(finite_loss_values), 1))
+        if finite_loss_values
+        else 1.0
+    )
+    future_semantic_state_output_valid_ratio = float(sum(future_semantic_state_valid_history) / max(len(future_semantic_state_valid_history), 1))
+    future_visibility_loss_mean = float(sum(future_visibility_loss_history) / max(len(future_visibility_loss_history), 1))
+    future_reappearance_loss_mean = float(sum(future_reappearance_loss_history) / max(len(future_reappearance_loss_history), 1))
+    future_reappearance_event_loss_mean = float(sum(future_reappearance_event_loss_history) / max(len(future_reappearance_event_loss_history), 1))
+    future_reappearance_positive_rate_mean = float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1))
+    future_reappearance_event_positive_rate_mean = float(sum(future_reappearance_event_positive_rate_history) / max(len(future_reappearance_event_positive_rate_history), 1))
+    future_reappearance_risk_entry_ratio_mean = float(sum(future_reappearance_risk_entry_ratio_history) / max(len(future_reappearance_risk_entry_ratio_history), 1))
+    future_reappearance_pos_weight_mean = float(sum(future_reappearance_pos_weight_history) / max(len(future_reappearance_pos_weight_history), 1))
+    future_reappearance_event_pos_weight_mean = float(sum(future_reappearance_event_pos_weight_history) / max(len(future_reappearance_event_pos_weight_history), 1))
 
     payload = {
         "generated_at_utc": now_iso(),
         "run_name": str(args.run_name),
+        "train_steps": int(optimizer_steps_this_run),
+        "loss_finite_ratio": float(loss_finite_ratio),
+        "output_valid_ratio": float(future_semantic_state_output_valid_ratio),
+        "future_visibility_loss_mean": future_visibility_loss_mean,
+        "future_reappearance_loss_mean": future_reappearance_loss_mean,
+        "future_reappearance_event_loss_mean": future_reappearance_event_loss_mean,
+        "future_reappearance_positive_rate_mean": future_reappearance_positive_rate_mean,
+        "future_reappearance_event_positive_rate_mean": future_reappearance_event_positive_rate_mean,
+        "future_reappearance_risk_entry_ratio_mean": future_reappearance_risk_entry_ratio_mean,
+        "future_reappearance_pos_weight_mean": future_reappearance_pos_weight_mean,
+        "future_reappearance_event_pos_weight_mean": future_reappearance_event_pos_weight_mean,
         "objective": "Stage2 training run on frozen Stage1 220m backbone",
         "stage2_structure_mode": str(structure_mode),
         "current_mainline_semantic_source": str(args.semantic_source_mainline),
@@ -5073,6 +5307,7 @@ def main() -> None:
             "boundary_ok": bool(boundary_ok),
         },
         "future_semantic_head_only_warmup_audit": future_semantic_head_only_warmup_audit,
+        "future_semantic_controlled_joint_audit": future_semantic_controlled_joint_audit,
         "semantic_branch_metrics": {
             "train_gate_mean": float(sum(gate_history) / max(len(gate_history), 1)),
             "train_semantic_input_nonempty_ratio": float(semantic_nonempty_count / max(len(gate_history), 1)),
@@ -5179,23 +5414,23 @@ def main() -> None:
                 and float(args.future_hypothesis_loss_weight) == 0.0
             ),
             "future_trace_coord_loss_mean": 0.0,
-            "future_visibility_loss_mean": float(sum(future_visibility_loss_history) / max(len(future_visibility_loss_history), 1)),
-            "future_reappearance_loss_mean": float(sum(future_reappearance_loss_history) / max(len(future_reappearance_loss_history), 1)),
-            "future_reappearance_event_loss_mean": float(sum(future_reappearance_event_loss_history) / max(len(future_reappearance_event_loss_history), 1)),
+            "future_visibility_loss_mean": future_visibility_loss_mean,
+            "future_reappearance_loss_mean": future_reappearance_loss_mean,
+            "future_reappearance_event_loss_mean": future_reappearance_event_loss_mean,
             "future_semantic_embedding_loss_mean": float(sum(future_semantic_embedding_loss_history) / max(len(future_semantic_embedding_loss_history), 1)),
             "future_identity_belief_loss_mean": float(sum(future_identity_belief_loss_history) / max(len(future_identity_belief_loss_history), 1)),
             "future_uncertainty_loss_mean": float(sum(future_uncertainty_loss_history) / max(len(future_uncertainty_loss_history), 1)),
             "future_hypothesis_loss_mean": float(sum(future_hypothesis_loss_history) / max(len(future_hypothesis_loss_history), 1)),
             "future_semantic_state_loss_mean": float(sum(future_semantic_state_loss_history) / max(len(future_semantic_state_loss_history), 1)),
-            "future_semantic_state_output_valid_ratio": float(sum(future_semantic_state_valid_history) / max(len(future_semantic_state_valid_history), 1)),
+            "future_semantic_state_output_valid_ratio": future_semantic_state_output_valid_ratio,
             "future_visibility_target_source": next((x for x in reversed(future_visibility_target_source_history) if x), "unavailable"),
             "future_visibility_target_quality": next((x for x in reversed(future_visibility_target_quality_history) if x), "weak_unavailable"),
             "future_visibility_supervised_ratio_mean": float(sum(future_visibility_supervised_ratio_history) / max(len(future_visibility_supervised_ratio_history), 1)),
             "future_reappearance_supervised_ratio_mean": float(sum(future_reappearance_supervised_ratio_history) / max(len(future_reappearance_supervised_ratio_history), 1)),
             "future_visibility_positive_rate_mean": float(sum(future_visibility_positive_rate_history) / max(len(future_visibility_positive_rate_history), 1)),
-            "future_reappearance_positive_rate_mean": float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1)),
-            "future_reappearance_event_positive_rate_mean": float(sum(future_reappearance_event_positive_rate_history) / max(len(future_reappearance_event_positive_rate_history), 1)),
-            "future_reappearance_risk_entry_ratio_mean": float(sum(future_reappearance_risk_entry_ratio_history) / max(len(future_reappearance_risk_entry_ratio_history), 1)),
+            "future_reappearance_positive_rate_mean": future_reappearance_positive_rate_mean,
+            "future_reappearance_event_positive_rate_mean": future_reappearance_event_positive_rate_mean,
+            "future_reappearance_risk_entry_ratio_mean": future_reappearance_risk_entry_ratio_mean,
             "future_reappearance_risk_slot_ratio_mean": float(sum(future_reappearance_risk_slot_ratio_history) / max(len(future_reappearance_risk_slot_ratio_history), 1)),
             "future_reappearance_mask_policy": str(args.future_reappearance_mask_policy),
             "future_reappearance_head_available": bool(
@@ -5214,8 +5449,8 @@ def main() -> None:
                 / max(len(future_reappearance_event_loss_uses_independent_logit_history), 1)
                 > 0.5
             ),
-            "future_reappearance_pos_weight_mean": float(sum(future_reappearance_pos_weight_history) / max(len(future_reappearance_pos_weight_history), 1)),
-            "future_reappearance_event_pos_weight_mean": float(sum(future_reappearance_event_pos_weight_history) / max(len(future_reappearance_event_pos_weight_history), 1)),
+            "future_reappearance_pos_weight_mean": future_reappearance_pos_weight_mean,
+            "future_reappearance_event_pos_weight_mean": future_reappearance_event_pos_weight_mean,
             "future_reappearance_pos_weight_setting": str(args.future_reappearance_pos_weight),
             "future_reappearance_pos_weight_max": float(args.future_reappearance_pos_weight_max),
             "reappearance_positive_sampling_plan": reappearance_positive_sampling_plan,

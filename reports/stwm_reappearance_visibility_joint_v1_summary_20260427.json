@@ -1,0 +1,124 @@
+{
+  "report_name": "stwm_reappearance_visibility_joint_v1_summary",
+  "source_raw_summary": "reports/stwm_reappearance_visibility_joint_v1_summary_raw_20260427.json",
+  "training_completed": true,
+  "train_steps": 150,
+  "target_global_step": 11294,
+  "resume_from": "outputs/checkpoints/stage2_tusb_v3p1_reappearance_headonly_v2_20260427/latest.pt",
+  "checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_reappearance_visibility_joint_v1_20260427_run2/latest.pt",
+  "best_checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_reappearance_visibility_joint_v1_20260427_run2/best.pt",
+  "wall_time": {
+    "source": "manual",
+    "num_workers": 0,
+    "pin_memory": false,
+    "persistent_workers": false,
+    "prefetch_factor": 2,
+    "single_gpu_only": true
+  },
+  "loss_finite_ratio": 1.0,
+  "output_valid_ratio": 1.0,
+  "future_visibility_loss_mean": 0.39241068681081137,
+  "future_reappearance_loss_mean": 0.3504013995329539,
+  "future_reappearance_event_loss_mean": 0.28574199199676514,
+  "future_reappearance_positive_rate_mean": 0.13435416666666666,
+  "future_reappearance_event_positive_rate_mean": 0.25816666666666666,
+  "future_reappearance_risk_entry_ratio_mean": 0.09115079502264659,
+  "future_reappearance_pos_weight_mean": 14.396486229366726,
+  "future_reappearance_event_pos_weight_mean": 12.0,
+  "trainable_param_audit": {
+    "future_semantic_controlled_joint": true,
+    "joint_training_scope": "minimal_adapter_readout",
+    "allowed_trainable_modules": [
+      "future_semantic_state_head",
+      "readout_head",
+      "semantic_fusion.semantic_proj"
+    ],
+    "forbidden_trainable_modules": [
+      "stage1_model",
+      "semantic_encoder",
+      "semantic_fusion.gate",
+      "semantic_fusion.norm",
+      "semantic_rescue_heads",
+      "trace_unit_tokenizer",
+      "trace_unit_factorized_state",
+      "trace_unit_handshake",
+      "trace_unit_broadcast"
+    ],
+    "trainable_param_count_total": 907142,
+    "trainable_param_count_by_module": {
+      "stage1_model": 0,
+      "semantic_encoder": 0,
+      "semantic_fusion": 296064,
+      "semantic_fusion.semantic_proj": 296064,
+      "semantic_fusion.gate": 0,
+      "semantic_fusion.norm": 0,
+      "readout_head": 2306,
+      "future_semantic_state_head": 608772,
+      "semantic_rescue_heads": 0,
+      "trace_unit_tokenizer": 0,
+      "trace_unit_factorized_state": 0,
+      "trace_unit_handshake": 0,
+      "trace_unit_broadcast": 0
+    },
+    "frozen_param_count_by_module": {
+      "stage1_model": 207615754,
+      "semantic_encoder": 704896,
+      "semantic_fusion": 2657664,
+      "semantic_fusion.semantic_proj": 0,
+      "semantic_fusion.gate": 2655360,
+      "semantic_fusion.norm": 2304,
+      "readout_head": 0,
+      "future_semantic_state_head": 0,
+      "semantic_rescue_heads": 0,
+      "trace_unit_tokenizer": 1340928,
+      "trace_unit_factorized_state": 1184641,
+      "trace_unit_handshake": 493440,
+      "trace_unit_broadcast": 888192
+    },
+    "stage1_trainable_param_count": 0,
+    "trace_backbone_trainable": false,
+    "future_semantic_state_head_trainable": true,
+    "disallowed_trainable_param_count_by_module": {},
+    "controlled_joint_boundary_ok": true
+  },
+  "trainable_param_count_total": 907142,
+  "stage1_trainable_param_count": 0,
+  "trace_backbone_trainable": false,
+  "future_semantic_state_head_trainable": true,
+  "boundary_ok": true,
+  "freeze_trainable_boundary": {
+    "stage1_trainable_parameter_count": 0,
+    "semantic_trainable_parameter_count": 907142,
+    "stage1_grad_detected_after_backward": false,
+    "semantic_grad_norm_latest": 0.9999997348707199,
+    "boundary_ok": true
+  },
+  "final_metrics": {
+    "teacher_forced_coord_loss": 3.014592101484348e-05,
+    "free_rollout_coord_mean_l2": 0.0005033888573908999,
+    "free_rollout_endpoint_l2": 0.0005282461077264041,
+    "total_loss_reference": 3.0058316673588633e-05,
+    "tapvid_style_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "tapvid3d_limited_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "semantic_branch_metrics": {
+      "eval_gate_mean": 0.0029442769930113195,
+      "semantic_input_nonempty_ratio": 1.0,
+      "eval_batches": 86
+    }
+  },
+  "trace_rollout_regression_detected": false,
+  "cudnn_rnn_train_mode_fix_applied": true,
+  "training_scope": "minimal_adapter_readout",
+  "hard_boundaries": {
+    "stage1_frozen": true,
+    "no_large_training": true,
+    "no_semantic_state_feedback_rollout": true,
+    "no_multi_hypothesis": true
+  }
+}
