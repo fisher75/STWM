@@ -1,0 +1,23 @@
+# STWM Strengthened Reappearance Targets V1 Summary
+
+- generated_at_utc: `2026-04-28T06:32:02.712208+00:00`
+- teacher_forced_eval: `reports/stwm_strengthened_reappearance_targets_v1_teacher_forced_eval_20260427.json`
+- free_rollout_eval: `reports/stwm_strengthened_reappearance_targets_v1_free_rollout_eval_20260427.json`
+- random_head_baseline: `reports/stwm_reappearance_random_head_baseline_v1_20260427.json`
+- positive_sampling_audit: `reports/stwm_reappearance_positive_sampling_audit_20260427.json`
+- reappearance_mask_policy: `at_risk_only`
+- risk_slot_ratio: `0.0772414447274059`
+- risk_entry_ratio: `0.0772414447274059`
+- positive_rate_all_slots: `0.01939290364583333`
+- positive_rate_at_risk: `0.08235677083333333`
+- event_positive_rate: `0.739583333954215`
+- both_class_reappearance_per_horizon_available: `True`
+- both_class_reappearance_event_available: `True`
+- event_AP_random_baseline_available: `True`
+- event_AP_random_mean: `0.6192627921940244`
+- event_AUROC_random_mean: `0.4943888888888889`
+- positive_sampling_ready: `True`
+- old_association_report_used: `False`
+- full_model_free_rollout_export_still_works: `True`
+- ready_for_reappearance_headonly_v2: `True`
+- exact_blocking_reason: `None`

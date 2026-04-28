@@ -1,0 +1,88 @@
+{
+  "external_hardcase_item_manifest": {
+    "materialized_items": 389,
+    "note": "external 389-item hard-case item-aligned protocol; separate from Stage2SemanticDataset train/val smoke"
+  },
+  "generated_at_utc": "2026-04-28T06:20:14.956770+00:00",
+  "medium_training_configured_samples": {
+    "checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_medium_semantic_state_v1_20260427/latest.pt",
+    "raw_training_budget": {
+      "batch_size": 1,
+      "eval_interval": 10,
+      "eval_max_batches": 4,
+      "optimizer_steps_this_invocation": 40,
+      "save_every_n_steps": 20,
+      "train_steps_completed": 11044,
+      "train_steps_target": 11044
+    },
+    "train_steps": 40
+  },
+  "source_reports": {
+    "external_manifest": "reports/stwm_external_baseline_item_manifest_20260426.json",
+    "free_rollout_export": "reports/stwm_strengthened_reappearance_targets_v1_free_rollout_export_20260427.json",
+    "medium_train_summary": "reports/stwm_medium_semantic_state_train_v1_summary_20260427.json",
+    "sampling_audit": "reports/stwm_reappearance_positive_sampling_audit_20260427.json",
+    "teacher_forced_export": "reports/stwm_strengthened_reappearance_targets_v1_teacher_forced_export_20260427.json"
+  },
+  "stage2_train_subset_for_sampling_audit": {
+    "per_dataset": {
+      "VIPSeg": {
+        "full_dataset_used": false,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg",
+        "requested_max_samples_per_dataset": 64,
+        "sample_count": 64,
+        "source_count_before_limit": 2806,
+        "split": "train",
+        "used_in_bootstrap_eval": true,
+        "used_in_bootstrap_train": true
+      },
+      "VSPW": {
+        "full_dataset_used": false,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW",
+        "requested_max_samples_per_dataset": 64,
+        "sample_count": 64,
+        "source_count_before_limit": 2806,
+        "split": "train",
+        "used_in_bootstrap_eval": true,
+        "used_in_bootstrap_train": true
+      }
+    },
+    "sample_positive_rate": 0.2421875,
+    "samples_with_reappearance_positive": 31,
+    "total_train_samples": 128
+  },
+  "stage2_validation_smoke_this_pack": {
+    "data_source": "Stage2SemanticDataset validation split from checkpoint args",
+    "free_rollout_total_items": 128,
+    "free_rollout_valid_items": 128,
+    "per_dataset": {
+      "VIPSeg": {
+        "full_dataset_used": false,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg",
+        "requested_max_samples_per_dataset": 128,
+        "sample_count": 128,
+        "source_count_before_limit": 343,
+        "split": "val",
+        "used_in_bootstrap_eval": true,
+        "used_in_bootstrap_train": true
+      },
+      "VSPW": {
+        "full_dataset_used": false,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW",
+        "requested_max_samples_per_dataset": 128,
+        "sample_count": 128,
+        "source_count_before_limit": 343,
+        "split": "val",
+        "used_in_bootstrap_eval": true,
+        "used_in_bootstrap_train": true
+      }
+    },
+    "teacher_forced_total_items": 128,
+    "teacher_forced_valid_items": 128
+  },
+  "test_set_status": {
+    "no_new_test_protocol_created": true,
+    "official_external_hardcase_test_items": 389,
+    "stage2_true_test_split": "not used in this pack; current export/eval used Stage2 validation split from checkpoint args"
+  }
+}
