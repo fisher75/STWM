@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from argparse import ArgumentParser
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -45,6 +46,16 @@ def _import_visibility_builder(repo_root: Path):
     return build_future_visibility_reappearance_targets
 
 
+def _import_external_query_builder(repo_root: Path):
+    _bootstrap_repo_imports(repo_root)
+    from stwm.tools.external_hardcase_query_batch_builder_20260428 import (
+        build_query_batch_from_item,
+        group_candidate_records,
+    )
+
+    return build_query_batch_from_item, group_candidate_records
+
+
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -71,6 +82,11 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
         "# STWM Future Semantic State Raw Export Repair V1 20260427",
         "",
+        f"- manifest_mode: `{payload.get('manifest_mode')}`",
+        f"- current_export_data_source: `{payload.get('current_export_data_source')}`",
+        f"- external_manifest_consumed: `{payload.get('external_manifest_consumed')}`",
+        f"- stage2_val_fallback_used: `{payload.get('stage2_val_fallback_used')}`",
+        f"- future_candidate_used_as_input: `{payload.get('future_candidate_used_as_input')}`",
         f"- raw_export_schema_version: `{payload.get('raw_export_schema_version')}`",
         f"- checkpoint_path: `{payload.get('checkpoint_path')}`",
         f"- checkpoint_loaded: `{payload.get('checkpoint_loaded')}`",
@@ -156,6 +172,136 @@ def _extract_observed_coord(item: dict[str, Any]) -> list[float]:
             return normalized
     seed = stable_seed(str(item.get("item_id") or item.get("protocol_item_id") or "item"))
     return [((seed % 997) / 997.0), (((seed // 997) % 991) / 991.0)]
+
+
+def _candidate_center(candidate: dict[str, Any], image_size: Any) -> list[float] | None:
+    bbox = _as_bbox(candidate.get("bbox")) if isinstance(candidate, dict) else None
+    if bbox is None:
+        return None
+    width = height = 1.0
+    if isinstance(image_size, list) and len(image_size) >= 2:
+        try:
+            width = max(float(image_size[0]), 1.0)
+            height = max(float(image_size[1]), 1.0)
+        except Exception:
+            width = height = 1.0
+    x1, y1, x2, y2 = bbox
+    return [
+        max(0.0, min(1.0, ((x1 + x2) * 0.5) / width)),
+        max(0.0, min(1.0, ((y1 + y2) * 0.5) / height)),
+    ]
+
+
+def _score_external_candidates(*, state: Any, item: dict[str, Any]) -> dict[str, Any]:
+    import math
+
+    candidates = item.get("future_candidates") if isinstance(item.get("future_candidates"), list) else []
+    labels = [int(x) for x in item.get("candidate_labels", [])] if isinstance(item.get("candidate_labels"), list) else []
+    image_size = item.get("image_size")
+    pred = state.future_trace_coord[0, -1, 0, :2].detach().cpu()
+    visibility_prob = float(torch.sigmoid(state.future_visibility_logit[0, :, 0]).mean().detach().cpu().item())
+    if getattr(state, "future_reappearance_event_logit", None) is not None:
+        reappearance_event_prob = float(torch.sigmoid(state.future_reappearance_event_logit[0, 0]).detach().cpu().item())
+    elif getattr(state, "future_reappearance_logit", None) is not None:
+        reappearance_event_prob = float(torch.sigmoid(state.future_reappearance_logit[0, :, 0]).mean().detach().cpu().item())
+    else:
+        reappearance_event_prob = visibility_prob
+    scores: list[float] = []
+    distance_scores: list[float] = []
+    distances: list[float | None] = []
+    for cand in candidates:
+        center = _candidate_center(cand if isinstance(cand, dict) else {}, image_size)
+        if center is None:
+            distances.append(None)
+            distance_scores.append(0.0)
+            scores.append(0.0)
+            continue
+        dx = float(pred[0].item()) - float(center[0])
+        dy = float(pred[1].item()) - float(center[1])
+        dist = math.sqrt(dx * dx + dy * dy)
+        dist_score = math.exp(-8.0 * dist)
+        score = dist_score * (0.5 + 0.5 * reappearance_event_prob) * (0.5 + 0.5 * visibility_prob)
+        distances.append(dist)
+        distance_scores.append(dist_score)
+        scores.append(score)
+    predicted_idx = int(max(range(len(scores)), key=lambda i: scores[i])) if scores else None
+    rr = None
+    if labels and scores and 1 in labels:
+        gt_idx = labels.index(1)
+        order = sorted(range(len(scores)), key=lambda i: float(scores[i]), reverse=True)
+        rr = 1.0 / float(order.index(gt_idx) + 1) if gt_idx in order else 0.0
+    return {
+        "candidate_scores": scores,
+        "candidate_distance_scores": distance_scores,
+        "candidate_center_distances": distances,
+        "candidate_labels": labels,
+        "predicted_candidate_index": predicted_idx,
+        "candidate_top1_correct": bool(labels and predicted_idx is not None and labels[predicted_idx] == 1),
+        "candidate_mrr": rr,
+        "future_visibility_prob_for_score": visibility_prob,
+        "future_reappearance_event_prob_for_score": reappearance_event_prob,
+        "score_components_used": ["future_trace_coord_distance", "future_reappearance_event_prob", "future_visibility_prob"],
+    }
+
+
+def _external_query_item_from_state(
+    *,
+    item: dict[str, Any],
+    state: Any,
+    builder_meta: dict[str, Any],
+    feedback_info: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    validation = state.validate(strict=False)
+    visibility_prob = torch.sigmoid(state.future_visibility_logit)
+    uncertainty = F.softplus(state.future_uncertainty)
+    sem = state.future_semantic_embedding
+    ident = state.future_identity_embedding
+    sem_norm = sem.norm(dim=-1)
+    ident_norm = ident.norm(dim=-1)
+    scoring = _score_external_candidates(state=state, item=item)
+    out = {
+        "item_id": item.get("item_id"),
+        "protocol_item_id": item.get("item_id"),
+        "subset_tags": item.get("subset_tags") if isinstance(item.get("subset_tags"), dict) else {},
+        "valid_output": bool(validation.get("valid", False)),
+        "future_semantic_trace_state_valid": bool(validation.get("valid", False)),
+        "validation_errors": validation.get("errors", []),
+        "target_type": "external_candidate_expanded",
+        "target_quality": "external_candidate_expanded",
+        "future_candidate_used_as_input": False,
+        "candidate_used_for_eval_scoring": True,
+        "future_candidate_count": len(item.get("future_candidates") or []),
+        "positive_candidate_count": int(sum(scoring.get("candidate_labels") or [])),
+        "negative_candidate_count": int(len(scoring.get("candidate_labels") or []) - sum(scoring.get("candidate_labels") or [])),
+        "future_trace_coord_shape": list(state.future_trace_coord.shape),
+        "future_trace_coord_mean": _tensor_stats(state.future_trace_coord)["mean"],
+        "future_trace_coord_std": _tensor_stats(state.future_trace_coord)["std"],
+        "future_trace_coord_min": _tensor_stats(state.future_trace_coord)["min"],
+        "future_trace_coord_max": _tensor_stats(state.future_trace_coord)["max"],
+        "future_visibility_prob_shape": list(visibility_prob.shape),
+        "future_visibility_prob_mean": _tensor_stats(visibility_prob)["mean"],
+        "future_visibility_prob_std": _tensor_stats(visibility_prob)["std"],
+        "future_semantic_embedding_shape": list(sem.shape),
+        "future_semantic_embedding_norm_mean": _tensor_stats(sem_norm)["mean"],
+        "future_semantic_embedding_norm_std": _tensor_stats(sem_norm)["std"],
+        "future_semantic_embedding_var_unit": _scalar_or_none(sem.var(dim=2, unbiased=False).mean()),
+        "future_semantic_embedding_var_horizon": _scalar_or_none(sem.var(dim=1, unbiased=False).mean()),
+        "future_identity_embedding_shape": list(ident.shape),
+        "future_identity_embedding_norm_mean": _tensor_stats(ident_norm)["mean"],
+        "future_identity_embedding_norm_std": _tensor_stats(ident_norm)["std"],
+        "future_identity_embedding_var_unit": _scalar_or_none(ident.var(dim=2, unbiased=False).mean()),
+        "future_uncertainty_shape": list(uncertainty.shape),
+        "future_uncertainty_mean": _tensor_stats(uncertainty)["mean"],
+        "future_uncertainty_std": _tensor_stats(uncertainty)["std"],
+        "semantic_state_feedback_enabled": bool((feedback_info or {}).get("semantic_state_feedback_enabled", False)),
+        "feedback_gate_mean": (feedback_info or {}).get("feedback_gate_mean", 0.0),
+        "feedback_gate_std": (feedback_info or {}).get("feedback_gate_std", 0.0),
+        "feedback_gate_saturation_ratio": (feedback_info or {}).get("feedback_gate_saturation_ratio", 0.0),
+        "feedback_delta_norm": (feedback_info or {}).get("feedback_delta_norm", 0.0),
+    }
+    out.update(scoring)
+    out.update(builder_meta)
+    return out
 
 
 def _tensor_stats(tensor: torch.Tensor) -> dict[str, float | list[int]]:
@@ -804,6 +950,7 @@ def export(
     semantic_state_feedback_stopgrad_state: bool = True,
     manifest_mode: str = "stage2_val",
     external_semantic_state_manifest: Path | None = None,
+    external_candidate_expanded_manifest: Path | None = None,
     strict_no_fallback: bool = False,
 ) -> dict[str, Any]:
     if str(manifest_mode) == "external_hardcase_semantic_state":
@@ -882,6 +1029,241 @@ def export(
             "target_type_counts": target_type_counts,
             "target_quality": "external_candidate_aligned" if target_type_counts.get("external_candidate_aligned") else "unavailable",
             "strong_slot_aligned": False,
+            "items": exported_items,
+        }
+        write_json(output, payload)
+        write_doc(output.with_suffix(".md"), payload)
+        return payload
+
+    if str(manifest_mode) == "external_hardcase_query":
+        if external_candidate_expanded_manifest is None:
+            raise RuntimeError("--external-candidate-expanded-manifest is required for external_hardcase_query mode")
+        if not bool(strict_no_fallback):
+            raise RuntimeError("--strict-no-fallback is required for external_hardcase_query mode")
+        device = torch.device(device_name if device_name != "cuda" or torch.cuda.is_available() else "cpu")
+        candidate_manifest = load_json(external_candidate_expanded_manifest)
+        records = candidate_manifest.get("records") if isinstance(candidate_manifest, dict) else []
+        if not isinstance(records, list):
+            records = []
+        build_query_batch_from_item, group_candidate_records = _import_external_query_builder(repo_root)
+        grouped_items = group_candidate_records([x for x in records if isinstance(x, dict)])
+        selected_items = grouped_items[: int(max_items)]
+        exported_items: list[dict[str, Any]] = []
+        candidate_record_count = sum(len(item.get("future_candidates") or []) for item in selected_items)
+        positive_candidate_count = sum(int(sum(item.get("candidate_labels") or [])) for item in selected_items)
+        negative_candidate_count = candidate_record_count - positive_candidate_count
+        score_components: set[str] = set()
+        checkpoint_payload: dict[str, Any] = {}
+        full_report: dict[str, Any] = {}
+        full_model_forward_executed = False
+        full_free_rollout_executed = False
+        semantic_state_from_model_hidden = False
+        checkpoint_loaded = False
+        exact_block_reason = None
+        try:
+            full = _build_full_model_from_checkpoint(
+                repo_root,
+                checkpoint,
+                device,
+                max_items,
+                reappearance_random_seed=reappearance_random_seed,
+                force_random_reappearance_head=force_random_reappearance_head,
+                enable_semantic_state_feedback=bool(enable_semantic_state_feedback),
+                semantic_state_feedback_alpha=float(semantic_state_feedback_alpha),
+            )
+            checkpoint_payload = full["payload"]
+            checkpoint_loaded = True
+            full_model_forward_executed = True
+            full_free_rollout_executed = mode == "full_model_free_rollout"
+            semantic_state_from_model_hidden = True
+            trainer = full["trainer"]
+            args = full["args"]
+            full_report = {
+                "checkpoint_path": str(checkpoint),
+                "model_weights_loaded_count": {
+                    name: data.get("loaded_keys")
+                    for name, data in (full.get("load_report") or {}).items()
+                    if isinstance(data, dict)
+                },
+                "future_semantic_state_head_weights_loaded_count": full.get("load_report", {})
+                .get("future_semantic_state_head", {})
+                .get("loaded_keys"),
+                "batch_source": "external hard-case query batch builder",
+                "manifest_path": str(external_candidate_expanded_manifest),
+                "item_count": len(selected_items),
+                "prediction_path": mode,
+                "dataset_summary": full.get("dataset_summary"),
+                "load_report": full.get("load_report"),
+            }
+            with torch.no_grad():
+                for item in selected_items:
+                    try:
+                        raw_batch, builder_meta = build_query_batch_from_item(
+                            item,
+                            obs_len=int(args.obs_len),
+                            fut_len=int(args.fut_len),
+                            crop_size=int(args.semantic_crop_size),
+                            semantic_temporal_window=int(args.local_temporal_window),
+                        )
+                        batch = trainer._to_device(raw_batch, device=device, non_blocking=False)
+                        if mode == "full_model_teacher_forced":
+                            out = trainer._teacher_forced_predict(
+                                stage1_model=full["stage1_model"],
+                                semantic_encoder=full["semantic_encoder"],
+                                semantic_fusion=full["semantic_fusion"],
+                                readout_head=full["readout_head"],
+                                future_semantic_state_head=full["future_semantic_state_head"],
+                                semantic_state_feedback_adapter=full.get("semantic_state_feedback_adapter"),
+                                semantic_state_feedback_enabled=bool(enable_semantic_state_feedback),
+                                semantic_state_feedback_alpha=float(semantic_state_feedback_alpha),
+                                semantic_state_feedback_stopgrad_state=bool(semantic_state_feedback_stopgrad_state),
+                                semantic_state_feedback_mode=str(semantic_state_feedback_mode),
+                                structure_mode=str(full["structure_mode"]),
+                                trace_unit_tokenizer=full["trace_unit_tokenizer"],
+                                trace_unit_factorized_state=full["trace_unit_factorized_state"],
+                                trace_unit_handshake=full["trace_unit_handshake"],
+                                trace_unit_broadcast=full["trace_unit_broadcast"],
+                                trace_unit_disable_instance_path=bool(args.trace_unit_disable_instance_path),
+                                batch=batch,
+                                obs_len=int(args.obs_len),
+                                semantic_source_mainline=str(args.semantic_source_mainline),
+                            )
+                        elif mode == "full_model_free_rollout":
+                            out = trainer._free_rollout_predict(
+                                stage1_model=full["stage1_model"],
+                                semantic_encoder=full["semantic_encoder"],
+                                semantic_fusion=full["semantic_fusion"],
+                                readout_head=full["readout_head"],
+                                future_semantic_state_head=full["future_semantic_state_head"],
+                                semantic_state_feedback_adapter=full.get("semantic_state_feedback_adapter"),
+                                semantic_state_feedback_enabled=bool(enable_semantic_state_feedback),
+                                semantic_state_feedback_alpha=float(semantic_state_feedback_alpha),
+                                semantic_state_feedback_stopgrad_state=bool(semantic_state_feedback_stopgrad_state),
+                                semantic_state_feedback_mode=str(semantic_state_feedback_mode),
+                                structure_mode=str(full["structure_mode"]),
+                                trace_unit_tokenizer=full["trace_unit_tokenizer"],
+                                trace_unit_factorized_state=full["trace_unit_factorized_state"],
+                                trace_unit_handshake=full["trace_unit_handshake"],
+                                trace_unit_broadcast=full["trace_unit_broadcast"],
+                                trace_unit_disable_instance_path=bool(args.trace_unit_disable_instance_path),
+                                batch=batch,
+                                obs_len=int(args.obs_len),
+                                fut_len=int(args.fut_len),
+                                semantic_source_mainline=str(args.semantic_source_mainline),
+                            )
+                        else:
+                            raise RuntimeError(f"external_hardcase_query requires full-model mode, got {mode}")
+                        state = out.get("future_semantic_trace_state")
+                        if state is None:
+                            raise RuntimeError(f"{mode} did not return future_semantic_trace_state")
+                        exported = _external_query_item_from_state(
+                            item=item,
+                            state=state,
+                            builder_meta=builder_meta,
+                            feedback_info=out.get("semantic_state_feedback_info", {}),
+                        )
+                        score_components.update(str(x) for x in exported.get("score_components_used", []) if x)
+                        exported_items.append(exported)
+                    except Exception as exc:
+                        exported_items.append(
+                            {
+                                "item_id": item.get("item_id"),
+                                "protocol_item_id": item.get("item_id"),
+                                "subset_tags": item.get("subset_tags") if isinstance(item.get("subset_tags"), dict) else {},
+                                "valid_output": False,
+                                "future_semantic_trace_state_valid": False,
+                                "failure_reason": repr(exc),
+                                "target_type": "external_candidate_expanded",
+                                "target_quality": "external_candidate_expanded",
+                                "future_candidate_used_as_input": False,
+                                "candidate_used_for_eval_scoring": True,
+                                "future_target_leakage": False,
+                                "candidate_scores": [],
+                                "candidate_labels": item.get("candidate_labels") if isinstance(item.get("candidate_labels"), list) else [],
+                            }
+                        )
+        except Exception as exc:
+            exact_block_reason = repr(exc)
+            checkpoint_loaded = False
+            full_model_forward_executed = False
+            full_free_rollout_executed = False
+            semantic_state_from_model_hidden = False
+            exported_items = [
+                {
+                    "item_id": item.get("item_id"),
+                    "protocol_item_id": item.get("item_id"),
+                    "subset_tags": item.get("subset_tags") if isinstance(item.get("subset_tags"), dict) else {},
+                    "valid_output": False,
+                    "future_semantic_trace_state_valid": False,
+                    "failure_reason": f"full_model_build_or_forward_blocked: {repr(exc)}",
+                    "target_type": "external_candidate_expanded",
+                    "target_quality": "external_candidate_expanded",
+                    "future_candidate_used_as_input": False,
+                    "candidate_used_for_eval_scoring": True,
+                    "future_target_leakage": False,
+                    "candidate_scores": [],
+                    "candidate_labels": item.get("candidate_labels") if isinstance(item.get("candidate_labels"), list) else [],
+                }
+                for item in selected_items
+            ]
+
+        valid_items = sum(1 for item in exported_items if bool(item.get("valid_output")))
+        valid_ratio = valid_items / max(len(exported_items), 1)
+        per_item_candidates = [len(item.get("candidate_labels") or []) for item in exported_items]
+        payload = {
+            "generated_at_utc": now_iso(),
+            "raw_export_schema_version": RAW_EXPORT_SCHEMA_VERSION,
+            "export_mode": str(mode),
+            "manifest_mode": "external_hardcase_query",
+            "repo_root": str(repo_root),
+            "checkpoint_path": str(checkpoint),
+            "checkpoint_exists": checkpoint.exists(),
+            "checkpoint_loaded": bool(checkpoint_loaded),
+            "checkpoint_loaded_reason": exact_block_reason,
+            "consumed_checkpoint": str(checkpoint) if checkpoint_loaded else None,
+            "checkpoint_global_step": checkpoint_payload.get("global_step"),
+            "manifest": str(manifest),
+            "external_candidate_expanded_manifest": str(external_candidate_expanded_manifest),
+            "current_export_data_source": "external_hardcase_query_manifest",
+            "external_manifest_consumed": True,
+            "stage2_val_fallback_used": False,
+            "strict_no_fallback": True,
+            "old_association_report_used": False,
+            "top1_mrr_false_confuser_exported": False,
+            "future_candidate_used_as_input": False,
+            "candidate_used_for_eval_scoring": True,
+            "candidate_bbox_used_for_rollout_input": False,
+            "candidate_bbox_used_for_eval_scoring": True,
+            "observed_target_used_for_input": True,
+            "future_target_leakage": False,
+            "random_hidden_used": False,
+            "full_model_forward_executed": bool(full_model_forward_executed),
+            "full_stage1_stage2_forward_executed": bool(full_model_forward_executed),
+            "full_free_rollout_executed": bool(full_free_rollout_executed),
+            "semantic_state_from_model_hidden": bool(semantic_state_from_model_hidden),
+            "free_rollout_used": bool(full_free_rollout_executed),
+            "target_quality": "external_candidate_expanded",
+            "target_type": "external_candidate_expanded",
+            "manifest_item_count": candidate_manifest.get("original_item_count", len(grouped_items)) if isinstance(candidate_manifest, dict) else len(grouped_items),
+            "selected_original_item_count": len(selected_items),
+            "candidate_record_count": candidate_record_count,
+            "positive_candidate_count": positive_candidate_count,
+            "negative_candidate_count": negative_candidate_count,
+            "total_items": len(exported_items),
+            "exported_item_count": len(exported_items),
+            "valid_items": valid_items,
+            "valid_ratio": valid_ratio,
+            "metric_eligible_items": sum(1 for item in exported_items if bool(item.get("valid_output")) and 1 in (item.get("candidate_labels") or [])),
+            "candidate_count_min": min(per_item_candidates) if per_item_candidates else None,
+            "candidate_count_max": max(per_item_candidates) if per_item_candidates else None,
+            "score_components_used": sorted(score_components),
+            "semantic_state_feedback_enabled": bool(enable_semantic_state_feedback),
+            "semantic_state_feedback_mode": str(semantic_state_feedback_mode),
+            "semantic_state_feedback_alpha": float(semantic_state_feedback_alpha),
+            "current_best_is_feedback_mechanism": False,
+            "feedback_branch_closed": True,
+            "full_model_loader_report": full_report,
+            "exact_block_reason": exact_block_reason,
             "items": exported_items,
         }
         write_json(output, payload)
@@ -1246,8 +1628,13 @@ def parse_args() -> Any:
     p.add_argument("--repo-root", default=None)
     p.add_argument("--checkpoint", required=True)
     p.add_argument("--manifest", required=True)
-    p.add_argument("--manifest-mode", default="stage2_val", choices=["stage2_val", "external_hardcase_semantic_state"])
+    p.add_argument(
+        "--manifest-mode",
+        default="stage2_val",
+        choices=["stage2_val", "external_hardcase_semantic_state", "external_hardcase_query"],
+    )
     p.add_argument("--external-semantic-state-manifest", default=None)
+    p.add_argument("--external-candidate-expanded-manifest", default=None)
     p.add_argument("--strict-no-fallback", action="store_true")
     p.add_argument("--output", required=True)
     p.add_argument("--max-items", "--item-limit", dest="max_items", type=int, default=32)
@@ -1286,6 +1673,9 @@ def main() -> None:
         semantic_state_feedback_stopgrad_state=bool(args.semantic_state_feedback_stopgrad_state),
         manifest_mode=str(args.manifest_mode),
         external_semantic_state_manifest=Path(args.external_semantic_state_manifest) if args.external_semantic_state_manifest else None,
+        external_candidate_expanded_manifest=Path(args.external_candidate_expanded_manifest)
+        if args.external_candidate_expanded_manifest
+        else None,
         strict_no_fallback=bool(args.strict_no_fallback),
     )
 

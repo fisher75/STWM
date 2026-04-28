@@ -1,0 +1,62 @@
+{
+  "can_construct_query_only_model_input_without_future_target_leakage": true,
+  "candidate_expanded_records_possible": 5672,
+  "field_count_by_available_field": {
+    "candidate_expanded_item_possible": 389,
+    "frame_paths_exist": 389,
+    "future_candidate_geometry_and_id_all_available": 389,
+    "future_candidates_available": 389,
+    "future_frame_index_available": 389,
+    "gt_candidate_id_available": 389,
+    "gt_candidate_id_in_future_candidates": 389,
+    "image_size_available": 389,
+    "observed_frame_indices_available": 389,
+    "observed_target_bbox_available": 389,
+    "observed_target_prompt_available": 389,
+    "query_only_model_input_possible_without_future_target_leakage": 389,
+    "total_items": 389
+  },
+  "frame_paths_exist_items": 389,
+  "future_candidate_geometry_and_id_all_available_items": 389,
+  "future_candidates_available_items": 389,
+  "future_frame_index_available_items": 389,
+  "generated_at_utc": "2026-04-28T12:48:37.069013+00:00",
+  "gt_candidate_id_available_items": 389,
+  "gt_candidate_id_in_future_candidates_items": 389,
+  "hard_blockers": {},
+  "image_size_available_items": 389,
+  "minimal_batch_schema": {
+    "K": "1 query slot",
+    "fut_state": "zero dummy future state for forward only",
+    "future_candidates": "not model input; eval scoring only after FutureSemanticTraceState export",
+    "obs_state": "observed target bbox center/extent repeated across obs_len with obs_valid marking observed frames",
+    "semantic_features": "observed target crop plus bbox stats"
+  },
+  "negative_candidate_records": 5283,
+  "observed_frame_indices_available_items": 389,
+  "observed_target_bbox_available_items": 389,
+  "observed_target_prompt_available_items": 389,
+  "positive_candidate_records": 389,
+  "query_only_items_possible": 389,
+  "source_manifest": "reports/stwm_external_baseline_item_manifest_20260426.json",
+  "subset_positive_negative_counts": {
+    "OOD_hard": {},
+    "appearance_change": {
+      "negative": 955,
+      "positive": 161
+    },
+    "crossing_ambiguity": {
+      "negative": 4947,
+      "positive": 302
+    },
+    "long_gap_persistence": {
+      "negative": 185,
+      "positive": 52
+    },
+    "occlusion_reappearance": {
+      "negative": 855,
+      "positive": 127
+    }
+  },
+  "total_items": 389
+}

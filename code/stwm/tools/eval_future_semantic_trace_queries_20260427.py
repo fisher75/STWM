@@ -777,6 +777,160 @@ def run_external_hardcase_export_mode(export_report: Path, out_report: Path, out
     return payload
 
 
+def run_external_query_export_mode(export_report: Path, out_report: Path, out_doc: Path, repo_root: Path) -> dict[str, Any]:
+    export = load_json(export_report)
+    if export.get("raw_export_schema_version") != "future_semantic_trace_state_raw_export_v1":
+        raise ValueError(f"not a FutureSemanticTraceState raw export: {export_report}")
+    if export.get("manifest_mode") != "external_hardcase_query":
+        raise ValueError("external query eval requires manifest_mode=external_hardcase_query")
+    if bool(export.get("old_association_report_used")):
+        raise ValueError("external query export unexpectedly used old association report")
+    if bool(export.get("stage2_val_fallback_used")):
+        raise ValueError("external query export used Stage2 val fallback")
+    if bool(export.get("future_candidate_used_as_input")):
+        raise ValueError("external query export leaked future candidates into model input")
+    items = export.get("items")
+    if not isinstance(items, list):
+        raise ValueError("external query export missing item list")
+
+    total_candidate_records = 0
+    positive_candidate_records = 0
+    negative_candidate_records = 0
+    flat_scores: list[float] = []
+    flat_labels: list[int] = []
+    item_top1: list[float] = []
+    item_rr: list[float] = []
+    valid_output_items = 0
+    metric_eligible_items = 0
+    score_components: set[str] = set()
+    subset_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    subset_flat: dict[str, dict[str, list[Any]]] = defaultdict(lambda: {"scores": [], "labels": [], "top1": [], "rr": []})
+
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        tags = item.get("subset_tags") if isinstance(item.get("subset_tags"), dict) else {}
+        for subset in SUBSETS:
+            if bool(tags.get(subset)):
+                subset_items[subset].append(item)
+        scores = item.get("candidate_scores") if isinstance(item.get("candidate_scores"), list) else []
+        labels = item.get("candidate_labels") if isinstance(item.get("candidate_labels"), list) else []
+        clean_scores: list[float] = []
+        clean_labels: list[int] = []
+        for s, y in zip(scores, labels):
+            if isinstance(s, (int, float)) and y in {0, 1, True, False}:
+                clean_scores.append(float(s))
+                clean_labels.append(int(y))
+        total_candidate_records += len(clean_labels)
+        positive_candidate_records += sum(1 for y in clean_labels if int(y) == 1)
+        negative_candidate_records += sum(1 for y in clean_labels if int(y) == 0)
+        score_components.update(str(x) for x in item.get("score_components_used", []) if x)
+        if not bool(item.get("valid_output")):
+            continue
+        valid_output_items += 1
+        if clean_scores and 1 in clean_labels and 0 in clean_labels:
+            metric_eligible_items += 1
+            flat_scores.extend(clean_scores)
+            flat_labels.extend(clean_labels)
+            pred = item.get("predicted_candidate_index")
+            if isinstance(pred, int) and 0 <= pred < len(clean_labels):
+                item_top1.append(1.0 if clean_labels[pred] == 1 else 0.0)
+            rr = item.get("candidate_mrr")
+            if isinstance(rr, (int, float)):
+                item_rr.append(float(rr))
+            for subset in SUBSETS:
+                if bool(tags.get(subset)):
+                    subset_flat[subset]["scores"].extend(clean_scores)
+                    subset_flat[subset]["labels"].extend(clean_labels)
+                    if isinstance(pred, int) and 0 <= pred < len(clean_labels):
+                        subset_flat[subset]["top1"].append(1.0 if clean_labels[pred] == 1 else 0.0)
+                    if isinstance(rr, (int, float)):
+                        subset_flat[subset]["rr"].append(float(rr))
+
+    candidate_ap = binary_ap(flat_scores, flat_labels) if _both_classes(flat_labels) else None
+    candidate_auc = binary_auc(flat_scores, flat_labels) if _both_classes(flat_labels) else None
+    candidate_top1 = mean(item_top1)
+    candidate_mrr = mean(item_rr)
+
+    def subset_summary(subset: str) -> dict[str, Any]:
+        data = subset_flat.get(subset, {"scores": [], "labels": [], "top1": [], "rr": []})
+        labels = [int(x) for x in data.get("labels", [])]
+        scores = [float(x) for x in data.get("scores", [])]
+        return {
+            "item_count": len(subset_items.get(subset, [])),
+            "valid_output_count": sum(1 for x in subset_items.get(subset, []) if bool(x.get("valid_output"))),
+            "candidate_record_count": len(labels),
+            "positive_candidate_records": sum(1 for x in labels if x == 1),
+            "negative_candidate_records": sum(1 for x in labels if x == 0),
+            "candidate_top1": mean([float(x) for x in data.get("top1", [])]),
+            "candidate_MRR": mean([float(x) for x in data.get("rr", [])]),
+            "candidate_AP": binary_ap(scores, labels) if _both_classes(labels) else None,
+            "candidate_AUROC": binary_auc(scores, labels) if _both_classes(labels) else None,
+        }
+
+    score_has_future_semantic_state_probs = bool(
+        {"future_reappearance_event_prob", "future_visibility_prob"}.intersection(score_components)
+    )
+    eval_available = bool(
+        valid_output_items >= 50
+        and positive_candidate_records > 0
+        and negative_candidate_records > 0
+        and not bool(export.get("stage2_val_fallback_used"))
+        and not bool(export.get("old_association_report_used"))
+    )
+    external_signal: bool | str = "unclear"
+    if eval_available and score_has_future_semantic_state_probs and candidate_top1 is not None:
+        # Candidate-expanded external smoke is a diagnostic, so keep the
+        # positivity criterion modest but not vacuous. Chance is one positive
+        # per candidate set; AP must also clear the base positive rate.
+        positive_rate = positive_candidate_records / max(total_candidate_records, 1)
+        external_signal = bool(
+            candidate_top1 > 0.0
+            and (candidate_ap is not None and candidate_ap > positive_rate)
+            and (candidate_auc is None or candidate_auc >= 0.5)
+        )
+    elif eval_available:
+        external_signal = "unclear"
+
+    payload = {
+        "generated_at_utc": now_iso(),
+        "repo_root": str(repo_root),
+        "mode": "consume_external_query_semantic_state_export",
+        "source_export": str(export_report),
+        "old_association_report_used": False,
+        "stage2_val_fallback_used": False,
+        "external_manifest_consumed": bool(export.get("external_manifest_consumed")),
+        "future_candidate_used_as_input": bool(export.get("future_candidate_used_as_input")),
+        "candidate_used_for_eval_scoring": bool(export.get("candidate_used_for_eval_scoring")),
+        "full_model_forward_executed": bool(export.get("full_model_forward_executed")),
+        "full_free_rollout_executed": bool(export.get("full_free_rollout_executed")),
+        "total_items": len(items),
+        "valid_output_items": valid_output_items,
+        "valid_output_ratio": valid_output_items / max(len(items), 1),
+        "total_candidate_records": total_candidate_records,
+        "positive_candidate_records": positive_candidate_records,
+        "negative_candidate_records": negative_candidate_records,
+        "metric_eligible_items": metric_eligible_items,
+        "target_quality": "external_candidate_expanded",
+        "candidate_top1": candidate_top1,
+        "candidate_MRR": candidate_mrr,
+        "candidate_AP": candidate_ap,
+        "candidate_AUROC": candidate_auc,
+        "candidate_positive_rate": positive_candidate_records / max(total_candidate_records, 1),
+        "score_components_used": sorted(score_components),
+        "score_has_future_semantic_state_probabilities": bool(score_has_future_semantic_state_probs),
+        "per_subset_breakdown": {subset: subset_summary(subset) for subset in SUBSETS},
+        "external_query_eval_available": eval_available,
+        "external_query_signal_positive": external_signal,
+        "low_sample_warning": bool(metric_eligible_items < 50),
+        "exact_block_reason": None if eval_available else "valid_output_items_lt_50_or_missing_candidate_classes",
+        "paper_world_model_claimable": False,
+    }
+    write_json(out_report, payload)
+    write_doc(out_doc, payload)
+    return payload
+
+
 def write_doc(path: Path, payload: dict[str, Any]) -> None:
     lines = [
         "# STWM Future Semantic Query Eval 20260427",
@@ -800,6 +954,30 @@ def write_doc(path: Path, payload: dict[str, Any]) -> None:
             f"- candidate_top1: `{fmt(payload.get('candidate_top1'))}`",
             f"- candidate_MRR: `{fmt(payload.get('candidate_MRR'))}`",
             f"- external_hardcase_eval_available: `{payload.get('external_hardcase_eval_available')}`",
+            f"- exact_block_reason: `{payload.get('exact_block_reason')}`",
+            "",
+        ]
+    elif payload.get("mode") == "consume_external_query_semantic_state_export":
+        lines += [
+            "## External Query Candidate-Expanded Metrics",
+            f"- total_items: `{payload.get('total_items')}`",
+            f"- valid_output_items: `{payload.get('valid_output_items')}`",
+            f"- metric_eligible_items: `{payload.get('metric_eligible_items')}`",
+            f"- total_candidate_records: `{payload.get('total_candidate_records')}`",
+            f"- positive_candidate_records: `{payload.get('positive_candidate_records')}`",
+            f"- negative_candidate_records: `{payload.get('negative_candidate_records')}`",
+            f"- future_candidate_used_as_input: `{payload.get('future_candidate_used_as_input')}`",
+            f"- stage2_val_fallback_used: `{payload.get('stage2_val_fallback_used')}`",
+            f"- old_association_report_used: `{payload.get('old_association_report_used')}`",
+            f"- full_model_forward_executed: `{payload.get('full_model_forward_executed')}`",
+            f"- full_free_rollout_executed: `{payload.get('full_free_rollout_executed')}`",
+            f"- candidate_top1: `{fmt(payload.get('candidate_top1'))}`",
+            f"- candidate_MRR: `{fmt(payload.get('candidate_MRR'))}`",
+            f"- candidate_AP: `{fmt(payload.get('candidate_AP'))}`",
+            f"- candidate_AUROC: `{fmt(payload.get('candidate_AUROC'))}`",
+            f"- score_components_used: `{payload.get('score_components_used')}`",
+            f"- external_query_eval_available: `{payload.get('external_query_eval_available')}`",
+            f"- external_query_signal_positive: `{payload.get('external_query_signal_positive')}`",
             f"- exact_block_reason: `{payload.get('exact_block_reason')}`",
             "",
         ]
@@ -859,6 +1037,7 @@ def parse_args() -> Any:
             "consume_future_semantic_state_export",
             "consume_future_semantic_state_raw_export",
             "consume_external_hardcase_semantic_state_export",
+            "consume_external_query_semantic_state_export",
         ],
     )
     p.add_argument("--source-report", default=None)
@@ -887,6 +1066,8 @@ def main() -> None:
             raise SystemExit("--semantic-state-export is required for this mode")
         if args.mode == "consume_external_hardcase_semantic_state_export":
             run_external_hardcase_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
+        elif args.mode == "consume_external_query_semantic_state_export":
+            run_external_query_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
         else:
             run_raw_export_mode(Path(args.semantic_state_export), out_report, out_doc, repo_root)
 

@@ -1,0 +1,24 @@
+{
+  "external_query_bridge_built": true,
+  "external_query_eval_available": true,
+  "external_query_full_model_export_available": true,
+  "external_query_signal_positive": false,
+  "generated_at_utc": "2026-04-28T12:51:50.235052+00:00",
+  "metrics": {
+    "candidate_AP": 0.06995069572340755,
+    "candidate_AUROC": 0.4843919640571625,
+    "candidate_MRR": 0.32914047588490813,
+    "candidate_positive_rate": 0.06858251057827927,
+    "candidate_top1": 0.13212435233160622,
+    "metric_eligible_items": 386,
+    "valid_output_items": 389,
+    "valid_output_ratio": 1.0
+  },
+  "no_future_candidate_leakage": true,
+  "paper_world_model_claimable": false,
+  "rationale": "Full-model external query export/eval is valid and leak-free, but candidate-expanded metrics are not positive (AUROC below 0.5 and AP only modestly above base rate), so semantic-state branch should not be promoted as paper-level world-model evidence.",
+  "recommended_next_step_choice": "stop_semantic_state_branch_and_write_official_method",
+  "semantic_state_branch_status": "stop_branch_write_official_method",
+  "signal_transfer_from_internal_to_external": false,
+  "target_quality": "external_candidate_expanded"
+}
