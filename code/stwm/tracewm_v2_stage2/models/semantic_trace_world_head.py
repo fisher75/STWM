@@ -15,6 +15,8 @@ class SemanticTraceStateHeadConfig:
     semantic_embedding_dim: int = 256
     identity_embedding_dim: int = 256
     measurement_feature_dim: int = 0
+    semantic_proto_count: int = 0
+    enable_semantic_proto_head: bool = False
     semantic_logit_dim: int = 0
     hypothesis_count: int = 1
     enable_extent_head: bool = False
@@ -86,6 +88,13 @@ class SemanticTraceStateHead(torch.nn.Module):
                 torch.nn.Dropout(float(cfg.dropout)),
                 torch.nn.Linear(hidden_dim, int(cfg.measurement_feature_dim)),
             )
+        self.semantic_proto_head: torch.nn.Module | None = None
+        if bool(cfg.enable_semantic_proto_head) and int(cfg.semantic_proto_count) > 1:
+            self.semantic_proto_head = torch.nn.Sequential(
+                torch.nn.LayerNorm(hidden_dim),
+                torch.nn.Dropout(float(cfg.dropout)),
+                torch.nn.Linear(hidden_dim, int(cfg.semantic_proto_count)),
+            )
         self.visibility_head = torch.nn.Sequential(
             torch.nn.LayerNorm(hidden_dim),
             torch.nn.Linear(hidden_dim, 1),
@@ -119,6 +128,7 @@ class SemanticTraceStateHead(torch.nn.Module):
         measurement_feature_pred = (
             self.measurement_feature_head(future_hidden) if self.measurement_feature_head is not None else None
         )
+        semantic_proto_logits = self.semantic_proto_head(future_hidden) if self.semantic_proto_head is not None else None
         visibility_logit = self.visibility_head(future_hidden).squeeze(-1)
         reappearance_logit = self.reappearance_head(future_hidden).squeeze(-1)
         reappearance_event_logit = self.reappearance_event_head(future_hidden.mean(dim=1)).squeeze(-1)
@@ -136,6 +146,7 @@ class SemanticTraceStateHead(torch.nn.Module):
             future_reappearance_event_logit=reappearance_event_logit,
             future_semantic_embedding=semantic_embedding,
             future_measurement_feature_pred=measurement_feature_pred,
+            future_semantic_proto_logits=semantic_proto_logits,
             future_semantic_logits=semantic_logits,
             future_identity_embedding=identity_embedding,
             future_extent_box=extent_box,
@@ -151,6 +162,8 @@ class SemanticTraceStateHead(torch.nn.Module):
 class FutureSemanticStateLossConfig:
     semantic_loss_weight: float = 0.0
     measurement_feature_loss_weight: float = 0.0
+    semantic_proto_loss_weight: float = 0.0
+    semantic_proto_soft_loss_weight: float = 0.0
     visibility_loss_weight: float = 0.0
     reappearance_loss_weight: float = 0.0
     reappearance_event_loss_weight: float = 0.0
@@ -248,6 +261,10 @@ def compute_future_semantic_state_losses(
     measurement_feature_target: torch.Tensor | None = None,
     measurement_feature_mask: torch.Tensor | None = None,
     measurement_feature_info: dict[str, Any] | None = None,
+    semantic_proto_target: torch.Tensor | None = None,
+    semantic_proto_distribution: torch.Tensor | None = None,
+    semantic_proto_mask: torch.Tensor | None = None,
+    semantic_proto_info: dict[str, Any] | None = None,
     reappearance_target: torch.Tensor | None = None,
     reappearance_mask: torch.Tensor | None = None,
     reappearance_event_target: torch.Tensor | None = None,
@@ -297,6 +314,67 @@ def compute_future_semantic_state_losses(
     elif measurement_feature_mask is not None:
         measurement_feature_valid_ratio = float(
             measurement_feature_mask.to(device=device, dtype=torch.float32).mean().detach().cpu().item()
+        )
+
+    semantic_proto_loss = zero
+    semantic_proto_soft_loss = zero
+    semantic_proto_head_available = state.future_semantic_proto_logits is not None
+    semantic_proto_target_available = semantic_proto_target is not None and semantic_proto_mask is not None
+    semantic_proto_valid_ratio = 0.0
+    semantic_proto_accuracy: float | None = None
+    semantic_proto_top5_accuracy: float | None = None
+    semantic_proto_loss_uses_target = False
+    semantic_proto_count = int(state.future_semantic_proto_logits.shape[-1]) if state.future_semantic_proto_logits is not None else 0
+    if float(cfg.semantic_proto_loss_weight) > 0.0 or float(cfg.semantic_proto_soft_loss_weight) > 0.0:
+        if state.future_semantic_proto_logits is None:
+            raise RuntimeError("future semantic prototype loss requires state.future_semantic_proto_logits")
+        if semantic_proto_target is None or semantic_proto_mask is None:
+            raise RuntimeError("future semantic prototype loss requires prototype targets and mask")
+        proto_logits = state.future_semantic_proto_logits
+        proto_target = semantic_proto_target.to(device=device, dtype=torch.long)
+        proto_mask = semantic_proto_mask.to(device=device, dtype=torch.bool)
+        if tuple(proto_target.shape[:3]) != tuple(proto_logits.shape[:3]):
+            raise ValueError(
+                "semantic prototype target shape cannot align with logits: "
+                f"target={tuple(proto_target.shape)} logits={tuple(proto_logits.shape)}"
+            )
+        valid_proto = proto_mask & (proto_target >= 0)
+        semantic_proto_valid_ratio = float(valid_proto.to(dtype=torch.float32).mean().detach().cpu().item())
+        if bool(valid_proto.any().item()):
+            flat_logits = proto_logits[valid_proto]
+            flat_target = proto_target[valid_proto]
+            ce = F.cross_entropy(flat_logits, flat_target, reduction="mean")
+            semantic_proto_loss = ce
+            if float(cfg.semantic_proto_loss_weight) > 0.0:
+                total = total + float(cfg.semantic_proto_loss_weight) * semantic_proto_loss
+            pred = flat_logits.argmax(dim=-1)
+            semantic_proto_accuracy = float((pred == flat_target).to(dtype=torch.float32).mean().detach().cpu().item())
+            topk = min(5, int(flat_logits.shape[-1]))
+            semantic_proto_top5_accuracy = float(
+                (flat_logits.topk(k=topk, dim=-1).indices == flat_target[:, None])
+                .any(dim=-1)
+                .to(dtype=torch.float32)
+                .mean()
+                .detach()
+                .cpu()
+                .item()
+            )
+            if (
+                semantic_proto_distribution is not None
+                and float(cfg.semantic_proto_soft_loss_weight) > 0.0
+                and tuple(semantic_proto_distribution.shape[:3]) == tuple(proto_logits.shape[:3])
+            ):
+                soft_target = semantic_proto_distribution.to(device=device, dtype=torch.float32)
+                soft_target = _align_last_dim(soft_target, int(proto_logits.shape[-1])).clamp_min(0.0)
+                soft_target = soft_target / soft_target.sum(dim=-1, keepdim=True).clamp_min(1e-8)
+                logp = F.log_softmax(proto_logits, dim=-1)
+                kl = F.kl_div(logp[valid_proto], soft_target[valid_proto], reduction="batchmean")
+                semantic_proto_soft_loss = kl
+                total = total + float(cfg.semantic_proto_soft_loss_weight) * semantic_proto_soft_loss
+            semantic_proto_loss_uses_target = True
+    elif semantic_proto_mask is not None:
+        semantic_proto_valid_ratio = float(
+            semantic_proto_mask.to(device=device, dtype=torch.float32).mean().detach().cpu().item()
         )
 
     visibility_loss = zero
@@ -416,6 +494,19 @@ def compute_future_semantic_state_losses(
         "future_reappearance_event_loss": float(reappearance_event_loss.detach().cpu().item()),
         "future_semantic_embedding_loss": float(semantic_loss.detach().cpu().item()),
         "future_measurement_feature_loss": float(measurement_feature_loss.detach().cpu().item()),
+        "future_semantic_proto_loss": float(semantic_proto_loss.detach().cpu().item()),
+        "future_semantic_proto_soft_loss": float(semantic_proto_soft_loss.detach().cpu().item()),
+        "future_semantic_proto_loss_uses_target": bool(semantic_proto_loss_uses_target),
+        "future_semantic_proto_head_available": bool(semantic_proto_head_available),
+        "future_semantic_proto_target_available": bool(semantic_proto_target_available),
+        "future_semantic_proto_target_valid_ratio": float(semantic_proto_valid_ratio),
+        "future_semantic_proto_accuracy": semantic_proto_accuracy,
+        "future_semantic_proto_top5_accuracy": semantic_proto_top5_accuracy,
+        "future_semantic_proto_count": int(semantic_proto_count),
+        "future_semantic_proto_entropy": float((semantic_proto_info or {}).get("prototype_entropy", 0.0) or 0.0),
+        "future_semantic_proto_cache_hit_ratio": float((semantic_proto_info or {}).get("cache_hit_ratio", 0.0) or 0.0),
+        "future_semantic_proto_feature_backbone": str((semantic_proto_info or {}).get("feature_backbone", "")),
+        "future_semantic_proto_no_candidate_leakage": bool((semantic_proto_info or {}).get("no_candidate_leakage", True)),
         "future_measurement_feature_loss_uses_target": bool(measurement_feature_loss_uses_target),
         "future_measurement_feature_head_available": bool(measurement_feature_head_available),
         "future_measurement_feature_target_available": bool(measurement_feature_target_available),
@@ -430,6 +521,8 @@ def compute_future_semantic_state_losses(
         "future_hypothesis_loss": float(hypothesis_loss.detach().cpu().item()),
         "future_semantic_state_loss": float(total.detach().cpu().item()),
         "future_semantic_loss_weight": float(cfg.semantic_loss_weight),
+        "future_semantic_proto_loss_weight": float(cfg.semantic_proto_loss_weight),
+        "future_semantic_proto_soft_loss_weight": float(cfg.semantic_proto_soft_loss_weight),
         "future_visibility_loss_weight": float(cfg.visibility_loss_weight),
         "future_reappearance_loss_weight": float(cfg.reappearance_loss_weight),
         "future_reappearance_event_loss_weight": float(cfg.reappearance_event_loss_weight),

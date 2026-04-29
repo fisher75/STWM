@@ -21,6 +21,7 @@ class FutureSemanticTraceState:
     future_identity_embedding: torch.Tensor
     future_uncertainty: torch.Tensor
     future_measurement_feature_pred: torch.Tensor | None = None
+    future_semantic_proto_logits: torch.Tensor | None = None
     future_reappearance_logit: torch.Tensor | None = None
     future_reappearance_event_logit: torch.Tensor | None = None
     future_semantic_logits: torch.Tensor | None = None
@@ -58,6 +59,12 @@ class FutureSemanticTraceState:
         _expect_exact("future_uncertainty", self.future_uncertainty, ())
         if self.future_measurement_feature_pred is not None:
             _expect_exact("future_measurement_feature_pred", self.future_measurement_feature_pred, (None,))
+        if self.future_semantic_proto_logits is not None:
+            _expect_exact("future_semantic_proto_logits", self.future_semantic_proto_logits, (None,))
+            if int(self.future_semantic_proto_logits.shape[-1]) <= 1:
+                errors.append(
+                    f"future_semantic_proto_logits must have prototype count C > 1, got {tuple(self.future_semantic_proto_logits.shape)}"
+                )
         if self.future_reappearance_logit is not None:
             _expect_exact("future_reappearance_logit", self.future_reappearance_logit, ())
         if self.future_reappearance_event_logit is not None and bsz is not None:
@@ -103,6 +110,7 @@ class FutureSemanticTraceState:
             "future_reappearance_event_logit": tuple(self.future_reappearance_event_logit.shape) if self.future_reappearance_event_logit is not None else None,
             "future_semantic_embedding": tuple(self.future_semantic_embedding.shape),
             "future_measurement_feature_pred": tuple(self.future_measurement_feature_pred.shape) if self.future_measurement_feature_pred is not None else None,
+            "future_semantic_proto_logits": tuple(self.future_semantic_proto_logits.shape) if self.future_semantic_proto_logits is not None else None,
             "future_semantic_logits": tuple(self.future_semantic_logits.shape) if self.future_semantic_logits is not None else None,
             "future_identity_embedding": tuple(self.future_identity_embedding.shape),
             "future_extent_box": tuple(self.future_extent_box.shape) if self.future_extent_box is not None else None,
@@ -121,6 +129,8 @@ class FutureSemanticTraceState:
         }
         if self.future_measurement_feature_pred is not None:
             out["future_measurement_feature_pred"] = self.future_measurement_feature_pred
+        if self.future_semantic_proto_logits is not None:
+            out["future_semantic_proto_logits"] = self.future_semantic_proto_logits
         if self.future_reappearance_logit is not None:
             out["future_reappearance_logit"] = self.future_reappearance_logit
         if self.future_reappearance_event_logit is not None:

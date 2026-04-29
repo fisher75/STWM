@@ -59,6 +59,10 @@ from stwm.tracewm_v2_stage2.utils.future_semantic_feature_targets import (
     load_future_semantic_feature_target_cache,
     target_tensors_for_batch,
 )
+from stwm.tracewm_v2_stage2.utils.future_semantic_prototype_targets import (
+    load_future_semantic_prototype_target_cache,
+    prototype_tensors_for_batch,
+)
 from stwm.tracewm_v2_stage2.utils.visibility_reappearance_targets import build_future_visibility_reappearance_targets
 
 
@@ -290,6 +294,11 @@ def parse_args() -> Any:
     p.add_argument("--future-measurement-feature-dim", type=int, default=0)
     p.add_argument("--future-measurement-feature-target-cache", default="")
     p.add_argument("--future-measurement-feature-loss-weight", type=float, default=0.0)
+    p.add_argument("--enable-semantic-proto-head", action="store_true")
+    p.add_argument("--future-semantic-prototype-target-cache", default="")
+    p.add_argument("--future-semantic-proto-count", type=int, default=0)
+    p.add_argument("--future-semantic-proto-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-semantic-proto-soft-loss-weight", type=float, default=0.0)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-event-loss-weight", type=float, default=0.0)
@@ -4055,6 +4064,17 @@ def main() -> None:
             raise ValueError("--future-measurement-feature-loss-weight > 0 requires --future-measurement-feature-target-cache")
         if int(args.future_measurement_feature_dim) <= 0:
             raise ValueError("future measurement feature dim must be positive when feature loss is enabled")
+    future_semantic_proto_target_cache = load_future_semantic_prototype_target_cache(
+        str(args.future_semantic_prototype_target_cache)
+    )
+    if future_semantic_proto_target_cache is not None and int(args.future_semantic_proto_count) <= 0:
+        args.future_semantic_proto_count = int(future_semantic_proto_target_cache.prototype_count)
+    if float(args.future_semantic_proto_loss_weight) > 0.0 or float(args.future_semantic_proto_soft_loss_weight) > 0.0:
+        if future_semantic_proto_target_cache is None:
+            raise ValueError("semantic prototype loss requires --future-semantic-prototype-target-cache")
+        if int(args.future_semantic_proto_count) <= 1:
+            raise ValueError("semantic prototype count must be >1 when prototype loss is enabled")
+        args.enable_semantic_proto_head = True
 
     num_workers = int(runtime_meta.get("num_workers", 0))
     pin_memory = bool(runtime_meta.get("pin_memory", False))
@@ -4131,6 +4151,8 @@ def main() -> None:
                 semantic_embedding_dim=int(args.future_semantic_embedding_dim),
                 identity_embedding_dim=int(args.future_semantic_embedding_dim),
                 measurement_feature_dim=int(args.future_measurement_feature_dim),
+                semantic_proto_count=int(args.future_semantic_proto_count),
+                enable_semantic_proto_head=bool(args.enable_semantic_proto_head),
                 hypothesis_count=int(args.future_hypothesis_count),
                 enable_extent_head=bool(args.enable_future_extent_head),
                 enable_multi_hypothesis_head=bool(args.enable_future_multihypothesis_head)
@@ -4369,6 +4391,23 @@ def main() -> None:
         ),
         "future_measurement_feature_no_candidate_leakage": bool(
             future_measurement_target_cache.no_candidate_leakage if future_measurement_target_cache is not None else True
+        ),
+        "enable_semantic_proto_head": bool(args.enable_semantic_proto_head),
+        "future_semantic_proto_count": int(args.future_semantic_proto_count),
+        "future_semantic_prototype_target_cache": str(args.future_semantic_prototype_target_cache),
+        "future_semantic_proto_loss_weight": float(args.future_semantic_proto_loss_weight),
+        "future_semantic_proto_soft_loss_weight": float(args.future_semantic_proto_soft_loss_weight),
+        "future_semantic_proto_cache_loaded": bool(future_semantic_proto_target_cache is not None),
+        "future_semantic_proto_cache_path": str(
+            future_semantic_proto_target_cache.cache_path if future_semantic_proto_target_cache is not None else ""
+        ),
+        "future_semantic_proto_feature_backbone": str(
+            future_semantic_proto_target_cache.feature_backbone if future_semantic_proto_target_cache is not None else ""
+        ),
+        "future_semantic_proto_no_candidate_leakage": bool(
+            future_semantic_proto_target_cache.no_candidate_leakage
+            if future_semantic_proto_target_cache is not None
+            else True
         ),
         "future_visibility_loss_weight": float(args.future_visibility_loss_weight),
         "future_reappearance_loss_weight": float(args.future_reappearance_loss_weight),
@@ -4655,6 +4694,13 @@ def main() -> None:
     future_measurement_feature_target_valid_ratio_history: List[float] = []
     future_measurement_feature_cache_hit_ratio_history: List[float] = []
     future_measurement_feature_loss_uses_target_history: List[float] = []
+    future_semantic_proto_loss_history: List[float] = []
+    future_semantic_proto_soft_loss_history: List[float] = []
+    future_semantic_proto_target_valid_ratio_history: List[float] = []
+    future_semantic_proto_cache_hit_ratio_history: List[float] = []
+    future_semantic_proto_accuracy_history: List[float] = []
+    future_semantic_proto_top5_accuracy_history: List[float] = []
+    future_semantic_proto_loss_uses_target_history: List[float] = []
     future_identity_belief_loss_history: List[float] = []
     future_uncertainty_loss_history: List[float] = []
     future_hypothesis_loss_history: List[float] = []
@@ -4971,6 +5017,13 @@ def main() -> None:
             "future_measurement_feature_loss_uses_target": False,
             "future_measurement_feature_target_valid_ratio": 0.0,
             "future_measurement_feature_cache_hit_ratio": 0.0,
+            "future_semantic_proto_loss": 0.0,
+            "future_semantic_proto_soft_loss": 0.0,
+            "future_semantic_proto_loss_uses_target": False,
+            "future_semantic_proto_target_valid_ratio": 0.0,
+            "future_semantic_proto_cache_hit_ratio": 0.0,
+            "future_semantic_proto_accuracy": None,
+            "future_semantic_proto_top5_accuracy": None,
             "future_identity_belief_loss": 0.0,
             "future_uncertainty_loss": 0.0,
             "future_hypothesis_loss": 0.0,
@@ -4994,6 +5047,13 @@ def main() -> None:
                 slot_count=int(tf_out["pred_coord"].shape[2]),
                 device=device,
             )
+            proto_target, proto_distribution, proto_mask, proto_info = prototype_tensors_for_batch(
+                future_semantic_proto_target_cache,
+                batch,
+                horizon=int(tf_out["pred_coord"].shape[1]),
+                slot_count=int(tf_out["pred_coord"].shape[2]),
+                device=device,
+            )
             future_semantic_state_loss, future_semantic_state_info = compute_future_semantic_state_losses(
                 state=tf_out["future_semantic_trace_state"],
                 semantic_target=tf_out["semantic_tokens"],
@@ -5005,6 +5065,8 @@ def main() -> None:
                 cfg=FutureSemanticStateLossConfig(
                     semantic_loss_weight=float(args.future_semantic_loss_weight),
                     measurement_feature_loss_weight=float(args.future_measurement_feature_loss_weight),
+                    semantic_proto_loss_weight=float(args.future_semantic_proto_loss_weight),
+                    semantic_proto_soft_loss_weight=float(args.future_semantic_proto_soft_loss_weight),
                     visibility_loss_weight=float(args.future_visibility_loss_weight),
                     reappearance_loss_weight=float(args.future_reappearance_loss_weight),
                     reappearance_event_loss_weight=float(args.future_reappearance_event_loss_weight),
@@ -5019,6 +5081,10 @@ def main() -> None:
                 measurement_feature_target=measurement_target,
                 measurement_feature_mask=measurement_mask,
                 measurement_feature_info=measurement_info,
+                semantic_proto_target=proto_target,
+                semantic_proto_distribution=proto_distribution,
+                semantic_proto_mask=proto_mask,
+                semantic_proto_info=proto_info,
                 reappearance_target=visibility_targets.future_reappearance_target,
                 reappearance_mask=visibility_targets.future_reappearance_mask,
                 reappearance_event_target=visibility_targets.future_reappearance_event_target,
@@ -5027,6 +5093,9 @@ def main() -> None:
             )
             future_semantic_state_info["future_measurement_feature_cache_hit_ratio"] = float(
                 measurement_info.get("cache_hit_ratio", 0.0)
+            )
+            future_semantic_state_info["future_semantic_proto_cache_hit_ratio"] = float(
+                proto_info.get("cache_hit_ratio", 0.0)
             )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = (
@@ -5110,6 +5179,23 @@ def main() -> None:
         )
         future_measurement_feature_loss_uses_target_history.append(
             1.0 if bool(future_semantic_state_info.get("future_measurement_feature_loss_uses_target", False)) else 0.0
+        )
+        future_semantic_proto_loss_history.append(float(future_semantic_state_info.get("future_semantic_proto_loss", 0.0)))
+        future_semantic_proto_soft_loss_history.append(float(future_semantic_state_info.get("future_semantic_proto_soft_loss", 0.0)))
+        future_semantic_proto_target_valid_ratio_history.append(
+            float(future_semantic_state_info.get("future_semantic_proto_target_valid_ratio", 0.0))
+        )
+        future_semantic_proto_cache_hit_ratio_history.append(
+            float(future_semantic_state_info.get("future_semantic_proto_cache_hit_ratio", 0.0))
+        )
+        if future_semantic_state_info.get("future_semantic_proto_accuracy") is not None:
+            future_semantic_proto_accuracy_history.append(float(future_semantic_state_info.get("future_semantic_proto_accuracy", 0.0)))
+        if future_semantic_state_info.get("future_semantic_proto_top5_accuracy") is not None:
+            future_semantic_proto_top5_accuracy_history.append(
+                float(future_semantic_state_info.get("future_semantic_proto_top5_accuracy", 0.0))
+            )
+        future_semantic_proto_loss_uses_target_history.append(
+            1.0 if bool(future_semantic_state_info.get("future_semantic_proto_loss_uses_target", False)) else 0.0
         )
         future_identity_belief_loss_history.append(float(future_semantic_state_info.get("future_identity_belief_loss", 0.0)))
         future_uncertainty_loss_history.append(float(future_semantic_state_info.get("future_uncertainty_loss", 0.0)))
@@ -5437,6 +5523,8 @@ def main() -> None:
         *future_reappearance_event_loss_history,
         *future_semantic_embedding_loss_history,
         *future_measurement_feature_loss_history,
+        *future_semantic_proto_loss_history,
+        *future_semantic_proto_soft_loss_history,
         *future_identity_belief_loss_history,
         *future_uncertainty_loss_history,
     ]
@@ -5470,6 +5558,36 @@ def main() -> None:
         sum(future_measurement_feature_loss_uses_target_history)
         / max(len(future_measurement_feature_loss_uses_target_history), 1)
     )
+    future_semantic_proto_loss_mean = float(
+        sum(future_semantic_proto_loss_history) / max(len(future_semantic_proto_loss_history), 1)
+    )
+    future_semantic_proto_loss_start = float(
+        future_semantic_proto_loss_history[0] if future_semantic_proto_loss_history else 0.0
+    )
+    future_semantic_proto_loss_end = float(
+        future_semantic_proto_loss_history[-1] if future_semantic_proto_loss_history else 0.0
+    )
+    future_semantic_proto_soft_loss_mean = float(
+        sum(future_semantic_proto_soft_loss_history) / max(len(future_semantic_proto_soft_loss_history), 1)
+    )
+    future_semantic_proto_target_valid_ratio_mean = float(
+        sum(future_semantic_proto_target_valid_ratio_history)
+        / max(len(future_semantic_proto_target_valid_ratio_history), 1)
+    )
+    future_semantic_proto_cache_hit_ratio_mean = float(
+        sum(future_semantic_proto_cache_hit_ratio_history)
+        / max(len(future_semantic_proto_cache_hit_ratio_history), 1)
+    )
+    future_semantic_proto_accuracy_mean = float(
+        sum(future_semantic_proto_accuracy_history) / max(len(future_semantic_proto_accuracy_history), 1)
+    )
+    future_semantic_proto_top5_accuracy_mean = float(
+        sum(future_semantic_proto_top5_accuracy_history) / max(len(future_semantic_proto_top5_accuracy_history), 1)
+    )
+    future_semantic_proto_loss_uses_target_ratio = float(
+        sum(future_semantic_proto_loss_uses_target_history)
+        / max(len(future_semantic_proto_loss_uses_target_history), 1)
+    )
     future_reappearance_positive_rate_mean = float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1))
     future_reappearance_event_positive_rate_mean = float(sum(future_reappearance_event_positive_rate_history) / max(len(future_reappearance_event_positive_rate_history), 1))
     future_reappearance_risk_entry_ratio_mean = float(sum(future_reappearance_risk_entry_ratio_history) / max(len(future_reappearance_risk_entry_ratio_history), 1))
@@ -5495,6 +5613,16 @@ def main() -> None:
         "future_measurement_feature_backbone": str(
             future_measurement_target_cache.feature_backbone if future_measurement_target_cache is not None else ""
         ),
+        "future_semantic_proto_loss_mean": future_semantic_proto_loss_mean,
+        "future_semantic_proto_loss_start": future_semantic_proto_loss_start,
+        "future_semantic_proto_loss_end": future_semantic_proto_loss_end,
+        "future_semantic_proto_soft_loss_mean": future_semantic_proto_soft_loss_mean,
+        "future_semantic_proto_target_valid_ratio_mean": future_semantic_proto_target_valid_ratio_mean,
+        "future_semantic_proto_cache_hit_ratio_mean": future_semantic_proto_cache_hit_ratio_mean,
+        "future_semantic_proto_accuracy_mean": future_semantic_proto_accuracy_mean,
+        "future_semantic_proto_top5_accuracy_mean": future_semantic_proto_top5_accuracy_mean,
+        "future_semantic_proto_loss_uses_target_ratio": future_semantic_proto_loss_uses_target_ratio,
+        "future_semantic_proto_count": int(args.future_semantic_proto_count),
         "future_reappearance_positive_rate_mean": future_reappearance_positive_rate_mean,
         "future_reappearance_event_positive_rate_mean": future_reappearance_event_positive_rate_mean,
         "future_reappearance_risk_entry_ratio_mean": future_reappearance_risk_entry_ratio_mean,
@@ -5655,6 +5783,8 @@ def main() -> None:
             "loss_weights_default_zero_preserve_official": bool(
                 float(args.future_semantic_loss_weight) == 0.0
                 and float(args.future_measurement_feature_loss_weight) == 0.0
+                and float(args.future_semantic_proto_loss_weight) == 0.0
+                and float(args.future_semantic_proto_soft_loss_weight) == 0.0
                 and float(args.future_visibility_loss_weight) == 0.0
                 and float(args.future_reappearance_loss_weight) == 0.0
                 and float(args.future_identity_belief_loss_weight) == 0.0
@@ -5677,6 +5807,29 @@ def main() -> None:
             ),
             "future_measurement_feature_no_candidate_leakage": bool(
                 future_measurement_target_cache.no_candidate_leakage if future_measurement_target_cache is not None else True
+            ),
+            "enable_semantic_proto_head": bool(args.enable_semantic_proto_head),
+            "future_semantic_proto_count": int(args.future_semantic_proto_count),
+            "future_semantic_prototype_target_cache": str(args.future_semantic_prototype_target_cache),
+            "future_semantic_proto_loss_weight": float(args.future_semantic_proto_loss_weight),
+            "future_semantic_proto_soft_loss_weight": float(args.future_semantic_proto_soft_loss_weight),
+            "future_semantic_proto_cache_loaded": bool(future_semantic_proto_target_cache is not None),
+            "future_semantic_proto_loss_mean": future_semantic_proto_loss_mean,
+            "future_semantic_proto_loss_start": future_semantic_proto_loss_start,
+            "future_semantic_proto_loss_end": future_semantic_proto_loss_end,
+            "future_semantic_proto_soft_loss_mean": future_semantic_proto_soft_loss_mean,
+            "future_semantic_proto_target_valid_ratio_mean": future_semantic_proto_target_valid_ratio_mean,
+            "future_semantic_proto_cache_hit_ratio_mean": future_semantic_proto_cache_hit_ratio_mean,
+            "future_semantic_proto_accuracy_mean": future_semantic_proto_accuracy_mean,
+            "future_semantic_proto_top5_accuracy_mean": future_semantic_proto_top5_accuracy_mean,
+            "future_semantic_proto_loss_uses_target_ratio": future_semantic_proto_loss_uses_target_ratio,
+            "future_semantic_proto_feature_backbone": str(
+                future_semantic_proto_target_cache.feature_backbone if future_semantic_proto_target_cache is not None else ""
+            ),
+            "future_semantic_proto_no_candidate_leakage": bool(
+                future_semantic_proto_target_cache.no_candidate_leakage
+                if future_semantic_proto_target_cache is not None
+                else True
             ),
             "future_identity_belief_loss_mean": float(sum(future_identity_belief_loss_history) / max(len(future_identity_belief_loss_history), 1)),
             "future_uncertainty_loss_mean": float(sum(future_uncertainty_loss_history) / max(len(future_uncertainty_loss_history), 1)),

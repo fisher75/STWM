@@ -780,6 +780,8 @@ def _args_from_checkpoint_payload(payload: dict[str, Any], repo_root: Path, max_
         "trace_unit_broadcast_stopgrad_semantic": False,
         "future_semantic_embedding_dim": 256,
         "future_measurement_feature_dim": 0,
+        "future_semantic_proto_count": 0,
+        "enable_semantic_proto_head": False,
         "future_hypothesis_count": 1,
         "enable_future_extent_head": False,
         "enable_future_multihypothesis_head": False,
@@ -833,6 +835,8 @@ def _build_full_model_from_checkpoint(
             semantic_embedding_dim=int(args.future_semantic_embedding_dim),
             identity_embedding_dim=int(args.future_semantic_embedding_dim),
             measurement_feature_dim=int(getattr(args, "future_measurement_feature_dim", 0) or 0),
+            semantic_proto_count=int(getattr(args, "future_semantic_proto_count", 0) or 0),
+            enable_semantic_proto_head=bool(getattr(args, "enable_semantic_proto_head", False)),
             hypothesis_count=int(args.future_hypothesis_count),
             enable_extent_head=bool(args.enable_future_extent_head),
             enable_multi_hypothesis_head=bool(args.enable_future_multihypothesis_head)

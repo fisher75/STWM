@@ -1,0 +1,46 @@
+{
+  "current_feature_target": "future GT bbox crop feature extracted with local OpenAI CLIP ViT-B/32",
+  "feature_eval_free_rollout": {
+    "cosine_positive_mean": -0.08289451783639379,
+    "future_trace_coord_error": 0.17048373818397522,
+    "positive_vs_negative_margin_mean": -0.0516363310161978,
+    "retrieval_AP": 0.016148262781930354,
+    "retrieval_AUROC": 0.4935399615575397,
+    "retrieval_MRR": 0.07338754368175629,
+    "retrieval_top1": 0.015625,
+    "target_valid_ratio": 0.5,
+    "valid_items": 2,
+    "valid_output_ratio": 1.0,
+    "valid_target_count": 64
+  },
+  "feature_head_training_successful": false,
+  "generated_at_utc": "2026-04-29T03:09:57.227194+00:00",
+  "headonly_feature_loss_end": 1.0938724279403687,
+  "headonly_feature_loss_start": 1.08378267288208,
+  "kept_for_v1": [
+    "future crop feature extraction as prototype construction input",
+    "FutureSemanticTraceState output contract",
+    "visibility/reappearance/extent targets"
+  ],
+  "next_design": "semantic prototype vocabulary + future_semantic_proto_logits structured semantic field decoder",
+  "no_future_candidate_leakage": true,
+  "paper_world_model_claimable": false,
+  "paused_or_deprecated": [
+    "direct high-dimensional CLIP feature regression as main semantic field loss",
+    "post-hoc candidate scorer tuning as main method"
+  ],
+  "regresses_high_dim_clip_crop_feature": true,
+  "reusable_code_assets": [
+    "future GT crop extraction from Stage2SemanticDataset",
+    "frozen feature extraction for pseudo-label construction",
+    "future visibility/reappearance targets",
+    "extent_box target from future state",
+    "FutureSemanticTraceState schema/head/export path"
+  ],
+  "target_valid_ratio": 0.6796875,
+  "why_clip_feature_regression_not_final_semantic_field": [
+    "High-dimensional CLIP crop vectors are measurement-space targets, not a structured world-state output.",
+    "Direct regression creates a brittle metric-space alignment problem rather than a semantic trace field contract.",
+    "The smoke run was stable but did not produce non-random retrieval signal."
+  ]
+}
