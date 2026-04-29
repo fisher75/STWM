@@ -179,7 +179,16 @@ def _make_dataset(args: SimpleNamespace, *, split: str, max_samples_per_dataset:
     return Stage2SemanticDataset(cfg)
 
 
-def _load_models(args: SimpleNamespace, payload: dict[str, Any], device: torch.device, prototype_count: int) -> dict[str, Any]:
+def _load_models(
+    args: SimpleNamespace,
+    payload: dict[str, Any],
+    device: torch.device,
+    prototype_count: int,
+    *,
+    train_semantic_encoder_proj: bool = False,
+    train_semantic_fusion_gate_norm: bool = False,
+    train_handshake: bool = False,
+) -> dict[str, Any]:
     args.enable_future_semantic_state_head = True
     args.enable_semantic_proto_head = True
     args.future_semantic_proto_count = int(prototype_count)
@@ -316,14 +325,19 @@ def _load_models(args: SimpleNamespace, payload: dict[str, Any], device: torch.d
         trace_unit_handshake=trace_unit_handshake,
         trace_unit_broadcast=trace_unit_broadcast,
         train_factorized_state=True,
-        train_handshake=False,
+        train_handshake=bool(train_handshake),
         train_broadcast=True,
-        train_semantic_encoder_proj=False,
+        train_semantic_encoder_proj=bool(train_semantic_encoder_proj),
         train_tokenizer=False,
         train_semantic_fusion_proj=True,
         train_readout_head=True,
         allow_mixed_params=False,
     )
+    if bool(train_semantic_fusion_gate_norm):
+        for extra_module in [getattr(semantic_fusion, "gate", None), getattr(semantic_fusion, "norm", None)]:
+            if extra_module is not None:
+                for param in extra_module.parameters():
+                    param.requires_grad = True
     audit = _build_future_semantic_tusb_unfreeze_audit(
         enabled=True,
         stage1_model=stage1_model,

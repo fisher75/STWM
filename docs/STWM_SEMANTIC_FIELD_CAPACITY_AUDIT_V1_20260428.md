@@ -1,0 +1,20 @@
+# STWM Semantic Field Capacity Audit V1
+
+- audit_name: `stwm_semantic_field_capacity_audit_v1`
+- current_semantic_only_tusb_trainable_params: `1649543`
+- future_semantic_state_head_params: `647972`
+- future_semantic_state_head_trainable_params: `647972`
+- tusb_semantic_params: `592513`
+- tusb_dynamic_trainable_params: `0`
+- stage1_trainable_param_count: `0`
+- trace_backbone_trainable: `False`
+- semantic_encoder_total_params: `704896`
+- semantic_encoder_trainable_params: `0`
+- semantic_encoder_body_frozen: `True`
+- semantic_fusion_trainable_params: `296064`
+- only_projection_trainable: `False`
+- prototype_count_reference: `32`
+- target_entropy_proxy_conditional_entropy_c32: `1.568207521869394`
+- capacity_enough_relative_to_target_entropy: `unclear`
+- evidence: `one-batch overfits, simple probes beat frequency, but tiny STWM recipe fails to beat frequency; capacity/recipe likely bottleneck.`
+- recommended_capacity_option: `unfreeze_semantic_encoder_projection`

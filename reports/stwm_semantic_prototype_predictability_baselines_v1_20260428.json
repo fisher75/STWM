@@ -1,0 +1,116 @@
+{
+  "audit_name": "stwm_semantic_prototype_predictability_baselines_v1",
+  "candidate_scorer_used": false,
+  "future_candidate_input_used": false,
+  "no_stwm_backbone_update": true,
+  "observed_feature_meta": {
+    "feature_backbone": "openai_clip_vit_b_32_local",
+    "feature_dim": 512,
+    "observed_feature_cache_path": "outputs/cache/stwm_semantic_target_temporal_stability_v1_20260428/observed_features.npz",
+    "observed_feature_cache_reused": true
+  },
+  "results_by_prototype_count": [
+    {
+      "baseline_gain_over_frequency_top5": {
+        "observed_last": 0.44594594594594594,
+        "observed_mean": 0.44594594594594594,
+        "semantic_only_mlp": 0.14264264264264265,
+        "semantic_trace_mlp": 0.08858858858858859,
+        "trace_only_mlp": 0.022522522522522515
+      },
+      "frequency": {
+        "ce": 6.299253463745117,
+        "top1": 0.0,
+        "top5": 0.2702702702702703
+      },
+      "observed_last_prototype": {
+        "ce": 3.371532917022705,
+        "top1": 0.4114114114114114,
+        "top5": 0.7162162162162162
+      },
+      "observed_mean_feature_nearest_prototype": {
+        "ce": 3.371532917022705,
+        "top1": 0.4114114114114114,
+        "top5": 0.7162162162162162
+      },
+      "oracle_future_feature_nearest_prototype": {
+        "ce": 3.3186049461364746,
+        "top1": 1.0,
+        "top5": 1.0
+      },
+      "prototype_count": 32,
+      "semantic_only_mlp": {
+        "ce": 4.039395809173584,
+        "top1": 0.11411411411411411,
+        "top5": 0.41291291291291293
+      },
+      "semantic_only_vs_trace_only_top5_gain": 0.12012012012012013,
+      "semantic_trace_mlp": {
+        "ce": 4.386801719665527,
+        "top1": 0.09009009009009009,
+        "top5": 0.3588588588588589
+      },
+      "semantic_trace_vs_semantic_only_top5_gain": -0.05405405405405406,
+      "trace_only_mlp": {
+        "ce": 4.897543430328369,
+        "top1": 0.05105105105105105,
+        "top5": 0.2927927927927928
+      },
+      "train_record_count": 649,
+      "val_record_count": 666
+    },
+    {
+      "baseline_gain_over_frequency_top5": {
+        "observed_last": 0.5165165165165165,
+        "observed_mean": 0.5165165165165165,
+        "semantic_only_mlp": 0.12612612612612611,
+        "semantic_trace_mlp": 0.12012012012012013,
+        "trace_only_mlp": 0.08258258258258258
+      },
+      "frequency": {
+        "ce": 9.073283195495605,
+        "top1": 0.0,
+        "top5": 0.13063063063063063
+      },
+      "observed_last_prototype": {
+        "ce": 4.040475845336914,
+        "top1": 0.35585585585585583,
+        "top5": 0.6471471471471472
+      },
+      "observed_mean_feature_nearest_prototype": {
+        "ce": 4.040475845336914,
+        "top1": 0.35585585585585583,
+        "top5": 0.6471471471471472
+      },
+      "oracle_future_feature_nearest_prototype": {
+        "ce": 3.972113609313965,
+        "top1": 1.0,
+        "top5": 1.0
+      },
+      "prototype_count": 64,
+      "semantic_only_mlp": {
+        "ce": 4.71498966217041,
+        "top1": 0.09009009009009009,
+        "top5": 0.25675675675675674
+      },
+      "semantic_only_vs_trace_only_top5_gain": 0.043543543543543534,
+      "semantic_trace_mlp": {
+        "ce": 4.830150604248047,
+        "top1": 0.1021021021021021,
+        "top5": 0.25075075075075076
+      },
+      "semantic_trace_vs_semantic_only_top5_gain": -0.006006006006005982,
+      "trace_only_mlp": {
+        "ce": 5.690007209777832,
+        "top1": 0.07657657657657657,
+        "top5": 0.2132132132132132
+      },
+      "train_record_count": 649,
+      "val_record_count": 666
+    }
+  ],
+  "semantic_input_load_bearing": true,
+  "simple_probe_beats_frequency": true,
+  "target_predictable_from_observed_semantics": true,
+  "trace_only_sufficient": true
+}

@@ -1,0 +1,22 @@
+# STWM Semantic Target Predictability V1 Decision
+
+- audit_name: `stwm_semantic_target_predictability_v1_decision`
+- target_temporally_stable: `True`
+- observed_semantics_predict_future_proto: `True`
+- trace_only_predictive: `True`
+- simple_probe_beats_frequency: `True`
+- recipe_ablation_finds_success: `False`
+- best_recipe_variant: `semantic_fusion_gate_norm_c32`
+- best_recipe_variant_train_top5: `0.6883645141580611`
+- best_recipe_variant_val_top5: `0.34438775494998813`
+- c64_frequency_top5: `0.13063063063063063`
+- c64_trace_only_mlp_top5: `0.2132132132132132`
+- c64_semantic_only_mlp_top5: `0.25675675675675674`
+- c64_semantic_trace_mlp_top5: `0.25075075075075076`
+- c64_observed_mean_top5: `0.6091254752851711`
+- observed_feature_coverage_warning: `True`
+- root_cause: `model_capacity_insufficient`
+- recommended_next_step_choice: `unfreeze_semantic_encoder_projection`
+- paper_claim_allowed: `False`
+- candidate_scorer_used: `False`
+- future_candidate_leakage: `False`
