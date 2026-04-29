@@ -1,0 +1,45 @@
+{
+  "generated_at_utc": "2026-04-29T03:42:05Z",
+  "v1_target_item_count": 6,
+  "v1_valid_feature_count": 261,
+  "v1_prototype_count": 64,
+  "v1_prototype_samples_per_prototype": {
+    "mean": 4.078125,
+    "min": 1,
+    "max": 14
+  },
+  "v1_target_valid_ratio": 0.6796875,
+  "v1_training_scope": "future_semantic_state_head_only",
+  "v1_head_only_proto_loss_start": 4.102555274963379,
+  "v1_head_only_proto_loss_end": 4.026352882385254,
+  "v1_free_rollout_proto_accuracy": 0.0,
+  "v1_free_rollout_proto_top5_accuracy": 0.0,
+  "v1_free_rollout_masked_CE": 4.320476531982422,
+  "v1_free_rollout_valid_items": 2,
+  "v1_frequency_baseline_top1": 0.125,
+  "v1_frequency_baseline_top5": 0.546875,
+  "stage1_frozen": true,
+  "trace_backbone_frozen": true,
+  "why_v1_does_not_prove_world_model_failure": [
+    "Target cache contains only 6 items, so prototype statistics are unstable and evaluation covers too few valid items.",
+    "Head-only training froze Stage2 semantic backbone, so the model could not adapt semantic representations.",
+    "Free-rollout evaluation used only 2 valid items, making zero top5 accuracy inconclusive.",
+    "Prototype vocabulary is under-sampled (mean 4.08 samples/prototype), so many classes are effectively noise.",
+    "This was explicitly a smoke test (100 steps) and not a controlled semantic-branch training run."
+  ],
+  "why_next_step_needs_large_cache_and_semantic_branch_unfreeze": [
+    "Larger target cache stabilizes prototype counts and raises the effective sample-per-prototype budget.",
+    "Controlled unfreeze lets the semantic branch learn to align hidden state with prototype targets.",
+    "Head-only zero top5 accuracy suggests representation mismatch rather than a failed world model objective.",
+    "Bigger cache enables meaningful frequency baselines and non-trivial free-rollout comparisons.",
+    "Semantic branch unfreeze is required to test world-model signal without touching Stage1 or trace dynamics."
+  ],
+  "sources": {
+    "feature_targets_report": "reports/stwm_future_semantic_trace_feature_targets_v1_20260428.json",
+    "prototype_report": "reports/stwm_semantic_trace_prototypes_v1_20260428.json",
+    "prototype_targets_report": "reports/stwm_future_semantic_trace_prototype_targets_v1_20260428.json",
+    "headonly_summary": "reports/stwm_semantic_trace_field_decoder_v1_headonly_summary_20260428.json",
+    "headonly_summary_raw": "reports/stwm_semantic_trace_field_decoder_v1_headonly_summary_raw_20260428.json",
+    "eval_report": "reports/stwm_semantic_trace_field_decoder_v1_eval_20260428.json"
+  }
+}

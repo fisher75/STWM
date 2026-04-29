@@ -1,0 +1,2393 @@
+{
+  "generated_at_utc": "2026-04-29T05:34:08.069899+00:00",
+  "run_name": "stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428",
+  "train_steps": 500,
+  "loss_finite_ratio": 1.0,
+  "output_valid_ratio": 1.0,
+  "future_visibility_loss_mean": 0.3709388852715492,
+  "future_reappearance_loss_mean": 0.2724241378903389,
+  "future_reappearance_event_loss_mean": 0.21471342819929123,
+  "future_measurement_feature_loss_mean": 0.0,
+  "future_measurement_feature_loss_start": 0.0,
+  "future_measurement_feature_loss_end": 0.0,
+  "future_measurement_feature_target_valid_ratio_mean": 0.0,
+  "future_measurement_feature_cache_hit_ratio_mean": 0.0,
+  "future_measurement_feature_loss_uses_target_ratio": 0.0,
+  "future_measurement_feature_dim": 0,
+  "future_measurement_feature_backbone": "",
+  "future_semantic_proto_loss_mean": 4.986039916515351,
+  "future_semantic_proto_loss_start": 4.968008995056152,
+  "future_semantic_proto_loss_end": 5.189838409423828,
+  "future_semantic_proto_soft_loss_mean": 0.9770391141176223,
+  "future_semantic_proto_target_valid_ratio_mean": 0.9201250047534704,
+  "future_semantic_proto_cache_hit_ratio_mean": 1.0,
+  "future_semantic_proto_accuracy_mean": 0.0017833044292473118,
+  "future_semantic_proto_top5_accuracy_mean": 0.03882855121121716,
+  "future_semantic_proto_loss_uses_target_ratio": 0.988,
+  "future_semantic_proto_count": 128,
+  "future_reappearance_positive_rate_mean": 0.10486458333333333,
+  "future_reappearance_event_positive_rate_mean": 0.18118333333333334,
+  "future_reappearance_risk_entry_ratio_mean": 0.08531190606951713,
+  "future_reappearance_pos_weight_mean": 18.255149787498844,
+  "future_reappearance_event_pos_weight_mean": 16.71527777777778,
+  "objective": "Stage2 training run on frozen Stage1 220m backbone",
+  "stage2_structure_mode": "trace_unit_semantic_binding",
+  "current_mainline_semantic_source": "crop_visual_encoder",
+  "legacy_semantic_source": "hand_crafted_stats",
+  "stage2_contract_path": "reports/stage2_bootstrap_data_contract_20260408.json",
+  "stage2_data_binding": {
+    "core": [
+      "VSPW",
+      "VIPSeg"
+    ],
+    "optional_extension": [
+      "BURST"
+    ],
+    "excluded": [
+      {
+        "dataset_name": "TAO",
+        "reason": "access_ready"
+      },
+      {
+        "dataset_name": "VISOR",
+        "reason": "manual_gate"
+      }
+    ],
+    "run_datasets": [
+      "vspw",
+      "vipseg"
+    ]
+  },
+  "datasets_bound_for_train": [
+    "vspw",
+    "vipseg"
+  ],
+  "datasets_bound_for_eval": [
+    "vspw",
+    "vipseg"
+  ],
+  "runtime": {
+    "source": "manual",
+    "num_workers": 0,
+    "pin_memory": false,
+    "persistent_workers": false,
+    "prefetch_factor": 2,
+    "single_gpu_only": true
+  },
+  "run_metadata": {
+    "run_name": "stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428",
+    "started_at_utc": "2026-04-29T05:02:44.128561+00:00",
+    "cuda_visible_devices": "0",
+    "gpu_selection": {},
+    "stage2_structure_mode": "trace_unit_semantic_binding",
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "instance_aware_data_path_enabled": true,
+    "semantic_rescue_mode": "none",
+    "semantic_rescue_weight": 0.0,
+    "semantic_bootstrap_cache_path": "",
+    "semantic_bootstrap_target_dim": 10,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 0.0,
+    "confidence_gated_alignment_loss_weight": 0.0,
+    "sparse_persistence_contrastive_loss_weight": 0.0,
+    "enable_future_semantic_state_head": true,
+    "future_semantic_embedding_dim": 256,
+    "future_semantic_loss_weight": 0.0,
+    "future_measurement_feature_dim": 0,
+    "future_measurement_feature_target_cache": "",
+    "future_measurement_feature_loss_weight": 0.0,
+    "future_measurement_feature_cache_loaded": false,
+    "future_measurement_feature_cache_path": "",
+    "future_measurement_feature_backbone": "",
+    "future_measurement_feature_no_candidate_leakage": true,
+    "enable_semantic_proto_head": true,
+    "future_semantic_proto_count": 128,
+    "future_semantic_prototype_target_cache": "reports/stwm_future_semantic_trace_prototype_targets_v2_20260428.json",
+    "future_semantic_proto_loss_weight": 0.05,
+    "future_semantic_proto_soft_loss_weight": 0.01,
+    "future_semantic_proto_cache_loaded": true,
+    "future_semantic_proto_cache_path": "outputs/cache/stwm_future_semantic_trace_prototype_targets_v2_20260428/prototype_targets.npz",
+    "future_semantic_proto_feature_backbone": "openai_clip_vit_b_32_local",
+    "future_semantic_proto_no_candidate_leakage": true,
+    "future_visibility_loss_weight": 0.02,
+    "future_reappearance_loss_weight": 0.02,
+    "future_reappearance_event_loss_weight": 0.04,
+    "future_reappearance_pos_weight": "auto",
+    "future_reappearance_pos_weight_max": 50.0,
+    "future_reappearance_mask_policy": "at_risk_only",
+    "reappearance_positive_oversample": false,
+    "reappearance_positive_min_batch_ratio": 0.3,
+    "reappearance_positive_sampling_plan": {
+      "total_train_samples": 512,
+      "samples_with_reappearance_positive": null,
+      "positive_indices": [],
+      "sample_positive_rate": null,
+      "estimated_batches_with_positive_under_batch_size_1": null,
+      "target_min_batch_ratio": 0.3,
+      "recommended_oversample_factor": 1.0,
+      "scan_skipped_reason": "reappearance_positive_oversample_disabled"
+    },
+    "future_identity_belief_loss_weight": 0.0,
+    "future_uncertainty_loss_weight": 0.0,
+    "future_hypothesis_count": 1,
+    "future_hypothesis_loss_weight": 0.0,
+    "enable_future_extent_head": false,
+    "enable_future_multihypothesis_head": false,
+    "future_semantic_head_only_warmup": false,
+    "future_semantic_head_only_warmup_steps": 0,
+    "freeze_non_future_semantic_head_during_warmup": false,
+    "future_semantic_head_only_warmup_audit": {
+      "future_semantic_head_only_warmup": false,
+      "future_semantic_head_only_warmup_steps": 0,
+      "freeze_non_future_semantic_head_during_warmup": false,
+      "total_trainable_params": 1057030,
+      "future_semantic_state_head_trainable_params": 758660,
+      "non_future_semantic_head_trainable_params": 298370,
+      "non_future_semantic_head_trainable_params_by_module": {
+        "stage1_model": 0,
+        "semantic_encoder": 0,
+        "semantic_fusion": 296064,
+        "readout_head": 2306,
+        "semantic_state_feedback_adapter": 0,
+        "semantic_rescue_heads": 0,
+        "trace_unit_tokenizer": 0,
+        "trace_unit_factorized_state": 0,
+        "trace_unit_handshake": 0,
+        "trace_unit_broadcast": 0
+      },
+      "head_only_boundary_ok": true
+    },
+    "future_semantic_controlled_joint": true,
+    "future_semantic_joint_train_semantic_fusion_proj": true,
+    "future_semantic_joint_train_readout_head": true,
+    "future_semantic_controlled_joint_audit": {
+      "future_semantic_controlled_joint": true,
+      "joint_training_scope": "minimal_adapter_readout",
+      "allowed_trainable_modules": [
+        "future_semantic_state_head",
+        "readout_head",
+        "semantic_fusion.semantic_proj",
+        "semantic_state_feedback_adapter"
+      ],
+      "forbidden_trainable_modules": [
+        "stage1_model",
+        "semantic_encoder",
+        "semantic_fusion.gate",
+        "semantic_fusion.norm",
+        "semantic_rescue_heads",
+        "trace_unit_tokenizer",
+        "trace_unit_factorized_state",
+        "trace_unit_handshake",
+        "trace_unit_broadcast"
+      ],
+      "trainable_param_count_total": 1057030,
+      "trainable_param_count_by_module": {
+        "stage1_model": 0,
+        "semantic_encoder": 0,
+        "semantic_fusion": 296064,
+        "semantic_fusion.semantic_proj": 296064,
+        "semantic_fusion.gate": 0,
+        "semantic_fusion.norm": 0,
+        "readout_head": 2306,
+        "future_semantic_state_head": 758660,
+        "semantic_state_feedback_adapter": 0,
+        "semantic_rescue_heads": 0,
+        "trace_unit_tokenizer": 0,
+        "trace_unit_factorized_state": 0,
+        "trace_unit_handshake": 0,
+        "trace_unit_broadcast": 0
+      },
+      "frozen_param_count_by_module": {
+        "stage1_model": 207615754,
+        "semantic_encoder": 704896,
+        "semantic_fusion": 2657664,
+        "semantic_fusion.semantic_proj": 0,
+        "semantic_fusion.gate": 2655360,
+        "semantic_fusion.norm": 2304,
+        "readout_head": 0,
+        "future_semantic_state_head": 0,
+        "semantic_state_feedback_adapter": 0,
+        "semantic_rescue_heads": 0,
+        "trace_unit_tokenizer": 1340928,
+        "trace_unit_factorized_state": 1184641,
+        "trace_unit_handshake": 493440,
+        "trace_unit_broadcast": 888192
+      },
+      "stage1_trainable_param_count": 0,
+      "trace_backbone_trainable": false,
+      "future_semantic_state_head_trainable": true,
+      "semantic_state_feedback_adapter_trainable": false,
+      "disallowed_trainable_param_count_by_module": {},
+      "controlled_joint_boundary_ok": true
+    },
+    "semantic_state_feedback_enabled": false,
+    "semantic_state_feedback_mode": "readout_only",
+    "semantic_state_feedback_alpha": 0.05,
+    "semantic_state_feedback_stopgrad_state": true,
+    "semantic_state_feedback_trainable_params": 0,
+    "semantic_state_feedback_total_params": 0,
+    "future_semantic_state_head_default_enabled": false,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 0,
+    "aux_loss_ramp_steps": 0,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "hard_topk_query_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.85,
+    "v6_max_affected_ratio": 0.2,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 2,
+    "v6_hard_negative_cap": 6,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 0,
+    "v6_two_level_pair_mining_enabled": true,
+    "v6_relaxed_motion_threshold": 0.2,
+    "v6_relaxed_area_jump_threshold": 0.18,
+    "v6_relaxed_small_query_threshold": 0.45,
+    "v6_relaxed_appearance_shift_threshold": 0.1,
+    "v6_relaxed_center_interaction_threshold": 0.2,
+    "semantic_hard_sidecar_enabled": false,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_bootstrap_cache_item_count": 0,
+    "skip_resume_optimizer": true,
+    "resume_optimizer_loaded": false,
+    "resume_optimizer_skip_reason": "explicit_skip_resume_optimizer",
+    "stage1_partial_unfreeze_mode": "none",
+    "stage1_partial_unfreeze_layer_count": 1,
+    "stage1_partial_unfreeze_lr_scale": 0.1,
+    "stage1_partial_unfreeze_active": false,
+    "trace_unit_count": 16,
+    "trace_unit_dim": 384,
+    "trace_unit_slot_iters": 3,
+    "trace_unit_assignment_topk": 2,
+    "trace_unit_assignment_temperature": 0.7,
+    "trace_unit_use_instance_prior_bias": true,
+    "trace_unit_disable_instance_path": false,
+    "trace_unit_teacher_prior_dim": 512,
+    "trace_unit_sem_alpha_min": 0.02,
+    "trace_unit_sem_alpha_max": 0.12,
+    "trace_unit_handshake_dim": 128,
+    "trace_unit_handshake_layers": 1,
+    "trace_unit_broadcast_residual_weight": 0.35,
+    "trace_unit_broadcast_stopgrad_semantic": false,
+    "trace_unit_assignment_sparsity_weight": 0.02,
+    "trace_unit_assignment_temporal_consistency_weight": 0.05,
+    "trace_unit_semantic_inertia_weight": 0.05,
+    "trace_unit_instance_consistency_weight": 0.1,
+    "trace_unit_instance_binding_weight": 0.1,
+    "trace_unit_interinstance_repulse_weight": 0.05,
+    "trace_unit_unit_purity_weight": 0.03,
+    "trace_unit_instance_id_source": "dominant_id",
+    "trace_unit_instance_conf_threshold": 0.6,
+    "trace_unit_ambiguity_repulse_weight": 0.0,
+    "trace_unit_ambiguity_risk_threshold": 0.35,
+    "trace_unit_ambiguity_min_dist_weight": 0.4,
+    "trace_unit_ambiguity_iou_weight": 0.35,
+    "trace_unit_ambiguity_motion_cross_weight": 0.25,
+    "trace_unit_appearance_refine_weight": 0.0,
+    "trace_unit_dynsem_decorrelation_weight": 0.005,
+    "trace_unit_utilization_weight": 0.03,
+    "trace_unit_min_active_target": 4.0,
+    "trace_unit_diversity_weight": 0.03,
+    "trace_unit_top2_floor_weight": 0.02,
+    "trace_unit_top2_mass_floor": 0.1,
+    "trace_unit_hardsubset_curriculum_weight": 0.0,
+    "trace_unit_hardsubset_ambiguity_weight": 1.0,
+    "trace_unit_hardsubset_appearance_weight": 1.0,
+    "trace_unit_hardsubset_occlusion_weight": 0.75,
+    "trace_unit_hardsubset_longgap_weight": 0.75,
+    "teacher_semantic_cache_path": "data/processed/stage2_teacher_semantic_cache_v4_appearance_20260418",
+    "max_entities_per_sample": 8,
+    "resumed_from": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_headonly_20260428/latest.pt",
+    "true_instance_entity_count_mean_so_far": 2.132,
+    "pseudo_entity_count_mean_so_far": 3.186,
+    "fallback_entity_count_mean_so_far": 0.086,
+    "true_instance_ratio_per_batch_mean_so_far": 0.418
+  },
+  "training_budget": {
+    "train_steps_target": 12014,
+    "train_steps_completed": 12014,
+    "optimizer_steps_this_invocation": 500,
+    "batch_size": 1,
+    "eval_interval": 100,
+    "eval_max_batches": 4,
+    "save_every_n_steps": 100
+  },
+  "dataset_summary": {
+    "train": {
+      "VSPW": {
+        "sample_count": 256,
+        "source_count_before_limit": 2806,
+        "requested_max_samples_per_dataset": 256,
+        "full_dataset_used": false,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 256,
+        "source_count_before_limit": 2806,
+        "requested_max_samples_per_dataset": 256,
+        "full_dataset_used": false,
+        "split": "train",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      }
+    },
+    "val": {
+      "VSPW": {
+        "sample_count": 64,
+        "source_count_before_limit": 343,
+        "requested_max_samples_per_dataset": 64,
+        "full_dataset_used": false,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vspw/VSPW"
+      },
+      "VIPSeg": {
+        "sample_count": 64,
+        "source_count_before_limit": 343,
+        "requested_max_samples_per_dataset": 64,
+        "full_dataset_used": false,
+        "split": "val",
+        "used_in_bootstrap_train": true,
+        "used_in_bootstrap_eval": true,
+        "local_path": "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg"
+      }
+    }
+  },
+  "whether_full_train_used": false,
+  "whether_full_val_used": false,
+  "effective_train_sample_count_per_dataset": {
+    "VSPW": 256,
+    "VIPSeg": 256
+  },
+  "effective_val_sample_count_per_dataset": {
+    "VSPW": 64,
+    "VIPSeg": 64
+  },
+  "core_dataset_inputs": {
+    "ready": true,
+    "details": {
+      "VSPW": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 256,
+        "val_sample_count": 64,
+        "ready": true
+      },
+      "VIPSEG": {
+        "train_required": true,
+        "eval_required": true,
+        "train_sample_count": 256,
+        "val_sample_count": 64,
+        "ready": true
+      }
+    }
+  },
+  "stage1_backbone": {
+    "load_success": true,
+    "checkpoint_path": "/home/chen034/workspace/stwm/outputs/checkpoints/stage1_v2_longtrain_220m_mainline_20260408/best.pt",
+    "model_preset": "prototype_220m",
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "parameter_count": 207615754,
+    "trainable_parameter_count": 0,
+    "partial_unfreeze_mode": "none",
+    "partial_unfreeze_layer_count": 1,
+    "partial_unfreeze_layer_indices": [],
+    "partial_unfreeze_param_names": []
+  },
+  "parameter_count_frozen": 207615754,
+  "parameter_count_trainable": 1057030,
+  "freeze_trainable_boundary": {
+    "stage1_trainable_parameter_count": 0,
+    "semantic_trainable_parameter_count": 1057030,
+    "stage1_grad_detected_after_backward": false,
+    "semantic_grad_norm_latest": 0.9999999031082207,
+    "boundary_ok": true
+  },
+  "future_semantic_head_only_warmup_audit": {
+    "future_semantic_head_only_warmup": false,
+    "future_semantic_head_only_warmup_steps": 0,
+    "freeze_non_future_semantic_head_during_warmup": false,
+    "total_trainable_params": 1057030,
+    "future_semantic_state_head_trainable_params": 758660,
+    "non_future_semantic_head_trainable_params": 298370,
+    "non_future_semantic_head_trainable_params_by_module": {
+      "stage1_model": 0,
+      "semantic_encoder": 0,
+      "semantic_fusion": 296064,
+      "readout_head": 2306,
+      "semantic_state_feedback_adapter": 0,
+      "semantic_rescue_heads": 0,
+      "trace_unit_tokenizer": 0,
+      "trace_unit_factorized_state": 0,
+      "trace_unit_handshake": 0,
+      "trace_unit_broadcast": 0
+    },
+    "head_only_boundary_ok": true
+  },
+  "future_semantic_controlled_joint_audit": {
+    "future_semantic_controlled_joint": true,
+    "joint_training_scope": "minimal_adapter_readout",
+    "allowed_trainable_modules": [
+      "future_semantic_state_head",
+      "readout_head",
+      "semantic_fusion.semantic_proj",
+      "semantic_state_feedback_adapter"
+    ],
+    "forbidden_trainable_modules": [
+      "stage1_model",
+      "semantic_encoder",
+      "semantic_fusion.gate",
+      "semantic_fusion.norm",
+      "semantic_rescue_heads",
+      "trace_unit_tokenizer",
+      "trace_unit_factorized_state",
+      "trace_unit_handshake",
+      "trace_unit_broadcast"
+    ],
+    "trainable_param_count_total": 1057030,
+    "trainable_param_count_by_module": {
+      "stage1_model": 0,
+      "semantic_encoder": 0,
+      "semantic_fusion": 296064,
+      "semantic_fusion.semantic_proj": 296064,
+      "semantic_fusion.gate": 0,
+      "semantic_fusion.norm": 0,
+      "readout_head": 2306,
+      "future_semantic_state_head": 758660,
+      "semantic_state_feedback_adapter": 0,
+      "semantic_rescue_heads": 0,
+      "trace_unit_tokenizer": 0,
+      "trace_unit_factorized_state": 0,
+      "trace_unit_handshake": 0,
+      "trace_unit_broadcast": 0
+    },
+    "frozen_param_count_by_module": {
+      "stage1_model": 207615754,
+      "semantic_encoder": 704896,
+      "semantic_fusion": 2657664,
+      "semantic_fusion.semantic_proj": 0,
+      "semantic_fusion.gate": 2655360,
+      "semantic_fusion.norm": 2304,
+      "readout_head": 0,
+      "future_semantic_state_head": 0,
+      "semantic_state_feedback_adapter": 0,
+      "semantic_rescue_heads": 0,
+      "trace_unit_tokenizer": 1340928,
+      "trace_unit_factorized_state": 1184641,
+      "trace_unit_handshake": 493440,
+      "trace_unit_broadcast": 888192
+    },
+    "stage1_trainable_param_count": 0,
+    "trace_backbone_trainable": false,
+    "future_semantic_state_head_trainable": true,
+    "semantic_state_feedback_adapter_trainable": false,
+    "disallowed_trainable_param_count_by_module": {},
+    "controlled_joint_boundary_ok": true
+  },
+  "semantic_branch_metrics": {
+    "train_gate_mean": 0.02842033202946186,
+    "train_semantic_input_nonempty_ratio": 1.0,
+    "semantic_crop_size": 64,
+    "current_mainline_semantic_source": "crop_visual_encoder",
+    "legacy_semantic_source": "hand_crafted_stats",
+    "legacy_semantic_feature_dim": 10,
+    "semantic_rescue_mode": "none",
+    "semantic_rescue_weight": 0.0,
+    "semantic_bootstrap_target_dim": 10,
+    "semantic_alignment_loss_weight": 0.0,
+    "query_persistence_consistency_loss_weight": 0.0,
+    "semantic_hard_curriculum_weight": 0.0,
+    "readout_semantic_alignment_loss_weight": 0.0,
+    "persistence_contrastive_ranking_loss_weight": 0.0,
+    "semantic_aux_subset_weighting_strength": 0.0,
+    "confidence_gated_alignment_loss_weight": 0.0,
+    "sparse_persistence_contrastive_loss_weight": 0.0,
+    "confidence_metric_definition": "margin between positive CLIP-target cosine and hardest in-batch negative cosine on readout projection",
+    "confidence_gating_margin_threshold": 0.1,
+    "confidence_gating_temperature": 0.05,
+    "semantic_hard_score_threshold": 0.25,
+    "aux_loss_delay_steps": 0,
+    "aux_loss_ramp_steps": 0,
+    "v4_sparse_gating_family": "quantile_sparse_gating",
+    "v4_gating_quantile": 0.85,
+    "v4_topk_token_ratio": 0.2,
+    "v4_topk_min_tokens": 2,
+    "v4_gate_min_strength": 0.05,
+    "v4_persistence_value_quantile": 0.7,
+    "v4_persistence_max_pairs": 0,
+    "v4_persistence_margin": 0.1,
+    "v5_gating_family": "hard_topk_query_gating_v2",
+    "v5_topk_query_k": 1,
+    "v5_capped_quantile": 0.85,
+    "v5_max_affected_ratio": 0.2,
+    "v5_gate_min_strength": 0.05,
+    "v5_max_pairs_per_sample": 2,
+    "v5_hard_negative_cap": 4,
+    "v5_pair_sampling_temperature": 0.35,
+    "v6_gating_family": "hard_topk_query_gating_v2",
+    "v6_topk_query_k": 1,
+    "v6_capped_quantile": 0.85,
+    "v6_max_affected_ratio": 0.2,
+    "v6_gate_min_strength": 0.05,
+    "v6_strict_max_pairs_per_sample": 2,
+    "v6_hard_negative_cap": 6,
+    "v6_pair_sampling_temperature": 0.35,
+    "v6_guaranteed_min_pairs_per_sample": 0,
+    "v6_two_level_pair_mining_enabled": true,
+    "v6_relaxed_motion_threshold": 0.2,
+    "v6_relaxed_area_jump_threshold": 0.18,
+    "v6_relaxed_small_query_threshold": 0.45,
+    "v6_relaxed_appearance_shift_threshold": 0.1,
+    "v6_relaxed_center_interaction_threshold": 0.2,
+    "whether_main_rollout_loss_reweighted": false,
+    "semantic_rescue_loss_mean": 0.0,
+    "semantic_alignment_loss_mean": 0.0,
+    "query_persistence_consistency_loss_mean": 0.0,
+    "readout_semantic_alignment_loss_mean": 0.0,
+    "persistence_contrastive_or_ranking_loss_mean": 0.0,
+    "confidence_gated_alignment_loss_mean": 0.0,
+    "sparse_persistence_contrastive_loss_mean": 0.0,
+    "confidence_gated_affected_sample_ratio_mean": 0.0,
+    "low_confidence_sample_ratio_mean": 0.0,
+    "effective_pair_coverage_ratio_mean": 0.0,
+    "positive_pair_count_mean": 0.0,
+    "hard_negative_count_mean": 0.0,
+    "actual_gate_positive_ratio_mean": 0.0,
+    "activated_query_count_mean": 0.0,
+    "activated_query_ratio_mean": 0.0,
+    "per_batch_sparsity_mean": 0.0,
+    "per_batch_sparsity_std_mean": 0.0,
+    "raw_quantile_ratio_mean": 0.0,
+    "capped_ratio_mean": 0.0,
+    "valuable_pair_ratio_mean": 0.0,
+    "fallback_trigger_rate_mean": 0.0,
+    "guaranteed_pair_count_mean": 0.0,
+    "strict_pair_ratio_mean": 0.0,
+    "fallback_pair_ratio_mean": 0.0,
+    "sparse_gate_selected_ratio_mean": 0.0,
+    "high_value_pair_ratio_mean": 0.0,
+    "high_value_pair_count_mean": 0.0,
+    "persistence_candidate_pair_count_mean": 0.0,
+    "aux_schedule_scale_mean": 1.0,
+    "final_effective_aux_weight_mean": 0.0,
+    "final_effective_aux_weight": 0.0,
+    "semantic_bootstrap_cache_hit_ratio_mean": 0.0,
+    "semantic_hard_sample_weight_mean": 1.0,
+    "semantic_bootstrap_cache_item_count": 0
+  },
+  "future_semantic_trace_state_metrics": {
+    "enabled": true,
+    "future_semantic_embedding_dim": 256,
+    "future_measurement_feature_dim": 0,
+    "future_measurement_feature_target_cache": "",
+    "future_measurement_feature_loss_weight": 0.0,
+    "future_measurement_feature_cache_loaded": false,
+    "future_hypothesis_count": 1,
+    "enable_future_extent_head": false,
+    "enable_future_multihypothesis_head": false,
+    "loss_weights_default_zero_preserve_official": false,
+    "future_trace_coord_loss_mean": 0.0,
+    "future_visibility_loss_mean": 0.3709388852715492,
+    "future_reappearance_loss_mean": 0.2724241378903389,
+    "future_reappearance_event_loss_mean": 0.21471342819929123,
+    "future_semantic_embedding_loss_mean": 0.0,
+    "future_measurement_feature_loss_mean": 0.0,
+    "future_measurement_feature_loss_start": 0.0,
+    "future_measurement_feature_loss_end": 0.0,
+    "future_measurement_feature_target_valid_ratio_mean": 0.0,
+    "future_measurement_feature_cache_hit_ratio_mean": 0.0,
+    "future_measurement_feature_loss_uses_target_ratio": 0.0,
+    "future_measurement_feature_backbone": "",
+    "future_measurement_feature_no_candidate_leakage": true,
+    "enable_semantic_proto_head": true,
+    "future_semantic_proto_count": 128,
+    "future_semantic_prototype_target_cache": "reports/stwm_future_semantic_trace_prototype_targets_v2_20260428.json",
+    "future_semantic_proto_loss_weight": 0.05,
+    "future_semantic_proto_soft_loss_weight": 0.01,
+    "future_semantic_proto_cache_loaded": true,
+    "future_semantic_proto_loss_mean": 4.986039916515351,
+    "future_semantic_proto_loss_start": 4.968008995056152,
+    "future_semantic_proto_loss_end": 5.189838409423828,
+    "future_semantic_proto_soft_loss_mean": 0.9770391141176223,
+    "future_semantic_proto_target_valid_ratio_mean": 0.9201250047534704,
+    "future_semantic_proto_cache_hit_ratio_mean": 1.0,
+    "future_semantic_proto_accuracy_mean": 0.0017833044292473118,
+    "future_semantic_proto_top5_accuracy_mean": 0.03882855121121716,
+    "future_semantic_proto_loss_uses_target_ratio": 0.988,
+    "future_semantic_proto_feature_backbone": "openai_clip_vit_b_32_local",
+    "future_semantic_proto_no_candidate_leakage": true,
+    "future_identity_belief_loss_mean": 0.0,
+    "future_uncertainty_loss_mean": 0.0,
+    "future_hypothesis_loss_mean": 0.0,
+    "future_semantic_state_loss_mean": 0.28052818787097933,
+    "future_semantic_state_output_valid_ratio": 1.0,
+    "future_visibility_target_source": "fut_valid_slot_aligned",
+    "future_visibility_target_quality": "strong_slot_aligned",
+    "future_visibility_supervised_ratio_mean": 1.0,
+    "future_reappearance_supervised_ratio_mean": 0.08531190606951713,
+    "future_visibility_positive_rate_mean": 0.920125,
+    "future_reappearance_positive_rate_mean": 0.10486458333333333,
+    "future_reappearance_event_positive_rate_mean": 0.18118333333333334,
+    "future_reappearance_risk_entry_ratio_mean": 0.08531190606951713,
+    "future_reappearance_risk_slot_ratio_mean": 0.08531190606951713,
+    "future_reappearance_mask_policy": "at_risk_only",
+    "future_reappearance_head_available": true,
+    "future_reappearance_event_head_available": true,
+    "future_reappearance_loss_uses_independent_logit": true,
+    "future_reappearance_event_loss_uses_independent_logit": true,
+    "future_reappearance_pos_weight_mean": 18.255149787498844,
+    "future_reappearance_event_pos_weight_mean": 16.71527777777778,
+    "future_reappearance_pos_weight_setting": "auto",
+    "future_reappearance_pos_weight_max": 50.0,
+    "reappearance_positive_sampling_plan": {
+      "total_train_samples": 512,
+      "samples_with_reappearance_positive": null,
+      "positive_indices": [],
+      "sample_positive_rate": null,
+      "estimated_batches_with_positive_under_batch_size_1": null,
+      "target_min_batch_ratio": 0.3,
+      "recommended_oversample_factor": 1.0,
+      "scan_skipped_reason": "reappearance_positive_oversample_disabled"
+    }
+  },
+  "trace_unit_metrics": {
+    "enabled": true,
+    "trace_unit_count": 16,
+    "trace_unit_dim": 384,
+    "trace_unit_slot_iters": 3,
+    "trace_unit_assignment_topk": 2,
+    "trace_unit_handshake_layers": 1,
+    "trace_unit_loss_mean": 0.059175622544251384,
+    "assignment_entropy_mean": 0.6739167682822209,
+    "actual_top2_assignment_ratio_mean": 1.0,
+    "active_unit_count_mean": 4.328,
+    "z_dyn_drift_mean": 0.5079133805631396,
+    "z_sem_drift_mean": 0.0028472067036908024,
+    "z_sem_to_z_dyn_drift_ratio_mean": 0.0054246376912561855,
+    "same_instance_within_unit_consistency_mean": 0.35488892152622503,
+    "same_instance_dominant_unit_match_rate_mean": 0.3548399695542553,
+    "same_instance_assignment_cosine_mean": 0.35488892152622503,
+    "different_instance_between_unit_separation_mean": 0.12262620867423572,
+    "different_instance_dominant_unit_collision_rate_mean": 0.10779253999827272,
+    "ambiguity_highrisk_pair_collision_rate_mean": 0.045535326086956526,
+    "confuser_highrisk_pair_collision_rate_mean": 0.062036775674125064,
+    "appearance_drift_highrisk_same_instance_match_rate_mean": 0.0,
+    "appearance_drift_high_ratio_mean": 0.0,
+    "batch_appearance_drift_high_ratio_mean": 0.0,
+    "step_appearance_drift_high_count_mean": 0.0,
+    "appearance_signal_valid_count_mean": 0.0,
+    "appearance_refine_loss_nonzero_ratio": 0.0,
+    "unit_purity_by_instance_id_mean": 0.16878451558357474,
+    "unit_track_stability_over_time_mean": 0.3550291666666667,
+    "target_entity_to_dominant_unit_consistency_mean": 0.3550291666666667,
+    "unit_semantic_stability_over_time_mean": 0.9999996088639065,
+    "broadcast_residual_norm_mean": 18.564335492134095
+  },
+  "instance_aware_density": {
+    "true_instance_entity_count_mean": 2.132,
+    "pseudo_entity_count_mean": 3.186,
+    "fallback_entity_count_mean": 0.086,
+    "true_instance_ratio_per_batch_mean": 0.418
+  },
+  "selection_policy": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "teacher_forced_coord_loss",
+    "total_loss_usage": "reference_only"
+  },
+  "comparison_sorting": {
+    "primary": "free_rollout_endpoint_l2",
+    "secondary": "free_rollout_coord_mean_l2",
+    "tertiary": "teacher_forced_coord_loss",
+    "total_loss_usage": "reference_only"
+  },
+  "teacher_forced_coord_loss": 3.014592101484348e-05,
+  "free_rollout_coord_mean_l2": 0.0005033888573908999,
+  "free_rollout_endpoint_l2": 0.0005282461077264041,
+  "best_checkpoint_metric": {
+    "global_step": 10500,
+    "metrics": {
+      "teacher_forced_coord_loss": 3.014592101484348e-05,
+      "free_rollout_coord_mean_l2": 0.0005033888573908999,
+      "free_rollout_endpoint_l2": 0.0005282461077264041,
+      "total_loss_reference": 3.0058316673588633e-05
+    },
+    "rank_key": [
+      0.0005282461077264041,
+      0.0005033888573908999,
+      3.014592101484348e-05
+    ]
+  },
+  "latest_checkpoint_metric": {
+    "global_step": 12014,
+    "metrics": {
+      "teacher_forced_coord_loss": 0.0502483567287182,
+      "free_rollout_coord_mean_l2": 0.19228088033610377,
+      "free_rollout_endpoint_l2": 0.19084348349735655,
+      "total_loss_reference": 0.048068501986563206
+    },
+    "rank_key": [
+      0.19084348349735655,
+      0.19228088033610377,
+      0.0502483567287182
+    ]
+  },
+  "semantic_hard_sidecar_metric": {
+    "enabled": false,
+    "checkpoint_path": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/best_semantic_hard.pt",
+    "exists": false,
+    "global_step": -1,
+    "semantic_hard_sidecar_score": 1000000000.0,
+    "metrics": {
+      "teacher_forced_coord_loss": 1000000000.0,
+      "free_rollout_coord_mean_l2": 1000000000.0,
+      "free_rollout_endpoint_l2": 1000000000.0,
+      "total_loss_reference": 1000000000.0
+    },
+    "score_formula": "mean endpoint L2 over semantic-hard subsets: occlusion_reappearance, crossing_or_interaction_ambiguity, small_object_or_low_area, appearance_change_or_semantic_shift"
+  },
+  "sidecar_checkpoint_selection": {
+    "overall_best_checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/best.pt",
+    "semantic_hard_best_checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/best_semantic_hard.pt",
+    "overall_best_global_step": 10500,
+    "semantic_hard_best_global_step": -1,
+    "same_checkpoint_selected": false,
+    "sidecar_truly_diverged": false
+  },
+  "overall_vs_semantic_hard_best_delta": {
+    "same_step": false,
+    "endpoint_l2_delta": 999999999.9994718,
+    "coord_mean_l2_delta": 999999999.9994966,
+    "semantic_hard_sidecar_score_delta": 999999999.9994792
+  },
+  "train_split_counts_used": {
+    "VSPW": 256,
+    "VIPSeg": 256
+  },
+  "val_split_counts_used": {
+    "VSPW": 64,
+    "VIPSeg": 64
+  },
+  "train_split_total_count_used": 512,
+  "val_split_total_count_used": 128,
+  "frozen_parameter_count": 207615754,
+  "trainable_parameter_count": 1057030,
+  "boundary_ok": true,
+  "training_progress": {
+    "optimizer_steps": 500,
+    "effective_batch": 1,
+    "epochs_completed": 0.9765625,
+    "eval_interval": 100,
+    "save_every_n_steps": 100
+  },
+  "final_metrics": {
+    "teacher_forced_coord_loss": 3.014592101484348e-05,
+    "free_rollout_coord_mean_l2": 0.0005033888573908999,
+    "free_rollout_endpoint_l2": 0.0005282461077264041,
+    "total_loss_reference": 3.0058316673588633e-05,
+    "tapvid_style_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "tapvid3d_limited_eval": {
+      "compatible": false,
+      "status": "not_supported_in_current_stage2_trainer"
+    },
+    "semantic_branch_metrics": {
+      "eval_gate_mean": 0.0029442769930113195,
+      "semantic_input_nonempty_ratio": 1.0,
+      "eval_batches": 86
+    }
+  },
+  "best_metric_so_far": {
+    "global_step": 10500,
+    "metrics": {
+      "teacher_forced_coord_loss": 3.014592101484348e-05,
+      "free_rollout_coord_mean_l2": 0.0005033888573908999,
+      "free_rollout_endpoint_l2": 0.0005282461077264041,
+      "total_loss_reference": 3.0058316673588633e-05,
+      "tapvid_style_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "tapvid3d_limited_eval": {
+        "compatible": false,
+        "status": "not_supported_in_current_stage2_trainer"
+      },
+      "semantic_branch_metrics": {
+        "eval_gate_mean": 0.0029442769930113195,
+        "semantic_input_nonempty_ratio": 1.0,
+        "eval_batches": 86
+      }
+    },
+    "rank_key": [
+      0.0005282461077264041,
+      0.0005033888573908999,
+      3.014592101484348e-05
+    ]
+  },
+  "eval_history": [
+    {
+      "global_step": 1000,
+      "metrics": {
+        "teacher_forced_coord_loss": 7.02752050812663e-05,
+        "free_rollout_coord_mean_l2": 0.006772745362654024,
+        "free_rollout_endpoint_l2": 0.006789042329301639,
+        "total_loss_reference": 7.021375266810727e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.19338307962861173,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.006789042329301639,
+        0.006772745362654024,
+        7.02752050812663e-05
+      ]
+    },
+    {
+      "global_step": 2000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.862411294505104e-05,
+        "free_rollout_coord_mean_l2": 0.0008895890637906404,
+        "free_rollout_endpoint_l2": 0.0009157905425012937,
+        "total_loss_reference": 2.8541680543055516e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.1789550183470859,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0009157905425012937,
+        0.0008895890637906404,
+        2.862411294505104e-05
+      ]
+    },
+    {
+      "global_step": 3000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.264196424074872e-05,
+        "free_rollout_coord_mean_l2": 0.001757628873598819,
+        "free_rollout_endpoint_l2": 0.0017849524510866873,
+        "total_loss_reference": 3.25518730275774e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.15091290740772736,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0017849524510866873,
+        0.001757628873598819,
+        3.264196424074872e-05
+      ]
+    },
+    {
+      "global_step": 4000,
+      "metrics": {
+        "teacher_forced_coord_loss": 4.934156824976855e-05,
+        "free_rollout_coord_mean_l2": 0.004217127286462499,
+        "free_rollout_endpoint_l2": 0.004237716561373399,
+        "total_loss_reference": 4.922652616441219e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.1209438256919384,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.004237716561373399,
+        0.004217127286462499,
+        4.934156824976855e-05
+      ]
+    },
+    {
+      "global_step": 5000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.0820967896112054e-05,
+        "free_rollout_coord_mean_l2": 0.000810228130690558,
+        "free_rollout_endpoint_l2": 0.000836799618361773,
+        "total_loss_reference": 3.073208106221093e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.09444461780232052,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.000836799618361773,
+        0.000810228130690558,
+        3.0820967896112054e-05
+      ]
+    },
+    {
+      "global_step": 6000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.631677897799755e-05,
+        "free_rollout_coord_mean_l2": 0.0028894992556107984,
+        "free_rollout_endpoint_l2": 0.002920088849679374,
+        "total_loss_reference": 3.622948468038758e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.06544685502384984,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.002920088849679374,
+        0.0028894992556107984,
+        3.631677897799755e-05
+      ]
+    },
+    {
+      "global_step": 7000,
+      "metrics": {
+        "teacher_forced_coord_loss": 4.322338372465724e-05,
+        "free_rollout_coord_mean_l2": 0.0030892141700963934,
+        "free_rollout_endpoint_l2": 0.003122068613050804,
+        "total_loss_reference": 4.311974946578503e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.04697019879727862,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.003122068613050804,
+        0.0030892141700963934,
+        4.322338372465724e-05
+      ]
+    },
+    {
+      "global_step": 8000,
+      "metrics": {
+        "teacher_forced_coord_loss": 2.9777691952834867e-05,
+        "free_rollout_coord_mean_l2": 0.000777029686230004,
+        "free_rollout_endpoint_l2": 0.0008026909849500561,
+        "total_loss_reference": 2.9691506242597878e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02339230085788078,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0008026909849500561,
+        0.000777029686230004,
+        2.9777691952834867e-05
+      ]
+    },
+    {
+      "global_step": 8500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.4253121801570896e-05,
+        "free_rollout_coord_mean_l2": 0.0023399678876205366,
+        "free_rollout_endpoint_l2": 0.002366198616444456,
+        "total_loss_reference": 3.4165439134021866e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.007416468037855487,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.002366198616444456,
+        0.0023399678876205366,
+        3.4253121801570896e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.905812963449324e-06,
+          "free_rollout_coord_mean_l2": 0.001970632240558282,
+          "free_rollout_endpoint_l2": 0.0019706286346683134,
+          "total_loss_reference": 3.910141094820574e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.007351504825055599,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0019706297164353037
+      }
+    },
+    {
+      "global_step": 9000,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.0085363147385573e-05,
+        "free_rollout_coord_mean_l2": 0.0017526562532013603,
+        "free_rollout_endpoint_l2": 0.0017770881474061541,
+        "total_loss_reference": 3.0004088726897417e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.004664690742745649,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0017770881474061541,
+        0.0017526562532013603,
+        3.0085363147385573e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 1.9992278630991514e-06,
+          "free_rollout_coord_mean_l2": 0.001405600076302504,
+          "free_rollout_endpoint_l2": 0.0014054993501840495,
+          "total_loss_reference": 1.998741799980053e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.004628930334001779,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0014055295680195858
+      }
+    },
+    {
+      "global_step": 9500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.65345937845775e-05,
+        "free_rollout_coord_mean_l2": 0.00223176941172418,
+        "free_rollout_endpoint_l2": 0.0022638723954732146,
+        "total_loss_reference": 3.6438004890230737e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.004675406708143825,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0022638723954732146,
+        0.00223176941172418,
+        3.65345937845775e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.8727415906181796e-06,
+          "free_rollout_coord_mean_l2": 0.0018073590472340584,
+          "free_rollout_endpoint_l2": 0.001807328194188766,
+          "total_loss_reference": 3.832115089608123e-06,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.004616957437247038,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0018073374501023534
+      }
+    },
+    {
+      "global_step": 10000,
+      "metrics": {
+        "teacher_forced_coord_loss": 5.936973768373973e-05,
+        "free_rollout_coord_mean_l2": 0.005865675313045262,
+        "free_rollout_endpoint_l2": 0.005894167381325199,
+        "total_loss_reference": 5.9288276874170596e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.003526417216351039,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.005894167381325199,
+        0.005865675313045262,
+        5.936973768373973e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 3.120919110444494e-05,
+          "free_rollout_coord_mean_l2": 0.005579992269094174,
+          "free_rollout_endpoint_l2": 0.005579923207943256,
+          "total_loss_reference": 3.122025045740884e-05,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.0035013438668102027,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0055799439262885315
+      }
+    },
+    {
+      "global_step": 10500,
+      "metrics": {
+        "teacher_forced_coord_loss": 3.014592101484348e-05,
+        "free_rollout_coord_mean_l2": 0.0005033888573908999,
+        "free_rollout_endpoint_l2": 0.0005282461077264041,
+        "total_loss_reference": 3.0058316673588633e-05,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.0029442769930113195,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.0005282461077264041,
+        0.0005033888573908999,
+        3.014592101484348e-05
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 1.6619954051176858e-08,
+          "free_rollout_coord_mean_l2": 0.00012506604290161378,
+          "free_rollout_endpoint_l2": 0.00012509102592817866,
+          "total_loss_reference": 1.6602267294274497e-08,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.0029287944547832013,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.0001250835310202092
+      }
+    },
+    {
+      "global_step": 10600,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.08644788811025947,
+        "free_rollout_coord_mean_l2": 0.2568163443277485,
+        "free_rollout_endpoint_l2": 0.25982739138849004,
+        "total_loss_reference": 0.08952120600571466,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.013508737975255002,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.25982739138849004,
+        0.2568163443277485,
+        0.08644788811025947
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 0.06659850908091487,
+          "free_rollout_coord_mean_l2": 0.2236189118013086,
+          "free_rollout_endpoint_l2": 0.21773158976462034,
+          "total_loss_reference": 0.06710349246859551,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.014095462299883366,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.2194977863756268
+      }
+    },
+    {
+      "global_step": 10700,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.08812113215416587,
+        "free_rollout_coord_mean_l2": 0.2588973018013118,
+        "free_rollout_endpoint_l2": 0.2621046620136274,
+        "total_loss_reference": 0.09048557480753855,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.03417470709009226,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.2621046620136274,
+        0.2588973018013118,
+        0.08812113215416587
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 0.06890452368855152,
+          "free_rollout_coord_mean_l2": 0.22399115523502888,
+          "free_rollout_endpoint_l2": 0.21845502347017812,
+          "total_loss_reference": 0.06841265335679055,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.03294253684580326,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.22011586299963334
+      }
+    },
+    {
+      "global_step": 10800,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.07525494290434613,
+        "free_rollout_coord_mean_l2": 0.23707039937415234,
+        "free_rollout_endpoint_l2": 0.24046875992181785,
+        "total_loss_reference": 0.07834921092834583,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.03139050822531761,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.24046875992181785,
+        0.23707039937415234,
+        0.07525494290434613
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 0.055077071026348845,
+          "free_rollout_coord_mean_l2": 0.20107775767600983,
+          "free_rollout_endpoint_l2": 0.19595908485682664,
+          "total_loss_reference": 0.055135934799909594,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.02991529107093811,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.19749468670258158
+      }
+    },
+    {
+      "global_step": 10900,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.08657583329871534,
+        "free_rollout_coord_mean_l2": 0.25649095815078243,
+        "free_rollout_endpoint_l2": 0.2597692055800526,
+        "total_loss_reference": 0.09019791298047748,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02869956162866465,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.2597692055800526,
+        0.25649095815078243,
+        0.08657583329871534
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 0.06243329782750727,
+          "free_rollout_coord_mean_l2": 0.21717753277956695,
+          "free_rollout_endpoint_l2": 0.2170832304827935,
+          "total_loss_reference": 0.062200401723384854,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.02914760783314705,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.2171115211718255
+      }
+    },
+    {
+      "global_step": 11000,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.07868951559276405,
+        "free_rollout_coord_mean_l2": 0.24266942165472563,
+        "free_rollout_endpoint_l2": 0.24629728559229655,
+        "total_loss_reference": 0.08168809351966132,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.030395204482903313,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 86
+        }
+      },
+      "rank_key": [
+        0.24629728559229655,
+        0.24266942165472563,
+        0.07868951559276405
+      ],
+      "semantic_hard_sidecar": {
+        "metrics": {
+          "teacher_forced_coord_loss": 0.05727648799939849,
+          "free_rollout_coord_mean_l2": 0.2048195209202068,
+          "free_rollout_endpoint_l2": 0.2013241822740673,
+          "total_loss_reference": 0.05697038248181343,
+          "tapvid_style_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "tapvid3d_limited_eval": {
+            "compatible": false,
+            "status": "not_supported_in_current_stage2_trainer"
+          },
+          "semantic_branch_metrics": {
+            "eval_gate_mean": 0.030117118358612062,
+            "semantic_input_nonempty_ratio": 1.0,
+            "eval_batches": 5
+          }
+        },
+        "semantic_hard_sidecar_score": 0.20237278386790913
+      }
+    },
+    {
+      "global_step": 11002,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05389460548758507,
+        "free_rollout_coord_mean_l2": 0.20242521166801453,
+        "free_rollout_endpoint_l2": 0.20384375751018524,
+        "total_loss_reference": 0.05389460548758507,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027194686233997345,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 1,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.20384375751018524,
+        0.20242521166801453,
+        0.05389460548758507
+      ]
+    },
+    {
+      "global_step": 11004,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05380947142839432,
+        "free_rollout_coord_mean_l2": 0.20222222805023193,
+        "free_rollout_endpoint_l2": 0.2036447376012802,
+        "total_loss_reference": 0.05380947142839432,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027194738388061523,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 1,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.2036447376012802,
+        0.20222222805023193,
+        0.05380947142839432
+      ]
+    },
+    {
+      "global_step": 11010,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05758771300315857,
+        "free_rollout_coord_mean_l2": 0.20517331567303887,
+        "free_rollout_endpoint_l2": 0.20240724497827992,
+        "total_loss_reference": 0.05552288889884949,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027659029234200716,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.20240724497827992,
+        0.20517331567303887,
+        0.05758771300315857
+      ]
+    },
+    {
+      "global_step": 11020,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05735590026296418,
+        "free_rollout_coord_mean_l2": 0.20477751616773934,
+        "free_rollout_endpoint_l2": 0.20204910944248067,
+        "total_loss_reference": 0.05528846196830273,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027661411557346582,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.20204910944248067,
+        0.20477751616773934,
+        0.05735590026296418
+      ]
+    },
+    {
+      "global_step": 11030,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05711616061884781,
+        "free_rollout_coord_mean_l2": 0.20434451514276966,
+        "free_rollout_endpoint_l2": 0.20164231390788637,
+        "total_loss_reference": 0.05504597444087267,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027663647197186947,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.20164231390788637,
+        0.20434451514276966,
+        0.05711616061884781
+      ]
+    },
+    {
+      "global_step": 11040,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05681582822881896,
+        "free_rollout_coord_mean_l2": 0.20383452341474337,
+        "free_rollout_endpoint_l2": 0.20118739687163253,
+        "total_loss_reference": 0.05474167689681053,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02766514103859663,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.20118739687163253,
+        0.20383452341474337,
+        0.05681582822881896
+      ]
+    },
+    {
+      "global_step": 11044,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.056690976537507154,
+        "free_rollout_coord_mean_l2": 0.20362374700348954,
+        "free_rollout_endpoint_l2": 0.2010018989957612,
+        "total_loss_reference": 0.054615248925983906,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027666371315717697,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.2010018989957612,
+        0.20362374700348954,
+        0.056690976537507154
+      ]
+    },
+    {
+      "global_step": 11050,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05669097345450829,
+        "free_rollout_coord_mean_l2": 0.20362374700348954,
+        "free_rollout_endpoint_l2": 0.2010017941737997,
+        "total_loss_reference": 0.05461524706333876,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027666371315717697,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.2010017941737997,
+        0.20362374700348954,
+        0.05669097345450829
+      ]
+    },
+    {
+      "global_step": 11100,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05669097345450829,
+        "free_rollout_coord_mean_l2": 0.20362374700348954,
+        "free_rollout_endpoint_l2": 0.2010017941737997,
+        "total_loss_reference": 0.05461524706333876,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027666371315717697,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.2010017941737997,
+        0.20362374700348954,
+        0.05669097345450829
+      ]
+    },
+    {
+      "global_step": 11144,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05669097345450829,
+        "free_rollout_coord_mean_l2": 0.20362374700348954,
+        "free_rollout_endpoint_l2": 0.2010017941737997,
+        "total_loss_reference": 0.05461524706333876,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027666371315717697,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.2010017941737997,
+        0.20362374700348954,
+        0.05669097345450829
+      ]
+    },
+    {
+      "global_step": 11150,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05637466958884535,
+        "free_rollout_coord_mean_l2": 0.2032088329052103,
+        "free_rollout_endpoint_l2": 0.20072953043312863,
+        "total_loss_reference": 0.05429402459412813,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027665041852742434,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.20072953043312863,
+        0.2032088329052103,
+        0.05637466958884535
+      ]
+    },
+    {
+      "global_step": 11200,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05478698734579415,
+        "free_rollout_coord_mean_l2": 0.20033661661476926,
+        "free_rollout_endpoint_l2": 0.1980767435040967,
+        "total_loss_reference": 0.052686228416860104,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027678200975060463,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.1980767435040967,
+        0.20033661661476926,
+        0.05478698734579415
+      ]
+    },
+    {
+      "global_step": 11250,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05379185080528259,
+        "free_rollout_coord_mean_l2": 0.1984443006844356,
+        "free_rollout_endpoint_l2": 0.19628032733654155,
+        "total_loss_reference": 0.051678227726370096,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027697861660271883,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19628032733654155,
+        0.1984443006844356,
+        0.05379185080528259
+      ]
+    },
+    {
+      "global_step": 11294,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05274121617448741,
+        "free_rollout_coord_mean_l2": 0.1965806402009109,
+        "free_rollout_endpoint_l2": 0.19457624492974118,
+        "total_loss_reference": 0.050610304810106754,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02770255273208022,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19457624492974118,
+        0.1965806402009109,
+        0.05274121617448741
+      ]
+    },
+    {
+      "global_step": 11300,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05276528309131491,
+        "free_rollout_coord_mean_l2": 0.19658980903954343,
+        "free_rollout_endpoint_l2": 0.19455108560364823,
+        "total_loss_reference": 0.05063466541469097,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02770269149914384,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19455108560364823,
+        0.19658980903954343,
+        0.05276528309131491
+      ]
+    },
+    {
+      "global_step": 11350,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.052717155423657645,
+        "free_rollout_coord_mean_l2": 0.19641029012614283,
+        "free_rollout_endpoint_l2": 0.19430016238113929,
+        "total_loss_reference": 0.05058656446635723,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.0277102910913527,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19430016238113929,
+        0.19641029012614283,
+        0.052717155423657645
+      ]
+    },
+    {
+      "global_step": 11400,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.052181379548434555,
+        "free_rollout_coord_mean_l2": 0.19549881795357013,
+        "free_rollout_endpoint_l2": 0.19347452911837348,
+        "total_loss_reference": 0.05004110047593713,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027712331153452396,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19347452911837348,
+        0.19549881795357013,
+        0.052181379548434555
+      ]
+    },
+    {
+      "global_step": 11414,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.0520508597637045,
+        "free_rollout_coord_mean_l2": 0.19529087379060941,
+        "free_rollout_endpoint_l2": 0.19330510188793315,
+        "total_loss_reference": 0.04990804381668568,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02771210391074419,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19330510188793315,
+        0.19529087379060941,
+        0.0520508597637045
+      ]
+    },
+    {
+      "global_step": 11450,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.0520508597637045,
+        "free_rollout_coord_mean_l2": 0.19529087379060941,
+        "free_rollout_endpoint_l2": 0.19330510188793315,
+        "total_loss_reference": 0.04990804381668568,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02771210391074419,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19330510188793315,
+        0.19529087379060941,
+        0.0520508597637045
+      ]
+    },
+    {
+      "global_step": 11500,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.0520508597637045,
+        "free_rollout_coord_mean_l2": 0.19529087379060941,
+        "free_rollout_endpoint_l2": 0.19330510188793315,
+        "total_loss_reference": 0.04990804381668568,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02771210391074419,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19330510188793315,
+        0.19529087379060941,
+        0.0520508597637045
+      ]
+    },
+    {
+      "global_step": 11514,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.0520508597637045,
+        "free_rollout_coord_mean_l2": 0.19529087379060941,
+        "free_rollout_endpoint_l2": 0.19330510188793315,
+        "total_loss_reference": 0.04990804381668568,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.02771210391074419,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19330510188793315,
+        0.19529087379060941,
+        0.0520508597637045
+      ]
+    },
+    {
+      "global_step": 11600,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.051182116927771734,
+        "free_rollout_coord_mean_l2": 0.19386390570936532,
+        "free_rollout_endpoint_l2": 0.19215334694961023,
+        "total_loss_reference": 0.04902365477755666,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027709966525435448,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19215334694961023,
+        0.19386390570936532,
+        0.051182116927771734
+      ]
+    },
+    {
+      "global_step": 11700,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05057216307212566,
+        "free_rollout_coord_mean_l2": 0.19281786063621784,
+        "free_rollout_endpoint_l2": 0.19135384724057955,
+        "total_loss_reference": 0.04840222280472517,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027733484283089638,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19135384724057955,
+        0.19281786063621784,
+        0.05057216307212566
+      ]
+    },
+    {
+      "global_step": 11800,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.05044000210433171,
+        "free_rollout_coord_mean_l2": 0.19258372948087496,
+        "free_rollout_endpoint_l2": 0.191167204544462,
+        "total_loss_reference": 0.04826588789001107,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027731155045330524,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.191167204544462,
+        0.19258372948087496,
+        0.05044000210433171
+      ]
+    },
+    {
+      "global_step": 11900,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.050306858687565244,
+        "free_rollout_coord_mean_l2": 0.192343074699928,
+        "free_rollout_endpoint_l2": 0.19092861126209126,
+        "total_loss_reference": 0.04812947753816843,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027736602816730738,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19092861126209126,
+        0.192343074699928,
+        0.050306858687565244
+      ]
+    },
+    {
+      "global_step": 12000,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.050290147806036065,
+        "free_rollout_coord_mean_l2": 0.19234042743156696,
+        "free_rollout_endpoint_l2": 0.1908937569322257,
+        "total_loss_reference": 0.04811128880828619,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027736013289541006,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.1908937569322257,
+        0.19234042743156696,
+        0.050290147806036065
+      ]
+    },
+    {
+      "global_step": 12014,
+      "metrics": {
+        "teacher_forced_coord_loss": 0.0502483567287182,
+        "free_rollout_coord_mean_l2": 0.19228088033610377,
+        "free_rollout_endpoint_l2": 0.19084348349735655,
+        "total_loss_reference": 0.048068501986563206,
+        "tapvid_style_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "tapvid3d_limited_eval": {
+          "compatible": false,
+          "status": "not_supported_in_current_stage2_trainer"
+        },
+        "semantic_branch_metrics": {
+          "eval_gate_mean": 0.027738741599023342,
+          "semantic_input_nonempty_ratio": 1.0,
+          "eval_batches": 4,
+          "free_rollout_semantic_state_output": true,
+          "semantic_state_feedback_in_free_rollout": false,
+          "future_semantic_state_output_valid_ratio": 1.0
+        }
+      },
+      "rank_key": [
+        0.19084348349735655,
+        0.19228088033610377,
+        0.0502483567287182
+      ]
+    }
+  ],
+  "checkpoint_inventory": {
+    "checkpoint_dir": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428",
+    "best": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/best.pt",
+    "latest": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/latest.pt",
+    "best_semantic_hard": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/best_semantic_hard.pt",
+    "step_checkpoints": [
+      "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/step_0011600.pt",
+      "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/step_0011700.pt",
+      "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/step_0011800.pt",
+      "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/step_0011900.pt",
+      "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/step_0012000.pt"
+    ],
+    "resume_from": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_headonly_20260428/latest.pt",
+    "auto_resume_latest": false
+  },
+  "run_stable": true
+}

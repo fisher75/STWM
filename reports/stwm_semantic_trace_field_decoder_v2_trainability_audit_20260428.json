@@ -1,0 +1,54 @@
+{
+  "allowed_to_train_v2_controlled_semantic_branch": true,
+  "audit_conclusion": "safe_minimal_semantic_branch_unfreeze_available",
+  "blocked_trainable_groups": {
+    "crop_visual_encoder_semantic_encoder_last_projection": "not cleanly separated in current trainer; keep frozen for V2",
+    "semantic_side_of_trace_unit_handshake_broadcast": "not safely isolated by current module API; keep frozen for V2",
+    "z_sem_semantic_side_of_trace_unit_factorized_state": "not safely isolated by current module API; keep frozen for V2"
+  },
+  "can_isolate_semantic_branch": true,
+  "checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_semantic_state_feedback_v1_20260427/latest.pt",
+  "currently_trainable_params_in_checkpoint": null,
+  "frozen_groups": [
+    "stage1",
+    "trace_coordinate_dynamics_core",
+    "external_teacher_or_feature_extractors",
+    "trace_unit_tokenizer",
+    "trace_unit_factorized_state",
+    "trace_unit_handshake",
+    "trace_unit_broadcast",
+    "semantic_encoder_full_body"
+  ],
+  "future_semantic_proto_head_extra_param_count_estimate": 147584,
+  "generated_at_utc": "2026-04-29T04:40:42.139083+00:00",
+  "implemented_controlled_unfreeze_scope": [
+    "future_semantic_state_head",
+    "semantic_fusion.semantic_proj",
+    "readout_head"
+  ],
+  "isolation_definition": "minimal semantic branch = future semantic state head + semantic_fusion.semantic_proj + readout_head; trace-unit semantic internals remain frozen because not safely separable yet.",
+  "param_count_by_group": {
+    "future_semantic_state_head": 608772,
+    "readout_head": 2306,
+    "semantic_encoder": 705795,
+    "semantic_fusion": 2953728,
+    "semantic_rescue_heads": 0,
+    "semantic_state_feedback_adapter": 142153,
+    "trace_unit_broadcast": 888192,
+    "trace_unit_factorized_state": 1184641,
+    "trace_unit_handshake": 493440,
+    "trace_unit_tokenizer": 1340928
+  },
+  "proposed_semantic_branch_trainable_params": 1054726,
+  "semantic_fusion_semantic_proj_param_count": 296064,
+  "stage1_trainable_param_count": 0,
+  "total_stage2_param_count_estimate": 8467539,
+  "trace_backbone_trainable": false,
+  "trainable_candidate_groups": [
+    "future_semantic_state_head",
+    "semantic_fusion.semantic_proj",
+    "readout_head",
+    "z_sem_or_semantic_side_modules_if_separable",
+    "semantic_encoder_last_projection_if_separable"
+  ]
+}

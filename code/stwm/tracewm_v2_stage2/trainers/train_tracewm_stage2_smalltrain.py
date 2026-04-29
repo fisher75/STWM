@@ -4080,13 +4080,28 @@ def main() -> None:
     pin_memory = bool(runtime_meta.get("pin_memory", False))
     persistent_workers = bool(runtime_meta.get("persistent_workers", False))
     prefetch_factor = int(runtime_meta.get("prefetch_factor", 2))
-    reappearance_positive_sampling_plan = _build_reappearance_positive_sampling_plan(
-        train_ds,
-        obs_len=int(args.obs_len),
-        fut_len=int(args.fut_len),
-        slot_count=int(args.max_tokens),
-        target_min_batch_ratio=float(args.reappearance_positive_min_batch_ratio),
-    )
+    if bool(args.reappearance_positive_oversample):
+        reappearance_positive_sampling_plan = _build_reappearance_positive_sampling_plan(
+            train_ds,
+            obs_len=int(args.obs_len),
+            fut_len=int(args.fut_len),
+            slot_count=int(args.max_tokens),
+            target_min_batch_ratio=float(args.reappearance_positive_min_batch_ratio),
+        )
+    else:
+        # The sampling audit requires materializing samples, which is expensive
+        # for large semantic-field target caches. Keep the default path purely
+        # structural unless oversampling is explicitly requested.
+        reappearance_positive_sampling_plan = {
+            "total_train_samples": int(len(train_ds)),
+            "samples_with_reappearance_positive": None,
+            "positive_indices": [],
+            "sample_positive_rate": None,
+            "estimated_batches_with_positive_under_batch_size_1": None,
+            "target_min_batch_ratio": float(args.reappearance_positive_min_batch_ratio),
+            "recommended_oversample_factor": 1.0,
+            "scan_skipped_reason": "reappearance_positive_oversample_disabled",
+        }
     train_sampler = None
     train_shuffle = True
     if bool(args.reappearance_positive_oversample):
