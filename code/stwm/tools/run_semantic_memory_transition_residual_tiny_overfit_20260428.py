@@ -171,6 +171,7 @@ def _train_one(
     obs_data: dict[str, np.ndarray],
     device: torch.device,
     steps: int,
+    checkpoint_path: Path | None = None,
 ) -> dict[str, Any]:
     args = _merge_args(checkpoint_args, {"future_semantic_proto_count": c, "enable_future_semantic_state_head": True, "enable_semantic_proto_head": True})
     models = _load_models(
@@ -244,6 +245,26 @@ def _train_one(
         opt.step()
     train = _eval_model(models=models, args=args, batches_cpu=train_batches, future_cache=future_cache, obs_data=obs_data, device=device, mode="copy_gated_residual_logits")
     val = _eval_model(models=models, args=args, batches_cpu=val_batches, future_cache=future_cache, obs_data=obs_data, device=device, mode="copy_gated_residual_logits")
+    saved_checkpoint = ""
+    if checkpoint_path is not None:
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        torch.save(
+            {
+                "prototype_count": int(c),
+                "lr": float(lr),
+                "residual_scale": float(residual_scale),
+                "steps": int(steps),
+                "future_semantic_state_head_state_dict": models["future_semantic_state_head"].state_dict(),
+                "semantic_fusion_state_dict": models["semantic_fusion"].state_dict(),
+                "readout_head_state_dict": models["readout_head"].state_dict(),
+                "trace_unit_factorized_state_state_dict": models["trace_unit_factorized_state"].state_dict(),
+                "trace_unit_broadcast_state_dict": models["trace_unit_broadcast"].state_dict(),
+                "trace_unit_handshake_state_dict": models["trace_unit_handshake"].state_dict(),
+                "args": vars(args) if hasattr(args, "__dict__") else {},
+            },
+            checkpoint_path,
+        )
+        saved_checkpoint = str(checkpoint_path)
     return {
         "prototype_count": int(c),
         "lr": float(lr),
@@ -252,6 +273,7 @@ def _train_one(
         "val_metrics": val,
         "loss_finite_ratio": float(finite / max(int(steps), 1)),
         "trace_regression_detected": False,
+        "checkpoint_path": saved_checkpoint,
     }
 
 

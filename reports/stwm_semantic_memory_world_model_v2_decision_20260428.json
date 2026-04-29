@@ -1,0 +1,79 @@
+{
+  "audit_name": "stwm_semantic_memory_world_model_v2_decision",
+  "best_checkpoint_path": "outputs/checkpoints/stwm_semantic_memory_world_model_v2_20260428/c32_seed456_final.pt",
+  "best_prototype_count": 32,
+  "best_seed": 456,
+  "copy_baseline_best_count": {
+    "changed_subset_top5": 0.5283018798462955,
+    "proto_top5": 0.6833085168136392,
+    "stable_subset_top5": 0.9999999889170502
+  },
+  "forbidden_claims": [
+    "Do not claim paper-level world model from this V2 alone.",
+    "Do not frame STWM as SAM2/CoTracker plugin or candidate reranker.",
+    "Do not claim external overall SOTA."
+  ],
+  "free_rollout_semantic_field_signal": "unclear",
+  "generated_at": "2026-04-29T00:00:00+08:00",
+  "limitations": [
+    "V2 run used a fast covered runtime split for tractability after full dataset materialization stalled.",
+    "Completed metrics are teacher-forced semantic-field heldout metrics; full free-rollout eval is marked unclear until runtime path is fixed.",
+    "Current significance is seed-level because item-level score dumps are not yet persisted."
+  ],
+  "paper_world_model_claimable": "unclear",
+  "recommended_next_step_choice": "run_full_semantic_trace_field_training",
+  "residual_beats_copy_changed_subset": true,
+  "residual_beats_copy_overall": true,
+  "seed_level_significance": {
+    "prototype_count": 32,
+    "residual_vs_copy_changed_top5": {
+      "ci95": [
+        0.035992390279325916,
+        0.07573533312386815
+      ],
+      "mean_delta": 0.05586386170159704,
+      "zero_excluded": true
+    },
+    "residual_vs_copy_overall_top5": {
+      "ci95": [
+        0.016947886408987728,
+        0.05110971486404241
+      ],
+      "mean_delta": 0.03402880063651507,
+      "zero_excluded": true
+    },
+    "seed_count": 3,
+    "seed_mean_std": {
+      "changed_subset_gain_over_copy": {
+        "mean": 0.05586386170159704,
+        "std": 0.014338012443716937
+      },
+      "heldout_top5": {
+        "mean": 0.7173373174501543,
+        "std": 0.012324520693010573
+      }
+    },
+    "stable_preservation_drop": {
+      "ci95": [
+        -0.0012698452488905422,
+        0.022433857041962282
+      ],
+      "mean_delta": 0.01058200589653587,
+      "zero_excluded": false
+    }
+  },
+  "semantic_field_branch_status": "main_supporting_evidence",
+  "stable_copy_preserved": true,
+  "teacher_forced_heldout_best_metrics": {
+    "change_detection_ap": 0.8827128749255967,
+    "change_detection_auroc": 0.7767736025227702,
+    "changed_subset_top5": 0.5993340773534828,
+    "proto_ce": 2.4523332457428717,
+    "proto_top1": 0.3949329391366146,
+    "proto_top5": 0.7295081996526874,
+    "stable_subset_top5": 0.9954648458498135
+  },
+  "trace_regression_detected": false,
+  "v2_training_completed": true,
+  "world_model_output_contract_satisfied": true
+}

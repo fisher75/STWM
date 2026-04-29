@@ -1,0 +1,223 @@
+{
+  "best_checkpoint_path": "outputs/checkpoints/stwm_semantic_memory_world_model_v2_20260428/c32_seed456_final.pt",
+  "best_metrics": {
+    "change_detection": {
+      "ap": 0.8827128749255967,
+      "auroc": 0.7767736025227702,
+      "eligible": true
+    },
+    "changed_subset_count": 901,
+    "changed_subset_top5": 0.5993340773534828,
+    "proto_ce": 2.4523332457428717,
+    "proto_top1": 0.3949329391366146,
+    "proto_top5": 0.7295081996526874,
+    "stable_subset_count": 441,
+    "stable_subset_top5": 0.9954648458498135,
+    "valid_count": 1342
+  },
+  "best_seed": 456,
+  "copy_baseline": {
+    "change_detection": {
+      "ap": 0.6816456989798688,
+      "auroc": 0.5,
+      "eligible": true
+    },
+    "changed_subset_count": 901,
+    "changed_subset_top5": 0.5283018798462955,
+    "proto_ce": 2.6276559181256016,
+    "proto_top1": 0.3286140155374737,
+    "proto_top5": 0.6833085168136392,
+    "stable_subset_count": 441,
+    "stable_subset_top5": 0.9999999889170502,
+    "valid_count": 1342
+  },
+  "output_degenerate": false,
+  "prototype_count": 32,
+  "residual_beats_copy_changed_subset": true,
+  "residual_beats_copy_overall": true,
+  "seed_mean_std": {
+    "changed_subset_gain_over_copy": {
+      "mean": 0.05586386170159704,
+      "std": 0.014338012443716937
+    },
+    "heldout_top5": {
+      "mean": 0.7173373174501543,
+      "std": 0.012324520693010573
+    }
+  },
+  "seed_results": [
+    {
+      "checkpoint_path": "outputs/checkpoints/stwm_semantic_memory_world_model_v2_20260428/c32_seed42_final.pt",
+      "copy_baseline_test": {
+        "change_detection": {
+          "ap": 0.6816456989798688,
+          "auroc": 0.5,
+          "eligible": true
+        },
+        "changed_subset_count": 901,
+        "changed_subset_top5": 0.5283018798462955,
+        "proto_ce": 2.6276559181256016,
+        "proto_top1": 0.3286140155374737,
+        "proto_top5": 0.6833085168136392,
+        "stable_subset_count": 441,
+        "stable_subset_top5": 0.9999999889170502,
+        "valid_count": 1342
+      },
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "prototype_count": 32,
+      "residual_beats_copy_changed_subset": true,
+      "residual_beats_copy_overall": true,
+      "residual_scale": 0.25,
+      "seed": 42,
+      "stable_preservation_drop": 0.02267573155513425,
+      "trace_regression_detected": false,
+      "train_metrics": {
+        "change_detection": {
+          "ap": 0.8695236336162447,
+          "auroc": 0.8350397257655419,
+          "eligible": true
+        },
+        "changed_subset_count": 4079,
+        "changed_subset_top5": 0.7438097578487317,
+        "proto_ce": 2.176179360860295,
+        "proto_top1": 0.500744932620865,
+        "proto_top5": 0.8414779567427232,
+        "stable_subset_count": 2633,
+        "stable_subset_top5": 0.9927838899271596,
+        "valid_count": 6712
+      },
+      "val_metrics": {
+        "change_detection": {
+          "ap": 0.8824775691673686,
+          "auroc": 0.7748810215910263,
+          "eligible": true
+        },
+        "changed_subset_count": 901,
+        "changed_subset_top5": 0.5649278578033193,
+        "proto_ce": 2.4654922838004976,
+        "proto_top1": 0.3681073061755446,
+        "proto_top5": 0.7004471118777058,
+        "stable_subset_count": 441,
+        "stable_subset_top5": 0.977324257361916,
+        "valid_count": 1342
+      }
+    },
+    {
+      "checkpoint_path": "outputs/checkpoints/stwm_semantic_memory_world_model_v2_20260428/c32_seed123_final.pt",
+      "copy_baseline_test": {
+        "change_detection": {
+          "ap": 0.6816456989798688,
+          "auroc": 0.5,
+          "eligible": true
+        },
+        "changed_subset_count": 901,
+        "changed_subset_top5": 0.5283018798462955,
+        "proto_ce": 2.6276559181256016,
+        "proto_top1": 0.3286140155374737,
+        "proto_top5": 0.6833085168136392,
+        "stable_subset_count": 441,
+        "stable_subset_top5": 0.9999999889170502,
+        "valid_count": 1342
+      },
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "prototype_count": 32,
+      "residual_beats_copy_changed_subset": true,
+      "residual_beats_copy_overall": true,
+      "residual_scale": 0.25,
+      "seed": 123,
+      "stable_preservation_drop": 0.00453514306723668,
+      "trace_regression_detected": false,
+      "train_metrics": {
+        "change_detection": {
+          "ap": 0.8675139634382459,
+          "auroc": 0.8354620718589848,
+          "eligible": true
+        },
+        "changed_subset_count": 4079,
+        "changed_subset_top5": 0.7322873253978973,
+        "proto_ce": 2.18652904094047,
+        "proto_top1": 0.5080452896166189,
+        "proto_top5": 0.83492252538791,
+        "stable_subset_count": 2633,
+        "stable_subset_top5": 0.9939232680945174,
+        "valid_count": 6712
+      },
+      "val_metrics": {
+        "change_detection": {
+          "ap": 0.8803979393406095,
+          "auroc": 0.7811741048620706,
+          "eligible": true
+        },
+        "changed_subset_count": 901,
+        "changed_subset_top5": 0.5882352894868755,
+        "proto_ce": 2.460762519061832,
+        "proto_top1": 0.3874813836351059,
+        "proto_top5": 0.7220566408200697,
+        "stable_subset_count": 441,
+        "stable_subset_top5": 0.9954648458498135,
+        "valid_count": 1342
+      }
+    },
+    {
+      "checkpoint_path": "outputs/checkpoints/stwm_semantic_memory_world_model_v2_20260428/c32_seed456_final.pt",
+      "copy_baseline_test": {
+        "change_detection": {
+          "ap": 0.6816456989798688,
+          "auroc": 0.5,
+          "eligible": true
+        },
+        "changed_subset_count": 901,
+        "changed_subset_top5": 0.5283018798462955,
+        "proto_ce": 2.6276559181256016,
+        "proto_top1": 0.3286140155374737,
+        "proto_top5": 0.6833085168136392,
+        "stable_subset_count": 441,
+        "stable_subset_top5": 0.9999999889170502,
+        "valid_count": 1342
+      },
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "prototype_count": 32,
+      "residual_beats_copy_changed_subset": true,
+      "residual_beats_copy_overall": true,
+      "residual_scale": 0.25,
+      "seed": 456,
+      "stable_preservation_drop": 0.00453514306723668,
+      "trace_regression_detected": false,
+      "train_metrics": {
+        "change_detection": {
+          "ap": 0.8705335665744324,
+          "auroc": 0.8354287851022816,
+          "eligible": true
+        },
+        "changed_subset_count": 4079,
+        "changed_subset_top5": 0.745035544509074,
+        "proto_ce": 2.178575648312347,
+        "proto_top1": 0.5196662660914609,
+        "proto_top5": 0.8422228789425437,
+        "stable_subset_count": 2633,
+        "stable_subset_top5": 0.9927838974880983,
+        "valid_count": 6712
+      },
+      "val_metrics": {
+        "change_detection": {
+          "ap": 0.8827128749255967,
+          "auroc": 0.7767736025227702,
+          "eligible": true
+        },
+        "changed_subset_count": 901,
+        "changed_subset_top5": 0.5993340773534828,
+        "proto_ce": 2.4523332457428717,
+        "proto_top1": 0.3949329391366146,
+        "proto_top5": 0.7295081996526874,
+        "stable_subset_count": 441,
+        "stable_subset_top5": 0.9954648458498135,
+        "valid_count": 1342
+      }
+    }
+  ],
+  "stable_copy_preserved": true,
+  "trace_regression_detected": false
+}
