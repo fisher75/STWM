@@ -22,6 +22,7 @@ class SemanticTraceStateHeadConfig:
     semantic_proto_memory_injection: str = "none"
     semantic_proto_prediction_mode: str = "direct_logits"
     semantic_proto_residual_scale: float = 0.1
+    enable_semantic_change_gate: bool = False
     semantic_logit_dim: int = 0
     hypothesis_count: int = 1
     enable_extent_head: bool = False
@@ -100,6 +101,20 @@ class SemanticTraceStateHead(torch.nn.Module):
                 torch.nn.Dropout(float(cfg.dropout)),
                 torch.nn.Linear(hidden_dim, int(cfg.semantic_proto_count)),
             )
+        self.semantic_change_head: torch.nn.Module | None = None
+        self.semantic_change_event_head: torch.nn.Module | None = None
+        if bool(cfg.enable_semantic_change_gate):
+            self.semantic_change_head = torch.nn.Sequential(
+                torch.nn.LayerNorm(hidden_dim),
+                torch.nn.Dropout(float(cfg.dropout)),
+                torch.nn.Linear(hidden_dim, 1),
+            )
+            self.semantic_change_event_head = torch.nn.Sequential(
+                torch.nn.LayerNorm(hidden_dim),
+                torch.nn.Linear(hidden_dim, 1),
+            )
+            torch.nn.init.constant_(self.semantic_change_head[-1].bias, -4.0)
+            torch.nn.init.constant_(self.semantic_change_event_head[-1].bias, -4.0)
         self.semantic_proto_memory_embed: torch.nn.Embedding | None = None
         self.semantic_proto_memory_proj: torch.nn.Module | None = None
         if int(cfg.observed_semantic_proto_count) > 1 and int(cfg.semantic_proto_memory_dim) > 0:
@@ -204,10 +219,22 @@ class SemanticTraceStateHead(torch.nn.Module):
             self.measurement_feature_head(conditioned_hidden) if self.measurement_feature_head is not None else None
         )
         semantic_proto_logits = self.semantic_proto_head(conditioned_hidden) if self.semantic_proto_head is not None else None
+        semantic_change_logit = self.semantic_change_head(conditioned_hidden).squeeze(-1) if self.semantic_change_head is not None else None
+        semantic_change_event_logit = (
+            self.semantic_change_event_head(conditioned_hidden.mean(dim=1)).squeeze(-1)
+            if self.semantic_change_event_head is not None
+            else None
+        )
         prediction_mode = str(self.cfg.semantic_proto_prediction_mode).strip().lower()
         if semantic_proto_logits is not None and memory_base_logits is not None and prediction_mode == "memory_residual_logits":
             base = _align_last_dim(memory_base_logits, int(semantic_proto_logits.shape[-1]))
             semantic_proto_logits = base + float(self.cfg.semantic_proto_residual_scale) * semantic_proto_logits
+        elif semantic_proto_logits is not None and memory_base_logits is not None and prediction_mode == "copy_gated_residual_logits":
+            base = _align_last_dim(memory_base_logits, int(semantic_proto_logits.shape[-1]))
+            gate = torch.ones_like(semantic_proto_logits[..., :1])
+            if semantic_change_logit is not None:
+                gate = torch.sigmoid(semantic_change_logit)[..., None]
+            semantic_proto_logits = base + gate * float(self.cfg.semantic_proto_residual_scale) * semantic_proto_logits
         elif semantic_proto_logits is not None and memory_base_logits is not None and prediction_mode == "copy_only":
             semantic_proto_logits = _align_last_dim(memory_base_logits, int(semantic_proto_logits.shape[-1]))
         visibility_logit = self.visibility_head(conditioned_hidden).squeeze(-1)
@@ -228,6 +255,8 @@ class SemanticTraceStateHead(torch.nn.Module):
             future_semantic_embedding=semantic_embedding,
             future_measurement_feature_pred=measurement_feature_pred,
             future_semantic_proto_logits=semantic_proto_logits,
+            future_semantic_change_logit=semantic_change_logit,
+            future_semantic_change_event_logit=semantic_change_event_logit,
             future_semantic_logits=semantic_logits,
             future_identity_embedding=identity_embedding,
             future_extent_box=extent_box,
@@ -245,6 +274,10 @@ class FutureSemanticStateLossConfig:
     measurement_feature_loss_weight: float = 0.0
     semantic_proto_loss_weight: float = 0.0
     semantic_proto_soft_loss_weight: float = 0.0
+    semantic_change_loss_weight: float = 0.0
+    semantic_change_event_loss_weight: float = 0.0
+    semantic_stable_copy_loss_weight: float = 0.0
+    semantic_residual_loss_weight: float = 0.0
     visibility_loss_weight: float = 0.0
     reappearance_loss_weight: float = 0.0
     reappearance_event_loss_weight: float = 0.0
@@ -346,6 +379,11 @@ def compute_future_semantic_state_losses(
     semantic_proto_distribution: torch.Tensor | None = None,
     semantic_proto_mask: torch.Tensor | None = None,
     semantic_proto_info: dict[str, Any] | None = None,
+    semantic_change_target: torch.Tensor | None = None,
+    semantic_change_mask: torch.Tensor | None = None,
+    semantic_change_event_target: torch.Tensor | None = None,
+    semantic_change_event_mask: torch.Tensor | None = None,
+    observed_semantic_proto_distribution: torch.Tensor | None = None,
     reappearance_target: torch.Tensor | None = None,
     reappearance_mask: torch.Tensor | None = None,
     reappearance_event_target: torch.Tensor | None = None,
@@ -399,6 +437,12 @@ def compute_future_semantic_state_losses(
 
     semantic_proto_loss = zero
     semantic_proto_soft_loss = zero
+    semantic_change_loss = zero
+    semantic_change_event_loss = zero
+    semantic_stable_copy_loss = zero
+    semantic_residual_loss = zero
+    semantic_change_positive_rate: float | None = None
+    semantic_change_event_positive_rate: float | None = None
     semantic_proto_head_available = state.future_semantic_proto_logits is not None
     semantic_proto_target_available = semantic_proto_target is not None and semantic_proto_mask is not None
     semantic_proto_valid_ratio = 0.0
@@ -453,6 +497,75 @@ def compute_future_semantic_state_losses(
                 semantic_proto_soft_loss = kl
                 total = total + float(cfg.semantic_proto_soft_loss_weight) * semantic_proto_soft_loss
             semantic_proto_loss_uses_target = True
+        if (
+            state.future_semantic_change_logit is not None
+            and semantic_change_target is not None
+            and semantic_change_mask is not None
+        ):
+            change_target = semantic_change_target.to(device=device, dtype=torch.float32)
+            change_mask = semantic_change_mask.to(device=device, dtype=torch.bool)
+            if tuple(change_target.shape) != tuple(state.future_semantic_change_logit.shape):
+                raise ValueError(
+                    "semantic change target cannot align with logits: "
+                    f"target={tuple(change_target.shape)} logits={tuple(state.future_semantic_change_logit.shape)}"
+                )
+            valid_change = change_mask
+            if bool(valid_change.any().item()):
+                semantic_change_positive_rate = float(change_target[valid_change].mean().detach().cpu().item())
+                bce = F.binary_cross_entropy_with_logits(
+                    state.future_semantic_change_logit,
+                    change_target,
+                    reduction="none",
+                )
+                semantic_change_loss = _masked_mean(bce, valid_change)
+                total = total + float(cfg.semantic_change_loss_weight) * semantic_change_loss
+        if (
+            state.future_semantic_change_event_logit is not None
+            and semantic_change_event_target is not None
+            and semantic_change_event_mask is not None
+        ):
+            event_target = semantic_change_event_target.to(device=device, dtype=torch.float32)
+            event_mask = semantic_change_event_mask.to(device=device, dtype=torch.bool)
+            if tuple(event_target.shape) != tuple(state.future_semantic_change_event_logit.shape):
+                raise ValueError(
+                    "semantic change event target cannot align with logits: "
+                    f"target={tuple(event_target.shape)} logits={tuple(state.future_semantic_change_event_logit.shape)}"
+                )
+            if bool(event_mask.any().item()):
+                semantic_change_event_positive_rate = float(event_target[event_mask].mean().detach().cpu().item())
+                event_bce = F.binary_cross_entropy_with_logits(
+                    state.future_semantic_change_event_logit,
+                    event_target,
+                    reduction="none",
+                )
+                semantic_change_event_loss = _masked_mean(event_bce, event_mask)
+                total = total + float(cfg.semantic_change_event_loss_weight) * semantic_change_event_loss
+        if (
+            observed_semantic_proto_distribution is not None
+            and state.future_semantic_proto_logits is not None
+            and semantic_change_target is not None
+            and semantic_change_mask is not None
+        ):
+            obs_dist = observed_semantic_proto_distribution.to(device=device, dtype=torch.float32)
+            obs_dist = _align_last_dim(obs_dist, int(state.future_semantic_proto_logits.shape[-1])).clamp_min(0.0)
+            obs_dist = obs_dist / obs_dist.sum(dim=-1, keepdim=True).clamp_min(1e-8)
+            obs_dist_h = obs_dist[:, None].expand(*state.future_semantic_proto_logits.shape[:3], obs_dist.shape[-1])
+            change_target_bool = semantic_change_target.to(device=device, dtype=torch.bool)
+            change_mask_bool = semantic_change_mask.to(device=device, dtype=torch.bool)
+            stable_mask = change_mask_bool & (~change_target_bool)
+            changed_mask = change_mask_bool & change_target_bool
+            if bool(stable_mask.any().item()):
+                logp = F.log_softmax(state.future_semantic_proto_logits, dim=-1)
+                semantic_stable_copy_loss = F.kl_div(logp[stable_mask], obs_dist_h[stable_mask], reduction="batchmean")
+                total = total + float(cfg.semantic_stable_copy_loss_weight) * semantic_stable_copy_loss
+            if bool(changed_mask.any().item()) and semantic_proto_target is not None:
+                proto_target = semantic_proto_target.to(device=device, dtype=torch.long)
+                semantic_residual_loss = F.cross_entropy(
+                    state.future_semantic_proto_logits[changed_mask],
+                    proto_target[changed_mask],
+                    reduction="mean",
+                )
+                total = total + float(cfg.semantic_residual_loss_weight) * semantic_residual_loss
     elif semantic_proto_mask is not None:
         semantic_proto_valid_ratio = float(
             semantic_proto_mask.to(device=device, dtype=torch.float32).mean().detach().cpu().item()
@@ -577,6 +690,12 @@ def compute_future_semantic_state_losses(
         "future_measurement_feature_loss": float(measurement_feature_loss.detach().cpu().item()),
         "future_semantic_proto_loss": float(semantic_proto_loss.detach().cpu().item()),
         "future_semantic_proto_soft_loss": float(semantic_proto_soft_loss.detach().cpu().item()),
+        "future_semantic_change_loss": float(semantic_change_loss.detach().cpu().item()),
+        "future_semantic_change_event_loss": float(semantic_change_event_loss.detach().cpu().item()),
+        "future_semantic_stable_copy_loss": float(semantic_stable_copy_loss.detach().cpu().item()),
+        "future_semantic_changed_residual_loss": float(semantic_residual_loss.detach().cpu().item()),
+        "future_semantic_change_positive_rate": semantic_change_positive_rate,
+        "future_semantic_change_event_positive_rate": semantic_change_event_positive_rate,
         "future_semantic_proto_loss_uses_target": bool(semantic_proto_loss_uses_target),
         "future_semantic_proto_head_available": bool(semantic_proto_head_available),
         "future_semantic_proto_target_available": bool(semantic_proto_target_available),

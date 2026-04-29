@@ -193,6 +193,7 @@ def _load_models(
     semantic_proto_memory_injection: str = "none",
     semantic_proto_prediction_mode: str = "direct_logits",
     semantic_proto_residual_scale: float = 0.1,
+    enable_semantic_change_gate: bool = False,
 ) -> dict[str, Any]:
     args.enable_future_semantic_state_head = True
     args.enable_semantic_proto_head = True
@@ -237,6 +238,7 @@ def _load_models(
             semantic_proto_memory_injection=str(semantic_proto_memory_injection),
             semantic_proto_prediction_mode=str(semantic_proto_prediction_mode),
             semantic_proto_residual_scale=float(semantic_proto_residual_scale),
+            enable_semantic_change_gate=bool(enable_semantic_change_gate),
             hypothesis_count=1,
             enable_extent_head=False,
             enable_multi_hypothesis_head=False,

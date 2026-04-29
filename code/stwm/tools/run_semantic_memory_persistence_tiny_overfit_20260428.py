@@ -162,6 +162,7 @@ def _train_variant(
         semantic_proto_memory_injection=str(variant.get("injection", "none")),
         semantic_proto_prediction_mode=str(variant.get("mode", "direct_logits")),
         semantic_proto_residual_scale=float(variant.get("residual_scale", 0.1)),
+        enable_semantic_change_gate=str(variant.get("mode", "direct_logits")) == "copy_gated_residual_logits",
     )
     opt = torch.optim.AdamW(_trainable_parameters(models), lr=float(variant.get("lr", 3e-5)), weight_decay=0.0)
     finite = 0

@@ -312,9 +312,14 @@ def parse_args() -> Any:
     p.add_argument(
         "--semantic-proto-prediction-mode",
         default="direct_logits",
-        choices=["copy_only", "direct_logits", "memory_residual_logits"],
+        choices=["copy_only", "direct_logits", "memory_residual_logits", "copy_gated_residual_logits"],
     )
     p.add_argument("--semantic-proto-residual-scale", type=float, default=0.1)
+    p.add_argument("--future-semantic-change-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-semantic-change-event-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-semantic-stable-copy-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-semantic-residual-loss-weight", type=float, default=0.0)
+    p.add_argument("--semantic-residual-scale", type=float, default=None)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-event-loss-weight", type=float, default=0.0)
@@ -4492,7 +4497,14 @@ def main() -> None:
                 semantic_proto_memory_dim=int(args.semantic_proto_memory_dim),
                 semantic_proto_memory_injection=str(args.semantic_proto_memory_injection),
                 semantic_proto_prediction_mode=str(args.semantic_proto_prediction_mode),
-                semantic_proto_residual_scale=float(args.semantic_proto_residual_scale),
+                semantic_proto_residual_scale=float(
+                    args.semantic_residual_scale
+                    if getattr(args, "semantic_residual_scale", None) is not None
+                    else args.semantic_proto_residual_scale
+                ),
+                enable_semantic_change_gate=str(args.semantic_proto_prediction_mode) == "copy_gated_residual_logits"
+                or float(getattr(args, "future_semantic_change_loss_weight", 0.0)) > 0.0
+                or float(getattr(args, "future_semantic_change_event_loss_weight", 0.0)) > 0.0,
                 hypothesis_count=int(args.future_hypothesis_count),
                 enable_extent_head=bool(args.enable_future_extent_head),
                 enable_multi_hypothesis_head=bool(args.enable_future_multihypothesis_head)
@@ -5510,6 +5522,10 @@ def main() -> None:
                     measurement_feature_loss_weight=float(args.future_measurement_feature_loss_weight),
                     semantic_proto_loss_weight=float(args.future_semantic_proto_loss_weight),
                     semantic_proto_soft_loss_weight=float(args.future_semantic_proto_soft_loss_weight),
+                    semantic_change_loss_weight=float(args.future_semantic_change_loss_weight),
+                    semantic_change_event_loss_weight=float(args.future_semantic_change_event_loss_weight),
+                    semantic_stable_copy_loss_weight=float(args.future_semantic_stable_copy_loss_weight),
+                    semantic_residual_loss_weight=float(args.future_semantic_residual_loss_weight),
                     visibility_loss_weight=float(args.future_visibility_loss_weight),
                     reappearance_loss_weight=float(args.future_reappearance_loss_weight),
                     reappearance_event_loss_weight=float(args.future_reappearance_event_loss_weight),

@@ -126,3 +126,35 @@ def prototype_tensors_for_batch(
         "feature_backbone": cache.feature_backbone,
         "no_candidate_leakage": bool(cache.no_candidate_leakage),
     }
+
+
+def semantic_change_tensors(
+    *,
+    future_proto_target: torch.Tensor,
+    future_proto_mask: torch.Tensor,
+    observed_proto_target: torch.Tensor,
+    observed_proto_mask: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, Any]]:
+    """Build stable/changed semantic transition targets from observed memory and future proto targets."""
+    obs_target_h = observed_proto_target[:, None, :].to(device=future_proto_target.device, dtype=torch.long)
+    obs_mask_h = observed_proto_mask[:, None, :].to(device=future_proto_mask.device, dtype=torch.bool)
+    change_mask = future_proto_mask.to(dtype=torch.bool) & obs_mask_h & (future_proto_target >= 0) & (obs_target_h >= 0)
+    change_target = change_mask & (future_proto_target.to(dtype=torch.long) != obs_target_h)
+    stable_target = change_mask & (~change_target)
+    change_event_target = change_target.any(dim=1)
+    change_event_mask = change_mask.any(dim=1)
+    valid_count = int(change_mask.sum().detach().cpu().item())
+    changed_count = int(change_target.sum().detach().cpu().item())
+    stable_count = int(stable_target.sum().detach().cpu().item())
+    info = {
+        "semantic_change_mask_valid_count": valid_count,
+        "semantic_change_changed_count": changed_count,
+        "semantic_change_stable_count": stable_count,
+        "semantic_change_positive_rate": float(changed_count / max(valid_count, 1)),
+        "semantic_change_event_positive_rate": float(
+            change_event_target[change_event_mask].to(dtype=torch.float32).mean().detach().cpu().item()
+        )
+        if bool(change_event_mask.any().item())
+        else 0.0,
+    }
+    return change_target, change_mask, change_event_target, change_event_mask, info
