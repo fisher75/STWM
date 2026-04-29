@@ -55,6 +55,10 @@ from stwm.tracewm_v2_stage2.models.semantic_state_feedback import (
     SemanticStateFeedbackAdapter,
     SemanticStateFeedbackConfig,
 )
+from stwm.tracewm_v2_stage2.utils.future_semantic_feature_targets import (
+    load_future_semantic_feature_target_cache,
+    target_tensors_for_batch,
+)
 from stwm.tracewm_v2_stage2.utils.visibility_reappearance_targets import build_future_visibility_reappearance_targets
 
 
@@ -283,6 +287,9 @@ def parse_args() -> Any:
     p.add_argument("--enable-future-semantic-state-head", action="store_true")
     p.add_argument("--future-semantic-embedding-dim", type=int, default=256)
     p.add_argument("--future-semantic-loss-weight", type=float, default=0.0)
+    p.add_argument("--future-measurement-feature-dim", type=int, default=0)
+    p.add_argument("--future-measurement-feature-target-cache", default="")
+    p.add_argument("--future-measurement-feature-loss-weight", type=float, default=0.0)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-event-loss-weight", type=float, default=0.0)
@@ -4038,6 +4045,16 @@ def main() -> None:
         core_names=core_names,
         usage=binding.get("usage", {}),
     )
+    future_measurement_target_cache = load_future_semantic_feature_target_cache(
+        str(args.future_measurement_feature_target_cache)
+    )
+    if future_measurement_target_cache is not None and int(args.future_measurement_feature_dim) <= 0:
+        args.future_measurement_feature_dim = int(future_measurement_target_cache.feature_dim)
+    if float(args.future_measurement_feature_loss_weight) > 0.0:
+        if future_measurement_target_cache is None:
+            raise ValueError("--future-measurement-feature-loss-weight > 0 requires --future-measurement-feature-target-cache")
+        if int(args.future_measurement_feature_dim) <= 0:
+            raise ValueError("future measurement feature dim must be positive when feature loss is enabled")
 
     num_workers = int(runtime_meta.get("num_workers", 0))
     pin_memory = bool(runtime_meta.get("pin_memory", False))
@@ -4113,6 +4130,7 @@ def main() -> None:
                 hidden_dim=int(fusion_hidden_dim),
                 semantic_embedding_dim=int(args.future_semantic_embedding_dim),
                 identity_embedding_dim=int(args.future_semantic_embedding_dim),
+                measurement_feature_dim=int(args.future_measurement_feature_dim),
                 hypothesis_count=int(args.future_hypothesis_count),
                 enable_extent_head=bool(args.enable_future_extent_head),
                 enable_multi_hypothesis_head=bool(args.enable_future_multihypothesis_head)
@@ -4339,6 +4357,19 @@ def main() -> None:
         "enable_future_semantic_state_head": bool(args.enable_future_semantic_state_head),
         "future_semantic_embedding_dim": int(args.future_semantic_embedding_dim),
         "future_semantic_loss_weight": float(args.future_semantic_loss_weight),
+        "future_measurement_feature_dim": int(args.future_measurement_feature_dim),
+        "future_measurement_feature_target_cache": str(args.future_measurement_feature_target_cache),
+        "future_measurement_feature_loss_weight": float(args.future_measurement_feature_loss_weight),
+        "future_measurement_feature_cache_loaded": bool(future_measurement_target_cache is not None),
+        "future_measurement_feature_cache_path": str(
+            future_measurement_target_cache.cache_path if future_measurement_target_cache is not None else ""
+        ),
+        "future_measurement_feature_backbone": str(
+            future_measurement_target_cache.feature_backbone if future_measurement_target_cache is not None else ""
+        ),
+        "future_measurement_feature_no_candidate_leakage": bool(
+            future_measurement_target_cache.no_candidate_leakage if future_measurement_target_cache is not None else True
+        ),
         "future_visibility_loss_weight": float(args.future_visibility_loss_weight),
         "future_reappearance_loss_weight": float(args.future_reappearance_loss_weight),
         "future_reappearance_event_loss_weight": float(args.future_reappearance_event_loss_weight),
@@ -4620,6 +4651,10 @@ def main() -> None:
     future_reappearance_loss_history: List[float] = []
     future_reappearance_event_loss_history: List[float] = []
     future_semantic_embedding_loss_history: List[float] = []
+    future_measurement_feature_loss_history: List[float] = []
+    future_measurement_feature_target_valid_ratio_history: List[float] = []
+    future_measurement_feature_cache_hit_ratio_history: List[float] = []
+    future_measurement_feature_loss_uses_target_history: List[float] = []
     future_identity_belief_loss_history: List[float] = []
     future_uncertainty_loss_history: List[float] = []
     future_hypothesis_loss_history: List[float] = []
@@ -4932,6 +4967,10 @@ def main() -> None:
             "future_reappearance_loss": 0.0,
             "future_reappearance_event_loss": 0.0,
             "future_semantic_embedding_loss": 0.0,
+            "future_measurement_feature_loss": 0.0,
+            "future_measurement_feature_loss_uses_target": False,
+            "future_measurement_feature_target_valid_ratio": 0.0,
+            "future_measurement_feature_cache_hit_ratio": 0.0,
             "future_identity_belief_loss": 0.0,
             "future_uncertainty_loss": 0.0,
             "future_hypothesis_loss": 0.0,
@@ -4948,6 +4987,13 @@ def main() -> None:
                 slot_count=int(tf_out["pred_coord"].shape[2]),
                 reappearance_mask_policy=str(args.future_reappearance_mask_policy),
             )
+            measurement_target, measurement_mask, measurement_info = target_tensors_for_batch(
+                future_measurement_target_cache,
+                batch,
+                horizon=int(tf_out["pred_coord"].shape[1]),
+                slot_count=int(tf_out["pred_coord"].shape[2]),
+                device=device,
+            )
             future_semantic_state_loss, future_semantic_state_info = compute_future_semantic_state_losses(
                 state=tf_out["future_semantic_trace_state"],
                 semantic_target=tf_out["semantic_tokens"],
@@ -4958,6 +5004,7 @@ def main() -> None:
                 instance_confidence=batch.get("semantic_entity_true_instance_confidence"),
                 cfg=FutureSemanticStateLossConfig(
                     semantic_loss_weight=float(args.future_semantic_loss_weight),
+                    measurement_feature_loss_weight=float(args.future_measurement_feature_loss_weight),
                     visibility_loss_weight=float(args.future_visibility_loss_weight),
                     reappearance_loss_weight=float(args.future_reappearance_loss_weight),
                     reappearance_event_loss_weight=float(args.future_reappearance_event_loss_weight),
@@ -4969,11 +5016,17 @@ def main() -> None:
                     instance_conf_threshold=float(args.trace_unit_instance_conf_threshold),
                 ),
                 visibility_mask=visibility_targets.future_visibility_mask,
+                measurement_feature_target=measurement_target,
+                measurement_feature_mask=measurement_mask,
+                measurement_feature_info=measurement_info,
                 reappearance_target=visibility_targets.future_reappearance_target,
                 reappearance_mask=visibility_targets.future_reappearance_mask,
                 reappearance_event_target=visibility_targets.future_reappearance_event_target,
                 reappearance_event_mask=visibility_targets.future_reappearance_event_mask,
                 visibility_target_info=visibility_targets.to_loss_info(),
+            )
+            future_semantic_state_info["future_measurement_feature_cache_hit_ratio"] = float(
+                measurement_info.get("cache_hit_ratio", 0.0)
             )
         aux_schedule_scale = float(rescue_info.get("aux_schedule_scale", 1.0))
         total_train_loss = (
@@ -5048,6 +5101,16 @@ def main() -> None:
         future_reappearance_loss_history.append(float(future_semantic_state_info.get("future_reappearance_loss", 0.0)))
         future_reappearance_event_loss_history.append(float(future_semantic_state_info.get("future_reappearance_event_loss", 0.0)))
         future_semantic_embedding_loss_history.append(float(future_semantic_state_info.get("future_semantic_embedding_loss", 0.0)))
+        future_measurement_feature_loss_history.append(float(future_semantic_state_info.get("future_measurement_feature_loss", 0.0)))
+        future_measurement_feature_target_valid_ratio_history.append(
+            float(future_semantic_state_info.get("future_measurement_feature_target_valid_ratio", 0.0))
+        )
+        future_measurement_feature_cache_hit_ratio_history.append(
+            float(future_semantic_state_info.get("future_measurement_feature_cache_hit_ratio", 0.0))
+        )
+        future_measurement_feature_loss_uses_target_history.append(
+            1.0 if bool(future_semantic_state_info.get("future_measurement_feature_loss_uses_target", False)) else 0.0
+        )
         future_identity_belief_loss_history.append(float(future_semantic_state_info.get("future_identity_belief_loss", 0.0)))
         future_uncertainty_loss_history.append(float(future_semantic_state_info.get("future_uncertainty_loss", 0.0)))
         future_hypothesis_loss_history.append(float(future_semantic_state_info.get("future_hypothesis_loss", 0.0)))
@@ -5373,6 +5436,7 @@ def main() -> None:
         *future_reappearance_loss_history,
         *future_reappearance_event_loss_history,
         *future_semantic_embedding_loss_history,
+        *future_measurement_feature_loss_history,
         *future_identity_belief_loss_history,
         *future_uncertainty_loss_history,
     ]
@@ -5385,6 +5449,27 @@ def main() -> None:
     future_visibility_loss_mean = float(sum(future_visibility_loss_history) / max(len(future_visibility_loss_history), 1))
     future_reappearance_loss_mean = float(sum(future_reappearance_loss_history) / max(len(future_reappearance_loss_history), 1))
     future_reappearance_event_loss_mean = float(sum(future_reappearance_event_loss_history) / max(len(future_reappearance_event_loss_history), 1))
+    future_measurement_feature_loss_mean = float(
+        sum(future_measurement_feature_loss_history) / max(len(future_measurement_feature_loss_history), 1)
+    )
+    future_measurement_feature_loss_start = float(
+        future_measurement_feature_loss_history[0] if future_measurement_feature_loss_history else 0.0
+    )
+    future_measurement_feature_loss_end = float(
+        future_measurement_feature_loss_history[-1] if future_measurement_feature_loss_history else 0.0
+    )
+    future_measurement_feature_target_valid_ratio_mean = float(
+        sum(future_measurement_feature_target_valid_ratio_history)
+        / max(len(future_measurement_feature_target_valid_ratio_history), 1)
+    )
+    future_measurement_feature_cache_hit_ratio_mean = float(
+        sum(future_measurement_feature_cache_hit_ratio_history)
+        / max(len(future_measurement_feature_cache_hit_ratio_history), 1)
+    )
+    future_measurement_feature_loss_uses_target_ratio = float(
+        sum(future_measurement_feature_loss_uses_target_history)
+        / max(len(future_measurement_feature_loss_uses_target_history), 1)
+    )
     future_reappearance_positive_rate_mean = float(sum(future_reappearance_positive_rate_history) / max(len(future_reappearance_positive_rate_history), 1))
     future_reappearance_event_positive_rate_mean = float(sum(future_reappearance_event_positive_rate_history) / max(len(future_reappearance_event_positive_rate_history), 1))
     future_reappearance_risk_entry_ratio_mean = float(sum(future_reappearance_risk_entry_ratio_history) / max(len(future_reappearance_risk_entry_ratio_history), 1))
@@ -5400,6 +5485,16 @@ def main() -> None:
         "future_visibility_loss_mean": future_visibility_loss_mean,
         "future_reappearance_loss_mean": future_reappearance_loss_mean,
         "future_reappearance_event_loss_mean": future_reappearance_event_loss_mean,
+        "future_measurement_feature_loss_mean": future_measurement_feature_loss_mean,
+        "future_measurement_feature_loss_start": future_measurement_feature_loss_start,
+        "future_measurement_feature_loss_end": future_measurement_feature_loss_end,
+        "future_measurement_feature_target_valid_ratio_mean": future_measurement_feature_target_valid_ratio_mean,
+        "future_measurement_feature_cache_hit_ratio_mean": future_measurement_feature_cache_hit_ratio_mean,
+        "future_measurement_feature_loss_uses_target_ratio": future_measurement_feature_loss_uses_target_ratio,
+        "future_measurement_feature_dim": int(args.future_measurement_feature_dim),
+        "future_measurement_feature_backbone": str(
+            future_measurement_target_cache.feature_backbone if future_measurement_target_cache is not None else ""
+        ),
         "future_reappearance_positive_rate_mean": future_reappearance_positive_rate_mean,
         "future_reappearance_event_positive_rate_mean": future_reappearance_event_positive_rate_mean,
         "future_reappearance_risk_entry_ratio_mean": future_reappearance_risk_entry_ratio_mean,
@@ -5550,11 +5645,16 @@ def main() -> None:
         "future_semantic_trace_state_metrics": {
             "enabled": bool(args.enable_future_semantic_state_head),
             "future_semantic_embedding_dim": int(args.future_semantic_embedding_dim),
+            "future_measurement_feature_dim": int(args.future_measurement_feature_dim),
+            "future_measurement_feature_target_cache": str(args.future_measurement_feature_target_cache),
+            "future_measurement_feature_loss_weight": float(args.future_measurement_feature_loss_weight),
+            "future_measurement_feature_cache_loaded": bool(future_measurement_target_cache is not None),
             "future_hypothesis_count": int(args.future_hypothesis_count),
             "enable_future_extent_head": bool(args.enable_future_extent_head),
             "enable_future_multihypothesis_head": bool(args.enable_future_multihypothesis_head),
             "loss_weights_default_zero_preserve_official": bool(
                 float(args.future_semantic_loss_weight) == 0.0
+                and float(args.future_measurement_feature_loss_weight) == 0.0
                 and float(args.future_visibility_loss_weight) == 0.0
                 and float(args.future_reappearance_loss_weight) == 0.0
                 and float(args.future_identity_belief_loss_weight) == 0.0
@@ -5566,6 +5666,18 @@ def main() -> None:
             "future_reappearance_loss_mean": future_reappearance_loss_mean,
             "future_reappearance_event_loss_mean": future_reappearance_event_loss_mean,
             "future_semantic_embedding_loss_mean": float(sum(future_semantic_embedding_loss_history) / max(len(future_semantic_embedding_loss_history), 1)),
+            "future_measurement_feature_loss_mean": future_measurement_feature_loss_mean,
+            "future_measurement_feature_loss_start": future_measurement_feature_loss_start,
+            "future_measurement_feature_loss_end": future_measurement_feature_loss_end,
+            "future_measurement_feature_target_valid_ratio_mean": future_measurement_feature_target_valid_ratio_mean,
+            "future_measurement_feature_cache_hit_ratio_mean": future_measurement_feature_cache_hit_ratio_mean,
+            "future_measurement_feature_loss_uses_target_ratio": future_measurement_feature_loss_uses_target_ratio,
+            "future_measurement_feature_backbone": str(
+                future_measurement_target_cache.feature_backbone if future_measurement_target_cache is not None else ""
+            ),
+            "future_measurement_feature_no_candidate_leakage": bool(
+                future_measurement_target_cache.no_candidate_leakage if future_measurement_target_cache is not None else True
+            ),
             "future_identity_belief_loss_mean": float(sum(future_identity_belief_loss_history) / max(len(future_identity_belief_loss_history), 1)),
             "future_uncertainty_loss_mean": float(sum(future_uncertainty_loss_history) / max(len(future_uncertainty_loss_history), 1)),
             "future_hypothesis_loss_mean": float(sum(future_hypothesis_loss_history) / max(len(future_hypothesis_loss_history), 1)),

@@ -1,0 +1,25 @@
+{
+  "audit_conclusion": "targets_available_for_small_sanity",
+  "available_feature_backbones": {
+    "existing_crop_visual_encoder": true,
+    "local_clip_vit_b_32": true
+  },
+  "can_compute_future_crop_frozen_semantic_feature": true,
+  "can_construct_B_H_K_D_future_semantic_feature_target": true,
+  "can_construct_B_H_K_target_mask": true,
+  "can_construct_future_crop_per_trace_unit": true,
+  "can_construct_future_extent_target": true,
+  "can_construct_identity_consistency_target": true,
+  "generated_at_utc": "2026-04-29T00:00:00+08:00",
+  "minimum_viable_target_schema": {
+    "extent_box_target": "[B,H,K,4]",
+    "future_reappearance_target": "[B,H,K]",
+    "future_semantic_feature_target": "[B,H,K,Dm]",
+    "future_visibility_target": "[B,H,K]",
+    "identity_target": "[B,K]",
+    "target_mask": "[B,H,K]"
+  },
+  "recommended_feature_backbone": "local OpenAI CLIP ViT-B/32 if cached; fallback STWM crop stats only if CLIP unavailable",
+  "stage2_train_samples_have_future_object_boxes_or_masks": "yes: Stage2SemanticDataset exposes fut_state/fut_valid and entity_boxes_over_time; mask availability depends on source dataset and predecode/raw mask paths.",
+  "target_leakage_risk": "low if future GT crops are used only as supervised targets and never inserted into observed input/rollout hidden; trainer and cache report must carry no_future_candidate_leakage=true."
+}

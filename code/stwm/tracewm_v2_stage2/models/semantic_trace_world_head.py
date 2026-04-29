@@ -14,6 +14,7 @@ class SemanticTraceStateHeadConfig:
     hidden_dim: int
     semantic_embedding_dim: int = 256
     identity_embedding_dim: int = 256
+    measurement_feature_dim: int = 0
     semantic_logit_dim: int = 0
     hypothesis_count: int = 1
     enable_extent_head: bool = False
@@ -78,6 +79,13 @@ class SemanticTraceStateHead(torch.nn.Module):
             torch.nn.Dropout(float(cfg.dropout)),
             torch.nn.Linear(hidden_dim, int(cfg.identity_embedding_dim)),
         )
+        self.measurement_feature_head: torch.nn.Module | None = None
+        if int(cfg.measurement_feature_dim) > 0:
+            self.measurement_feature_head = torch.nn.Sequential(
+                torch.nn.LayerNorm(hidden_dim),
+                torch.nn.Dropout(float(cfg.dropout)),
+                torch.nn.Linear(hidden_dim, int(cfg.measurement_feature_dim)),
+            )
         self.visibility_head = torch.nn.Sequential(
             torch.nn.LayerNorm(hidden_dim),
             torch.nn.Linear(hidden_dim, 1),
@@ -108,6 +116,9 @@ class SemanticTraceStateHead(torch.nn.Module):
     def forward(self, future_hidden: torch.Tensor, *, future_trace_coord: torch.Tensor) -> FutureSemanticTraceState:
         semantic_embedding = self.semantic_embedding_head(future_hidden)
         identity_embedding = self.identity_embedding_head(future_hidden)
+        measurement_feature_pred = (
+            self.measurement_feature_head(future_hidden) if self.measurement_feature_head is not None else None
+        )
         visibility_logit = self.visibility_head(future_hidden).squeeze(-1)
         reappearance_logit = self.reappearance_head(future_hidden).squeeze(-1)
         reappearance_event_logit = self.reappearance_event_head(future_hidden.mean(dim=1)).squeeze(-1)
@@ -124,6 +135,7 @@ class SemanticTraceStateHead(torch.nn.Module):
             future_reappearance_logit=reappearance_logit,
             future_reappearance_event_logit=reappearance_event_logit,
             future_semantic_embedding=semantic_embedding,
+            future_measurement_feature_pred=measurement_feature_pred,
             future_semantic_logits=semantic_logits,
             future_identity_embedding=identity_embedding,
             future_extent_box=extent_box,
@@ -138,6 +150,7 @@ class SemanticTraceStateHead(torch.nn.Module):
 @dataclass
 class FutureSemanticStateLossConfig:
     semantic_loss_weight: float = 0.0
+    measurement_feature_loss_weight: float = 0.0
     visibility_loss_weight: float = 0.0
     reappearance_loss_weight: float = 0.0
     reappearance_event_loss_weight: float = 0.0
@@ -232,6 +245,9 @@ def compute_future_semantic_state_losses(
     cfg: FutureSemanticStateLossConfig,
     identity_target_source: str = "semantic_token_surrogate",
     visibility_mask: torch.Tensor | None = None,
+    measurement_feature_target: torch.Tensor | None = None,
+    measurement_feature_mask: torch.Tensor | None = None,
+    measurement_feature_info: dict[str, Any] | None = None,
     reappearance_target: torch.Tensor | None = None,
     reappearance_mask: torch.Tensor | None = None,
     reappearance_event_target: torch.Tensor | None = None,
@@ -253,6 +269,35 @@ def compute_future_semantic_state_losses(
     if float(cfg.semantic_loss_weight) > 0.0:
         semantic_loss = _masked_mean(1.0 - F.cosine_similarity(state.future_semantic_embedding, semantic_target_f, dim=-1), valid)
         total = total + float(cfg.semantic_loss_weight) * semantic_loss
+
+    measurement_feature_loss = zero
+    measurement_feature_head_available = state.future_measurement_feature_pred is not None
+    measurement_feature_target_available = measurement_feature_target is not None and measurement_feature_mask is not None
+    measurement_feature_valid_ratio = 0.0
+    measurement_feature_loss_uses_target = False
+    if float(cfg.measurement_feature_loss_weight) > 0.0:
+        if state.future_measurement_feature_pred is None:
+            raise RuntimeError("future_measurement_feature_loss_weight > 0 requires state.future_measurement_feature_pred")
+        if measurement_feature_target is None or measurement_feature_mask is None:
+            raise RuntimeError("future_measurement_feature_loss_weight > 0 requires measurement feature targets and mask")
+        target = measurement_feature_target.to(device=device, dtype=state.future_measurement_feature_pred.dtype)
+        mask = measurement_feature_mask.to(device=device, dtype=torch.bool)
+        if tuple(target.shape[:3]) != tuple(state.future_measurement_feature_pred.shape[:3]):
+            raise ValueError(
+                "measurement feature target shape cannot align with prediction: "
+                f"target={tuple(target.shape)} pred={tuple(state.future_measurement_feature_pred.shape)}"
+            )
+        target = _align_last_dim(target, int(state.future_measurement_feature_pred.shape[-1]))
+        pred_norm = F.normalize(state.future_measurement_feature_pred, dim=-1)
+        target_norm = F.normalize(target, dim=-1)
+        measurement_feature_loss = _masked_mean(1.0 - F.cosine_similarity(pred_norm, target_norm, dim=-1), mask)
+        total = total + float(cfg.measurement_feature_loss_weight) * measurement_feature_loss
+        measurement_feature_valid_ratio = float(mask.to(dtype=torch.float32).mean().detach().cpu().item())
+        measurement_feature_loss_uses_target = True
+    elif measurement_feature_mask is not None:
+        measurement_feature_valid_ratio = float(
+            measurement_feature_mask.to(device=device, dtype=torch.float32).mean().detach().cpu().item()
+        )
 
     visibility_loss = zero
     if float(cfg.visibility_loss_weight) > 0.0:
@@ -370,6 +415,16 @@ def compute_future_semantic_state_losses(
         "future_reappearance_loss": float(reappearance_loss.detach().cpu().item()),
         "future_reappearance_event_loss": float(reappearance_event_loss.detach().cpu().item()),
         "future_semantic_embedding_loss": float(semantic_loss.detach().cpu().item()),
+        "future_measurement_feature_loss": float(measurement_feature_loss.detach().cpu().item()),
+        "future_measurement_feature_loss_uses_target": bool(measurement_feature_loss_uses_target),
+        "future_measurement_feature_head_available": bool(measurement_feature_head_available),
+        "future_measurement_feature_target_available": bool(measurement_feature_target_available),
+        "future_measurement_feature_target_valid_ratio": float(measurement_feature_valid_ratio),
+        "future_measurement_feature_dim": int(
+            state.future_measurement_feature_pred.shape[-1] if state.future_measurement_feature_pred is not None else 0
+        ),
+        "future_measurement_feature_backbone": str((measurement_feature_info or {}).get("feature_backbone", "")),
+        "future_measurement_feature_no_candidate_leakage": bool((measurement_feature_info or {}).get("no_candidate_leakage", True)),
         "future_identity_belief_loss": float(identity_loss.detach().cpu().item()),
         "future_uncertainty_loss": float(uncertainty_loss.detach().cpu().item()),
         "future_hypothesis_loss": float(hypothesis_loss.detach().cpu().item()),

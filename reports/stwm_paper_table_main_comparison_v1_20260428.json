@@ -1,0 +1,77 @@
+{
+  "generated_at_utc": "2026-04-28T17:23:42.051193+00:00",
+  "rows": [
+    {
+      "MRR": 0.6276732410913713,
+      "ambiguity_top1": 0.4220183486238533,
+      "hard_subset_top1": 0.4630872483221476,
+      "label": "STWM belief",
+      "long_gap_persistence_top1": 0.5144927536231884,
+      "method": "TUSB-v3.1::official(best_semantic_hard.pt+trace_belief_assoc)",
+      "occlusion_reappearance_top1": 0.5053191489361701,
+      "overall_top1": 0.4630872483221476,
+      "panel": "densified_200_context_preserving",
+      "scoring_mode": "trace_belief_assoc",
+      "source_report": "reports/stwm_belief_final_eval_20260424.json",
+      "top5_hit": 0.8489932885906041
+    },
+    {
+      "MRR": 0.394711026498255,
+      "ambiguity_top1": 0.14678899082568808,
+      "hard_subset_top1": 0.1610738255033557,
+      "label": "calibration-only",
+      "long_gap_persistence_top1": 0.1956521739130435,
+      "method": "calibration-only::best.pt",
+      "occlusion_reappearance_top1": 0.17198581560283688,
+      "overall_top1": 0.1610738255033557,
+      "panel": "densified_200_context_preserving",
+      "scoring_mode": "coord_only",
+      "source_report": "reports/stwm_belief_final_eval_20260424.json",
+      "top5_hit": 0.7360178970917226
+    },
+    {
+      "MRR": 0.3947195286198854,
+      "ambiguity_top1": 0.14525993883792052,
+      "hard_subset_top1": 0.16219239373601788,
+      "label": "cropenc",
+      "long_gap_persistence_top1": 0.2282608695652174,
+      "method": "cropenc::best.pt",
+      "occlusion_reappearance_top1": 0.17375886524822692,
+      "overall_top1": 0.16219239373601788,
+      "panel": "densified_200_context_preserving",
+      "scoring_mode": "coord_only",
+      "source_report": "reports/stwm_belief_final_eval_20260424.json",
+      "top5_hit": 0.7393736017897092
+    },
+    {
+      "MRR": 0.3997711276778473,
+      "ambiguity_top1": 0.15902140672782875,
+      "hard_subset_top1": 0.16666666666666666,
+      "label": "legacysem",
+      "long_gap_persistence_top1": 0.2318840579710145,
+      "method": "legacysem::best.pt",
+      "occlusion_reappearance_top1": 0.17730496453900713,
+      "overall_top1": 0.16666666666666666,
+      "panel": "densified_200_context_preserving",
+      "scoring_mode": "coord_only",
+      "source_report": "reports/stwm_belief_final_eval_20260424.json",
+      "top5_hit": 0.7438478747203581
+    },
+    {
+      "MRR": 0.592226373115583,
+      "ambiguity_top1": 0.34862385321100925,
+      "hard_subset_top1": 0.4228187919463087,
+      "label": "frozen_external_teacher_only",
+      "long_gap_persistence_top1": 0.5652173913043478,
+      "method": "TUSB-v3.1::best_semantic_hard.pt",
+      "occlusion_reappearance_top1": 0.48936170212765956,
+      "overall_top1": 0.4228187919463087,
+      "panel": "densified_200_context_preserving",
+      "scoring_mode": "frozen_external_teacher_only",
+      "source_report": "reports/stwm_trace_belief_eval_20260424.json",
+      "top5_hit": 0.8456375838926175
+    }
+  ],
+  "source": "reports/stwm_paper_ready_tables_20260425.json",
+  "title": "Main comparison"
+}
