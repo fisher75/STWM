@@ -1,0 +1,21 @@
+{
+  "audit_name": "stwm_observed_semantic_memory_coverage_repair_v1_decision",
+  "changed_subset_gain_v2": -0.013574654565137956,
+  "copy_baseline_still_strong": true,
+  "copy_baseline_top5_v2": 0.6989795568646217,
+  "coverage_repair_successful": true,
+  "future_target_overlap_ratio_v1": 0.05112781954887218,
+  "future_target_overlap_ratio_v2": 0.6018045112781955,
+  "interpretation": "V1 low coverage was caused by an underbuilt/silently reused observed cache. V2 repair restores coverage and a strong copy baseline, but residual prediction does not yet improve over copy or changed-prototype cases.",
+  "memory_residual_improves_over_copy": false,
+  "memory_residual_top5_v2": 0.6377550874437604,
+  "no_candidate_scorer": true,
+  "no_future_leakage": true,
+  "observed_proto_valid_ratio_v1": 0.0365234375,
+  "observed_proto_valid_ratio_v2": 0.4005859375,
+  "recommended_next_step_choice": "improve_prototype_targets",
+  "root_cause": "observed_cache_underbuilt",
+  "semantic_memory_injection_successful": true,
+  "semantic_memory_signal_positive": false,
+  "trace_regression_detected": false
+}

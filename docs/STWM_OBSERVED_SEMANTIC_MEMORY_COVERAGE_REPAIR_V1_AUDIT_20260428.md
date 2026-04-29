@@ -1,0 +1,22 @@
+# STWM Observed Semantic Memory Coverage Repair V1 Audit
+
+- alignment_note: `V1 cache has no metadata_json fingerprint and only 187/5120 observed slots covered.`
+- audit_name: `stwm_observed_semantic_memory_coverage_repair_v1_audit`
+- cache_reuse_likely_reused_bad_cache: `True`
+- future_target_cache_item_count: `640`
+- future_target_cache_item_keys_count: `640`
+- future_target_overlap_ratio: `0.05112781954887218`
+- max_samples_per_dataset_8_likely_caused_low_coverage: `True`
+- need_rebuild_observed_cache: `False`
+- observed_cache_build_max_samples_per_dataset: `8`
+- observed_cache_item_keys_count: `640`
+- observed_cache_nonzero_observed_feature_mask_count: `187`
+- observed_cache_path: `outputs/cache/stwm_observed_semantic_prototype_targets_v1_20260428/observed_features.npz`
+- observed_cache_reused_existing: `True`
+- observed_proto_valid_ratio: `0.0365234375`
+- v2_observed_proto_valid_ratio: `0.4005859375`
+- v2_future_target_overlap_ratio: `0.6018045112781955`
+- v2_observed_feature_source: `openai_clip_vit_b_32_local`
+- v2_cache_rebuilt: `True`
+- v2_cache_path: `outputs/cache/stwm_observed_semantic_prototype_targets_v2_20260428/observed_features.npz`
+- repair_path_used: `predecode_observed_crop_local_clip_with_fingerprint`

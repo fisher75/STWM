@@ -124,21 +124,69 @@ def build_or_load_observed_feature_cache(
     device: str = "cuda",
     batch_size: int = 128,
     max_samples_per_dataset: int = 512,
+    force_rebuild: bool = False,
+    min_required_coverage: float = 0.0,
 ) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
-    if output_cache.exists():
-        with np.load(output_cache, allow_pickle=True) as data:
-            cached = {k: data[k] for k in data.files}
-        meta = {
-            "observed_feature_cache_path": str(output_cache),
-            "observed_feature_cache_reused": True,
-            "feature_backbone": str(cached.get("feature_backbone", np.asarray("")).tolist()),
-            "feature_dim": int(cached["observed_last_feature"].shape[-1]),
-        }
-        return cached, meta
-
     feature_payload, feature_data, _ = load_npz_from_report(feature_report, key="cache_path")
     item_keys = [str(x) for x in feature_data["item_keys"].tolist()]
     splits = [str(x) for x in feature_data["splits"].tolist()]
+    datasets = [str(x) for x in feature_data["datasets"].tolist()] if "datasets" in feature_data else []
+    requested_meta = {
+        "feature_report_path": str(feature_report),
+        "feature_report_mtime": float(feature_report.stat().st_mtime) if feature_report.exists() else None,
+        "checkpoint_path": str(checkpoint_path),
+        "dataset_names": sorted(set(datasets)),
+        "splits": sorted(set(splits)),
+        "max_samples_per_dataset": int(max_samples_per_dataset),
+        "item_keys_count": int(len(item_keys)),
+    }
+
+    rebuild_reason = ""
+    if output_cache.exists() and not bool(force_rebuild):
+        with np.load(output_cache, allow_pickle=True) as data:
+            cached = {k: data[k] for k in data.files}
+        cached_metadata: dict[str, Any] = {}
+        if "metadata_json" in cached:
+            try:
+                cached_metadata = json.loads(str(cached["metadata_json"].tolist()))
+            except Exception:
+                cached_metadata = {}
+        observed_mask = np.asarray(cached.get("observed_feature_mask", np.zeros((0, 0), dtype=bool)), dtype=bool)
+        observed_ratio = float(observed_mask.mean()) if observed_mask.size else 0.0
+        mismatch_reasons: list[str] = []
+        if not cached_metadata:
+            mismatch_reasons.append("missing_cache_fingerprint")
+        for key in ("feature_report_path", "checkpoint_path", "max_samples_per_dataset", "item_keys_count"):
+            if cached_metadata and cached_metadata.get(key) != requested_meta.get(key):
+                mismatch_reasons.append(f"fingerprint_mismatch:{key}")
+        if cached_metadata and sorted(cached_metadata.get("splits", [])) != requested_meta["splits"]:
+            mismatch_reasons.append("fingerprint_mismatch:splits")
+        if cached_metadata and sorted(cached_metadata.get("dataset_names", [])) != requested_meta["dataset_names"]:
+            mismatch_reasons.append("fingerprint_mismatch:dataset_names")
+        if observed_ratio < float(min_required_coverage):
+            mismatch_reasons.append("coverage_below_min_required")
+        if not mismatch_reasons:
+            cached_metadata.update(
+                {
+                    "observed_feature_cache_path": str(output_cache),
+                    "observed_feature_cache_reused": True,
+                    "feature_backbone": str(cached.get("feature_backbone", np.asarray("")).tolist()),
+                    "feature_dim": int(cached["observed_last_feature"].shape[-1]),
+                    "observed_slot_feature_available_ratio": observed_ratio,
+                    "observed_nonzero_count": int(observed_mask.sum()),
+                    "cache_rebuild_reason": "",
+                    "requested_fingerprint": requested_meta,
+                }
+            )
+            return cached, cached_metadata
+        rebuild_reason = ",".join(mismatch_reasons)
+    elif bool(force_rebuild):
+        rebuild_reason = "force_rebuild_requested"
+
+    if output_cache.exists() and rebuild_reason:
+        # Overwrite in place after recording why the existing cache was rejected.
+        pass
+
     key_to_idx = {key: idx for idx, key in enumerate(item_keys)}
     split_by_key = {key: splits[idx] for idx, key in enumerate(item_keys)}
     n = len(item_keys)
@@ -149,10 +197,188 @@ def build_or_load_observed_feature_cache(
     obs_last_mask = np.zeros((n, k_max), dtype=bool)
     trace_summary = np.zeros((n, k_max, 10), dtype=np.float32)
 
+    args = checkpoint_args(checkpoint_path)
+    predecode_cache_path = Path(str(args.get("predecode_cache_path") or ""))
+    if predecode_cache_path.exists():
+        extractor = LocalClipExtractor(device_name=device)
+        crops: list[Any] = []
+        refs: list[tuple[int, int, str]] = []
+        predecode_hits = 0
+        for idx, key in enumerate(item_keys):
+            dataset, clip = key.split("::", 1) if "::" in key else ("", key)
+            split = str(split_by_key.get(key) or splits[idx])
+            candidates = [
+                predecode_cache_path / split / f"{dataset}__{split}__{clip}.npz",
+                predecode_cache_path / "train" / f"{dataset}__train__{clip}.npz",
+                predecode_cache_path / "val" / f"{dataset}__val__{clip}.npz",
+            ]
+            cache_file = next((p for p in candidates if p.exists()), None)
+            if cache_file is None:
+                matches = list(predecode_cache_path.glob(f"*/*{dataset}__*__{clip}.npz"))
+                cache_file = matches[0] if matches else None
+            if cache_file is None:
+                continue
+            try:
+                with np.load(cache_file, allow_pickle=True) as predecode:
+                    rgb = np.asarray(predecode["semantic_rgb_crop"], dtype=np.float32)
+                    valid = np.asarray(predecode.get("semantic_crop_valid", np.ones((rgb.shape[0],), dtype=bool)), dtype=bool)
+                    obs_valid = np.asarray(predecode.get("obs_valid", np.zeros((1, rgb.shape[0]), dtype=bool)), dtype=bool)
+            except Exception:
+                continue
+            if rgb.ndim != 4 or rgb.shape[1] != 3:
+                continue
+            kk = min(k_max, int(rgb.shape[0]))
+            any_hit = False
+            for slot in range(kk):
+                slot_valid = bool(valid[slot]) if slot < valid.shape[0] else True
+                if obs_valid.ndim == 2 and slot < obs_valid.shape[1]:
+                    slot_valid = slot_valid and bool(obs_valid[:, slot].any())
+                if not slot_valid:
+                    continue
+                crop_tensor = torch.from_numpy(rgb[slot])
+                crop = _tensor_crop_to_pil(crop_tensor)
+                if crop is None:
+                    continue
+                crops.append(crop)
+                refs.append((idx, slot, "last"))
+                any_hit = True
+            predecode_hits += int(any_hit)
+        encoded = extractor.encode(crops, batch_size=int(batch_size)) if crops else np.zeros((0, feature_dim), dtype=np.float32)
+        for vec, (idx, slot, _mode) in zip(encoded, refs):
+            obs_last[idx, slot] = vec
+            obs_mean_sum[idx, slot] += vec
+            obs_count[idx, slot] += 1.0
+            obs_last_mask[idx, slot] = True
+        if float(obs_last_mask.mean()) >= float(min_required_coverage):
+            obs_mean = obs_mean_sum / np.maximum(obs_count[..., None], 1.0)
+            obs_mean = l2_normalize(obs_mean)
+            obs_last = l2_normalize(obs_last)
+            metadata = {
+                **requested_meta,
+                "feature_report_mtime": float(feature_report.stat().st_mtime) if feature_report.exists() else None,
+                "observed_nonzero_count": int(obs_last_mask.sum()),
+                "observed_slot_feature_available_ratio": float(obs_last_mask.mean()) if obs_last_mask.size else 0.0,
+                "cache_rebuild_reason": rebuild_reason,
+                "observed_feature_fast_path": "predecode_crop_clip",
+                "predecode_cache_path": str(predecode_cache_path),
+                "direct_cache_item_hits": int(predecode_hits),
+            }
+            output_cache.parent.mkdir(parents=True, exist_ok=True)
+            np.savez_compressed(
+                output_cache,
+                item_keys=np.asarray(item_keys, dtype=object),
+                splits=np.asarray(splits, dtype=object),
+                observed_last_feature=obs_last.astype(np.float32),
+                observed_mean_feature=obs_mean.astype(np.float32),
+                observed_feature_mask=obs_last_mask,
+                observed_feature_count=obs_count.astype(np.float32),
+                trace_summary=trace_summary.astype(np.float32),
+                feature_backbone=np.asarray(extractor.name, dtype=object),
+                feature_source=np.asarray("stage2_predecode_observed_semantic_crop_clip_vit_b32", dtype=object),
+                metadata_json=np.asarray(json.dumps(metadata, sort_keys=True), dtype=object),
+            )
+            data = dict(np.load(output_cache, allow_pickle=True))
+            meta = {
+                "observed_feature_cache_path": str(output_cache),
+                "observed_feature_cache_reused": False,
+                "feature_backbone": extractor.name,
+                "feature_dim": int(feature_dim),
+                "observed_slot_feature_available_ratio": float(obs_last_mask.mean()),
+                "observed_nonzero_count": int(obs_last_mask.sum()),
+                "item_keys_count": int(len(item_keys)),
+                "max_samples_per_dataset": int(max_samples_per_dataset),
+                "cache_rebuild_reason": rebuild_reason,
+                "metadata": metadata,
+                "no_network_download_attempted": True,
+                "observed_feature_source_note": "uses local Stage2 predecode observed semantic crops encoded by local CLIP; no future candidate or future target crop is used",
+            }
+            return data, meta
+
+    teacher_cache_path = Path(str(args.get("teacher_semantic_cache_path") or ""))
+    direct_cache_hits = 0
+    if teacher_cache_path.exists():
+        # Fast path: reuse the observed semantic prior already consumed by Stage2.
+        # This is observed-state memory, not a future candidate or future target input.
+        for idx, key in enumerate(item_keys):
+            dataset, clip = key.split("::", 1) if "::" in key else ("", key)
+            split = str(split_by_key.get(key) or splits[idx])
+            candidates = [
+                teacher_cache_path / f"{dataset}__{split}__{clip}.npz",
+                teacher_cache_path / f"{dataset}__train__{clip}.npz",
+                teacher_cache_path / f"{dataset}__val__{clip}.npz",
+            ]
+            cache_file = next((p for p in candidates if p.exists()), None)
+            if cache_file is None:
+                matches = list(teacher_cache_path.glob(f"{dataset}__*__{clip}.npz"))
+                cache_file = matches[0] if matches else None
+            if cache_file is None:
+                continue
+            try:
+                with np.load(cache_file, allow_pickle=True) as teacher_payload:
+                    prior = np.asarray(teacher_payload["semantic_teacher_prior"], dtype=np.float32)
+            except Exception:
+                continue
+            if prior.ndim != 2 or prior.shape[-1] != feature_dim:
+                continue
+            kk = min(k_max, int(prior.shape[0]))
+            if kk <= 0:
+                continue
+            prior = l2_normalize(prior[:kk])
+            valid = np.linalg.norm(prior, axis=-1) > 1e-8
+            obs_last[idx, :kk] = prior
+            obs_mean_sum[idx, :kk] += prior
+            obs_count[idx, :kk] += valid.astype(np.float32)
+            obs_last_mask[idx, :kk] = valid
+            direct_cache_hits += int(valid.any())
+
+    if float(obs_last_mask.mean()) >= float(min_required_coverage):
+        obs_mean = obs_mean_sum / np.maximum(obs_count[..., None], 1.0)
+        obs_mean = l2_normalize(obs_mean)
+        obs_last = l2_normalize(obs_last)
+        metadata = {
+            **requested_meta,
+            "feature_report_mtime": float(feature_report.stat().st_mtime) if feature_report.exists() else None,
+            "observed_nonzero_count": int(obs_last_mask.sum()),
+            "observed_slot_feature_available_ratio": float(obs_last_mask.mean()) if obs_last_mask.size else 0.0,
+            "cache_rebuild_reason": rebuild_reason,
+            "observed_feature_fast_path": "teacher_semantic_cache",
+            "teacher_semantic_cache_path": str(teacher_cache_path),
+            "direct_cache_item_hits": int(direct_cache_hits),
+        }
+        output_cache.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(
+            output_cache,
+            item_keys=np.asarray(item_keys, dtype=object),
+            splits=np.asarray(splits, dtype=object),
+            observed_last_feature=obs_last.astype(np.float32),
+            observed_mean_feature=obs_mean.astype(np.float32),
+            observed_feature_mask=obs_last_mask,
+            observed_feature_count=obs_count.astype(np.float32),
+            trace_summary=trace_summary.astype(np.float32),
+            feature_backbone=np.asarray("stage2_teacher_semantic_cache_prior", dtype=object),
+            feature_source=np.asarray("stage2_observed_semantic_teacher_prior_cache", dtype=object),
+            metadata_json=np.asarray(json.dumps(metadata, sort_keys=True), dtype=object),
+        )
+        data = dict(np.load(output_cache, allow_pickle=True))
+        meta = {
+            "observed_feature_cache_path": str(output_cache),
+            "observed_feature_cache_reused": False,
+            "feature_backbone": "stage2_teacher_semantic_cache_prior",
+            "feature_dim": int(feature_dim),
+            "observed_slot_feature_available_ratio": float(obs_last_mask.mean()),
+            "observed_nonzero_count": int(obs_last_mask.sum()),
+            "item_keys_count": int(len(item_keys)),
+            "max_samples_per_dataset": int(max_samples_per_dataset),
+            "cache_rebuild_reason": rebuild_reason,
+            "metadata": metadata,
+            "no_network_download_attempted": True,
+            "observed_feature_source_note": "uses local Stage2 observed semantic teacher-prior cache; no future candidate or future target crop is used",
+        }
+        return data, meta
+
     extractor = LocalClipExtractor(device_name=device)
     crops: list[Any] = []
     refs: list[tuple[int, int, str]] = []
-    args = checkpoint_args(checkpoint_path)
     for split in sorted(set(splits)):
         ds = dataset_for_split(args, split=split, max_samples_per_dataset=int(max_samples_per_dataset))
         for sample_idx in range(len(ds)):
@@ -221,6 +447,13 @@ def build_or_load_observed_feature_cache(
     obs_mean = obs_mean_sum / np.maximum(obs_count[..., None], 1.0)
     obs_mean = l2_normalize(obs_mean)
     obs_last = l2_normalize(obs_last)
+    metadata = {
+        **requested_meta,
+        "feature_report_mtime": float(feature_report.stat().st_mtime) if feature_report.exists() else None,
+        "observed_nonzero_count": int(obs_last_mask.sum()),
+        "observed_slot_feature_available_ratio": float(obs_last_mask.mean()) if obs_last_mask.size else 0.0,
+        "cache_rebuild_reason": rebuild_reason,
+    }
     output_cache.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         output_cache,
@@ -233,6 +466,7 @@ def build_or_load_observed_feature_cache(
         trace_summary=trace_summary.astype(np.float32),
         feature_backbone=np.asarray(extractor.name, dtype=object),
         feature_source=np.asarray("stage2_observed_semantic_crop_clip_vit_b32", dtype=object),
+        metadata_json=np.asarray(json.dumps(metadata, sort_keys=True), dtype=object),
     )
     data = dict(np.load(output_cache, allow_pickle=True))
     meta = {
@@ -241,6 +475,11 @@ def build_or_load_observed_feature_cache(
         "feature_backbone": extractor.name,
         "feature_dim": int(feature_dim),
         "observed_slot_feature_available_ratio": float(obs_last_mask.mean()),
+        "observed_nonzero_count": int(obs_last_mask.sum()),
+        "item_keys_count": int(len(item_keys)),
+        "max_samples_per_dataset": int(max_samples_per_dataset),
+        "cache_rebuild_reason": rebuild_reason,
+        "metadata": metadata,
         "no_network_download_attempted": True,
         "observed_feature_source_note": "uses Stage2 prebuilt observed semantic crop/temporal crop, not future candidate or future target crop",
     }

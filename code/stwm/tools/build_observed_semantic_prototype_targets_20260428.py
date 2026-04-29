@@ -70,6 +70,9 @@ def build_observed_targets(
     max_samples_per_dataset: int,
     device: str,
     batch_size: int,
+    force_rebuild_observed_cache: bool = False,
+    observed_min_coverage: float = 0.0,
+    previous_report: Path | None = None,
 ) -> dict[str, Any]:
     observed, observed_meta = build_or_load_observed_feature_cache(
         feature_report=feature_report,
@@ -78,6 +81,8 @@ def build_observed_targets(
         device=str(device),
         batch_size=int(batch_size),
         max_samples_per_dataset=int(max_samples_per_dataset),
+        force_rebuild=bool(force_rebuild_observed_cache),
+        min_required_coverage=float(observed_min_coverage),
     )
     feature_payload, feature_data, _ = load_npz_from_report(feature_report, key="cache_path")
     item_keys = [str(x) for x in feature_data["item_keys"].tolist()]
@@ -90,6 +95,7 @@ def build_observed_targets(
     target_cache_paths: dict[str, str] = {}
     selected_cache_path = ""
     selected_count = 0
+    selected_counts: dict[str, Any] = {}
     for report_path in prototype_target_reports:
         proto_payload, proto_data, _ = load_npz_from_report(report_path, key="target_cache_path")
         c = int(proto_payload.get("prototype_count") or proto_data["prototypes"].shape[0])
@@ -104,6 +110,9 @@ def build_observed_targets(
         overlap = obs_mask & future_slot_mask
         future_without_obs = future_slot_mask & (~obs_mask)
         obs_without_future = obs_mask & (~future_slot_mask)
+        overlap_slot_count = int(overlap.sum())
+        future_target_slot_count = int(future_slot_mask.sum())
+        observed_nonzero_slot_count = int(obs_mask.sum())
         labels = np.asarray(proto_data["future_semantic_proto_target"], dtype=np.int64)
         valid_eval = future_mask & (labels >= 0) & obs_mask[:, None, :]
         repeated_scores = np.repeat(scores[:, None, :, :], labels.shape[1], axis=1)
@@ -131,6 +140,9 @@ def build_observed_targets(
                 "target_cache_path": str(cache_path),
                 "observed_proto_valid_ratio": float(obs_mask.mean()),
                 "future_target_overlap_ratio": float(overlap.sum() / max(future_slot_mask.sum(), 1)),
+                "observed_nonzero_slot_count": observed_nonzero_slot_count,
+                "future_target_slot_count": future_target_slot_count,
+                "overlap_slot_count": overlap_slot_count,
                 "slots_with_future_target_but_no_observed_proto": int(future_without_obs.sum()),
                 "slots_with_observed_proto_but_no_future_target": int(obs_without_future.sum()),
                 "observed_last_top1": float(metrics["top1"]),
@@ -138,10 +150,35 @@ def build_observed_targets(
                 "coverage_sufficient": bool(float(obs_mask.mean()) >= 0.1),
             }
         )
+        if c == selected_count:
+            selected_counts = {
+                "observed_nonzero_slot_count": observed_nonzero_slot_count,
+                "future_target_slot_count": future_target_slot_count,
+                "overlap_slot_count": overlap_slot_count,
+                "slots_with_future_target_but_no_observed_proto": int(future_without_obs.sum()),
+                "slots_with_observed_proto_but_no_future_target": int(obs_without_future.sum()),
+            }
 
     observed_feature_valid_ratio = float(obs_mask.mean()) if obs_mask.size else 0.0
     observed_slot_feature_available_ratio = float(obs_mask.mean()) if obs_mask.size else 0.0
     selected = next((r for r in results if int(r["prototype_count"]) == selected_count), results[0])
+    selected_counts = {
+        "observed_nonzero_slot_count": int(selected.get("observed_nonzero_slot_count", 0)),
+        "future_target_slot_count": int(selected.get("future_target_slot_count", 0)),
+        "overlap_slot_count": int(selected.get("overlap_slot_count", 0)),
+        "slots_with_future_target_but_no_observed_proto": int(selected.get("slots_with_future_target_but_no_observed_proto", 0)),
+        "slots_with_observed_proto_but_no_future_target": int(selected.get("slots_with_observed_proto_but_no_future_target", 0)),
+    }
+    previous_observed_ratio = None
+    previous_overlap_ratio = None
+    if previous_report is not None and previous_report.exists():
+        try:
+            previous_payload = json.loads(previous_report.read_text(encoding="utf-8"))
+            previous_observed_ratio = float(previous_payload.get("observed_proto_valid_ratio", 0.0) or 0.0)
+            previous_overlap_ratio = float(previous_payload.get("future_target_overlap_ratio", 0.0) or 0.0)
+        except Exception:
+            previous_observed_ratio = None
+            previous_overlap_ratio = None
     payload = {
         "generated_at_utc": now_iso(),
         "feature_report": str(feature_report),
@@ -149,6 +186,11 @@ def build_observed_targets(
         "item_count": int(obs_feature.shape[0]),
         "feature_dim": int(obs_feature.shape[-1]),
         "observed_feature_source": str(observed_meta.get("feature_backbone") or ""),
+        "observed_feature_cache_path": str(observed_meta.get("observed_feature_cache_path") or cache_dir / "observed_features.npz"),
+        "observed_feature_cache_reused": bool(observed_meta.get("observed_feature_cache_reused", False)),
+        "cache_rebuilt": bool(not observed_meta.get("observed_feature_cache_reused", False)),
+        "cache_rebuild_reason": str(observed_meta.get("cache_rebuild_reason") or ""),
+        "observed_max_samples_per_dataset": int(max_samples_per_dataset),
         "observed_feature_valid_ratio": observed_feature_valid_ratio,
         "observed_slot_feature_available_ratio": observed_slot_feature_available_ratio,
         "observed_proto_valid_ratio": observed_feature_valid_ratio,
@@ -157,9 +199,18 @@ def build_observed_targets(
         "target_cache_paths_by_prototype_count": target_cache_paths,
         "results_by_prototype_count": results,
         "future_target_overlap_ratio": float(selected["future_target_overlap_ratio"]),
+        **selected_counts,
         "observed_last_top1": float(selected["observed_last_top1"]),
         "observed_last_top5": float(selected["observed_last_top5"]),
         "observed_proto_coverage_sufficient": bool(selected["coverage_sufficient"]),
+        "observed_proto_valid_ratio_v1": previous_observed_ratio,
+        "future_target_overlap_ratio_v1": previous_overlap_ratio,
+        "coverage_improved_vs_v1": bool(
+            previous_observed_ratio is not None
+            and previous_overlap_ratio is not None
+            and observed_feature_valid_ratio > previous_observed_ratio
+            and float(selected["future_target_overlap_ratio"]) > previous_overlap_ratio
+        ),
         "no_future_leakage": True,
         "no_future_candidate_leakage": True,
     }
@@ -177,7 +228,11 @@ def main() -> None:
         "reports/stwm_future_semantic_trace_prototype_targets_v2_c64_20260428.json",
         "reports/stwm_future_semantic_trace_prototype_targets_v2_20260428.json",
     ])
-    p.add_argument("--max-samples-per-dataset", type=int, default=8)
+    p.add_argument("--max-samples-per-dataset", type=int, default=512)
+    p.add_argument("--observed-max-samples-per-dataset", type=int, default=None)
+    p.add_argument("--force-rebuild-observed-cache", action="store_true")
+    p.add_argument("--observed-min-coverage", type=float, default=0.0)
+    p.add_argument("--previous-observed-report", default="reports/stwm_observed_semantic_prototype_targets_v1_20260428.json")
     p.add_argument("--device", default="cuda")
     p.add_argument("--batch-size", type=int, default=64)
     p.add_argument("--cache-dir", default="outputs/cache/stwm_observed_semantic_prototype_targets_v1_20260428")
@@ -191,9 +246,12 @@ def main() -> None:
         feature_report=Path(args.feature_report),
         checkpoint=Path(args.checkpoint),
         prototype_target_reports=[Path(x) for x in args.prototype_target_reports],
-        max_samples_per_dataset=int(args.max_samples_per_dataset),
+        max_samples_per_dataset=int(args.observed_max_samples_per_dataset or args.max_samples_per_dataset),
         device=str(args.device),
         batch_size=int(args.batch_size),
+        force_rebuild_observed_cache=bool(args.force_rebuild_observed_cache),
+        observed_min_coverage=float(args.observed_min_coverage),
+        previous_report=Path(args.previous_observed_report) if args.previous_observed_report else None,
     )
 
 

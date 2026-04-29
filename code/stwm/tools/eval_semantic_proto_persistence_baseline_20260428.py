@@ -95,6 +95,17 @@ def main() -> None:
         "selection_reason": "highest observed-last copy top5 with low prototype count tie-break",
         "copy_baseline_strong": bool(selected.get("observed_last_copy", {}).get("top5", 0.0) > selected.get("frequency", {}).get("top5", 0.0)),
         "target_coverage_ratio": float(selected.get("target_coverage_ratio", 0.0) or 0.0),
+        "copy_baseline_top1": float(selected.get("observed_last_copy", {}).get("top1", 0.0) or 0.0),
+        "copy_baseline_top5": float(selected.get("observed_last_copy", {}).get("top5", 0.0) or 0.0),
+        "observed_soft_distribution_copy_top1": float(selected.get("observed_soft_distribution_copy", {}).get("top1", 0.0) or 0.0),
+        "observed_soft_distribution_copy_top5": float(selected.get("observed_soft_distribution_copy", {}).get("top5", 0.0) or 0.0),
+        "frequency_top1": float(selected.get("frequency", {}).get("top1", 0.0) or 0.0),
+        "frequency_top5": float(selected.get("frequency", {}).get("top5", 0.0) or 0.0),
+        "changed_subset_top5": float(selected.get("copy_changed_subset", {}).get("top5", 0.0) or 0.0),
+        "stable_subset_top5": float(selected.get("copy_stable_subset", {}).get("top5", 0.0) or 0.0),
+        "changed_subset_count": int(selected.get("changed_subset_count", 0) or 0),
+        "stable_subset_count": int(selected.get("stable_subset_count", 0) or 0),
+        "copy_baseline_remains_strong": bool(selected.get("observed_last_copy", {}).get("top5", 0.0) > selected.get("frequency", {}).get("top5", 0.0)),
     }
     write_json(Path(args.output), payload)
     write_doc(

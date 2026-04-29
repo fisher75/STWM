@@ -214,6 +214,7 @@ def main() -> None:
     ds = _make_dataset(base_args, split="train", max_samples_per_dataset=int(args_cli.max_samples_per_dataset))
     observed_payload = json.loads(Path(args_cli.observed_report).read_text(encoding="utf-8"))
     runs = []
+    available_counts: dict[str, int] = {}
     for c, future_path in [(32, Path(args_cli.future_cache_c32)), (64, Path(args_cli.future_cache_c64))]:
         future_cache = load_future_semantic_prototype_target_cache(future_path)
         assert future_cache is not None
@@ -228,8 +229,8 @@ def main() -> None:
             if idx is None or not bool(obs_data["observed_semantic_proto_mask"][idx].any()):
                 continue
             selected.append(sample)
-            if len(selected) >= 32:
-                break
+        available_counts[str(c)] = int(len(selected))
+        selected = selected[:32]
         if len(selected) < 8:
             runs.append({"prototype_count": c, "skipped_reason": "insufficient_observed_proto_covered_items", "available_item_count": len(selected)})
             continue
@@ -260,6 +261,8 @@ def main() -> None:
         "audit_name": "stwm_semantic_memory_persistence_v1_tiny_overfit",
         "steps": int(args_cli.steps),
         "runs": runs,
+        "available_observed_covered_item_count_by_prototype_count": available_counts,
+        "available_observed_covered_item_count": int(max(available_counts.values()) if available_counts else 0),
         "copy_baseline_top5": float(copy.get("val_metrics_end", {}).get("proto_top5", 0.0)),
         "direct_logits_top5": float(direct.get("val_metrics_end", {}).get("proto_top5", 0.0)),
         "memory_residual_top5": float(memory.get("val_metrics_end", {}).get("proto_top5", 0.0)),
