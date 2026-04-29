@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Iterator, Tuple
 
 import torch
 from torch import nn
@@ -26,6 +26,35 @@ class TraceUnitFactorizedState(nn.Module):
         self.sem_gate = nn.Linear(int(cfg.unit_dim), 1)
         self.norm_dyn = nn.LayerNorm(int(cfg.unit_dim))
         self.norm_sem = nn.LayerNorm(int(cfg.unit_dim))
+
+    def semantic_named_parameters(self) -> Iterator[Tuple[str, nn.Parameter]]:
+        for prefix, module in [
+            ("sem_proj", self.sem_proj),
+            ("sem_gate", self.sem_gate),
+            ("norm_sem", self.norm_sem),
+        ]:
+            for name, param in module.named_parameters():
+                yield f"{prefix}.{name}", param
+
+    def semantic_parameters(self) -> Iterator[nn.Parameter]:
+        for _, param in self.semantic_named_parameters():
+            yield param
+
+    def dynamic_named_parameters(self) -> Iterator[Tuple[str, nn.Parameter]]:
+        for prefix, module in [
+            ("dyn_gru", self.dyn_gru),
+            ("norm_dyn", self.norm_dyn),
+        ]:
+            for name, param in module.named_parameters():
+                yield f"{prefix}.{name}", param
+
+    def dynamic_parameters(self) -> Iterator[nn.Parameter]:
+        for _, param in self.dynamic_named_parameters():
+            yield param
+
+    def mixed_named_parameters(self) -> Iterator[Tuple[str, nn.Parameter]]:
+        for name, param in self.unit_proj.named_parameters():
+            yield f"unit_proj.{name}", param
 
     def forward(self, *, token_features: torch.Tensor, assignment: torch.Tensor) -> Dict[str, torch.Tensor | Dict[str, float]]:
         if token_features.shape[:3] != assignment.shape[:3]:

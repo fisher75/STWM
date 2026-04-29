@@ -1,0 +1,129 @@
+{
+  "allow_mixed_params": false,
+  "boundary_ok": true,
+  "broadcast_parameter_audit": {
+    "ambiguous_param_names": [
+      "norm.weight",
+      "norm.bias"
+    ],
+    "dynamic_param_count": 442368,
+    "dynamic_param_names": [
+      "dyn_proj.weight"
+    ],
+    "dynamic_trainable_param_count": 0,
+    "mixed_param_count": 2304,
+    "mixed_param_names": [
+      "norm.weight",
+      "norm.bias"
+    ],
+    "mixed_trainable_param_count": 0,
+    "semantic_param_count": 443520,
+    "semantic_param_names": [
+      "sem_proj.weight",
+      "sem_proj.bias"
+    ],
+    "semantic_trainable_param_count": 443520
+  },
+  "checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/latest.pt",
+  "disallowed_trainable_param_count_by_module": {},
+  "dry_run_no_training_steps": true,
+  "factorized_state_parameter_audit": {
+    "ambiguous_param_names": [
+      "unit_proj.weight",
+      "unit_proj.bias"
+    ],
+    "dynamic_param_count": 887808,
+    "dynamic_param_names": [
+      "dyn_gru.weight_ih_l0",
+      "dyn_gru.weight_hh_l0",
+      "dyn_gru.bias_ih_l0",
+      "dyn_gru.bias_hh_l0",
+      "norm_dyn.weight",
+      "norm_dyn.bias"
+    ],
+    "dynamic_trainable_param_count": 0,
+    "mixed_param_count": 147840,
+    "mixed_param_names": [
+      "unit_proj.weight",
+      "unit_proj.bias"
+    ],
+    "mixed_trainable_param_count": 0,
+    "semantic_param_count": 148993,
+    "semantic_param_names": [
+      "sem_proj.weight",
+      "sem_proj.bias",
+      "sem_gate.weight",
+      "sem_gate.bias",
+      "norm_sem.weight",
+      "norm_sem.bias"
+    ],
+    "semantic_trainable_param_count": 148993
+  },
+  "future_semantic_state_head_trainable_params": 758660,
+  "future_semantic_tusb_unfreeze": true,
+  "generated_at_utc": "2026-04-29T05:56:19.720503+00:00",
+  "handshake_parameter_audit": {
+    "ambiguous_param_names": [
+      "out_proj.weight",
+      "out_proj.bias",
+      "gate.weight",
+      "gate.bias",
+      "norm.weight",
+      "norm.bias"
+    ],
+    "dynamic_param_count": 49280,
+    "dynamic_param_names": [
+      "q_proj.weight",
+      "q_proj.bias"
+    ],
+    "dynamic_trainable_param_count": 0,
+    "mixed_param_count": 345600,
+    "mixed_param_names": [
+      "out_proj.weight",
+      "out_proj.bias",
+      "gate.weight",
+      "gate.bias",
+      "norm.weight",
+      "norm.bias"
+    ],
+    "mixed_trainable_param_count": 0,
+    "semantic_param_count": 98560,
+    "semantic_param_names": [
+      "k_proj.weight",
+      "k_proj.bias",
+      "v_proj.weight",
+      "v_proj.bias"
+    ],
+    "semantic_trainable_param_count": 0
+  },
+  "mixed_param_count": 0,
+  "raw_summary": "reports/stwm_semantic_only_tusb_unfreeze_v1_boundary_audit_raw_20260428.json",
+  "semantic_encoder_projection_trainable_params": 0,
+  "semantic_fusion_proj_trainable_params": 296064,
+  "stage1_trainable_param_count": 0,
+  "tokenizer_trainable_params": 0,
+  "total_trainable_params": 1649543,
+  "trace_backbone_trainable": false,
+  "trainable_param_count_by_module": {
+    "future_semantic_state_head": 758660,
+    "readout_head": 2306,
+    "semantic_encoder": 0,
+    "semantic_fusion": 296064,
+    "semantic_fusion.gate": 0,
+    "semantic_fusion.norm": 0,
+    "semantic_fusion.semantic_proj": 296064,
+    "semantic_rescue_heads": 0,
+    "semantic_state_feedback_adapter": 0,
+    "stage1_model": 0,
+    "trace_unit_broadcast": 443520,
+    "trace_unit_factorized_state": 148993,
+    "trace_unit_handshake": 0,
+    "trace_unit_tokenizer": 0
+  },
+  "trainable_scope": "semantic_only_tusb",
+  "tusb_broadcast_semantic_trainable_params": 443520,
+  "tusb_dynamic_trainable_params": 0,
+  "tusb_factorized_semantic_trainable_params": 148993,
+  "tusb_handshake_semantic_trainable_params": 0,
+  "tusb_semantic_trainable_params": 592513
+}

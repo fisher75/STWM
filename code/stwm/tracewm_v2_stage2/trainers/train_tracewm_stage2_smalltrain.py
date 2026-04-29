@@ -320,6 +320,14 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-controlled-joint", action="store_true")
     p.add_argument("--future-semantic-joint-train-semantic-fusion-proj", action="store_true")
     p.add_argument("--future-semantic-joint-train-readout-head", action="store_true")
+    p.add_argument("--future-semantic-tusb-unfreeze", action="store_true")
+    p.add_argument("--future-semantic-tusb-unfreeze-factorized-state", action="store_true")
+    p.add_argument("--future-semantic-tusb-unfreeze-handshake", action="store_true")
+    p.add_argument("--future-semantic-tusb-unfreeze-broadcast", action="store_true")
+    p.add_argument("--future-semantic-tusb-unfreeze-semantic-encoder-proj", action="store_true")
+    p.add_argument("--future-semantic-tusb-unfreeze-tokenizer", action="store_true")
+    p.add_argument("--future-semantic-tusb-lr-scale", type=float, default=0.5)
+    p.add_argument("--future-semantic-tusb-allow-mixed-params", action="store_true")
     p.add_argument("--enable-semantic-state-feedback", action="store_true")
     p.add_argument("--semantic-state-feedback-alpha", type=float, default=0.05)
     p.add_argument("--semantic-state-feedback-stopgrad-state", action="store_true", default=True)
@@ -3777,6 +3785,57 @@ def _unfreeze_module(module: torch.nn.Module | None) -> None:
         param.requires_grad = True
 
 
+def _named_params_from_api(module: torch.nn.Module | None, api_name: str) -> list[tuple[str, torch.nn.Parameter]]:
+    if module is None or not hasattr(module, api_name):
+        return []
+    out: list[tuple[str, torch.nn.Parameter]] = []
+    fn = getattr(module, api_name)
+    try:
+        for name, param in fn():
+            if isinstance(param, torch.nn.Parameter):
+                out.append((str(name), param))
+    except TypeError:
+        return []
+    return out
+
+
+def _set_named_params_trainable(named_params: list[tuple[str, torch.nn.Parameter]], trainable: bool = True) -> None:
+    for _, param in named_params:
+        param.requires_grad = bool(trainable)
+
+
+def _count_named_params(named_params: list[tuple[str, torch.nn.Parameter]]) -> int:
+    seen: set[int] = set()
+    total = 0
+    for _, param in named_params:
+        pid = id(param)
+        if pid in seen:
+            continue
+        seen.add(pid)
+        total += int(param.numel())
+    return total
+
+
+def _count_trainable_named_params(named_params: list[tuple[str, torch.nn.Parameter]]) -> int:
+    return _count_named_params([(name, param) for name, param in named_params if param.requires_grad])
+
+
+def _semantic_encoder_projection_params(semantic_encoder: torch.nn.Module | None) -> list[tuple[str, torch.nn.Parameter]]:
+    if semantic_encoder is None:
+        return []
+    candidates: list[tuple[str, torch.nn.Module | None]] = [
+        ("crop_encoder.proj", getattr(getattr(semantic_encoder, "crop_encoder", None), "proj", None)),
+        ("temporal_mixer", getattr(semantic_encoder, "temporal_mixer", None)),
+    ]
+    out: list[tuple[str, torch.nn.Parameter]] = []
+    for prefix, module in candidates:
+        if module is None:
+            continue
+        for name, param in module.named_parameters():
+            out.append((f"{prefix}.{name}", param))
+    return out
+
+
 def _build_future_semantic_controlled_joint_audit(
     *,
     enabled: bool,
@@ -3906,6 +3965,219 @@ def _configure_future_semantic_controlled_joint_trainability(
         _unfreeze_module(getattr(semantic_fusion, "semantic_proj", None))
     if bool(train_readout_head):
         _unfreeze_module(readout_head)
+
+
+def _trace_module_semantic_split_audit(module: torch.nn.Module | None) -> dict[str, Any]:
+    semantic = _named_params_from_api(module, "semantic_named_parameters")
+    dynamic = _named_params_from_api(module, "dynamic_named_parameters")
+    mixed = _named_params_from_api(module, "mixed_named_parameters")
+    return {
+        "semantic_param_count": _count_named_params(semantic),
+        "dynamic_param_count": _count_named_params(dynamic),
+        "mixed_param_count": _count_named_params(mixed),
+        "semantic_trainable_param_count": _count_trainable_named_params(semantic),
+        "dynamic_trainable_param_count": _count_trainable_named_params(dynamic),
+        "mixed_trainable_param_count": _count_trainable_named_params(mixed),
+        "semantic_param_names": [name for name, _ in semantic],
+        "dynamic_param_names": [name for name, _ in dynamic],
+        "mixed_param_names": [name for name, _ in mixed],
+        "ambiguous_param_names": [name for name, _ in mixed],
+    }
+
+
+def _configure_future_semantic_tusb_unfreeze_trainability(
+    *,
+    stage1_model: torch.nn.Module,
+    semantic_encoder: torch.nn.Module,
+    semantic_fusion: torch.nn.Module,
+    readout_head: torch.nn.Module,
+    future_semantic_state_head: torch.nn.Module | None,
+    semantic_state_feedback_adapter: torch.nn.Module | None,
+    semantic_rescue_heads: torch.nn.Module | None,
+    trace_unit_tokenizer: torch.nn.Module | None,
+    trace_unit_factorized_state: torch.nn.Module | None,
+    trace_unit_handshake: torch.nn.Module | None,
+    trace_unit_broadcast: torch.nn.Module | None,
+    train_factorized_state: bool,
+    train_handshake: bool,
+    train_broadcast: bool,
+    train_semantic_encoder_proj: bool,
+    train_tokenizer: bool,
+    train_semantic_fusion_proj: bool,
+    train_readout_head: bool,
+    allow_mixed_params: bool,
+) -> None:
+    for module in [
+        stage1_model,
+        semantic_encoder,
+        semantic_fusion,
+        readout_head,
+        future_semantic_state_head,
+        semantic_state_feedback_adapter,
+        semantic_rescue_heads,
+        trace_unit_tokenizer,
+        trace_unit_factorized_state,
+        trace_unit_handshake,
+        trace_unit_broadcast,
+    ]:
+        _freeze_module(module)
+    _unfreeze_module(future_semantic_state_head)
+    if bool(train_semantic_fusion_proj):
+        _unfreeze_module(getattr(semantic_fusion, "semantic_proj", None))
+    if bool(train_readout_head):
+        _unfreeze_module(readout_head)
+    if bool(train_semantic_encoder_proj):
+        _set_named_params_trainable(_semantic_encoder_projection_params(semantic_encoder), True)
+    if bool(train_tokenizer):
+        if not bool(allow_mixed_params):
+            raise ValueError("--future-semantic-tusb-unfreeze-tokenizer requires --future-semantic-tusb-allow-mixed-params")
+        _unfreeze_module(trace_unit_tokenizer)
+    if bool(train_factorized_state):
+        _set_named_params_trainable(
+            _named_params_from_api(trace_unit_factorized_state, "semantic_named_parameters"),
+            True,
+        )
+    if bool(train_handshake):
+        _set_named_params_trainable(
+            _named_params_from_api(trace_unit_handshake, "semantic_named_parameters"),
+            True,
+        )
+    if bool(train_broadcast):
+        _set_named_params_trainable(
+            _named_params_from_api(trace_unit_broadcast, "semantic_named_parameters"),
+            True,
+        )
+
+
+def _build_future_semantic_tusb_unfreeze_audit(
+    *,
+    enabled: bool,
+    stage1_model: torch.nn.Module,
+    semantic_encoder: torch.nn.Module,
+    semantic_fusion: torch.nn.Module,
+    readout_head: torch.nn.Module,
+    future_semantic_state_head: torch.nn.Module | None,
+    semantic_state_feedback_adapter: torch.nn.Module | None,
+    semantic_rescue_heads: torch.nn.Module | None,
+    trace_unit_tokenizer: torch.nn.Module | None,
+    trace_unit_factorized_state: torch.nn.Module | None,
+    trace_unit_handshake: torch.nn.Module | None,
+    trace_unit_broadcast: torch.nn.Module | None,
+    allow_mixed_params: bool,
+) -> dict[str, Any]:
+    factorized = _trace_module_semantic_split_audit(trace_unit_factorized_state)
+    handshake = _trace_module_semantic_split_audit(trace_unit_handshake)
+    broadcast = _trace_module_semantic_split_audit(trace_unit_broadcast)
+    semantic_encoder_proj_params = _semantic_encoder_projection_params(semantic_encoder)
+    modules = {
+        "stage1_model": stage1_model,
+        "semantic_encoder": semantic_encoder,
+        "semantic_fusion": semantic_fusion,
+        "semantic_fusion.semantic_proj": getattr(semantic_fusion, "semantic_proj", None),
+        "semantic_fusion.gate": getattr(semantic_fusion, "gate", None),
+        "semantic_fusion.norm": getattr(semantic_fusion, "norm", None),
+        "readout_head": readout_head,
+        "future_semantic_state_head": future_semantic_state_head,
+        "semantic_state_feedback_adapter": semantic_state_feedback_adapter,
+        "semantic_rescue_heads": semantic_rescue_heads,
+        "trace_unit_tokenizer": trace_unit_tokenizer,
+        "trace_unit_factorized_state": trace_unit_factorized_state,
+        "trace_unit_handshake": trace_unit_handshake,
+        "trace_unit_broadcast": trace_unit_broadcast,
+    }
+    trainable_by_module = {name: _count_trainable_params(module) for name, module in modules.items()}
+    stage1_trainable = int(trainable_by_module["stage1_model"])
+    tokenizer_trainable = int(trainable_by_module["trace_unit_tokenizer"])
+    tusb_dynamic_trainable = int(
+        factorized["dynamic_trainable_param_count"]
+        + handshake["dynamic_trainable_param_count"]
+        + broadcast["dynamic_trainable_param_count"]
+    )
+    tusb_mixed_trainable = int(
+        factorized["mixed_trainable_param_count"]
+        + handshake["mixed_trainable_param_count"]
+        + broadcast["mixed_trainable_param_count"]
+        + tokenizer_trainable
+    )
+    tusb_semantic_trainable = int(
+        factorized["semantic_trainable_param_count"]
+        + handshake["semantic_trainable_param_count"]
+        + broadcast["semantic_trainable_param_count"]
+    )
+    semantic_fusion_proj_trainable = _count_trainable_params(getattr(semantic_fusion, "semantic_proj", None))
+    semantic_encoder_proj_trainable = _count_trainable_named_params(semantic_encoder_proj_params)
+    future_head_trainable = int(trainable_by_module["future_semantic_state_head"])
+    allowed_non_tusb = {
+        "future_semantic_state_head",
+        "semantic_fusion.semantic_proj",
+        "readout_head",
+    }
+    disallowed = {
+        name: count
+        for name, count in trainable_by_module.items()
+        if int(count) > 0
+        and name not in allowed_non_tusb
+        and name not in {
+            "semantic_fusion",
+            "semantic_encoder",
+            "trace_unit_factorized_state",
+            "trace_unit_handshake",
+            "trace_unit_broadcast",
+        }
+    }
+    if int(trainable_by_module["semantic_fusion.gate"]) > 0:
+        disallowed["semantic_fusion.gate"] = int(trainable_by_module["semantic_fusion.gate"])
+    if int(trainable_by_module["semantic_fusion.norm"]) > 0:
+        disallowed["semantic_fusion.norm"] = int(trainable_by_module["semantic_fusion.norm"])
+    if int(trainable_by_module["semantic_encoder"]) > 0 and int(semantic_encoder_proj_trainable) != int(trainable_by_module["semantic_encoder"]):
+        disallowed["semantic_encoder_non_projection"] = int(trainable_by_module["semantic_encoder"]) - int(semantic_encoder_proj_trainable)
+    trace_backbone_trainable = bool(tusb_dynamic_trainable > 0 or (tusb_mixed_trainable > 0 and not bool(allow_mixed_params)))
+    boundary_ok = bool(
+        (not enabled)
+        or (
+            stage1_trainable == 0
+            and future_head_trainable > 0
+            and tusb_semantic_trainable > 0
+            and tusb_dynamic_trainable == 0
+            and (bool(allow_mixed_params) or tusb_mixed_trainable == 0)
+            and not trace_backbone_trainable
+            and not disallowed
+        )
+    )
+    unique_trainable_param_ids: set[int] = set()
+    unique_trainable_param_count = 0
+    for module in modules.values():
+        if module is None:
+            continue
+        for param in module.parameters():
+            if not param.requires_grad or id(param) in unique_trainable_param_ids:
+                continue
+            unique_trainable_param_ids.add(id(param))
+            unique_trainable_param_count += int(param.numel())
+    return {
+        "future_semantic_tusb_unfreeze": bool(enabled),
+        "trainable_scope": "semantic_only_tusb",
+        "total_trainable_params": int(unique_trainable_param_count),
+        "trainable_param_count_by_module": trainable_by_module,
+        "future_semantic_state_head_trainable_params": future_head_trainable,
+        "semantic_fusion_proj_trainable_params": semantic_fusion_proj_trainable,
+        "semantic_encoder_projection_trainable_params": semantic_encoder_proj_trainable,
+        "tusb_factorized_semantic_trainable_params": int(factorized["semantic_trainable_param_count"]),
+        "tusb_broadcast_semantic_trainable_params": int(broadcast["semantic_trainable_param_count"]),
+        "tusb_handshake_semantic_trainable_params": int(handshake["semantic_trainable_param_count"]),
+        "tusb_semantic_trainable_params": tusb_semantic_trainable,
+        "tusb_dynamic_trainable_params": tusb_dynamic_trainable,
+        "mixed_param_count": tusb_mixed_trainable,
+        "stage1_trainable_param_count": stage1_trainable,
+        "trace_backbone_trainable": bool(trace_backbone_trainable),
+        "tokenizer_trainable_params": tokenizer_trainable,
+        "allow_mixed_params": bool(allow_mixed_params),
+        "factorized_state_parameter_audit": factorized,
+        "handshake_parameter_audit": handshake,
+        "broadcast_parameter_audit": broadcast,
+        "disallowed_trainable_param_count_by_module": disallowed,
+        "boundary_ok": boundary_ok,
+    }
 
 
 def _sample_has_reappearance_positive(sample: dict[str, Any], obs_len: int, fut_len: int, slot_count: int) -> bool:
@@ -4240,8 +4512,16 @@ def main() -> None:
             readout_dim=int(fusion_hidden_dim),
         ).to(device)
 
-    if bool(args.future_semantic_head_only_warmup) and bool(args.future_semantic_controlled_joint):
-        raise ValueError("--future-semantic-head-only-warmup and --future-semantic-controlled-joint are mutually exclusive")
+    semantic_train_modes = [
+        bool(args.future_semantic_head_only_warmup),
+        bool(args.future_semantic_controlled_joint),
+        bool(args.future_semantic_tusb_unfreeze),
+    ]
+    if sum(1 for flag in semantic_train_modes if flag) > 1:
+        raise ValueError(
+            "--future-semantic-head-only-warmup, --future-semantic-controlled-joint, "
+            "and --future-semantic-tusb-unfreeze are mutually exclusive"
+        )
 
     if bool(args.future_semantic_head_only_warmup):
         if future_semantic_state_head is None:
@@ -4287,6 +4567,30 @@ def main() -> None:
         if semantic_state_feedback_adapter is not None:
             for param in semantic_state_feedback_adapter.parameters():
                 param.requires_grad = True
+    elif bool(args.future_semantic_tusb_unfreeze):
+        if future_semantic_state_head is None:
+            raise ValueError("--future-semantic-tusb-unfreeze requires --enable-future-semantic-state-head")
+        _configure_future_semantic_tusb_unfreeze_trainability(
+            stage1_model=stage1_model,
+            semantic_encoder=semantic_encoder,
+            semantic_fusion=semantic_fusion,
+            readout_head=readout_head,
+            future_semantic_state_head=future_semantic_state_head,
+            semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+            semantic_rescue_heads=semantic_rescue_heads,
+            trace_unit_tokenizer=trace_unit_tokenizer,
+            trace_unit_factorized_state=trace_unit_factorized_state,
+            trace_unit_handshake=trace_unit_handshake,
+            trace_unit_broadcast=trace_unit_broadcast,
+            train_factorized_state=bool(args.future_semantic_tusb_unfreeze_factorized_state),
+            train_handshake=bool(args.future_semantic_tusb_unfreeze_handshake),
+            train_broadcast=bool(args.future_semantic_tusb_unfreeze_broadcast),
+            train_semantic_encoder_proj=bool(args.future_semantic_tusb_unfreeze_semantic_encoder_proj),
+            train_tokenizer=bool(args.future_semantic_tusb_unfreeze_tokenizer),
+            train_semantic_fusion_proj=True,
+            train_readout_head=bool(args.future_semantic_joint_train_readout_head),
+            allow_mixed_params=bool(args.future_semantic_tusb_allow_mixed_params),
+        )
 
     future_semantic_head_only_warmup_audit = _build_future_semantic_head_only_audit(
         enabled=bool(args.future_semantic_head_only_warmup),
@@ -4322,7 +4626,30 @@ def main() -> None:
     )
     if bool(args.future_semantic_controlled_joint) and not bool(future_semantic_controlled_joint_audit["controlled_joint_boundary_ok"]):
         raise RuntimeError(f"controlled joint boundary failed: {future_semantic_controlled_joint_audit}")
+    future_semantic_tusb_unfreeze_audit = _build_future_semantic_tusb_unfreeze_audit(
+        enabled=bool(args.future_semantic_tusb_unfreeze),
+        stage1_model=stage1_model,
+        semantic_encoder=semantic_encoder,
+        semantic_fusion=semantic_fusion,
+        readout_head=readout_head,
+        future_semantic_state_head=future_semantic_state_head,
+        semantic_state_feedback_adapter=semantic_state_feedback_adapter,
+        semantic_rescue_heads=semantic_rescue_heads,
+        trace_unit_tokenizer=trace_unit_tokenizer,
+        trace_unit_factorized_state=trace_unit_factorized_state,
+        trace_unit_handshake=trace_unit_handshake,
+        trace_unit_broadcast=trace_unit_broadcast,
+        allow_mixed_params=bool(args.future_semantic_tusb_allow_mixed_params),
+    )
+    if bool(args.future_semantic_tusb_unfreeze) and not bool(future_semantic_tusb_unfreeze_audit["boundary_ok"]):
+        raise RuntimeError(f"semantic-only TUSB unfreeze boundary failed: {future_semantic_tusb_unfreeze_audit}")
 
+    tusb_semantic_param_ids: set[int] = set()
+    if bool(args.future_semantic_tusb_unfreeze):
+        for module in [trace_unit_factorized_state, trace_unit_handshake, trace_unit_broadcast]:
+            for _, param in _named_params_from_api(module, "semantic_named_parameters"):
+                if param.requires_grad:
+                    tusb_semantic_param_ids.add(id(param))
     trainable_params: List[torch.nn.Parameter] = []
     stage1_trainable_params: List[torch.nn.Parameter] = [p for p in stage1_model.parameters() if p.requires_grad]
     modules_for_training: List[torch.nn.Module] = [semantic_encoder, semantic_fusion, readout_head]
@@ -4353,8 +4680,15 @@ def main() -> None:
     print(f"[stage2-smalltrain] pre_stage2_trainable_parameter_count={pre_trainable_parameter_count}")
 
     optimizer_param_groups: List[Dict[str, Any]] = []
-    if trainable_params:
-        optimizer_param_groups.append({"params": trainable_params, "lr": float(args.lr)})
+    tusb_semantic_trainable_params = [p for p in trainable_params if id(p) in tusb_semantic_param_ids]
+    base_trainable_params = [p for p in trainable_params if id(p) not in tusb_semantic_param_ids]
+    if base_trainable_params:
+        optimizer_param_groups.append({"params": base_trainable_params, "lr": float(args.lr)})
+    if tusb_semantic_trainable_params:
+        optimizer_param_groups.append({
+            "params": tusb_semantic_trainable_params,
+            "lr": float(args.lr) * float(args.future_semantic_tusb_lr_scale),
+        })
     if stage1_trainable_params:
         optimizer_param_groups.append({
             "params": stage1_trainable_params,
@@ -4447,6 +4781,15 @@ def main() -> None:
         "future_semantic_joint_train_semantic_fusion_proj": bool(args.future_semantic_joint_train_semantic_fusion_proj),
         "future_semantic_joint_train_readout_head": bool(args.future_semantic_joint_train_readout_head),
         "future_semantic_controlled_joint_audit": future_semantic_controlled_joint_audit,
+        "future_semantic_tusb_unfreeze": bool(args.future_semantic_tusb_unfreeze),
+        "future_semantic_tusb_unfreeze_factorized_state": bool(args.future_semantic_tusb_unfreeze_factorized_state),
+        "future_semantic_tusb_unfreeze_handshake": bool(args.future_semantic_tusb_unfreeze_handshake),
+        "future_semantic_tusb_unfreeze_broadcast": bool(args.future_semantic_tusb_unfreeze_broadcast),
+        "future_semantic_tusb_unfreeze_semantic_encoder_proj": bool(args.future_semantic_tusb_unfreeze_semantic_encoder_proj),
+        "future_semantic_tusb_unfreeze_tokenizer": bool(args.future_semantic_tusb_unfreeze_tokenizer),
+        "future_semantic_tusb_lr_scale": float(args.future_semantic_tusb_lr_scale),
+        "future_semantic_tusb_allow_mixed_params": bool(args.future_semantic_tusb_allow_mixed_params),
+        "future_semantic_tusb_unfreeze_audit": future_semantic_tusb_unfreeze_audit,
         "semantic_state_feedback_enabled": bool(args.enable_semantic_state_feedback),
         "semantic_state_feedback_mode": str(args.semantic_state_feedback_mode),
         "semantic_state_feedback_alpha": float(args.semantic_state_feedback_alpha),
@@ -4569,7 +4912,21 @@ def main() -> None:
         semantic_fusion.load_state_dict(payload.get("semantic_fusion_state_dict", {}))
         readout_head.load_state_dict(payload.get("readout_head_state_dict", {}))
         if future_semantic_state_head is not None and isinstance(payload.get("future_semantic_state_head_state_dict", None), dict):
-            future_semantic_state_head.load_state_dict(payload["future_semantic_state_head_state_dict"], strict=False)
+            source_sd = payload["future_semantic_state_head_state_dict"]
+            target_sd = future_semantic_state_head.state_dict()
+            compatible_sd = {
+                key: value
+                for key, value in source_sd.items()
+                if key in target_sd and tuple(value.shape) == tuple(target_sd[key].shape)
+            }
+            skipped_shape_keys = sorted(
+                key
+                for key, value in source_sd.items()
+                if key in target_sd and tuple(value.shape) != tuple(target_sd[key].shape)
+            )
+            future_semantic_state_head.load_state_dict(compatible_sd, strict=False)
+            if skipped_shape_keys:
+                run_metadata["future_semantic_state_head_resume_skipped_shape_keys"] = skipped_shape_keys
         if semantic_state_feedback_adapter is not None and isinstance(payload.get("semantic_state_feedback_adapter_state_dict", None), dict):
             semantic_state_feedback_adapter.load_state_dict(payload["semantic_state_feedback_adapter_state_dict"], strict=False)
         if trace_unit_tokenizer is not None and isinstance(payload.get("trace_unit_tokenizer_state_dict", None), dict):
@@ -4660,6 +5017,24 @@ def main() -> None:
             future_semantic_state_head.train()
         if semantic_state_feedback_adapter is not None:
             semantic_state_feedback_adapter.train()
+    elif bool(args.future_semantic_tusb_unfreeze):
+        semantic_encoder.train() if bool(args.future_semantic_tusb_unfreeze_semantic_encoder_proj) else semantic_encoder.eval()
+        semantic_fusion.train()
+        readout_head.train() if bool(args.future_semantic_joint_train_readout_head) else readout_head.eval()
+        if semantic_rescue_heads is not None:
+            semantic_rescue_heads.eval()
+        if trace_unit_tokenizer is not None:
+            trace_unit_tokenizer.train() if bool(args.future_semantic_tusb_unfreeze_tokenizer) else trace_unit_tokenizer.eval()
+        if trace_unit_factorized_state is not None:
+            trace_unit_factorized_state.train()
+        if trace_unit_handshake is not None:
+            trace_unit_handshake.train()
+        if trace_unit_broadcast is not None:
+            trace_unit_broadcast.train()
+        if future_semantic_state_head is not None:
+            future_semantic_state_head.train()
+        if semantic_state_feedback_adapter is not None:
+            semantic_state_feedback_adapter.eval()
 
     train_iter = iter(train_loader)
     step_checkpoints: List[str] = sorted(str(p) for p in output_dir.glob("step_*.pt"))
@@ -5694,6 +6069,7 @@ def main() -> None:
         },
         "future_semantic_head_only_warmup_audit": future_semantic_head_only_warmup_audit,
         "future_semantic_controlled_joint_audit": future_semantic_controlled_joint_audit,
+        "future_semantic_tusb_unfreeze_audit": future_semantic_tusb_unfreeze_audit,
         "semantic_branch_metrics": {
             "train_gate_mean": float(sum(gate_history) / max(len(gate_history), 1)),
             "train_semantic_input_nonempty_ratio": float(semantic_nonempty_count / max(len(gate_history), 1)),

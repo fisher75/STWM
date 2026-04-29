@@ -1,0 +1,51 @@
+{
+  "conclusion": "semantic_only_tusb_unfreeze_is_boundary_correct_but_semantic_proto_top5_remains_below_frequency_baseline",
+  "frequency_baseline": {
+    "c128_top1": 0.042317708333333336,
+    "c128_top5": 0.1796875,
+    "c64_top1": 0.060221354166666664,
+    "c64_top5": 0.2490234375
+  },
+  "generated_at_utc": "2026-04-29T07:29:50.846425+00:00",
+  "headonly_v2": {
+    "future_trace_coord_error": 0.205717300115748,
+    "masked_CE": 5.01219284037749,
+    "proto_accuracy": 0.0,
+    "proto_top5": 0.033854166666666664,
+    "prototype_count": 128
+  },
+  "output_degenerate": false,
+  "previous_head_proj_only_semantic_branch_v2": {
+    "future_trace_coord_error": 0.20598336328668662,
+    "masked_CE": 5.004486881196499,
+    "not_true_tusb_semantic_branch_unfreeze": true,
+    "proto_accuracy": 0.0,
+    "proto_top5": 0.033854166666666664,
+    "prototype_count": 128
+  },
+  "semantic_only_tusb_c128": {
+    "frequency_baseline_top5": 0.1796875,
+    "future_trace_coord_error": 0.20719258512503652,
+    "masked_CE": 4.990011664728324,
+    "proto_accuracy": 0.0022786458333333335,
+    "proto_top5": 0.033854166666666664,
+    "top5_over_frequency_baseline": -0.14583333333333334
+  },
+  "semantic_only_tusb_c64": {
+    "frequency_baseline_top5": 0.2490234375,
+    "future_trace_coord_error": 0.2061468083096744,
+    "masked_CE": 4.3856365618606405,
+    "proto_accuracy": 0.010416666666666666,
+    "proto_top5": 0.040690104166666664,
+    "top5_over_frequency_baseline": -0.20833333333333334
+  },
+  "trace_regression_detected": false,
+  "visibility_reappearance": {
+    "c128_reappearance_AP": 0.011989891249648978,
+    "c128_reappearance_AUROC": 0.38486552028218696,
+    "c128_visibility_AP": 1.0,
+    "c64_reappearance_AP": 0.011995119128247666,
+    "c64_reappearance_AUROC": 0.3851514274691358,
+    "c64_visibility_AP": 1.0
+  }
+}

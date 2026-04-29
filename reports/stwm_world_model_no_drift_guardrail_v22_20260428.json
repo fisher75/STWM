@@ -1,0 +1,25 @@
+{
+  "allowed": [
+    "semantic-only Stage2/TUSB unfreeze after boundary audit",
+    "Stage1 frozen",
+    "dynamic/trace path frozen",
+    "structured semantic prototype field output",
+    "CLIP/DINO/SigLIP only as pseudo-label/prototype construction"
+  ],
+  "forbidden": [
+    "calling head/proj-only training semantic branch unfreeze",
+    "full Stage2 unfreeze without boundary audit",
+    "future candidate leakage",
+    "SAM2/CoTracker plugin framing",
+    "candidate scorer as main method",
+    "CLIP vector regression as final semantic field"
+  ],
+  "generated_at_utc": "2026-04-29T07:30:25.385894+00:00",
+  "guardrail_version": "v22",
+  "paper_world_model_claimable": "false",
+  "semantic_only_tusb_unfreeze_status": "boundary_correct_but_no_semantic_proto_signal",
+  "stage1_trainable_param_count": 0,
+  "trace_backbone_trainable": false,
+  "tusb_dynamic_trainable_params": 0,
+  "tusb_semantic_trainable_params": 592513
+}

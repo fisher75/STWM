@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-04-29T06:48:18.191183+00:00",
+  "large_training": false,
+  "no_candidate_leakage": true,
+  "planned_optimizer_steps": 500,
+  "prototype_count": 128,
+  "stage1_frozen": true,
+  "start_checkpoint": "outputs/checkpoints/stage2_tusb_v3p1_semantic_trace_field_decoder_v2_semantic_branch_20260428/latest.pt",
+  "start_checkpoint_global_step": 12014,
+  "target_cache": "reports/stwm_future_semantic_trace_prototype_targets_v2_20260428.json",
+  "target_global_step": 12514,
+  "trace_dynamics_frozen": true,
+  "trainable_scope": [
+    "future_semantic_state_head",
+    "semantic_fusion.semantic_proj",
+    "readout_head",
+    "trace_unit_factorized_state.semantic",
+    "trace_unit_broadcast.semantic"
+  ],
+  "tusb_dynamic_trainable_params": 0
+}

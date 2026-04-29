@@ -1,0 +1,79 @@
+{
+  "can_safely_construct_semantic_only_param_groups": true,
+  "current_v2_semantic_branch_unfreeze_is_misnamed": true,
+  "dynamic_trace_params_must_remain_frozen": {
+    "stage1": true,
+    "trace_unit_broadcast.dynamic": true,
+    "trace_unit_factorized_state.dynamic": true,
+    "trace_unit_handshake.dynamic_or_mixed_writeback": true,
+    "trace_unit_tokenizer": true
+  },
+  "generated_at_utc": "2026-04-29T05:56:19.720503+00:00",
+  "minimum_code_updates_added": [
+    "semantic/dynamic/mixed parameter APIs on TUSB modules",
+    "broadcast projection split with old-checkpoint migration",
+    "trainer semantic-only TUSB CLI and boundary audit"
+  ],
+  "semantic_branch_params_safe_to_train": {
+    "future_semantic_state_head": true,
+    "readout_head": true,
+    "semantic_fusion.semantic_proj": true,
+    "trace_unit_broadcast.semantic": true,
+    "trace_unit_factorized_state.semantic": true,
+    "trace_unit_handshake.semantic": "available_but_disabled_first",
+    "trace_unit_tokenizer": false
+  },
+  "trace_unit_broadcast_dynamic_params": [
+    "dyn_proj.weight"
+  ],
+  "trace_unit_broadcast_has_clean_semantic_path_after_update": true,
+  "trace_unit_broadcast_semantic_params": [
+    "sem_proj.weight",
+    "sem_proj.bias"
+  ],
+  "trace_unit_factorized_state_dynamic_params": [
+    "dyn_gru.weight_ih_l0",
+    "dyn_gru.weight_hh_l0",
+    "dyn_gru.bias_ih_l0",
+    "dyn_gru.bias_hh_l0",
+    "norm_dyn.weight",
+    "norm_dyn.bias"
+  ],
+  "trace_unit_factorized_state_has_sem_update_z_sem_params": true,
+  "trace_unit_factorized_state_mixed_params": [
+    "unit_proj.weight",
+    "unit_proj.bias"
+  ],
+  "trace_unit_factorized_state_semantic_params": [
+    "sem_proj.weight",
+    "sem_proj.bias",
+    "sem_gate.weight",
+    "sem_gate.bias",
+    "norm_sem.weight",
+    "norm_sem.bias"
+  ],
+  "trace_unit_handshake_can_cleanly_split_semantic_writeback": false,
+  "trace_unit_handshake_mixed_params": [
+    "out_proj.weight",
+    "out_proj.bias",
+    "gate.weight",
+    "gate.bias",
+    "norm.weight",
+    "norm.bias"
+  ],
+  "trace_unit_handshake_semantic_candidate_params": [
+    "k_proj.weight",
+    "k_proj.bias",
+    "v_proj.weight",
+    "v_proj.bias"
+  ],
+  "v2_stage1_trainable_param_count": 0,
+  "v2_trace_backbone_trainable": false,
+  "v2_trainable_modules_actual": [
+    "future_semantic_state_head",
+    "semantic_fusion.semantic_proj",
+    "readout_head"
+  ],
+  "v2_trainable_param_count_total": 1057030,
+  "why_v2_cannot_be_called_true_semantic_branch_unfreeze": "V2 did not open trace_unit_factorized_state, trace_unit_broadcast, trace_unit_handshake, trace_unit_tokenizer, or semantic_encoder body; gradients reached only head/proj/readout."
+}

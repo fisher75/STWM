@@ -1,0 +1,46 @@
+{
+  "checkpoint": "outputs/checkpoints/stage2_tusb_semantic_only_unfreeze_v1_c128_20260428/latest.pt",
+  "feature_backbone": "openai_clip_vit_b_32_local",
+  "full_free_rollout_executed": true,
+  "full_model_forward_executed": true,
+  "generated_at_utc": "2026-04-29T07:28:37.278240+00:00",
+  "no_candidate_leakage": true,
+  "overall": {
+    "free_rollout": {
+      "frequency_baseline_top1": 0.042317708333333336,
+      "frequency_baseline_top5": 0.1796875,
+      "future_trace_coord_error": 0.20719258512503652,
+      "masked_CE": 4.990011664728324,
+      "proto_accuracy": 0.0022786458333333335,
+      "proto_top5_accuracy": 0.033854166666666664,
+      "reappearance_AP": 0.011989891249648978,
+      "reappearance_AUROC": 0.38486552028218696,
+      "target_valid_ratio": 0.75,
+      "valid_items": 64,
+      "valid_output_ratio": 1.0,
+      "valid_target_count": 3072,
+      "visibility_AP": 1.0,
+      "visibility_AUROC": null
+    },
+    "free_rollout_vs_teacher_forced_gap_proto_accuracy": 0.0,
+    "teacher_forced": {
+      "frequency_baseline_top1": 0.042317708333333336,
+      "frequency_baseline_top5": 0.1796875,
+      "future_trace_coord_error": 0.20669733740847587,
+      "masked_CE": 4.990021333098412,
+      "proto_accuracy": 0.0022786458333333335,
+      "proto_top5_accuracy": 0.033854166666666664,
+      "reappearance_AP": 0.011973614045446529,
+      "reappearance_AUROC": 0.38349454365079366,
+      "target_valid_ratio": 0.75,
+      "valid_items": 64,
+      "valid_output_ratio": 1.0,
+      "valid_target_count": 3072,
+      "visibility_AP": 1.0,
+      "visibility_AUROC": null
+    }
+  },
+  "prototype_count": 128,
+  "prototype_target_cache": "reports/stwm_future_semantic_trace_prototype_targets_v2_20260428.json",
+  "target_valid_ratio": 0.621874988079071
+}
