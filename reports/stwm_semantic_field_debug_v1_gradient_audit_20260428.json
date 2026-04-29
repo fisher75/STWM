@@ -1,0 +1,80 @@
+{
+  "audit_name": "stwm_semantic_field_debug_v1_gradient_audit",
+  "dynamic_grad_detected": false,
+  "grad_nonzero_param_examples": {
+    "future_semantic_state_head": [
+      "future_semantic_state_head.semantic_proto_head.0.weight",
+      "future_semantic_state_head.semantic_proto_head.0.bias",
+      "future_semantic_state_head.semantic_proto_head.2.weight",
+      "future_semantic_state_head.semantic_proto_head.2.bias"
+    ],
+    "semantic_fusion.semantic_proj": [
+      "semantic_fusion.semantic_proj.weight",
+      "semantic_fusion.semantic_proj.bias"
+    ],
+    "stage1": [],
+    "trace_unit_broadcast_dynamic": [],
+    "trace_unit_broadcast_semantic": [
+      "trace_unit_broadcast.sem_proj.weight",
+      "trace_unit_broadcast.sem_proj.bias"
+    ],
+    "trace_unit_factorized_state_dynamic": [],
+    "trace_unit_factorized_state_semantic": [
+      "trace_unit_factorized_state.sem_proj.weight",
+      "trace_unit_factorized_state.sem_proj.bias",
+      "trace_unit_factorized_state.sem_gate.weight",
+      "trace_unit_factorized_state.sem_gate.bias",
+      "trace_unit_factorized_state.norm_sem.weight",
+      "trace_unit_factorized_state.norm_sem.bias"
+    ],
+    "trace_unit_handshake_semantic": []
+  },
+  "grad_norms": {
+    "all_dynamic": 0.0,
+    "all_enabled_semantic": 12.214541776913336,
+    "future_semantic_state_head": 12.130604706959307,
+    "semantic_fusion.semantic_proj": 0.3663916429389011,
+    "stage1": 0.0,
+    "trace_unit_broadcast_dynamic": 0.0,
+    "trace_unit_broadcast_semantic": 1.2901593393309425,
+    "trace_unit_factorized_state_dynamic": 0.0,
+    "trace_unit_factorized_state_semantic": 0.49467798271157665,
+    "trace_unit_handshake_semantic": 0.0
+  },
+  "loss_components": {
+    "future_semantic_proto_loss": 4.341335296630859,
+    "future_semantic_proto_soft_loss": 0.0,
+    "future_visibility_loss": 0.0,
+    "rescue_loss": 0.0,
+    "teacher_loss": 0.0,
+    "total_loss": 4.341335296630859,
+    "trace_unit_loss": 0.0
+  },
+  "proto_loss_grad_reaches_future_head": true,
+  "proto_loss_grad_reaches_tusb_dynamic": false,
+  "proto_loss_grad_reaches_tusb_semantic": true,
+  "prototype_target_info": {
+    "batch_item_keys": [
+      "VSPW::0_wHveSGjXyDY",
+      "VSPW::1000_0ua44iVDuuY",
+      "VSPW::1000_TI-3Jlujxlk",
+      "VSPW::1001_3iEIq5HBY1s"
+    ],
+    "cache_available": true,
+    "cache_hit_ratio": 1.0,
+    "cache_path": "outputs/cache/stwm_future_semantic_trace_prototype_targets_v2_c64_20260428/prototype_targets.npz",
+    "feature_backbone": "openai_clip_vit_b_32_local",
+    "no_candidate_leakage": true,
+    "prototype_count": 64,
+    "prototype_entropy": 3.98632305249733,
+    "target_valid_ratio": 0.80078125
+  },
+  "semantic_grad_norm_by_module": {
+    "future_semantic_state_head": 12.130604706959307,
+    "semantic_fusion.semantic_proj": 0.3663916429389011,
+    "trace_unit_broadcast": 1.2901593393309425,
+    "trace_unit_factorized_state": 0.49467798271157665,
+    "trace_unit_handshake": 0.0
+  },
+  "stage1_grad_detected": false
+}

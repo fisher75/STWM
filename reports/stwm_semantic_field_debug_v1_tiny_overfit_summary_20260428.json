@@ -1,0 +1,160 @@
+{
+  "audit_name": "stwm_semantic_field_debug_v1_tiny_overfit_summary",
+  "batch_size": 4,
+  "best_overfit_gap_top5": 0.34529690480278846,
+  "best_prototype_count": 32,
+  "best_tiny_val_top5": 0.3137755129600362,
+  "best_train_top5": 0.6590724177628247,
+  "item_count": 32,
+  "loss_mode": "semantic_proto_ce_only",
+  "model_can_memorize_semantic_field_when_target_aligned": false,
+  "runs": [
+    {
+      "can_memorize_semantic_field_when_target_aligned": false,
+      "curve": [
+        {
+          "batch_proto_accuracy": 0.03414634242653847,
+          "batch_proto_ce": 3.8803937435150146,
+          "batch_proto_top5": 0.03414634242653847,
+          "step": 1.0
+        },
+        {
+          "batch_proto_accuracy": 0.08675798773765564,
+          "batch_proto_ce": 3.0566484928131104,
+          "batch_proto_top5": 0.42009130120277405,
+          "step": 251.0
+        },
+        {
+          "batch_proto_accuracy": 0.009389671497046947,
+          "batch_proto_ce": 2.659806489944458,
+          "batch_proto_top5": 0.6807512044906616,
+          "step": 501.0
+        },
+        {
+          "batch_proto_accuracy": 0.25853657722473145,
+          "batch_proto_ce": 2.4726085662841797,
+          "batch_proto_top5": 0.70243901014328,
+          "step": 1000.0
+        }
+      ],
+      "loss_finite_ratio": 1.0,
+      "lr": 1e-05,
+      "overfit_gap_top5": 0.34529690480278846,
+      "prototype_count": 32,
+      "steps": 1000,
+      "tiny_val_metrics_end": {
+        "frequency_ce": 2.473191738128662,
+        "frequency_top1": 0.2015306055545807,
+        "frequency_top5": 0.6352040767669678,
+        "proto_accuracy": 0.12755101622671497,
+        "proto_ce": 4.365769779195591,
+        "proto_top5": 0.3137755129600362,
+        "valid_count": 392
+      },
+      "tiny_val_metrics_start": {
+        "frequency_ce": 2.473191738128662,
+        "frequency_top1": 0.2015306055545807,
+        "frequency_top5": 0.6352040767669678,
+        "proto_accuracy": 0.015306122296926926,
+        "proto_ce": 3.831331423350743,
+        "proto_top5": 0.11224489446197237,
+        "valid_count": 392
+      },
+      "train_metrics_end": {
+        "frequency_ce": 2.5969772338867188,
+        "frequency_top1": 0.20585842430591583,
+        "frequency_top5": 0.6224572658538818,
+        "proto_accuracy": 0.23026850090897888,
+        "proto_ce": 2.520890280713484,
+        "proto_top5": 0.6590724177628247,
+        "valid_count": 1229
+      },
+      "train_metrics_start": {
+        "frequency_ce": 2.5969772338867188,
+        "frequency_top1": 0.20585842430591583,
+        "frequency_top5": 0.6224572658538818,
+        "proto_accuracy": 0.06590724116580772,
+        "proto_ce": 3.745174461889306,
+        "proto_top5": 0.10903173135525332,
+        "valid_count": 1229
+      },
+      "train_top5_gain": 0.5500406864075713
+    },
+    {
+      "can_memorize_semantic_field_when_target_aligned": false,
+      "curve": [
+        {
+          "batch_proto_accuracy": 0.0,
+          "batch_proto_ce": 4.18859338760376,
+          "batch_proto_top5": 0.07804878056049347,
+          "step": 1.0
+        },
+        {
+          "batch_proto_accuracy": 0.08219178020954132,
+          "batch_proto_ce": 3.5848801136016846,
+          "batch_proto_top5": 0.2785387933254242,
+          "step": 251.0
+        },
+        {
+          "batch_proto_accuracy": 0.0422535203397274,
+          "batch_proto_ce": 3.0551936626434326,
+          "batch_proto_top5": 0.5117371082305908,
+          "step": 501.0
+        },
+        {
+          "batch_proto_accuracy": 0.12682926654815674,
+          "batch_proto_ce": 2.7726032733917236,
+          "batch_proto_top5": 0.6634146571159363,
+          "step": 1000.0
+        }
+      ],
+      "loss_finite_ratio": 1.0,
+      "lr": 1e-05,
+      "overfit_gap_top5": 0.34815722406756733,
+      "prototype_count": 64,
+      "steps": 1000,
+      "tiny_val_metrics_end": {
+        "frequency_ce": 2.8057901859283447,
+        "frequency_top1": 0.19897958636283875,
+        "frequency_top5": 0.543367326259613,
+        "proto_accuracy": 0.012755101185520085,
+        "proto_ce": 5.256377614274317,
+        "proto_top5": 0.24744896256193824,
+        "valid_count": 392
+      },
+      "tiny_val_metrics_start": {
+        "frequency_ce": 2.8057901859283447,
+        "frequency_top1": 0.19897958636283875,
+        "frequency_top5": 0.543367326259613,
+        "proto_accuracy": 0.0,
+        "proto_ce": 4.306723709009131,
+        "proto_top5": 0.0,
+        "valid_count": 392
+      },
+      "train_metrics_end": {
+        "frequency_ce": 2.926551103591919,
+        "frequency_top1": 0.16110658645629883,
+        "frequency_top5": 0.5638730525970459,
+        "proto_accuracy": 0.1895850314004718,
+        "proto_ce": 2.875269517751124,
+        "proto_top5": 0.5956061866295056,
+        "valid_count": 1229
+      },
+      "train_metrics_start": {
+        "frequency_ce": 2.926551103591919,
+        "frequency_top1": 0.16110658645629883,
+        "frequency_top5": 0.5638730525970459,
+        "proto_accuracy": 0.04556550087628506,
+        "proto_ce": 4.3117580006431035,
+        "proto_top5": 0.06265256354097273,
+        "valid_count": 1229
+      },
+      "train_top5_gain": 0.5329536230885329
+    }
+  ],
+  "steps_per_prototype_count": 1000,
+  "tiny_overfit_started": true,
+  "tiny_overfit_success": false,
+  "tiny_val_item_count": 8,
+  "train_item_count": 24
+}
