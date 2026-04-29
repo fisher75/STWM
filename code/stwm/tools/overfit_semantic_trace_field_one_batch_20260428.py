@@ -188,6 +188,11 @@ def _load_models(
     train_semantic_encoder_proj: bool = False,
     train_semantic_fusion_gate_norm: bool = False,
     train_handshake: bool = False,
+    observed_semantic_proto_count: int = 0,
+    semantic_proto_memory_dim: int = 128,
+    semantic_proto_memory_injection: str = "none",
+    semantic_proto_prediction_mode: str = "direct_logits",
+    semantic_proto_residual_scale: float = 0.1,
 ) -> dict[str, Any]:
     args.enable_future_semantic_state_head = True
     args.enable_semantic_proto_head = True
@@ -227,6 +232,11 @@ def _load_models(
             measurement_feature_dim=0,
             semantic_proto_count=int(prototype_count),
             enable_semantic_proto_head=True,
+            observed_semantic_proto_count=int(observed_semantic_proto_count),
+            semantic_proto_memory_dim=int(semantic_proto_memory_dim),
+            semantic_proto_memory_injection=str(semantic_proto_memory_injection),
+            semantic_proto_prediction_mode=str(semantic_proto_prediction_mode),
+            semantic_proto_residual_scale=float(semantic_proto_residual_scale),
             hypothesis_count=1,
             enable_extent_head=False,
             enable_multi_hypothesis_head=False,

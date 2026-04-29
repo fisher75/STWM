@@ -299,6 +299,22 @@ def parse_args() -> Any:
     p.add_argument("--future-semantic-proto-count", type=int, default=0)
     p.add_argument("--future-semantic-proto-loss-weight", type=float, default=0.0)
     p.add_argument("--future-semantic-proto-soft-loss-weight", type=float, default=0.0)
+    p.add_argument("--enable-observed-semantic-proto-memory", action="store_true")
+    p.add_argument("--observed-semantic-proto-target-cache", default="")
+    p.add_argument("--observed-semantic-proto-count", type=int, default=0)
+    p.add_argument("--semantic-proto-memory-dim", type=int, default=128)
+    p.add_argument("--semantic-proto-memory-stopgrad", action="store_true")
+    p.add_argument(
+        "--semantic-proto-memory-injection",
+        default="none",
+        choices=["none", "z_sem_init", "semantic_fusion_add", "future_head_condition", "all"],
+    )
+    p.add_argument(
+        "--semantic-proto-prediction-mode",
+        default="direct_logits",
+        choices=["copy_only", "direct_logits", "memory_residual_logits"],
+    )
+    p.add_argument("--semantic-proto-residual-scale", type=float, default=0.1)
     p.add_argument("--future-visibility-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-loss-weight", type=float, default=0.0)
     p.add_argument("--future-reappearance-event-loss-weight", type=float, default=0.0)
@@ -656,6 +672,9 @@ def _teacher_forced_predict(
     semantic_state_feedback_alpha: float = 0.05,
     semantic_state_feedback_stopgrad_state: bool = True,
     semantic_state_feedback_mode: str = "readout_only",
+    observed_semantic_proto_target: torch.Tensor | None = None,
+    observed_semantic_proto_distribution: torch.Tensor | None = None,
+    observed_semantic_proto_mask: torch.Tensor | None = None,
 ) -> Dict[str, Any]:
     full_state = torch.cat([batch["obs_state"], batch["fut_state"]], dim=1)
     shifted = _prepare_shifted(full_state)
@@ -701,7 +720,13 @@ def _teacher_forced_predict(
         "feedback_delta_norm": 0.0,
     }
     if future_semantic_state_head is not None:
-        future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_coord)
+        future_semantic_trace_state = future_semantic_state_head(
+            future_hidden,
+            future_trace_coord=pred_coord,
+            observed_semantic_proto_target=observed_semantic_proto_target,
+            observed_semantic_proto_distribution=observed_semantic_proto_distribution,
+            observed_semantic_proto_mask=observed_semantic_proto_mask,
+        )
         if bool(semantic_state_feedback_enabled) and semantic_state_feedback_adapter is not None:
             fb = semantic_state_feedback_adapter(
                 future_hidden,
@@ -713,7 +738,13 @@ def _teacher_forced_predict(
             mode = str(semantic_state_feedback_mode).strip().lower()
             if mode == "hidden_residual":
                 pred_coord = readout_head(future_hidden)
-            future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_coord)
+            future_semantic_trace_state = future_semantic_state_head(
+                future_hidden,
+                future_trace_coord=pred_coord,
+                observed_semantic_proto_target=observed_semantic_proto_target,
+                observed_semantic_proto_distribution=observed_semantic_proto_distribution,
+                observed_semantic_proto_mask=observed_semantic_proto_mask,
+            )
             feedback_info = dict(fb.feedback_info)
             feedback_info["semantic_state_feedback_mode"] = mode
 
@@ -758,6 +789,9 @@ def _free_rollout_predict(
     semantic_state_feedback_alpha: float = 0.05,
     semantic_state_feedback_stopgrad_state: bool = True,
     semantic_state_feedback_mode: str = "readout_only",
+    observed_semantic_proto_target: torch.Tensor | None = None,
+    observed_semantic_proto_distribution: torch.Tensor | None = None,
+    observed_semantic_proto_mask: torch.Tensor | None = None,
 ) -> Dict[str, Any]:
     token_mask = batch["token_mask"]
     obs_state = batch["obs_state"]
@@ -825,7 +859,13 @@ def _free_rollout_predict(
     }
     future_semantic_state_validation = {"valid": False, "shapes": {}, "errors": ["future_semantic_state_head_disabled"]}
     if future_semantic_state_head is not None:
-        future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_future)
+        future_semantic_trace_state = future_semantic_state_head(
+            future_hidden,
+            future_trace_coord=pred_future,
+            observed_semantic_proto_target=observed_semantic_proto_target,
+            observed_semantic_proto_distribution=observed_semantic_proto_distribution,
+            observed_semantic_proto_mask=observed_semantic_proto_mask,
+        )
         if bool(semantic_state_feedback_enabled) and semantic_state_feedback_adapter is not None:
             fb = semantic_state_feedback_adapter(
                 future_hidden,
@@ -837,7 +877,13 @@ def _free_rollout_predict(
             mode = str(semantic_state_feedback_mode).strip().lower()
             if mode == "hidden_residual":
                 pred_future = readout_head(future_hidden)
-            future_semantic_trace_state = future_semantic_state_head(future_hidden, future_trace_coord=pred_future)
+            future_semantic_trace_state = future_semantic_state_head(
+                future_hidden,
+                future_trace_coord=pred_future,
+                observed_semantic_proto_target=observed_semantic_proto_target,
+                observed_semantic_proto_distribution=observed_semantic_proto_distribution,
+                observed_semantic_proto_mask=observed_semantic_proto_mask,
+            )
             feedback_info = dict(fb.feedback_info)
             feedback_info["semantic_state_feedback_mode"] = mode
         future_semantic_state_validation = future_semantic_trace_state.validate(strict=False)
@@ -4440,6 +4486,13 @@ def main() -> None:
                 measurement_feature_dim=int(args.future_measurement_feature_dim),
                 semantic_proto_count=int(args.future_semantic_proto_count),
                 enable_semantic_proto_head=bool(args.enable_semantic_proto_head),
+                observed_semantic_proto_count=int(args.observed_semantic_proto_count)
+                if bool(args.enable_observed_semantic_proto_memory)
+                else 0,
+                semantic_proto_memory_dim=int(args.semantic_proto_memory_dim),
+                semantic_proto_memory_injection=str(args.semantic_proto_memory_injection),
+                semantic_proto_prediction_mode=str(args.semantic_proto_prediction_mode),
+                semantic_proto_residual_scale=float(args.semantic_proto_residual_scale),
                 hypothesis_count=int(args.future_hypothesis_count),
                 enable_extent_head=bool(args.enable_future_extent_head),
                 enable_multi_hypothesis_head=bool(args.enable_future_multihypothesis_head)

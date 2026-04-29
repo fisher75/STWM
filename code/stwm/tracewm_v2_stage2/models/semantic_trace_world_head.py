@@ -17,6 +17,11 @@ class SemanticTraceStateHeadConfig:
     measurement_feature_dim: int = 0
     semantic_proto_count: int = 0
     enable_semantic_proto_head: bool = False
+    observed_semantic_proto_count: int = 0
+    semantic_proto_memory_dim: int = 128
+    semantic_proto_memory_injection: str = "none"
+    semantic_proto_prediction_mode: str = "direct_logits"
+    semantic_proto_residual_scale: float = 0.1
     semantic_logit_dim: int = 0
     hypothesis_count: int = 1
     enable_extent_head: bool = False
@@ -95,6 +100,17 @@ class SemanticTraceStateHead(torch.nn.Module):
                 torch.nn.Dropout(float(cfg.dropout)),
                 torch.nn.Linear(hidden_dim, int(cfg.semantic_proto_count)),
             )
+        self.semantic_proto_memory_embed: torch.nn.Embedding | None = None
+        self.semantic_proto_memory_proj: torch.nn.Module | None = None
+        if int(cfg.observed_semantic_proto_count) > 1 and int(cfg.semantic_proto_memory_dim) > 0:
+            self.semantic_proto_memory_embed = torch.nn.Embedding(
+                int(cfg.observed_semantic_proto_count),
+                int(cfg.semantic_proto_memory_dim),
+            )
+            self.semantic_proto_memory_proj = torch.nn.Sequential(
+                torch.nn.LayerNorm(int(cfg.semantic_proto_memory_dim)),
+                torch.nn.Linear(int(cfg.semantic_proto_memory_dim), hidden_dim),
+            )
         self.visibility_head = torch.nn.Sequential(
             torch.nn.LayerNorm(hidden_dim),
             torch.nn.Linear(hidden_dim, 1),
@@ -122,19 +138,84 @@ class SemanticTraceStateHead(torch.nn.Module):
         if bool(cfg.enable_multi_hypothesis_head) or int(cfg.hypothesis_count) > 1:
             self.multi_hypothesis_head = MultiHypothesisTraceHead(hidden_dim, max(int(cfg.hypothesis_count), 1))
 
-    def forward(self, future_hidden: torch.Tensor, *, future_trace_coord: torch.Tensor) -> FutureSemanticTraceState:
-        semantic_embedding = self.semantic_embedding_head(future_hidden)
-        identity_embedding = self.identity_embedding_head(future_hidden)
-        measurement_feature_pred = (
-            self.measurement_feature_head(future_hidden) if self.measurement_feature_head is not None else None
+    def _observed_proto_memory(
+        self,
+        *,
+        observed_semantic_proto_target: torch.Tensor | None,
+        observed_semantic_proto_distribution: torch.Tensor | None,
+        observed_semantic_proto_mask: torch.Tensor | None,
+        horizon: int,
+    ) -> tuple[torch.Tensor | None, torch.Tensor | None]:
+        if self.semantic_proto_memory_embed is None or self.semantic_proto_memory_proj is None:
+            return None, None
+        embed_weight = self.semantic_proto_memory_embed.weight
+        memory: torch.Tensor | None = None
+        base_logits: torch.Tensor | None = None
+        if observed_semantic_proto_distribution is not None:
+            dist = observed_semantic_proto_distribution.to(device=embed_weight.device, dtype=embed_weight.dtype)
+            if dist.shape[-1] != embed_weight.shape[0]:
+                dist = _align_last_dim(dist, int(embed_weight.shape[0]))
+                dist = dist.clamp_min(0.0)
+                dist = dist / dist.sum(dim=-1, keepdim=True).clamp_min(1e-8)
+            memory = torch.matmul(dist, embed_weight)
+            base_logits = torch.log(dist.clamp_min(1e-6))
+        elif observed_semantic_proto_target is not None:
+            target = observed_semantic_proto_target.to(device=embed_weight.device, dtype=torch.long).clamp_min(0)
+            target = target.clamp_max(int(embed_weight.shape[0]) - 1)
+            memory = self.semantic_proto_memory_embed(target)
+            base_logits = F.one_hot(target, num_classes=int(embed_weight.shape[0])).to(dtype=embed_weight.dtype)
+            base_logits = torch.log(base_logits * 0.99 + (1.0 - base_logits) * (0.01 / max(int(embed_weight.shape[0]) - 1, 1)))
+        if memory is None:
+            return None, None
+        if observed_semantic_proto_mask is not None:
+            mask = observed_semantic_proto_mask.to(device=memory.device, dtype=memory.dtype)[..., None]
+            memory = memory * mask
+            if base_logits is not None:
+                base_logits = base_logits * mask
+        memory_hidden = self.semantic_proto_memory_proj(memory)
+        memory_hidden = memory_hidden[:, None].expand(-1, int(horizon), -1, -1)
+        if base_logits is not None:
+            base_logits = base_logits[:, None].expand(-1, int(horizon), -1, -1)
+        return memory_hidden, base_logits
+
+    def forward(
+        self,
+        future_hidden: torch.Tensor,
+        *,
+        future_trace_coord: torch.Tensor,
+        observed_semantic_proto_target: torch.Tensor | None = None,
+        observed_semantic_proto_distribution: torch.Tensor | None = None,
+        observed_semantic_proto_mask: torch.Tensor | None = None,
+    ) -> FutureSemanticTraceState:
+        horizon = int(future_hidden.shape[1])
+        memory_hidden, memory_base_logits = self._observed_proto_memory(
+            observed_semantic_proto_target=observed_semantic_proto_target,
+            observed_semantic_proto_distribution=observed_semantic_proto_distribution,
+            observed_semantic_proto_mask=observed_semantic_proto_mask,
+            horizon=horizon,
         )
-        semantic_proto_logits = self.semantic_proto_head(future_hidden) if self.semantic_proto_head is not None else None
-        visibility_logit = self.visibility_head(future_hidden).squeeze(-1)
-        reappearance_logit = self.reappearance_head(future_hidden).squeeze(-1)
-        reappearance_event_logit = self.reappearance_event_head(future_hidden.mean(dim=1)).squeeze(-1)
-        uncertainty = self.uncertainty_head(future_hidden).squeeze(-1)
-        semantic_logits = self.semantic_logit_head(future_hidden) if self.semantic_logit_head is not None else None
-        extent_box = self.extent_head(future_hidden) if self.extent_head is not None else None
+        memory_mode = str(self.cfg.semantic_proto_memory_injection).strip().lower()
+        conditioned_hidden = future_hidden
+        if memory_hidden is not None and memory_mode in {"future_head_condition", "all"}:
+            conditioned_hidden = future_hidden + memory_hidden
+        semantic_embedding = self.semantic_embedding_head(conditioned_hidden)
+        identity_embedding = self.identity_embedding_head(conditioned_hidden)
+        measurement_feature_pred = (
+            self.measurement_feature_head(conditioned_hidden) if self.measurement_feature_head is not None else None
+        )
+        semantic_proto_logits = self.semantic_proto_head(conditioned_hidden) if self.semantic_proto_head is not None else None
+        prediction_mode = str(self.cfg.semantic_proto_prediction_mode).strip().lower()
+        if semantic_proto_logits is not None and memory_base_logits is not None and prediction_mode == "memory_residual_logits":
+            base = _align_last_dim(memory_base_logits, int(semantic_proto_logits.shape[-1]))
+            semantic_proto_logits = base + float(self.cfg.semantic_proto_residual_scale) * semantic_proto_logits
+        elif semantic_proto_logits is not None and memory_base_logits is not None and prediction_mode == "copy_only":
+            semantic_proto_logits = _align_last_dim(memory_base_logits, int(semantic_proto_logits.shape[-1]))
+        visibility_logit = self.visibility_head(conditioned_hidden).squeeze(-1)
+        reappearance_logit = self.reappearance_head(conditioned_hidden).squeeze(-1)
+        reappearance_event_logit = self.reappearance_event_head(conditioned_hidden.mean(dim=1)).squeeze(-1)
+        uncertainty = self.uncertainty_head(conditioned_hidden).squeeze(-1)
+        semantic_logits = self.semantic_logit_head(conditioned_hidden) if self.semantic_logit_head is not None else None
+        extent_box = self.extent_head(conditioned_hidden) if self.extent_head is not None else None
         hypothesis_logits = None
         hypothesis_trace_coord = None
         if self.multi_hypothesis_head is not None:

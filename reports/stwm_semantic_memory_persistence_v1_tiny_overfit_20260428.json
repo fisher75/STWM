@@ -1,0 +1,231 @@
+{
+  "audit_name": "stwm_semantic_memory_persistence_v1_tiny_overfit",
+  "changed_subset_gain": 0.026785731315612793,
+  "copy_baseline_top5": 0.5714285969734192,
+  "direct_logits_top5": 0.41428571939468384,
+  "memory_residual_top5": 0.5642856955528259,
+  "runs": [
+    {
+      "mode": "copy_only",
+      "name": "copy_only_c32",
+      "prototype_count": 32,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.46451611730360215,
+        "changed_subset_valid_count": 310,
+        "proto_accuracy": 0.39096267430627746,
+        "proto_ce": 2.6065412527919984,
+        "proto_top5": 0.6738703492114024,
+        "valid_count": 509
+      },
+      "training_started": false,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.4642857313156128,
+        "changed_subset_valid_count": 112,
+        "proto_accuracy": 0.20000000298023224,
+        "proto_ce": 2.7067513465881348,
+        "proto_top5": 0.5714285969734192,
+        "valid_count": 140
+      }
+    },
+    {
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "mode": "direct_logits",
+      "name": "direct_logits_c32",
+      "prototype_count": 32,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.7161290003407386,
+        "changed_subset_valid_count": 310,
+        "proto_accuracy": 0.30451867511323955,
+        "proto_ce": 2.1272487279708354,
+        "proto_top5": 0.7387033428096584,
+        "valid_count": 509
+      },
+      "training_started": true,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.4196428656578064,
+        "changed_subset_valid_count": 112,
+        "proto_accuracy": 0.20000000298023224,
+        "proto_ce": 3.942044496536255,
+        "proto_top5": 0.41428571939468384,
+        "valid_count": 140
+      }
+    },
+    {
+      "injection": "future_head_condition",
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "mode": "memory_residual_logits",
+      "name": "memory_residual_future_head_condition_c32",
+      "prototype_count": 32,
+      "residual_scale": 0.1,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.7193548102532664,
+        "changed_subset_valid_count": 310,
+        "proto_accuracy": 0.5225933352247437,
+        "proto_ce": 1.8350925557974045,
+        "proto_top5": 0.8290766421376137,
+        "valid_count": 509
+      },
+      "training_started": true,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.4821428656578064,
+        "changed_subset_valid_count": 112,
+        "proto_accuracy": 0.15714286267757416,
+        "proto_ce": 2.580618381500244,
+        "proto_top5": 0.5571428537368774,
+        "valid_count": 140
+      }
+    },
+    {
+      "injection": "all",
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "mode": "memory_residual_logits",
+      "name": "memory_residual_all_c32",
+      "prototype_count": 32,
+      "residual_scale": 0.1,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.732258032021984,
+        "changed_subset_valid_count": 310,
+        "proto_accuracy": 0.5206286808830816,
+        "proto_ce": 1.829206618204098,
+        "proto_top5": 0.8369351602022213,
+        "valid_count": 509
+      },
+      "training_started": true,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.4910714626312256,
+        "changed_subset_valid_count": 112,
+        "proto_accuracy": 0.18571428954601288,
+        "proto_ce": 2.5888609886169434,
+        "proto_top5": 0.5642856955528259,
+        "valid_count": 140
+      }
+    },
+    {
+      "injection": "z_sem_init",
+      "mode": "memory_residual_logits",
+      "name": "memory_residual_z_sem_init_c32",
+      "prototype_count": 32,
+      "skipped_reason": "z_sem_init requires trace-unit state injection; not enabled in safe V1 tiny script"
+    },
+    {
+      "mode": "copy_only",
+      "name": "copy_only_c64",
+      "prototype_count": 64,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.39814814814814814,
+        "changed_subset_valid_count": 324,
+        "proto_accuracy": 0.36345776212941455,
+        "proto_ce": 3.0141466642878143,
+        "proto_top5": 0.6168958819919579,
+        "valid_count": 509
+      },
+      "training_started": false,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.2293577939271927,
+        "changed_subset_valid_count": 109,
+        "proto_accuracy": 0.22142857313156128,
+        "proto_ce": 3.3050527572631836,
+        "proto_top5": 0.4000000059604645,
+        "valid_count": 140
+      }
+    },
+    {
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "mode": "direct_logits",
+      "name": "direct_logits_c64",
+      "prototype_count": 64,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.6358024603054847,
+        "changed_subset_valid_count": 324,
+        "proto_accuracy": 0.3477406655758444,
+        "proto_ce": 2.360829077909878,
+        "proto_top5": 0.6777996178460262,
+        "valid_count": 509
+      },
+      "training_started": true,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.26605504751205444,
+        "changed_subset_valid_count": 109,
+        "proto_accuracy": 0.12857143580913544,
+        "proto_ce": 4.4374470710754395,
+        "proto_top5": 0.27142858505249023,
+        "valid_count": 140
+      }
+    },
+    {
+      "injection": "future_head_condition",
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "mode": "memory_residual_logits",
+      "name": "memory_residual_future_head_condition_c64",
+      "prototype_count": 64,
+      "residual_scale": 0.1,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.6851851870248347,
+        "changed_subset_valid_count": 324,
+        "proto_accuracy": 0.5108054944246363,
+        "proto_ce": 2.096057426718691,
+        "proto_top5": 0.7937131750091823,
+        "valid_count": 509
+      },
+      "training_started": true,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.38532108068466187,
+        "changed_subset_valid_count": 109,
+        "proto_accuracy": 0.09285714477300644,
+        "proto_ce": 3.162780284881592,
+        "proto_top5": 0.4571428596973419,
+        "valid_count": 140
+      }
+    },
+    {
+      "injection": "all",
+      "loss_finite_ratio": 1.0,
+      "lr": 3e-05,
+      "mode": "memory_residual_logits",
+      "name": "memory_residual_all_c64",
+      "prototype_count": 64,
+      "residual_scale": 0.1,
+      "trace_regression_detected": false,
+      "train_metrics_end": {
+        "changed_subset_top5": 0.688271607145851,
+        "changed_subset_valid_count": 324,
+        "proto_accuracy": 0.4891945102594222,
+        "proto_ce": 2.1072399747395094,
+        "proto_top5": 0.7956777946888113,
+        "valid_count": 509
+      },
+      "training_started": true,
+      "val_metrics_end": {
+        "changed_subset_top5": 0.37614676356315613,
+        "changed_subset_valid_count": 109,
+        "proto_accuracy": 0.0714285746216774,
+        "proto_ce": 3.174360990524292,
+        "proto_top5": 0.44999998807907104,
+        "valid_count": 140
+      }
+    },
+    {
+      "injection": "z_sem_init",
+      "mode": "memory_residual_logits",
+      "name": "memory_residual_z_sem_init_c64",
+      "prototype_count": 64,
+      "skipped_reason": "z_sem_init requires trace-unit state injection; not enabled in safe V1 tiny script"
+    }
+  ],
+  "semantic_field_signal_positive": false,
+  "semantic_memory_injection_successful": true,
+  "steps": 500,
+  "trace_regression_detected": false
+}

@@ -1,0 +1,18 @@
+{
+  "allowed": [
+    "observed semantic memory as part of world state",
+    "residual semantic prototype prediction",
+    "future GT semantic target as supervision",
+    "Stage1 frozen",
+    "trace dynamic path frozen"
+  ],
+  "forbidden": [
+    "candidate scorer",
+    "SAM2/CoTracker plugin",
+    "future candidate leakage",
+    "predicting semantic field without observed semantic state",
+    "paper claim before semantic memory eval",
+    "continuing direct_logits if copy baseline dominates"
+  ],
+  "guardrail": "stwm_world_model_no_drift_guardrail_v25"
+}
