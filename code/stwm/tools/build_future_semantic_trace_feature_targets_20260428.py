@@ -3,11 +3,13 @@ from __future__ import annotations
 
 from argparse import ArgumentParser
 from collections import OrderedDict
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 import json
 import os
+import time
 
 import numpy as np
 from PIL import Image
@@ -17,12 +19,17 @@ import torch.nn.functional as F
 from stwm.tracewm_v2_stage2.datasets.stage2_semantic_dataset import (
     Stage2SemanticDataset,
     Stage2SemanticDatasetConfig,
+    _box_from_mask_or_center,
+    _build_state_from_boxes,
+    _entity_mask_for_dataset,
+    _load_mask,
+    _select_entity_ids_for_sample,
     _temporal_indices,
 )
 
 
 _IMAGE_CACHE: OrderedDict[str, Image.Image] = OrderedDict()
-_IMAGE_CACHE_MAX = 8
+_IMAGE_CACHE_MAX = int(os.environ.get("STWM_IMAGE_CACHE_MAX", "128"))
 
 
 def _apply_process_title_normalization() -> None:
@@ -121,6 +128,95 @@ class OpenAIClipExtractor:
             return np.zeros((0, 512), dtype=np.float32)
         return torch.cat(out, dim=0).numpy().astype(np.float32)
 
+    @torch.no_grad()
+    def encode_roi_jobs(
+        self,
+        jobs: list[tuple[str, np.ndarray, int, int, int]],
+        batch_size: int,
+    ) -> np.ndarray:
+        """Crop/resize bboxes on GPU, then run CLIP image encoder.
+
+        Jobs are `(frame_path, box_xyxy, sample_idx, future_step, slot)`.
+        This avoids Python/PIL per-crop resize, which is the full-scale bottleneck.
+        """
+        if not jobs:
+            return np.zeros((0, 512), dtype=np.float32)
+        try:
+            from torchvision.ops import roi_align  # type: ignore
+        except Exception:
+            # Fallback keeps correctness if torchvision is unavailable.
+            pil_crops: list[Image.Image] = []
+            for frame_path, box, _idx, _fh, _slot in jobs:
+                crop = _crop(frame_path, box)
+                if crop is not None:
+                    pil_crops.append(crop)
+                else:
+                    pil_crops.append(Image.new("RGB", (224, 224)))
+            return self.encode(pil_crops, batch_size=batch_size)
+
+        outputs: list[np.ndarray | None] = [None] * len(jobs)
+        by_frame: dict[str, list[tuple[int, np.ndarray]]] = defaultdict(list)
+        for order, (frame_path, box, _idx, _fh, _slot) in enumerate(jobs):
+            by_frame[str(frame_path)].append((order, np.asarray(box, dtype=np.float32)))
+
+        mean = torch.tensor([0.48145466, 0.4578275, 0.40821073], device=self.device).view(1, 3, 1, 1)
+        std = torch.tensor([0.26862954, 0.26130258, 0.27577711], device=self.device).view(1, 3, 1, 1)
+        pending_tensors: list[torch.Tensor] = []
+        pending_orders: list[int] = []
+
+        def _encode_pending() -> None:
+            if not pending_tensors:
+                return
+            tensor = torch.cat(pending_tensors, dim=0)
+            for start in range(0, int(tensor.shape[0]), int(batch_size)):
+                chunk = tensor[start : start + int(batch_size)]
+                feat = F.normalize(self.model.encode_image(chunk).float(), dim=-1).detach().cpu().numpy().astype(np.float32)
+                for local_i, vec in enumerate(feat):
+                    outputs[pending_orders[start + local_i]] = vec
+            pending_tensors.clear()
+            pending_orders.clear()
+
+        for frame_path, frame_jobs in by_frame.items():
+            try:
+                im = _load_rgb_cached(frame_path)
+                arr = np.asarray(im, dtype=np.uint8).copy()
+                if arr.ndim != 3 or arr.shape[-1] != 3:
+                    raise ValueError("non-rgb image")
+                h, w = int(arr.shape[0]), int(arr.shape[1])
+                image = torch.from_numpy(arr).to(self.device, non_blocking=True).permute(2, 0, 1).float().div_(255.0).unsqueeze(0)
+                boxes = []
+                orders: list[int] = []
+                for order, box in frame_jobs:
+                    x0, y0, x1, y1 = [float(x) for x in box.tolist()]
+                    x0 = max(0.0, min(x0, float(w - 1)))
+                    y0 = max(0.0, min(y0, float(h - 1)))
+                    x1 = max(x0 + 1.0, min(x1, float(w)))
+                    y1 = max(y0 + 1.0, min(y1, float(h)))
+                    boxes.append([0.0, x0, y0, x1, y1])
+                    orders.append(order)
+                if not boxes:
+                    continue
+                rois = torch.tensor(boxes, device=self.device, dtype=torch.float32)
+                crops = roi_align(image, rois, output_size=(224, 224), spatial_scale=1.0, sampling_ratio=2, aligned=True)
+                crops = (crops - mean) / std
+                pending_tensors.append(crops)
+                pending_orders.extend(orders)
+                if sum(int(x.shape[0]) for x in pending_tensors) >= int(batch_size):
+                    _encode_pending()
+            except Exception:
+                # Per-frame fallback: keep the target cache complete if a frame fails ROI path.
+                pil_crops: list[Image.Image] = []
+                orders = []
+                for order, box in frame_jobs:
+                    crop = _crop(frame_path, box)
+                    pil_crops.append(crop if crop is not None else Image.new("RGB", (224, 224)))
+                    orders.append(order)
+                feat = self.encode(pil_crops, batch_size=batch_size)
+                for order, vec in zip(orders, feat):
+                    outputs[order] = vec
+        _encode_pending()
+        return np.stack([x if x is not None else np.zeros((512,), dtype=np.float32) for x in outputs], axis=0).astype(np.float32)
+
 
 def _select_backbone(backbone_report: Path, device_name: str) -> tuple[OpenAIClipExtractor | None, str, str, int, bool]:
     payload = load_json(backbone_report) if backbone_report.exists() else {}
@@ -164,6 +260,103 @@ def _stats_feature(crop: Image.Image | None, box: np.ndarray, image_size: tuple[
     )
 
 
+def _fast_target_from_entry(
+    *,
+    entry: dict[str, Any],
+    cfg: Stage2SemanticDatasetConfig,
+    max_h: int,
+    max_k: int,
+) -> dict[str, Any]:
+    dataset_name = str(entry.get("dataset_name", ""))
+    dataset_upper = str(dataset_name).strip().upper()
+    frame_paths = [str(x) for x in entry.get("frame_paths", [])]
+    mask_paths = [str(x) for x in entry.get("mask_paths", [])]
+    total_steps = int(cfg.obs_len) + int(cfg.fut_len)
+    temporal = _temporal_indices(frame_count=len(frame_paths), total_steps=total_steps)
+    semantic_step = max(0, min(int(cfg.semantic_frame_index), total_steps - 1))
+    sizes: list[tuple[int, int]] = []
+    raw_id_maps: list[np.ndarray | None] = []
+    for src_i in temporal:
+        frame_path = frame_paths[src_i] if 0 <= src_i < len(frame_paths) else ""
+        mask_path = mask_paths[src_i] if 0 <= src_i < len(mask_paths) else ""
+        try:
+            im = _load_rgb_cached(frame_path)
+            sizes.append((int(im.width), int(im.height)))
+        except Exception:
+            sizes.append((1, 1))
+        raw_id_maps.append(_load_mask(mask_path))
+    entity_ids, _instance_source = _select_entity_ids_for_sample(
+        dataset_name=dataset_name,
+        raw_id_maps=raw_id_maps,
+        semantic_step=int(semantic_step),
+        max_entities=int(max_k),
+    )
+    if not entity_ids:
+        entity_ids = [1]
+    entity_count = min(len(entity_ids), int(max_k))
+    boxes_over_time = np.zeros((total_steps, max_k, 4), dtype=np.float32)
+    valid_over_time = np.zeros((total_steps, max_k), dtype=bool)
+    identity = np.full((max_k,), -1, dtype=np.int64)
+    for ent_idx, entity_id in enumerate(entity_ids[:entity_count]):
+        boxes: list[np.ndarray] = []
+        present_flags: list[bool] = []
+        last_box: np.ndarray | None = None
+        for step_i in range(total_steps):
+            width, height = sizes[step_i]
+            raw_id_map = raw_id_maps[step_i]
+            mask = _entity_mask_for_dataset(
+                dataset_name=dataset_name,
+                raw_id_map=raw_id_map,
+                entity_id=int(entity_id),
+            )
+            if mask is not None and np.any(mask > 0):
+                box, _used_mask, _fg_ratio = _box_from_mask_or_center(
+                    mask=mask,
+                    width=int(width),
+                    height=int(height),
+                    radius=int(cfg.semantic_patch_radius),
+                )
+                last_box = box
+                present = True
+            else:
+                box = (
+                    np.asarray(last_box, dtype=np.float32)
+                    if isinstance(last_box, np.ndarray)
+                    else _box_from_mask_or_center(None, width=int(width), height=int(height), radius=int(cfg.semantic_patch_radius))[0]
+                )
+                present = False
+            boxes.append(np.asarray(box, dtype=np.float32))
+            present_flags.append(bool(present))
+            boxes_over_time[step_i, ent_idx] = np.asarray(box, dtype=np.float32)
+        state = _build_state_from_boxes(boxes=boxes, sizes=sizes)
+        valid_arr = np.asarray(present_flags, dtype=bool)
+        valid_over_time[:, ent_idx] = valid_arr
+        identity[ent_idx] = int(entity_id)
+    return {
+        "dataset_name": dataset_name,
+        "dataset_upper": dataset_upper,
+        "clip_id": str(entry.get("clip_id", "")),
+        "frame_paths": frame_paths,
+        "temporal": temporal,
+        "boxes_over_time": boxes_over_time,
+        "valid_over_time": valid_over_time,
+        "identity": identity,
+        "sizes": sizes,
+        "state": np.stack(
+            [
+                _build_state_from_boxes(
+                    boxes=[boxes_over_time[t, slot] for t in range(total_steps)],
+                    sizes=sizes,
+                )
+                for slot in range(max_k)
+            ],
+            axis=1,
+        )
+        if max_k > 0
+        else np.zeros((total_steps, 0, 8), dtype=np.float32),
+    }
+
+
 def _build_split(
     *,
     split: str,
@@ -172,6 +365,11 @@ def _build_split(
     extractor: OpenAIClipExtractor | None,
     feature_dim: int,
     batch_size: int,
+    crop_mode: str,
+    progress_every: int,
+    target_build_mode: str,
+    entry_start: int,
+    entry_end: int,
 ) -> tuple[list[str], list[str], list[str], np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[dict[str, Any]]]:
     cfg = Stage2SemanticDatasetConfig(
         split=split,
@@ -179,63 +377,93 @@ def _build_split(
         **cfg_base,
     )
     dataset = Stage2SemanticDataset(cfg)
+    source_len = len(dataset)
+    start = max(int(entry_start), 0)
+    end = source_len if int(entry_end) < 0 else min(int(entry_end), source_len)
+    entry_indices = list(range(start, max(start, end)))
     keys: list[str] = []
     splits: list[str] = []
     datasets: list[str] = []
     all_crops: list[Image.Image] = []
     crop_refs: list[tuple[int, int, int]] = []
+    roi_jobs: list[tuple[str, np.ndarray, int, int, int]] = []
     samples: list[dict[str, Any]] = []
     max_h = int(cfg.fut_len)
     max_k = int(cfg.max_entities_per_sample)
-    features = np.zeros((len(dataset), max_h, max_k, int(feature_dim)), dtype=np.float32)
-    target_mask = np.zeros((len(dataset), max_h, max_k), dtype=bool)
-    visibility = np.zeros((len(dataset), max_h, max_k), dtype=bool)
-    reappearance = np.zeros((len(dataset), max_h, max_k), dtype=bool)
-    identity = np.full((len(dataset), max_k), -1, dtype=np.int64)
-    extent = np.zeros((len(dataset), max_h, max_k, 4), dtype=np.float32)
+    features = np.zeros((len(entry_indices), max_h, max_k, int(feature_dim)), dtype=np.float32)
+    target_mask = np.zeros((len(entry_indices), max_h, max_k), dtype=bool)
+    visibility = np.zeros((len(entry_indices), max_h, max_k), dtype=bool)
+    reappearance = np.zeros((len(entry_indices), max_h, max_k), dtype=bool)
+    identity = np.full((len(entry_indices), max_k), -1, dtype=np.int64)
+    extent = np.zeros((len(entry_indices), max_h, max_k, 4), dtype=np.float32)
     encode_flush_threshold = max(int(batch_size) * 8, int(batch_size))
+    use_roi = bool(extractor is not None and str(crop_mode) in {"auto", "tensor_roi"} and torch.cuda.is_available())
+    started = time.time()
+    encoded_crop_count = 0
 
     def _flush_crops() -> None:
-        if extractor is None or not all_crops:
+        nonlocal encoded_crop_count
+        if extractor is None:
             return
-        encoded = extractor.encode(all_crops, batch_size=int(batch_size))
-        for vec, (ref_idx, ref_fh, ref_slot) in zip(encoded, crop_refs):
-            features[ref_idx, ref_fh, ref_slot, : int(vec.shape[0])] = vec
-        all_crops.clear()
-        crop_refs.clear()
+        if use_roi and roi_jobs:
+            encoded = extractor.encode_roi_jobs(roi_jobs, batch_size=int(batch_size))
+            for vec, (_frame_path, _box, ref_idx, ref_fh, ref_slot) in zip(encoded, roi_jobs):
+                features[ref_idx, ref_fh, ref_slot, : int(vec.shape[0])] = vec
+            encoded_crop_count += len(roi_jobs)
+            roi_jobs.clear()
+        if all_crops:
+            encoded = extractor.encode(all_crops, batch_size=int(batch_size))
+            for vec, (ref_idx, ref_fh, ref_slot) in zip(encoded, crop_refs):
+                features[ref_idx, ref_fh, ref_slot, : int(vec.shape[0])] = vec
+            encoded_crop_count += len(all_crops)
+            all_crops.clear()
+            crop_refs.clear()
 
-    for idx in range(len(dataset)):
-        sample = dataset[idx]
-        meta = sample.get("meta", {})
-        dataset_name = str(meta.get("dataset", "")).upper()
-        clip_id = str(meta.get("clip_id", ""))
+    for row_idx, dataset_idx in enumerate(entry_indices):
+        entry = dataset.entries[dataset_idx]
+        if str(target_build_mode) == "fast_target_only":
+            fast = _fast_target_from_entry(entry=entry, cfg=cfg, max_h=max_h, max_k=max_k)
+            dataset_name = str(fast["dataset_upper"])
+            clip_id = str(fast["clip_id"])
+            point_ids = torch.from_numpy(np.asarray(fast["identity"], dtype=np.int64))
+            fut_valid = np.asarray(fast["valid_over_time"][int(cfg.obs_len) : int(cfg.obs_len) + max_h], dtype=bool)
+            fut_state = np.asarray(fast["state"][int(cfg.obs_len) : int(cfg.obs_len) + max_h], dtype=np.float32)
+            obs_valid = np.asarray(fast["valid_over_time"][: int(cfg.obs_len)], dtype=bool)
+            frame_paths = [str(x) for x in fast["frame_paths"]]
+            temporal = list(fast["temporal"])
+            boxes_over_time = np.asarray(fast["boxes_over_time"], dtype=np.float32)
+        else:
+            sample = dataset[dataset_idx]
+            meta = sample.get("meta", {})
+            dataset_name = str(meta.get("dataset", "")).upper()
+            clip_id = str(meta.get("clip_id", ""))
+            point_ids = sample.get("point_ids")
+            fut_valid = sample["fut_valid"].cpu().numpy().astype(bool)
+            fut_state = sample["fut_state"].cpu().numpy().astype(np.float32)
+            obs_valid = sample["obs_valid"].cpu().numpy().astype(bool)
+            entry = dataset.entries[dataset_idx]
+            frame_paths = [str(x) for x in entry.get("frame_paths", [])]
+            temporal = _temporal_indices(len(frame_paths), int(cfg.obs_len) + int(cfg.fut_len))
+            boxes_over_time = sample["entity_boxes_over_time"].cpu().numpy().astype(np.float32)
         key = f"{dataset_name}::{clip_id}"
         keys.append(key)
         splits.append(split)
         datasets.append(dataset_name)
         samples.append({"item_id": key, "split": split, "dataset": dataset_name, "clip_id": clip_id})
-        point_ids = sample.get("point_ids")
         if isinstance(point_ids, torch.Tensor):
             k_ids = min(max_k, int(point_ids.shape[0]))
-            identity[idx, :k_ids] = point_ids[:k_ids].cpu().numpy().astype(np.int64)
-        fut_valid = sample["fut_valid"].cpu().numpy().astype(bool)
-        fut_state = sample["fut_state"].cpu().numpy().astype(np.float32)
+            identity[row_idx, :k_ids] = point_ids[:k_ids].cpu().numpy().astype(np.int64)
         h = min(max_h, int(fut_valid.shape[0]))
         k = min(max_k, int(fut_valid.shape[1]))
-        visibility[idx, :h, :k] = fut_valid[:h, :k]
-        extent[idx, :h, :k, 0:2] = fut_state[:h, :k, 0:2]
-        extent[idx, :h, :k, 2:4] = fut_state[:h, :k, 6:8]
-        obs_valid = sample["obs_valid"].cpu().numpy().astype(bool)
+        visibility[row_idx, :h, :k] = fut_valid[:h, :k]
+        extent[row_idx, :h, :k, 0:2] = fut_state[:h, :k, 0:2]
+        extent[row_idx, :h, :k, 2:4] = fut_state[:h, :k, 6:8]
         obs_seen_any = obs_valid[: int(cfg.obs_len), :k].any(axis=0)
         obs_endpoint_visible = obs_valid[int(cfg.obs_len) - 1, :k] if int(cfg.obs_len) > 0 else np.zeros((k,), dtype=bool)
         obs_occluded = obs_seen_any & (~obs_valid[: int(cfg.obs_len), :k].all(axis=0))
         reappearance_gate = ((~obs_endpoint_visible) | obs_occluded) & obs_seen_any
-        reappearance[idx, :h, :k] = fut_valid[:h, :k] & reappearance_gate[None, :]
+        reappearance[row_idx, :h, :k] = fut_valid[:h, :k] & reappearance_gate[None, :]
 
-        entry = dataset.entries[idx]
-        frame_paths = [str(x) for x in entry.get("frame_paths", [])]
-        temporal = _temporal_indices(len(frame_paths), int(cfg.obs_len) + int(cfg.fut_len))
-        boxes_over_time = sample["entity_boxes_over_time"].cpu().numpy().astype(np.float32)
         for fh in range(h):
             frame_idx = temporal[int(cfg.obs_len) + fh]
             frame_path = frame_paths[frame_idx] if 0 <= frame_idx < len(frame_paths) else ""
@@ -250,16 +478,31 @@ def _build_split(
                 if not bool(fut_valid[fh, slot]):
                     continue
                 box = boxes_over_time[int(cfg.obs_len) + fh, slot]
-                crop = _crop(frame_path, box) if frame_path else None
-                if extractor is not None and crop is not None:
-                    all_crops.append(crop)
-                    crop_refs.append((idx, fh, slot))
-                    target_mask[idx, fh, slot] = True
-                    if len(all_crops) >= encode_flush_threshold:
+                if extractor is not None and frame_path:
+                    if use_roi:
+                        roi_jobs.append((frame_path, box.copy(), row_idx, fh, slot))
+                    else:
+                        crop = _crop(frame_path, box)
+                        if crop is None:
+                            continue
+                        all_crops.append(crop)
+                        crop_refs.append((row_idx, fh, slot))
+                    target_mask[row_idx, fh, slot] = True
+                    if len(all_crops) + len(roi_jobs) >= encode_flush_threshold:
                         _flush_crops()
                 elif extractor is None:
-                    features[idx, fh, slot, :14] = _stats_feature(crop, box, image_size)
-                    target_mask[idx, fh, slot] = True
+                    crop = _crop(frame_path, box) if frame_path else None
+                    features[row_idx, fh, slot, :14] = _stats_feature(crop, box, image_size)
+                    target_mask[row_idx, fh, slot] = True
+        done = row_idx + 1
+        if int(progress_every) > 0 and (done % int(progress_every) == 0 or done == len(entry_indices)):
+            elapsed = max(time.time() - started, 1e-6)
+            print(
+                f"[feature-targets] split={split} shard={start}:{end} item={done}/{len(entry_indices)} "
+                f"valid_slots={int(target_mask[:done].sum())} encoded_crops={encoded_crop_count} "
+                f"mode={'tensor_roi' if use_roi else 'pil'} elapsed_s={elapsed:.1f} items_per_s={done / elapsed:.3f}",
+                flush=True,
+            )
 
     _flush_crops()
 
@@ -287,8 +530,20 @@ def build_targets(
     teacher_semantic_cache_path: str,
     device: str,
     batch_size: int,
+    crop_mode: str,
+    progress_every: int,
+    torch_num_threads: int,
+    image_cache_size: int,
+    target_build_mode: str,
+    entry_start: int,
+    entry_end: int,
 ) -> dict[str, Any]:
     _apply_process_title_normalization()
+    global _IMAGE_CACHE_MAX
+    _IMAGE_CACHE_MAX = int(image_cache_size)
+    if int(torch_num_threads) > 0:
+        torch.set_num_threads(int(torch_num_threads))
+        torch.set_num_interop_threads(max(1, min(4, int(torch_num_threads))))
     extractor, feature_backbone, feature_source, feature_dim, frozen_available = _select_backbone(backbone_report, device)
     cfg_base = {
         "dataset_names": dataset_names,
@@ -323,6 +578,11 @@ def build_targets(
             extractor=extractor,
             feature_dim=int(feature_dim),
             batch_size=int(batch_size),
+            crop_mode=str(crop_mode),
+            progress_every=int(progress_every),
+            target_build_mode=str(target_build_mode),
+            entry_start=int(entry_start),
+            entry_end=int(entry_end),
         )
         keys, split_names, dataset_names_out, features, target_mask, visibility, reappearance, identity, extent, sample_rows = block
         all_keys.extend(keys)
@@ -366,6 +626,13 @@ def build_targets(
         "feature_dim": int(feature_dim),
         "feature_backbone": feature_backbone,
         "feature_source": feature_source,
+        "crop_extraction_mode": str(crop_mode),
+        "target_build_mode": str(target_build_mode),
+        "entry_start": int(entry_start),
+        "entry_end": int(entry_end),
+        "progress_every": int(progress_every),
+        "torch_num_threads": int(torch_num_threads),
+        "image_cache_size": int(image_cache_size),
         "frozen_feature_backbone_available": bool(frozen_available),
         "target_shape": list(feature_arr.shape),
         "target_mask_shape": list(mask_arr.shape),
@@ -403,6 +670,13 @@ def main() -> None:
     p.add_argument("--teacher-semantic-cache-path", default="")
     p.add_argument("--device", default="cuda")
     p.add_argument("--batch-size", type=int, default=64)
+    p.add_argument("--crop-extraction-mode", choices=["auto", "tensor_roi", "pil"], default="auto")
+    p.add_argument("--target-build-mode", choices=["fast_target_only", "stage2_getitem"], default="fast_target_only")
+    p.add_argument("--entry-start", type=int, default=0)
+    p.add_argument("--entry-end", type=int, default=-1)
+    p.add_argument("--progress-every", type=int, default=100)
+    p.add_argument("--torch-num-threads", type=int, default=int(os.environ.get("STWM_TORCH_NUM_THREADS", "16")))
+    p.add_argument("--image-cache-size", type=int, default=int(os.environ.get("STWM_IMAGE_CACHE_MAX", "128")))
     p.add_argument("--cache-dir", default="outputs/cache/stwm_future_semantic_trace_feature_targets_v1_20260428")
     p.add_argument("--output", default="reports/stwm_future_semantic_trace_feature_targets_v1_20260428.json")
     p.add_argument("--doc", default="docs/STWM_FUTURE_SEMANTIC_TRACE_FEATURE_TARGETS_V1_20260428.md")
@@ -427,6 +701,13 @@ def main() -> None:
         teacher_semantic_cache_path=str(args.teacher_semantic_cache_path),
         device=str(args.device),
         batch_size=int(args.batch_size),
+        crop_mode=str(args.crop_extraction_mode),
+        progress_every=int(args.progress_every),
+        torch_num_threads=int(args.torch_num_threads),
+        image_cache_size=int(args.image_cache_size),
+        target_build_mode=str(args.target_build_mode),
+        entry_start=int(args.entry_start),
+        entry_end=int(args.entry_end),
     )
 
 

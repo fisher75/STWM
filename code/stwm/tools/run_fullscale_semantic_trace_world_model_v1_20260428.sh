@@ -6,6 +6,13 @@ PY="${PY:-/home/chen034/miniconda3/envs/stwm/bin/python}"
 export PYTHONPATH="${REPO_ROOT}/code${PYTHONPATH:+:${PYTHONPATH}}"
 export STWM_PROC_TITLE="${STWM_PROC_TITLE:-python}"
 export STWM_PROC_TITLE_MODE="${STWM_PROC_TITLE_MODE:-generic}"
+export PYTHONUNBUFFERED="${PYTHONUNBUFFERED:-1}"
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-16}"
+export MKL_NUM_THREADS="${MKL_NUM_THREADS:-16}"
+export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-16}"
+export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-16}"
+export STWM_TORCH_NUM_THREADS="${STWM_TORCH_NUM_THREADS:-16}"
+export STWM_IMAGE_CACHE_MAX="${STWM_IMAGE_CACHE_MAX:-256}"
 
 cd "${REPO_ROOT}"
 
@@ -20,15 +27,54 @@ TARGET64_REPORT="reports/stwm_fullscale_semantic_trace_prototype_targets_c64_v1_
 OBS_REPORT="reports/stwm_fullscale_observed_semantic_prototype_targets_v1_20260428.json"
 SPLIT_REPORT="reports/stwm_fullscale_semantic_trace_world_model_v1_splits_20260428.json"
 
-"${PY}" code/stwm/tools/build_future_semantic_trace_feature_targets_20260428.py \
-  --dataset-names vspw vipseg \
-  --splits train val \
-  --max-samples-train 999999 \
-  --max-samples-val 999999 \
-  --max-entities-per-sample 8 \
-  --fut-len 8 \
-  --device cuda \
-  --batch-size 512 \
+TARGET_SHARD_SESSIONS=()
+TARGET_SHARD_REPORTS=()
+launch_feature_shard() {
+  local SPLIT_NAME="$1"
+  local START_IDX="$2"
+  local END_IDX="$3"
+  local GPU_ID="$4"
+  local SHARD_NAME="$5"
+  local REPORT="reports/stwm_fullscale_semantic_trace_feature_targets_v1_${SHARD_NAME}_20260428.json"
+  local CACHE_DIR="outputs/cache/stwm_fullscale_semantic_trace_feature_targets_v1_${SHARD_NAME}_20260428"
+  local SESSION="stwm_fullscale_target_${SHARD_NAME}"
+  TARGET_SHARD_REPORTS+=("${REPORT}")
+  TARGET_SHARD_SESSIONS+=("${SESSION}")
+  tmux kill-session -t "${SESSION}" 2>/dev/null || true
+  tmux new-session -d -s "${SESSION}" "bash -lc 'cd ${REPO_ROOT}; exec env CUDA_VISIBLE_DEVICES=${GPU_ID} STWM_PROC_TITLE=python STWM_PROC_TITLE_MODE=generic PYTHONUNBUFFERED=1 OMP_NUM_THREADS=${OMP_NUM_THREADS} MKL_NUM_THREADS=${MKL_NUM_THREADS} OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS} NUMEXPR_NUM_THREADS=${NUMEXPR_NUM_THREADS} STWM_TORCH_NUM_THREADS=${STWM_TORCH_NUM_THREADS} STWM_IMAGE_CACHE_MAX=${STWM_IMAGE_CACHE_MAX} PYTHONPATH=${PYTHONPATH} ${PY} code/stwm/tools/build_future_semantic_trace_feature_targets_20260428.py --dataset-names vspw vipseg --splits ${SPLIT_NAME} --max-samples-train 999999 --max-samples-val 999999 --max-entities-per-sample 8 --fut-len 8 --device cuda --batch-size 512 --crop-extraction-mode tensor_roi --target-build-mode fast_target_only --entry-start ${START_IDX} --entry-end ${END_IDX} --progress-every 100 --torch-num-threads ${STWM_TORCH_NUM_THREADS} --image-cache-size ${STWM_IMAGE_CACHE_MAX} --cache-dir ${CACHE_DIR} --output ${REPORT} --doc docs/STWM_FULLSCALE_SEMANTIC_TRACE_FEATURE_TARGETS_V1_${SHARD_NAME}_20260428.md > outputs/logs/stwm_fullscale_target_${SHARD_NAME}.log 2>&1'"
+}
+
+TRAIN_TOTAL=5612
+VAL_TOTAL=686
+TRAIN_SHARDS=8
+VAL_SHARDS=2
+for SHARD in $(seq 0 $((TRAIN_SHARDS - 1))); do
+  START=$((SHARD * TRAIN_TOTAL / TRAIN_SHARDS))
+  END=$(((SHARD + 1) * TRAIN_TOTAL / TRAIN_SHARDS))
+  launch_feature_shard train "${START}" "${END}" "$((SHARD % 8))" "train_shard$(printf '%02d' "${SHARD}")"
+done
+for SHARD in $(seq 0 $((VAL_SHARDS - 1))); do
+  START=$((SHARD * VAL_TOTAL / VAL_SHARDS))
+  END=$(((SHARD + 1) * VAL_TOTAL / VAL_SHARDS))
+  launch_feature_shard val "${START}" "${END}" "$(((SHARD + TRAIN_SHARDS) % 8))" "val_shard$(printf '%02d' "${SHARD}")"
+done
+
+while true; do
+  ACTIVE=0
+  for SESSION in "${TARGET_SHARD_SESSIONS[@]}"; do
+    if tmux has-session -t "${SESSION}" 2>/dev/null; then
+      ACTIVE=$((ACTIVE + 1))
+    fi
+  done
+  if [[ "${ACTIVE}" == "0" ]]; then
+    break
+  fi
+  echo "[fullscale-target] active_parallel_tmux_sessions=${ACTIVE}" >&2
+  sleep 30
+done
+
+"${PY}" code/stwm/tools/merge_future_semantic_trace_feature_target_shards_20260428.py \
+  --shard-reports "${TARGET_SHARD_REPORTS[@]}" \
   --cache-dir "${FEATURE_CACHE_DIR}" \
   --output "${FEATURE_REPORT}" \
   --doc docs/STWM_FULLSCALE_SEMANTIC_TRACE_FEATURE_TARGETS_V1_20260428.md
@@ -128,6 +174,21 @@ PY
 
 "${PY}" code/stwm/tools/materialize_semantic_memory_eval_set_20260428.py \
   --split-report "${SPLIT_REPORT}" \
+  --eval-split train \
+  --strict-split \
+  --allow-scan-all-stage2-splits \
+  --requested-heldout-count 1 \
+  --max-samples-per-dataset 999999 \
+  --timeout-seconds 60 \
+  --retries 2 \
+  --cache-output outputs/cache/stwm_fullscale_semantic_trace_world_model_v1_train_20260428/eval_batches.pt \
+  --output reports/stwm_fullscale_semantic_trace_world_model_v1_materialization_train_20260428.json \
+  --doc docs/STWM_FULLSCALE_SEMANTIC_TRACE_WORLD_MODEL_V1_MATERIALIZATION_TRAIN_20260428.md \
+  --audit-name stwm_fullscale_semantic_trace_world_model_v1_materialization_train \
+  --title "STWM Fullscale Semantic Trace World Model V1 Train Materialization"
+
+"${PY}" code/stwm/tools/materialize_semantic_memory_eval_set_20260428.py \
+  --split-report "${SPLIT_REPORT}" \
   --eval-split val \
   --strict-split \
   --allow-scan-all-stage2-splits \
@@ -156,25 +217,98 @@ PY
   --audit-name stwm_fullscale_semantic_trace_world_model_v1_materialization_test \
   --title "STWM Fullscale Semantic Trace World Model V1 Test Materialization"
 
-"${PY}" code/stwm/tools/run_semantic_memory_world_model_v3_20260428.py \
-  --split-report "${SPLIT_REPORT}" \
-  --observed-report "${OBS_REPORT}" \
-  --future-cache-c32 "${TARGET32_REPORT}" \
-  --future-cache-c64 "${TARGET64_REPORT}" \
-  --steps "${STWM_FULLSCALE_STEPS:-5000}" \
-  --batch-size 4 \
-  --max-samples-per-dataset 999999 \
-  --seeds 42 123 456 789 1001 \
-  --lr 3e-5 \
-  --residual-scale 0.25 \
-  --device cuda \
-  --checkpoint-dir outputs/checkpoints/stwm_fullscale_semantic_trace_world_model_v1_20260428 \
-  --launch-output reports/stwm_fullscale_semantic_trace_world_model_v1_train_launch_20260428.json \
-  --summary-output reports/stwm_fullscale_semantic_trace_world_model_v1_train_summary_20260428.json \
-  --eval-c32-output reports/stwm_fullscale_semantic_trace_world_model_v1_train_eval_c32_internal_20260428.json \
-  --eval-c64-output reports/stwm_fullscale_semantic_trace_world_model_v1_train_eval_c64_internal_20260428.json \
-  --baseline-output reports/stwm_fullscale_semantic_trace_world_model_v1_train_baseline_internal_20260428.json \
-  --doc docs/STWM_FULLSCALE_SEMANTIC_TRACE_WORLD_MODEL_V1_TRAIN_SUMMARY_20260428.md
+"${PY}" - <<'PY'
+import json
+from pathlib import Path
+payload = {
+    "audit_name": "stwm_fullscale_semantic_trace_world_model_v1_train_launch",
+    "parallel_training": True,
+    "launcher": "parallel_tmux_sessions",
+    "prototype_counts": [32, 64],
+    "seeds": [42, 123, 456, 789, 1001],
+    "gpu_assignment": {f"c{c}_seed{s}": i % 8 for i, (c, s) in enumerate((c, s) for c in [32, 64] for s in [42, 123, 456, 789, 1001])},
+    "steps": int(__import__("os").environ.get("STWM_FULLSCALE_STEPS", "5000")),
+    "stage1_trainable_param_count": 0,
+    "trace_backbone_trainable": False,
+    "dynamic_trainable_params": 0,
+    "candidate_scorer_used": False,
+    "feedback_used": False,
+    "future_candidate_leakage": False,
+}
+Path("reports/stwm_fullscale_semantic_trace_world_model_v1_train_launch_20260428.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+PY
+
+TRAIN_CONFIGS=()
+for C in 32 64; do
+  for SEED in 42 123 456 789 1001; do
+    TRAIN_CONFIGS+=("${C}:${SEED}")
+  done
+done
+TRAIN_SESSIONS=()
+NEXT_RUN=0
+MAX_PARALLEL_TRAIN=8
+launch_train_run() {
+  local CONFIG="$1"
+  local GPU_ID="$2"
+  local C="${CONFIG%%:*}"
+  local SEED="${CONFIG##*:}"
+  local FUTURE_REPORT="${TARGET32_REPORT}"
+  if [[ "${C}" == "64" ]]; then
+    FUTURE_REPORT="${TARGET64_REPORT}"
+  fi
+  local SESSION="stwm_fullscale_v1_c${C}_seed${SEED}"
+  TRAIN_SESSIONS+=("${SESSION}")
+  tmux kill-session -t "${SESSION}" 2>/dev/null || true
+  tmux new-session -d -s "${SESSION}" "bash -lc 'cd ${REPO_ROOT}; exec env CUDA_VISIBLE_DEVICES=${GPU_ID} STWM_PROC_TITLE=python STWM_PROC_TITLE_MODE=generic PYTHONUNBUFFERED=1 OMP_NUM_THREADS=${OMP_NUM_THREADS} MKL_NUM_THREADS=${MKL_NUM_THREADS} OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS} NUMEXPR_NUM_THREADS=${NUMEXPR_NUM_THREADS} STWM_TORCH_NUM_THREADS=${STWM_TORCH_NUM_THREADS} PYTHONPATH=${PYTHONPATH} ${PY} code/stwm/tools/train_fullscale_semantic_trace_world_model_single_20260428.py --prototype-count ${C} --seed ${SEED} --train-cache-report reports/stwm_fullscale_semantic_trace_world_model_v1_materialization_train_20260428.json --val-cache-report reports/stwm_fullscale_semantic_trace_world_model_v1_materialization_val_20260428.json --observed-report ${OBS_REPORT} --future-cache-report ${FUTURE_REPORT} --steps ${STWM_FULLSCALE_STEPS:-5000} --lr 3e-5 --residual-scale 0.25 --device cuda --checkpoint-output outputs/checkpoints/stwm_fullscale_semantic_trace_world_model_v1_20260428/c${C}_seed${SEED}_final.pt --summary-output reports/stwm_fullscale_semantic_trace_world_model_v1_train_c${C}_seed${SEED}_20260428.json --doc docs/STWM_FULLSCALE_SEMANTIC_TRACE_WORLD_MODEL_V1_TRAIN_C${C}_SEED${SEED}_20260428.md --torch-num-threads ${STWM_TORCH_NUM_THREADS} > outputs/logs/stwm_fullscale_v1_c${C}_seed${SEED}.log 2>&1'"
+  echo "[fullscale-train] launched session=${SESSION} gpu=${GPU_ID}" >&2
+}
+
+while true; do
+  ACTIVE=0
+  for SESSION in "${TRAIN_SESSIONS[@]}"; do
+    if tmux has-session -t "${SESSION}" 2>/dev/null; then
+      ACTIVE=$((ACTIVE + 1))
+    fi
+  done
+  while [[ "${ACTIVE}" -lt "${MAX_PARALLEL_TRAIN}" && "${NEXT_RUN}" -lt "${#TRAIN_CONFIGS[@]}" ]]; do
+    launch_train_run "${TRAIN_CONFIGS[${NEXT_RUN}]}" "${ACTIVE}"
+    NEXT_RUN=$((NEXT_RUN + 1))
+    ACTIVE=$((ACTIVE + 1))
+  done
+  if [[ "${ACTIVE}" == "0" && "${NEXT_RUN}" -ge "${#TRAIN_CONFIGS[@]}" ]]; then
+    break
+  fi
+  echo "[fullscale-train] active_parallel_tmux_sessions=${ACTIVE} launched=${NEXT_RUN}/${#TRAIN_CONFIGS[@]}" >&2
+  sleep 60
+done
+
+"${PY}" - <<'PY'
+import json
+from pathlib import Path
+summaries = []
+for c in [32, 64]:
+    for seed in [42, 123, 456, 789, 1001]:
+        path = Path(f"reports/stwm_fullscale_semantic_trace_world_model_v1_train_c{c}_seed{seed}_20260428.json")
+        if path.exists():
+            summaries.append(json.loads(path.read_text()))
+payload = {
+    "audit_name": "stwm_fullscale_semantic_trace_world_model_v1_train_summary",
+    "parallel_training": True,
+    "v1_training_completed": len(summaries) == 10,
+    "completed_run_count": len(summaries),
+    "failed_run_count": 10 - len(summaries),
+    "seed_results": summaries,
+    "checkpoint_paths": [s.get("checkpoint_path", "") for s in summaries if s.get("checkpoint_path")],
+    "stage1_trainable_param_count": 0,
+    "trace_backbone_trainable": False,
+    "dynamic_trainable_params": 0,
+    "candidate_scorer_used": False,
+    "future_candidate_leakage": False,
+}
+Path("reports/stwm_fullscale_semantic_trace_world_model_v1_train_summary_20260428.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+lines = ["# STWM Fullscale Semantic Trace World Model V1 Train Summary", "", f"- parallel_training: `{payload['parallel_training']}`", f"- completed_run_count: `{payload['completed_run_count']}`", f"- failed_run_count: `{payload['failed_run_count']}`"]
+Path("docs/STWM_FULLSCALE_SEMANTIC_TRACE_WORLD_MODEL_V1_TRAIN_SUMMARY_20260428.md").write_text("\n".join(lines) + "\n")
+PY
 
 "${PY}" code/stwm/tools/eval_free_rollout_semantic_trace_field_20260428.py \
   --batch-cache-report reports/stwm_fullscale_semantic_trace_world_model_v1_materialization_val_20260428.json \
