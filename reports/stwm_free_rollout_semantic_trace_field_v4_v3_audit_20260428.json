@@ -1,0 +1,76 @@
+{
+  "audit_name": "stwm_free_rollout_semantic_trace_field_v4_v3_audit",
+  "best_c32_checkpoint": "outputs/checkpoints/stwm_semantic_memory_world_model_v3_20260428/c32_seed456_final.pt",
+  "best_c64_checkpoint": "outputs/checkpoints/stwm_semantic_memory_world_model_v3_20260428/c64_seed456_final.pt",
+  "candidate_scorer_used": false,
+  "checkpoints_support_free_rollout_export": true,
+  "free_rollout_function": "stwm.tracewm_v2_stage2.trainers.train_tracewm_stage2_smalltrain._free_rollout_predict",
+  "free_rollout_unclear_reason": "V3 runner evaluates seed checkpoints with _teacher_forced_predict; free-rollout script was not completed in V3.",
+  "future_candidate_leakage": false,
+  "heldout_materialized_item_count": 34,
+  "minimum_free_rollout_eval_entry": "code/stwm/tools/eval_free_rollout_semantic_trace_field_20260428.py",
+  "missing_materialized_keys_reason": {
+    "materialized_key_count": 249,
+    "max_samples_per_dataset": 300,
+    "missing_key_count": 71,
+    "missing_key_count_by_split": {
+      "test": 14,
+      "train": 43,
+      "val": 14
+    },
+    "requested_key_count": 320,
+    "sample_load_timeout_count": 8,
+    "sample_load_timeouts": [
+      {
+        "index": 65,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 118,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 147,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 152,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 170,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 216,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 245,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      },
+      {
+        "index": 295,
+        "reason": "sample_load_timeout",
+        "split": "train"
+      }
+    ],
+    "scanned_dataset_splits": [
+      "train"
+    ]
+  },
+  "nominal_v3_test_item_count": 48,
+  "nominal_v3_val_plus_test_item_count": 96,
+  "paper_claim_allowed": false,
+  "requested_heldout_item_count": 128,
+  "v3_eval_teacher_forced": true,
+  "v3_free_rollout_path_called": false,
+  "v3_free_rollout_semantic_field_signal": "unclear"
+}

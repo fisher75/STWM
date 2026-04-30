@@ -1,0 +1,109 @@
+{
+  "audit_name": "stwm_free_rollout_semantic_trace_field_v4_decision",
+  "best_free_rollout_metrics": {
+    "change_detection": {
+      "ap": 0.8954456588707205,
+      "auroc": 0.8362704700206103,
+      "eligible": true
+    },
+    "changed_subset_count": 2164,
+    "changed_subset_gain_over_copy": 0.18669130874525708,
+    "changed_subset_top5": 0.694085036967356,
+    "copy_changed_subset_top5": 0.5073937282220989,
+    "copy_proto_ce": 2.534464941091783,
+    "copy_proto_top1": 0.366510541071413,
+    "copy_proto_top5": 0.6879391137780992,
+    "copy_stable_subset_top5": 1.0,
+    "future_trace_coord_error": 0.7186991175015768,
+    "overall_gain_over_copy": 0.11797424089119923,
+    "proto_ce": 2.228787169942253,
+    "proto_logit_std_mean": 1.7970762252807617,
+    "proto_top1": 0.4675058592808819,
+    "proto_top5": 0.8059133546692985,
+    "reappearance": {
+      "ap": 0.017458556149962595,
+      "auroc": 0.3994115694622581,
+      "eligible": true
+    },
+    "stable_preservation_drop": 0.0007987219971209436,
+    "stable_subset_count": 1252,
+    "stable_subset_top5": 0.9992012780028791,
+    "valid_count": 3416,
+    "visibility": {
+      "ap": 0.0,
+      "auroc": 0.0,
+      "eligible": false
+    }
+  },
+  "best_prototype_count": 32,
+  "best_seed": 42,
+  "changed_gain_CI_excludes_zero": true,
+  "claim_boundary": "Free-rollout semantic trace field signal is positive on the materialized no-leakage eval set, but heldout scale is below requested 128 so paper-level claim remains unclear.",
+  "copy_baseline": {
+    "changed_subset_top5": 0.5073937282220989,
+    "proto_ce": 2.534464941091783,
+    "proto_top1": 0.366510541071413,
+    "proto_top5": 0.6879391137780992,
+    "stable_subset_top5": 1.0
+  },
+  "forbidden_claims": [
+    "teacher-forced-only paper claim",
+    "candidate scorer framing",
+    "SAM2/CoTracker plugin framing",
+    "hiding small heldout size"
+  ],
+  "free_rollout_eval_implemented": true,
+  "free_rollout_residual_beats_copy_changed_subset": true,
+  "free_rollout_residual_beats_copy_overall": true,
+  "free_rollout_semantic_field_signal": true,
+  "heldout_item_count": 71,
+  "item_level_significance": {
+    "bootstrap_unit": "item",
+    "residual_vs_copy_changed_top5": {
+      "bootstrap_win_rate": 0.7285714285714285,
+      "ci95": [
+        0.1346094636858574,
+        0.23154820154820163
+      ],
+      "item_count": 70,
+      "mean_delta": 0.17933012726051467,
+      "zero_excluded": true
+    },
+    "residual_vs_copy_overall_top5": {
+      "bootstrap_win_rate": 0.7183098591549296,
+      "ci95": [
+        0.09029735938554079,
+        0.1484357319562368
+      ],
+      "item_count": 71,
+      "mean_delta": 0.11779235093526437,
+      "zero_excluded": true
+    },
+    "stable_preservation_drop": {
+      "bootstrap_win_rate": 0.015873015873015872,
+      "ci95": [
+        0.0,
+        0.00952380895614624
+      ],
+      "item_count": 63,
+      "mean_delta": 0.00317460298538208,
+      "zero_excluded": false
+    }
+  },
+  "materialization_limit": {
+    "final_test_item_count": 71,
+    "materialization_limit_reason": "V3 no-leakage val+test pool is smaller than requested heldout count or contains slow/missing samples",
+    "missing_test": 12,
+    "missing_val": 13,
+    "nominal_eval_item_count": 96,
+    "requested_test": 128
+  },
+  "materialization_ok": false,
+  "paper_world_model_claimable": "unclear",
+  "recommended_next_step_choice": "increase_eval_materialization",
+  "semantic_field_branch_status": "main_supporting_evidence",
+  "stable_copy_preserved": true,
+  "teacher_forced_to_free_rollout_gap": -0.004335671239603656,
+  "trace_regression_detected": false,
+  "world_model_output_contract_satisfied": true
+}

@@ -1,0 +1,128 @@
+{
+  "audit_name": "stwm_free_rollout_semantic_trace_field_v4_materialization_audit",
+  "batch_cache_path": "outputs/cache/stwm_free_rollout_semantic_trace_field_v4_eval_set_20260428/eval_batches.pt",
+  "eval_splits": [
+    "val",
+    "test"
+  ],
+  "failed_items": [
+    {
+      "item_key": "VSPW::1017_8aIZCJKQL1s",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1019_OfFne6dmXvE",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1047_CjUyIs7-IXQ",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1121_RyACyzeCaVI",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::112_0OB2IP1enjU",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1163_ayuSarPEafI",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1223_xD8VN2r_h2s",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::127_-hIVCYO4C90",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1296_oaQaoEjjG7I",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::2097_HVti7xTm2ow",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::322_rUWndTh2COM",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::387_Estkfs5A7Gg",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::926_5QB2Z8AypBA",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1165_OxqFAwLeLNs",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1191_g9PMoi6Y7ok",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1372_4n-UrApAvho",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1477_GkuOGCQiUlk",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::151_BNFMbfOYTKg",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::154_6-pyJNd1h3I",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::1655_scluLCGBtFI",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::23_XmN5TD3AjMY",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::258_xINh_0D2h_0",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::353_-5sqmCF8OFU",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::670_JboU-y2LdkU",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    },
+    {
+      "item_key": "VSPW::93_qZmq-lc8lAg",
+      "reason": "item_key_not_found_in_stage2_dataset_entries"
+    }
+  ],
+  "final_test_item_count": 71,
+  "item_key_missing_count": 25,
+  "item_leakage": false,
+  "materialization_limit_reason": "V3 no-leakage val+test pool is smaller than requested heldout count or contains slow/missing samples",
+  "materialization_ok": false,
+  "materialized_test": 36,
+  "materialized_train": 0,
+  "materialized_val": 35,
+  "missing_test": 12,
+  "missing_train": 0,
+  "missing_val": 13,
+  "no_train_split_fallback": true,
+  "nominal_eval_item_count": 96,
+  "requested_test": 128,
+  "requested_train": 224,
+  "requested_val": 48,
+  "split_report": "reports/stwm_semantic_memory_world_model_v3_splits_20260428.json",
+  "timeout_count": 0
+}

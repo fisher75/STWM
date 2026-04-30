@@ -1,0 +1,25 @@
+{
+  "allowed": [
+    "free-rollout semantic trace field eval",
+    "observed semantic memory",
+    "copy-gated residual semantic transition",
+    "Stage1 frozen",
+    "dynamic trace path frozen"
+  ],
+  "audit_name": "stwm_world_model_no_drift_guardrail_v30",
+  "current_boundary": {
+    "candidate_scorer_used": false,
+    "free_rollout_eval_implemented": true,
+    "future_candidate_leakage": false,
+    "heldout_item_count": 71,
+    "paper_claim_allowed": false
+  },
+  "forbidden": [
+    "candidate scorer",
+    "SAM2/CoTracker plugin framing",
+    "future candidate leakage",
+    "teacher-forced-only paper claim",
+    "hiding small heldout size",
+    "claiming world model without free rollout"
+  ]
+}

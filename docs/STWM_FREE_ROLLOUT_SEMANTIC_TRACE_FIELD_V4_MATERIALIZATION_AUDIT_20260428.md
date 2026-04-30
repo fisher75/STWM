@@ -1,0 +1,22 @@
+# STWM Free-Rollout Semantic Trace Field V4 Materialization Audit
+
+- audit_name: `stwm_free_rollout_semantic_trace_field_v4_materialization_audit`
+- split_report: `reports/stwm_semantic_memory_world_model_v3_splits_20260428.json`
+- requested_train: `224`
+- requested_val: `48`
+- requested_test: `128`
+- nominal_eval_item_count: `96`
+- materialized_train: `0`
+- materialized_val: `35`
+- materialized_test: `36`
+- missing_train: `0`
+- missing_val: `13`
+- missing_test: `12`
+- timeout_count: `0`
+- item_key_missing_count: `25`
+- batch_cache_path: `outputs/cache/stwm_free_rollout_semantic_trace_field_v4_eval_set_20260428/eval_batches.pt`
+- final_test_item_count: `71`
+- materialization_ok: `False`
+- materialization_limit_reason: `V3 no-leakage val+test pool is smaller than requested heldout count or contains slow/missing samples`
+- no_train_split_fallback: `True`
+- item_leakage: `False`
