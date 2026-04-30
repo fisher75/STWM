@@ -1,0 +1,27 @@
+{
+  "allowed": [
+    "strict free-rollout semantic trace field validation",
+    "val-only model selection",
+    "test-once evaluation",
+    "copy-gated residual semantic transition",
+    "observed semantic memory"
+  ],
+  "audit_name": "stwm_world_model_no_drift_guardrail_v31",
+  "current_boundary": {
+    "best_selected_on_val_only": true,
+    "candidate_scorer_used": false,
+    "future_candidate_leakage": false,
+    "paper_claim_allowed": false,
+    "test_eval_once": true,
+    "val_test_separated": true
+  },
+  "forbidden": [
+    "candidate scorer",
+    "SAM2/CoTracker plugin framing",
+    "future candidate leakage",
+    "selecting best seed on test set",
+    "hiding materialization limits",
+    "teacher-forced-only world model claim",
+    "paper claim without test free-rollout signal"
+  ]
+}

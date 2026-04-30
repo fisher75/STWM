@@ -1,0 +1,116 @@
+{
+  "audit_name": "stwm_free_rollout_semantic_trace_field_v5_decision",
+  "best_selected_on_val_only": true,
+  "changed_gain_CI_excludes_zero": true,
+  "changed_test_item_count": 47,
+  "claim_boundary": "Strict val/test free-rollout protocol is positive, but test_item_count is below 100/128; paper-level world-model claim remains unclear until eval materialization expands.",
+  "forbidden_claims": [
+    "selecting best seed on test set",
+    "candidate scorer framing",
+    "SAM2/CoTracker plugin framing",
+    "hiding materialization limits",
+    "teacher-forced-only world-model claim"
+  ],
+  "free_rollout_semantic_field_signal": true,
+  "low_sample_warning": true,
+  "paper_world_model_claimable": "unclear",
+  "recommended_next_step_choice": "increase_eval_materialization",
+  "residual_beats_copy_changed_test": true,
+  "residual_beats_copy_overall_test": true,
+  "selected_checkpoint_path": "outputs/checkpoints/stwm_semantic_memory_world_model_v3_20260428/c64_seed789_final.pt",
+  "selected_prototype_count": 64,
+  "selected_seed": 789,
+  "semantic_field_branch_status": "main_supporting_evidence",
+  "stable_copy_preserved": true,
+  "test_eval_once": true,
+  "test_item_count": 48,
+  "test_metrics": {
+    "change_detection": {
+      "ap": 0.845504340595567,
+      "auroc": 0.8007463632618135,
+      "eligible": true
+    },
+    "changed_subset_count": 1390,
+    "changed_subset_gain_over_copy": 0.13597122564000613,
+    "changed_subset_top5": 0.5877697911408307,
+    "copy_changed_subset_top5": 0.4517985655008246,
+    "copy_proto_ce": 2.9505116322229386,
+    "copy_proto_top1": 0.39512619892341144,
+    "copy_proto_top5": 0.6684073149263081,
+    "copy_stable_subset_top5": 1.0,
+    "future_trace_coord_error": 0.5189869006474813,
+    "overall_gain_over_copy": 0.07136640412403872,
+    "proto_ce": 2.5871926444421343,
+    "proto_logit_std_mean": 2.1497354904810586,
+    "proto_top1": 0.4464751984745757,
+    "proto_top5": 0.7397737190503468,
+    "reappearance": {
+      "ap": 0.023152095774688596,
+      "auroc": 0.5344884853852967,
+      "eligible": true
+    },
+    "stable_preservation_drop": 0.027533037612616718,
+    "stable_subset_count": 908,
+    "stable_subset_top5": 0.9724669623873833,
+    "valid_count": 2298,
+    "visibility": {
+      "ap": 0.0,
+      "auroc": 0.0,
+      "eligible": false
+    }
+  },
+  "test_significance": {
+    "audit_name": "stwm_free_rollout_semantic_trace_field_v5_test_significance",
+    "bootstrap_unit": "item",
+    "changed_item_count": 47,
+    "low_sample_warning": true,
+    "prototype_count": 64,
+    "residual_vs_copy_ce_improvement": {
+      "bootstrap_win_rate": 0.9375,
+      "ci95": [
+        0.27102996557950976,
+        0.4698797345161438
+      ],
+      "item_count": 48,
+      "mean_delta": 0.36406519760688144,
+      "zero_excluded": true
+    },
+    "residual_vs_copy_changed_top5": {
+      "bootstrap_win_rate": 0.6170212765957447,
+      "ci95": [
+        0.07627030117437243,
+        0.21205469875774802
+      ],
+      "item_count": 47,
+      "mean_delta": 0.14168400911891715,
+      "zero_excluded": true
+    },
+    "residual_vs_copy_overall_top5": {
+      "bootstrap_win_rate": 0.5625,
+      "ci95": [
+        0.03936458626606812,
+        0.13250196621132387
+      ],
+      "item_count": 48,
+      "mean_delta": 0.08412543839464585,
+      "zero_excluded": true
+    },
+    "selected_seed": 789,
+    "stable_preservation_drop": {
+      "bootstrap_win_rate": 0.15555555555555556,
+      "ci95": [
+        0.010187799367639755,
+        0.09868782040145653
+      ],
+      "item_count": 45,
+      "mean_delta": 0.045957202381557885,
+      "zero_excluded": true
+    },
+    "test_eval_path": "reports/stwm_free_rollout_semantic_trace_field_v5_test_eval_20260428.json",
+    "test_item_count": 48
+  },
+  "trace_regression_detected": false,
+  "val_selection_primary_metric": "changed_subset_top5 gain over copy",
+  "val_test_separated": true,
+  "world_model_output_contract_satisfied": true
+}

@@ -1,0 +1,30 @@
+{
+  "audit_name": "stwm_free_rollout_semantic_trace_field_v5_protocol_audit",
+  "candidate_scorer_used": false,
+  "future_candidate_leakage": false,
+  "materialization_ok_false_root_cause": "V3 val+test nominal pool is 96 items and V4 materialized 71; cannot reach requested 128 without larger target/observed coverage or split rebuild.",
+  "paper_claim_blockers": [
+    "val/test mixed in V4",
+    "best seed selected on eval set",
+    "heldout_item_count below 100/128",
+    "materialization_ok=false"
+  ],
+  "paper_claim_currently_allowed": false,
+  "v4_best_seed_selected_on_eval_set": true,
+  "v4_eval_really_free_rollout": true,
+  "v4_free_rollout_path": "_free_rollout_predict",
+  "v4_heldout_item_count": 71,
+  "v4_missing_item_reason": {
+    "item_key_missing_count": 25,
+    "materialization_limit_reason": "V3 no-leakage val+test pool is smaller than requested heldout count or contains slow/missing samples",
+    "timeout_count": 0
+  },
+  "v4_mixed_val_test_eval": true,
+  "v5_protocol_fixes": [
+    "separate val/test materialization",
+    "select C/seed on val only",
+    "evaluate selected checkpoint on test once",
+    "item-level bootstrap on test",
+    "report materialization limit explicitly"
+  ]
+}

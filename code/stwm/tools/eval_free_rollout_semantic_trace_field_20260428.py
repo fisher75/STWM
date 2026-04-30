@@ -222,6 +222,12 @@ def main() -> None:
     p.add_argument("--device", default="cuda")
     p.add_argument("--eval-c32-output", default="reports/stwm_free_rollout_semantic_trace_field_v4_eval_c32_20260428.json")
     p.add_argument("--eval-c64-output", default="reports/stwm_free_rollout_semantic_trace_field_v4_eval_c64_20260428.json")
+    p.add_argument("--single-prototype-count", type=int, default=0)
+    p.add_argument("--single-checkpoint-path", default="")
+    p.add_argument("--single-seed", type=int, default=-1)
+    p.add_argument("--single-output", default="")
+    p.add_argument("--audit-name", default="")
+    p.add_argument("--test-eval-once", action="store_true")
     p.add_argument("--doc", default="docs/STWM_FREE_ROLLOUT_SEMANTIC_TRACE_FIELD_V4_EVAL_20260428.md")
     args = p.parse_args()
     device = torch.device("cuda" if str(args.device) == "cuda" and torch.cuda.is_available() else "cpu")
@@ -231,6 +237,66 @@ def main() -> None:
     heldout_item_count = int(len(batch_cache["item_keys"]))
     payload = _load_checkpoint(Path(args.start_checkpoint), device=torch.device("cpu"))
     checkpoint_args = payload.get("args", {}) if isinstance(payload.get("args"), dict) else {}
+    if int(args.single_prototype_count) > 0:
+        c = int(args.single_prototype_count)
+        future_report = args.future_cache_c32 if c == 32 else args.future_cache_c64
+        future_cache = load_future_semantic_prototype_target_cache(Path(future_report))
+        obs_data = _load_observed(Path(args.observed_report), c)
+        free = _eval_one_seed(
+            checkpoint_path=Path(args.single_checkpoint_path),
+            prototype_count=c,
+            payload=payload,
+            checkpoint_args=checkpoint_args,
+            batches_cpu=batches_cpu,
+            future_cache=future_cache,
+            obs_data=obs_data,
+            device=device,
+            residual_scale=float(args.residual_scale),
+        )
+        metrics = free["metrics"]
+        seed = int(args.single_seed)
+        report = {
+            "audit_name": str(args.audit_name or f"stwm_free_rollout_semantic_trace_field_single_c{c}"),
+            "prototype_count": c,
+            "heldout_item_count": int(heldout_item_count),
+            "free_rollout_eval_implemented": True,
+            "free_rollout_path": "_free_rollout_predict",
+            "teacher_forced_path_used": False,
+            "candidate_scorer_used": False,
+            "old_association_report_used": False,
+            "future_candidate_leakage": False,
+            "test_eval_once": bool(args.test_eval_once),
+            "selected_checkpoint_path": str(args.single_checkpoint_path),
+            "best_seed": seed,
+            "best_metrics": metrics,
+            "copy_baseline": {
+                "proto_top1": metrics.get("copy_proto_top1", 0.0),
+                "proto_top5": metrics.get("copy_proto_top5", 0.0),
+                "proto_ce": metrics.get("copy_proto_ce", 0.0),
+                "stable_subset_top5": metrics.get("copy_stable_subset_top5", 0.0),
+                "changed_subset_top5": metrics.get("copy_changed_subset_top5", 0.0),
+            },
+            "seed_results": [
+                {
+                    "seed": seed,
+                    "checkpoint_path": str(args.single_checkpoint_path),
+                    "val_metrics": metrics,
+                    "test_itemwise": {"aggregate": metrics, "item_scores": free["item_scores"]},
+                    "residual_beats_copy_overall": bool(metrics["proto_top5"] > metrics["copy_proto_top5"]),
+                    "residual_beats_copy_changed_subset": bool(metrics["changed_subset_top5"] > metrics["copy_changed_subset_top5"]),
+                    "stable_preservation_drop": float(metrics["stable_preservation_drop"]),
+                    "trace_regression_detected": False,
+                }
+            ],
+            "residual_beats_copy_overall": bool(metrics["proto_top5"] > metrics["copy_proto_top5"]),
+            "residual_beats_copy_changed_subset": bool(metrics["changed_subset_top5"] > metrics["copy_changed_subset_top5"]),
+            "stable_copy_preserved": bool(metrics["stable_preservation_drop"] <= 0.05),
+            "trace_regression_detected": bool(metrics["future_trace_coord_error"] > 1e6),
+            "output_degenerate": bool(metrics["proto_logit_std_mean"] <= 1e-8),
+        }
+        _write_json(Path(args.single_output), report)
+        _write_doc(Path(args.doc), "STWM Free-Rollout Semantic Trace Field V5 Test Eval", {"single_output": str(args.single_output), "heldout_item_count": heldout_item_count, "prototype_count": c})
+        return
     outputs = {}
     for c, eval_report, future_report, out_path in [
         (32, args.v3_eval_c32, args.future_cache_c32, args.eval_c32_output),

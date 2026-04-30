@@ -46,18 +46,31 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--split-report", default="reports/stwm_semantic_memory_world_model_v3_splits_20260428.json")
     p.add_argument("--start-checkpoint", default="outputs/checkpoints/stage2_tusb_semantic_only_unfreeze_v1_boundary_audit_20260428/latest.pt")
+    p.add_argument("--eval-split", default="")
     p.add_argument("--eval-splits", nargs="+", default=["val", "test"])
     p.add_argument("--requested-heldout-count", type=int, default=128)
     p.add_argument("--max-samples-per-dataset", type=int, default=768)
     p.add_argument("--batch-size", type=int, default=4)
     p.add_argument("--timeout-seconds", type=int, default=30)
     p.add_argument("--retries", type=int, default=1)
+    p.add_argument("--strict-split", action="store_true")
+    p.add_argument("--allow-scan-all-stage2-splits", action="store_true")
+    p.add_argument("--cache-output-val", default="")
+    p.add_argument("--cache-output-test", default="")
     p.add_argument("--cache-output", default="outputs/cache/stwm_free_rollout_semantic_trace_field_v4_eval_set_20260428/eval_batches.pt")
     p.add_argument("--output", default="reports/stwm_free_rollout_semantic_trace_field_v4_materialization_audit_20260428.json")
     p.add_argument("--doc", default="docs/STWM_FREE_ROLLOUT_SEMANTIC_TRACE_FIELD_V4_MATERIALIZATION_AUDIT_20260428.md")
+    p.add_argument("--audit-name", default="stwm_free_rollout_semantic_trace_field_v4_materialization_audit")
+    p.add_argument("--title", default="STWM Free-Rollout Semantic Trace Field V4 Materialization Audit")
     args = p.parse_args()
 
     split_payload = json.loads(Path(args.split_report).read_text(encoding="utf-8"))
+    if str(args.eval_split).strip():
+        args.eval_splits = [str(args.eval_split).strip()]
+        if args.cache_output_val and args.eval_splits == ["val"]:
+            args.cache_output = args.cache_output_val
+        if args.cache_output_test and args.eval_splits == ["test"]:
+            args.cache_output = args.cache_output_test
     wanted: list[str] = []
     for split in args.eval_splits:
         wanted.extend(str(x) for x in split_payload["splits"].get(str(split), []))
@@ -65,21 +78,28 @@ def main() -> None:
     payload = _load_checkpoint(Path(args.start_checkpoint), device=torch.device("cpu"))
     checkpoint_args = payload.get("args", {}) if isinstance(payload.get("args"), dict) else {}
     ds_args = _merge_args(checkpoint_args, {"future_semantic_proto_count": 64})
-    ds = _make_dataset(ds_args, split="train", max_samples_per_dataset=int(args.max_samples_per_dataset))
-    entry_to_idx: dict[str, int] = {}
-    for idx, entry in enumerate(getattr(ds, "entries", [])):
-        key = _entry_key(entry)
-        if key:
-            entry_to_idx.setdefault(key, idx)
+    scan_splits = ["train", "val"] if bool(args.allow_scan_all_stage2_splits) else ["train"]
+    entry_to_idx: dict[str, tuple[str, int]] = {}
+    datasets: dict[str, Any] = {}
+    for source_split in scan_splits:
+        ds = _make_dataset(ds_args, split=source_split, max_samples_per_dataset=int(args.max_samples_per_dataset))
+        datasets[source_split] = ds
+        for idx, entry in enumerate(getattr(ds, "entries", [])):
+            key = _entry_key(entry)
+            if key:
+                entry_to_idx.setdefault(key, (source_split, idx))
 
     previous_handler = signal.signal(signal.SIGALRM, _timeout_handler)
     materialized: list[dict[str, Any]] = []
+    materialized_sources: dict[str, str] = {}
     failures: list[dict[str, Any]] = []
     for key in wanted:
-        idx = entry_to_idx.get(key)
-        if idx is None:
+        entry_ref = entry_to_idx.get(key)
+        if entry_ref is None:
             failures.append({"item_key": key, "reason": "item_key_not_found_in_stage2_dataset_entries"})
             continue
+        source_split, idx = entry_ref
+        ds = datasets[source_split]
         loaded = None
         last_reason = ""
         for attempt in range(int(args.retries) + 1):
@@ -95,13 +115,14 @@ def main() -> None:
                 signal.alarm(0)
                 last_reason = f"{type(exc).__name__}: {str(exc)[:200]}"
         if loaded is None:
-            failures.append({"item_key": key, "dataset_index": int(idx), "reason": last_reason})
+            failures.append({"item_key": key, "source_split": source_split, "dataset_index": int(idx), "reason": last_reason})
             continue
         loaded_key = stage2_item_key(loaded.get("meta", {}))
         if loaded_key != key:
-            failures.append({"item_key": key, "dataset_index": int(idx), "loaded_key": loaded_key, "reason": "loaded_key_mismatch"})
+            failures.append({"item_key": key, "source_split": source_split, "dataset_index": int(idx), "loaded_key": loaded_key, "reason": "loaded_key_mismatch"})
             continue
         materialized.append(loaded)
+        materialized_sources[key] = source_split
     signal.signal(signal.SIGALRM, previous_handler)
 
     batches = [
@@ -116,6 +137,7 @@ def main() -> None:
             "item_keys": [stage2_item_key(x.get("meta", {})) for x in materialized],
             "eval_splits": [str(x) for x in args.eval_splits],
             "split_report": str(args.split_report),
+            "strict_split": bool(args.strict_split),
         },
         cache_path,
     )
@@ -127,9 +149,12 @@ def main() -> None:
         for name, keys in by_split.items()
     }
     report = {
-        "audit_name": "stwm_free_rollout_semantic_trace_field_v4_materialization_audit",
+        "audit_name": str(args.audit_name),
         "split_report": str(args.split_report),
         "eval_splits": [str(x) for x in args.eval_splits],
+        "strict_split": bool(args.strict_split),
+        "allow_scan_all_stage2_splits": bool(args.allow_scan_all_stage2_splits),
+        "stage2_source_splits_scanned": scan_splits,
         "requested_train": int(split_payload.get("train_item_count", 0)),
         "requested_val": int(split_payload.get("val_item_count", 0)),
         "requested_test": int(args.requested_heldout_count),
@@ -143,6 +168,10 @@ def main() -> None:
         "timeout_count": int(sum(1 for f in failures if "timeout" in str(f.get("reason", "")))),
         "item_key_missing_count": int(sum(1 for f in failures if f.get("reason") == "item_key_not_found_in_stage2_dataset_entries")),
         "failed_items": failures,
+        "materialized_source_counts": {
+            split: int(sum(1 for v in materialized_sources.values() if v == split))
+            for split in scan_splits
+        },
         "batch_cache_path": str(cache_path),
         "final_test_item_count": int(len(materialized_keys)),
         "materialization_ok": bool(len(materialized_keys) >= int(args.requested_heldout_count)),
@@ -153,7 +182,7 @@ def main() -> None:
         "item_leakage": False,
     }
     _write_json(Path(args.output), report)
-    _write_doc(Path(args.doc), "STWM Free-Rollout Semantic Trace Field V4 Materialization Audit", report)
+    _write_doc(Path(args.doc), str(args.title), report)
 
 
 if __name__ == "__main__":
