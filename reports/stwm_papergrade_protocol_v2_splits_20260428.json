@@ -1,0 +1,31 @@
+{
+  "audit_name": "stwm_papergrade_protocol_v2_splits",
+  "item_level_split": true,
+  "no_leakage": true,
+  "protocols": {
+    "leave_one_dataset_out": {
+      "available": false,
+      "blocker": "VIPSeg has zero eligible observed semantic memory items."
+    },
+    "mixed_train_mixed_test": {
+      "available": false,
+      "blocker": "Mixed VSPW+VIPSeg protocol is unavailable because VIPSeg observed semantic memory eligible item count is zero."
+    },
+    "per_dataset_eval": {
+      "available": true,
+      "vipseg_blocker": "observed semantic memory cache reports direct_cache_item_hits only for VSPW; VIPSeg observed_feature_mask is all false. The likely blocker is missing/zero VIPSeg observed predecode semantic crops or missing VIPSeg teacher/predecode cache entries, not missing future targets.",
+      "vipseg_test_available": false,
+      "vspw_test_available": true
+    },
+    "vspw_only_fallback": {
+      "available": true,
+      "split_report": "reports/stwm_fullscale_semantic_trace_world_model_v1_splits_20260428.json"
+    }
+  },
+  "test_once_eval": true,
+  "val_only_model_selection": true,
+  "video_level_split_if_available": "not guaranteed by current key schema; item-level no leakage is enforced",
+  "vspw_test_count": 229,
+  "vspw_train_count": 1065,
+  "vspw_val_count": 228
+}

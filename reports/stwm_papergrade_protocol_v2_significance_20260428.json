@@ -1,0 +1,55 @@
+{
+  "audit_name": "stwm_papergrade_protocol_v2_significance",
+  "bootstrap_unit": "item",
+  "mixed": {
+    "available": false,
+    "blocker": "Mixed VSPW+VIPSeg protocol is unavailable because VIPSeg observed semantic memory eligible item count is zero."
+  },
+  "vipseg": {
+    "available": false,
+    "blocker": "observed semantic memory cache reports direct_cache_item_hits only for VSPW; VIPSeg observed_feature_mask is all false. The likely blocker is missing/zero VIPSeg observed predecode semantic crops or missing VIPSeg teacher/predecode cache entries, not missing future targets."
+  },
+  "vspw": {
+    "available": true,
+    "ce_improvement": {
+      "bootstrap_win_rate": 0.9912663755458515,
+      "ci95": [
+        0.3454513406649427,
+        0.39057119155554787
+      ],
+      "item_count": 229,
+      "mean_delta": 0.3689117119301875,
+      "zero_excluded": true
+    },
+    "changed_top5_delta": {
+      "bootstrap_win_rate": 0.6858407079646017,
+      "ci95": [
+        0.10975712644950017,
+        0.1622354702698479
+      ],
+      "item_count": 226,
+      "mean_delta": 0.13645616079787765,
+      "zero_excluded": true
+    },
+    "overall_top5_delta": {
+      "bootstrap_win_rate": 0.6637554585152838,
+      "ci95": [
+        0.06951753303376088,
+        0.10239923360501314
+      ],
+      "item_count": 229,
+      "mean_delta": 0.08555408303654351,
+      "zero_excluded": true
+    },
+    "stable_preservation_drop": {
+      "bootstrap_win_rate": 0.07239819004524888,
+      "ci95": [
+        0.007222802222314463,
+        0.03127395754418761
+      ],
+      "item_count": 221,
+      "mean_delta": 0.017542533138219046,
+      "zero_excluded": true
+    }
+  }
+}

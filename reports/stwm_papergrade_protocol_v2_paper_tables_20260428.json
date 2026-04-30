@@ -1,0 +1,44 @@
+{
+  "audit_name": "stwm_papergrade_protocol_v2_paper_tables",
+  "full_stwm_story_table": [
+    {
+      "branch": "official STWM / TUSB-v3.1 + trace_belief_assoc",
+      "role": "fallback/supporting paper route"
+    },
+    {
+      "branch": "semantic trace field world model",
+      "role": "main contribution candidate on VSPW free-rollout protocol"
+    },
+    {
+      "branch": "utility/counterfactual evidence",
+      "role": "downstream validation assets"
+    }
+  ],
+  "semantic_trace_field_main_table": [
+    {
+      "dataset": "VSPW",
+      "method": "copy baseline",
+      "top5_changed": 0.5155568120194232,
+      "top5_overall": 0.6994234889766539
+    },
+    {
+      "dataset": "VSPW",
+      "method": "STWM copy-gated residual",
+      "prototype_count": 64,
+      "top5_changed": 0.6557792561506615,
+      "top5_overall": 0.7815339011273585
+    }
+  ],
+  "stable_changed_table": {
+    "changed_copy_top5": 0.5155568120194232,
+    "changed_gain": 0.1402224441312383,
+    "changed_residual_top5": 0.6557792561506615,
+    "stable_copy_top5": 0.9999999994375626,
+    "stable_preservation_drop": 0.012888375864341661,
+    "stable_residual_top5": 0.9871116235732209
+  },
+  "trace_guardrail_table": {
+    "future_trace_coord_error": 0.48867128994958153,
+    "trace_regression_detected": false
+  }
+}
