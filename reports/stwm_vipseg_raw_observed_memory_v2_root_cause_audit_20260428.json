@@ -1,0 +1,43 @@
+{
+  "audit_name": "stwm_vipseg_raw_observed_memory_v2_root_cause_audit",
+  "build_or_load_accepted_partial_predecode_cache_reason": "observed_min_coverage default was 0.0 and no dataset-specific rejection was enforced",
+  "force_raw_stage2dataset_reconstruction_needed": true,
+  "observed_min_coverage_current": 0.0,
+  "raw_rebuild_required_paths": {
+    "checkpoint": "outputs/checkpoints/stage2_tusb_semantic_only_unfreeze_v1_boundary_audit_20260428/latest.pt",
+    "feature_report": "reports/stwm_fullscale_semantic_trace_feature_targets_v1_20260428.json",
+    "stage2_contract_path": "reports/stage2_bootstrap_data_contract_20260408.json"
+  },
+  "stage2semanticdataset_can_load_vipseg_samples": true,
+  "v1_root_cause": {
+    "audit_name": "stwm_vipseg_observed_semantic_memory_repair_v1_root_cause_audit",
+    "cache_path_mismatch": false,
+    "can_rebuild_from_raw_vipseg_observed_frames": "not completed in this protocol-hardening pass; requires a dedicated raw VIPSeg crop materialization job because predecode covers only 284/3149 VIPSeg items.",
+    "code_filter_bug": true,
+    "dataset_name_mismatch": true,
+    "item_key_mismatch": false,
+    "missing_crops": true,
+    "no_candidate_scorer": true,
+    "no_future_leakage": true,
+    "repair_strategy": "fixed dataset-name aliases and rebuilt observed features from local predecode crops; remaining blocker is missing VIPSeg predecode/raw observed crop materialization.",
+    "root_cause": "dataset_name_casing_bug_plus_partial_vipseg_predecode_cache",
+    "vipseg_future_target_count": 2791,
+    "vipseg_item_keys_match_future_target_cache": true,
+    "vipseg_observed_crop_availability_after_alias_repair": 284,
+    "vipseg_observed_crop_availability_before_repair": 0,
+    "vipseg_observed_feature_mask_was_all_false_reason": "dataset-name casing mismatch: item keys use VIPSEG while local predecode files use VIPSeg; old lookup did not try aliases.",
+    "vipseg_observed_semantic_crop_feature_availability": 284,
+    "vipseg_predecode_cache_entries_alias_vipseg": 284,
+    "vipseg_predecode_cache_entries_case_sensitive_upper": 0,
+    "vipseg_predecode_cache_entries_used": 284,
+    "vipseg_predecode_missing_count": 2865,
+    "vipseg_raw_item_count": 3149
+  },
+  "v2_raw_feature_report": "reports/stwm_vipseg_raw_observed_semantic_features_v2_20260428.json",
+  "vipseg_raw_rebuild_can_avoid_predecode_cache": true,
+  "vipseg_samples_have_obs_valid": true,
+  "vipseg_samples_have_semantic_crop_valid": "derived from observed valid mask and raw mask-derived boxes",
+  "vipseg_samples_have_semantic_rgb_crop": "raw fast path reconstructs observed crops from frames/masks/bboxes instead of Stage2 __getitem__ semantic_rgb_crop tensor",
+  "vipseg_samples_have_semantic_rgb_crop_temporal": "not required by raw fast path; observed last-frame crop is used",
+  "why_vipseg_crops_did_not_enter_observed_cache": "partial predecode was accepted with observed_min_coverage=0 and exact VIPSEG casing failed before alias repair"
+}

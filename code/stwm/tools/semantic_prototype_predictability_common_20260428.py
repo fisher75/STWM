@@ -125,6 +125,70 @@ def _dataset_name_aliases(dataset: str) -> list[str]:
     return out
 
 
+def _parse_dataset_thresholds(value: str | dict[str, float] | None) -> dict[str, float]:
+    if value is None:
+        return {}
+    if isinstance(value, dict):
+        return {str(k).strip().upper(): float(v) for k, v in value.items()}
+    text = str(value).strip()
+    if not text:
+        return {}
+    try:
+        payload = json.loads(text)
+        if isinstance(payload, dict):
+            return {str(k).strip().upper(): float(v) for k, v in payload.items()}
+    except Exception:
+        pass
+    out: dict[str, float] = {}
+    for part in text.split(","):
+        if not part.strip() or ":" not in part:
+            continue
+        key, raw = part.split(":", 1)
+        out[str(key).strip().upper()] = float(raw)
+    return out
+
+
+def _dataset_coverage_from_mask(item_keys: list[str], mask: np.ndarray) -> dict[str, dict[str, float | int]]:
+    arr = np.asarray(mask, dtype=bool)
+    out: dict[str, dict[str, float | int]] = {}
+    for dataset in sorted({str(k).split("::", 1)[0].strip().upper() for k in item_keys if "::" in str(k)}):
+        idx = np.asarray([str(k).split("::", 1)[0].strip().upper() == dataset for k in item_keys], dtype=bool)
+        block = arr[idx]
+        out[dataset] = {
+            "item_count": int(idx.sum()),
+            "observed_item_count": int(block.any(axis=1).sum()) if block.ndim == 2 and block.size else 0,
+            "observed_slot_count": int(block.sum()) if block.size else 0,
+            "coverage_ratio": float(block.mean()) if block.size else 0.0,
+        }
+    return out
+
+
+def _coverage_satisfies_policy(
+    *,
+    item_keys: list[str],
+    mask: np.ndarray,
+    global_min_coverage: float,
+    min_coverage_by_dataset: dict[str, float],
+    force_raw_datasets: set[str],
+    reject_partial_predecode_coverage: bool,
+) -> tuple[bool, dict[str, Any], list[str]]:
+    by_dataset = _dataset_coverage_from_mask(item_keys, mask)
+    reasons: list[str] = []
+    observed_ratio = float(np.asarray(mask, dtype=bool).mean()) if np.asarray(mask).size else 0.0
+    if observed_ratio < float(global_min_coverage):
+        reasons.append("coverage_below_min_required")
+    for dataset, threshold in min_coverage_by_dataset.items():
+        ratio = float(by_dataset.get(dataset.upper(), {}).get("coverage_ratio", 0.0))
+        if ratio < float(threshold):
+            reasons.append(f"dataset_coverage_below_min:{dataset.upper()}:{ratio:.6f}<{float(threshold):.6f}")
+    for dataset in force_raw_datasets:
+        dataset_key = dataset.upper()
+        ratio = float(by_dataset.get(dataset_key, {}).get("coverage_ratio", 0.0))
+        if bool(reject_partial_predecode_coverage) or ratio < float(min_coverage_by_dataset.get(dataset_key, 1.0)):
+            reasons.append(f"force_raw_rebuild_dataset:{dataset_key}")
+    return not reasons, by_dataset, reasons
+
+
 def _tensor_crop_to_pil(crop: torch.Tensor) -> Image.Image | None:
     if not isinstance(crop, torch.Tensor) or crop.ndim != 3 or int(crop.shape[0]) != 3:
         return None
@@ -144,6 +208,10 @@ def build_or_load_observed_feature_cache(
     max_samples_per_dataset: int = 512,
     force_rebuild: bool = False,
     min_required_coverage: float = 0.0,
+    observed_cache_mode: str = "predecode_then_raw_fallback",
+    observed_min_coverage_by_dataset: str | dict[str, float] | None = None,
+    force_raw_observed_rebuild_datasets: list[str] | set[str] | tuple[str, ...] | None = None,
+    reject_partial_predecode_coverage: bool = False,
 ) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
     feature_payload, feature_data, _ = load_npz_from_report(feature_report, key="cache_path")
     item_keys = [str(x) for x in feature_data["item_keys"].tolist()]
@@ -157,7 +225,14 @@ def build_or_load_observed_feature_cache(
         "splits": sorted(set(splits)),
         "max_samples_per_dataset": int(max_samples_per_dataset),
         "item_keys_count": int(len(item_keys)),
+        "observed_cache_mode": str(observed_cache_mode),
+        "observed_min_coverage_by_dataset": _parse_dataset_thresholds(observed_min_coverage_by_dataset),
+        "force_raw_observed_rebuild_datasets": sorted({str(x).strip().upper() for x in (force_raw_observed_rebuild_datasets or []) if str(x).strip()}),
+        "reject_partial_predecode_coverage": bool(reject_partial_predecode_coverage),
     }
+    cache_mode = str(observed_cache_mode or "predecode_then_raw_fallback")
+    min_coverage_by_dataset = _parse_dataset_thresholds(observed_min_coverage_by_dataset)
+    force_raw_datasets = {str(x).strip().upper() for x in (force_raw_observed_rebuild_datasets or []) if str(x).strip()}
 
     rebuild_reason = ""
     if output_cache.exists() and not bool(force_rebuild):
@@ -181,8 +256,15 @@ def build_or_load_observed_feature_cache(
             mismatch_reasons.append("fingerprint_mismatch:splits")
         if cached_metadata and sorted(cached_metadata.get("dataset_names", [])) != requested_meta["dataset_names"]:
             mismatch_reasons.append("fingerprint_mismatch:dataset_names")
-        if observed_ratio < float(min_required_coverage):
-            mismatch_reasons.append("coverage_below_min_required")
+        coverage_ok, cached_by_dataset, cached_coverage_reasons = _coverage_satisfies_policy(
+            item_keys=item_keys,
+            mask=observed_mask,
+            global_min_coverage=float(min_required_coverage),
+            min_coverage_by_dataset=min_coverage_by_dataset,
+            force_raw_datasets=force_raw_datasets,
+            reject_partial_predecode_coverage=bool(reject_partial_predecode_coverage),
+        )
+        mismatch_reasons.extend(cached_coverage_reasons)
         if not mismatch_reasons:
             cached_metadata.update(
                 {
@@ -192,6 +274,7 @@ def build_or_load_observed_feature_cache(
                     "feature_dim": int(cached["observed_last_feature"].shape[-1]),
                     "observed_slot_feature_available_ratio": observed_ratio,
                     "observed_nonzero_count": int(observed_mask.sum()),
+                    "observed_coverage_by_dataset": cached_by_dataset,
                     "cache_rebuild_reason": "",
                     "requested_fingerprint": requested_meta,
                 }
@@ -217,7 +300,7 @@ def build_or_load_observed_feature_cache(
 
     args = checkpoint_args(checkpoint_path)
     predecode_cache_path = Path(str(args.get("predecode_cache_path") or ""))
-    if predecode_cache_path.exists():
+    if cache_mode not in {"raw_dataset_only", "raw_then_predecode_fallback"} and predecode_cache_path.exists():
         extractor = LocalClipExtractor(device_name=device)
         crops: list[Any] = []
         refs: list[tuple[int, int, str]] = []
@@ -279,7 +362,15 @@ def build_or_load_observed_feature_cache(
             obs_mean_sum[idx, slot] += vec
             obs_count[idx, slot] += 1.0
             obs_last_mask[idx, slot] = True
-        if float(obs_last_mask.mean()) >= float(min_required_coverage):
+        coverage_ok, coverage_by_dataset, coverage_reasons = _coverage_satisfies_policy(
+            item_keys=item_keys,
+            mask=obs_last_mask,
+            global_min_coverage=float(min_required_coverage),
+            min_coverage_by_dataset=min_coverage_by_dataset,
+            force_raw_datasets=force_raw_datasets,
+            reject_partial_predecode_coverage=bool(reject_partial_predecode_coverage),
+        )
+        if coverage_ok or cache_mode == "predecode_only":
             obs_mean = obs_mean_sum / np.maximum(obs_count[..., None], 1.0)
             obs_mean = l2_normalize(obs_mean)
             obs_last = l2_normalize(obs_last)
@@ -296,6 +387,10 @@ def build_or_load_observed_feature_cache(
                 "predecode_file_hits_by_dataset": predecode_file_hits_by_dataset,
                 "predecode_missing_by_dataset": predecode_missing_by_dataset,
                 "dataset_name_aliases_enabled": True,
+                "observed_coverage_by_dataset": coverage_by_dataset,
+                "coverage_policy_reasons": coverage_reasons,
+                "predecode_used": True,
+                "raw_dataset_rebuild_used": False,
             }
             output_cache.parent.mkdir(parents=True, exist_ok=True)
             np.savez_compressed(
@@ -319,6 +414,7 @@ def build_or_load_observed_feature_cache(
                 "feature_dim": int(feature_dim),
                 "observed_slot_feature_available_ratio": float(obs_last_mask.mean()),
                 "observed_nonzero_count": int(obs_last_mask.sum()),
+                "observed_coverage_by_dataset": coverage_by_dataset,
                 "item_keys_count": int(len(item_keys)),
                 "max_samples_per_dataset": int(max_samples_per_dataset),
                 "cache_rebuild_reason": rebuild_reason,
@@ -327,10 +423,11 @@ def build_or_load_observed_feature_cache(
                 "observed_feature_source_note": "uses local Stage2 predecode observed semantic crops encoded by local CLIP; no future candidate or future target crop is used",
             }
             return data, meta
+        rebuild_reason = ",".join([x for x in [rebuild_reason, *coverage_reasons] if x])
 
     teacher_cache_path = Path(str(args.get("teacher_semantic_cache_path") or ""))
     direct_cache_hits = 0
-    if teacher_cache_path.exists():
+    if cache_mode not in {"raw_dataset_only", "predecode_only"} and teacher_cache_path.exists():
         # Fast path: reuse the observed semantic prior already consumed by Stage2.
         # This is observed-state memory, not a future candidate or future target input.
         for idx, key in enumerate(item_keys):
@@ -371,7 +468,15 @@ def build_or_load_observed_feature_cache(
             obs_last_mask[idx, :kk] = valid
             direct_cache_hits += int(valid.any())
 
-    if float(obs_last_mask.mean()) >= float(min_required_coverage):
+    teacher_coverage_ok, teacher_coverage_by_dataset, teacher_coverage_reasons = _coverage_satisfies_policy(
+        item_keys=item_keys,
+        mask=obs_last_mask,
+        global_min_coverage=float(min_required_coverage),
+        min_coverage_by_dataset=min_coverage_by_dataset,
+        force_raw_datasets=force_raw_datasets,
+        reject_partial_predecode_coverage=bool(reject_partial_predecode_coverage),
+    )
+    if teacher_coverage_ok and cache_mode != "predecode_only":
         obs_mean = obs_mean_sum / np.maximum(obs_count[..., None], 1.0)
         obs_mean = l2_normalize(obs_mean)
         obs_last = l2_normalize(obs_last)
@@ -384,6 +489,10 @@ def build_or_load_observed_feature_cache(
             "observed_feature_fast_path": "teacher_semantic_cache",
             "teacher_semantic_cache_path": str(teacher_cache_path),
             "direct_cache_item_hits": int(direct_cache_hits),
+            "observed_coverage_by_dataset": teacher_coverage_by_dataset,
+            "coverage_policy_reasons": teacher_coverage_reasons,
+            "predecode_used": False,
+            "raw_dataset_rebuild_used": False,
         }
         output_cache.parent.mkdir(parents=True, exist_ok=True)
         np.savez_compressed(
@@ -407,6 +516,7 @@ def build_or_load_observed_feature_cache(
             "feature_dim": int(feature_dim),
             "observed_slot_feature_available_ratio": float(obs_last_mask.mean()),
             "observed_nonzero_count": int(obs_last_mask.sum()),
+            "observed_coverage_by_dataset": teacher_coverage_by_dataset,
             "item_keys_count": int(len(item_keys)),
             "max_samples_per_dataset": int(max_samples_per_dataset),
             "cache_rebuild_reason": rebuild_reason,
@@ -415,6 +525,7 @@ def build_or_load_observed_feature_cache(
             "observed_feature_source_note": "uses local Stage2 observed semantic teacher-prior cache; no future candidate or future target crop is used",
         }
         return data, meta
+    rebuild_reason = ",".join([x for x in [rebuild_reason, *teacher_coverage_reasons] if x])
 
     extractor = LocalClipExtractor(device_name=device)
     crops: list[Any] = []
@@ -492,7 +603,11 @@ def build_or_load_observed_feature_cache(
         "feature_report_mtime": float(feature_report.stat().st_mtime) if feature_report.exists() else None,
         "observed_nonzero_count": int(obs_last_mask.sum()),
         "observed_slot_feature_available_ratio": float(obs_last_mask.mean()) if obs_last_mask.size else 0.0,
+        "observed_coverage_by_dataset": _dataset_coverage_from_mask(item_keys, obs_last_mask),
         "cache_rebuild_reason": rebuild_reason,
+        "observed_feature_fast_path": "raw_stage2_dataset_clip",
+        "predecode_used": False,
+        "raw_dataset_rebuild_used": True,
     }
     output_cache.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
@@ -516,6 +631,7 @@ def build_or_load_observed_feature_cache(
         "feature_dim": int(feature_dim),
         "observed_slot_feature_available_ratio": float(obs_last_mask.mean()),
         "observed_nonzero_count": int(obs_last_mask.sum()),
+        "observed_coverage_by_dataset": _dataset_coverage_from_mask(item_keys, obs_last_mask),
         "item_keys_count": int(len(item_keys)),
         "max_samples_per_dataset": int(max_samples_per_dataset),
         "cache_rebuild_reason": rebuild_reason,

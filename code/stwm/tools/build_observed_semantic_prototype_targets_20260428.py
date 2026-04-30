@@ -86,6 +86,10 @@ def build_observed_targets(
     batch_size: int,
     force_rebuild_observed_cache: bool = False,
     observed_min_coverage: float = 0.0,
+    observed_cache_mode: str = "predecode_then_raw_fallback",
+    observed_min_coverage_by_dataset: str = "",
+    force_raw_observed_rebuild_datasets: list[str] | None = None,
+    reject_partial_predecode_coverage: bool = False,
     previous_report: Path | None = None,
 ) -> dict[str, Any]:
     observed, observed_meta = build_or_load_observed_feature_cache(
@@ -97,6 +101,10 @@ def build_observed_targets(
         max_samples_per_dataset=int(max_samples_per_dataset),
         force_rebuild=bool(force_rebuild_observed_cache),
         min_required_coverage=float(observed_min_coverage),
+        observed_cache_mode=str(observed_cache_mode),
+        observed_min_coverage_by_dataset=str(observed_min_coverage_by_dataset),
+        force_raw_observed_rebuild_datasets=list(force_raw_observed_rebuild_datasets or []),
+        reject_partial_predecode_coverage=bool(reject_partial_predecode_coverage),
     )
     feature_payload, feature_data, _ = load_npz_from_report(feature_report, key="cache_path")
     item_keys = [str(x) for x in feature_data["item_keys"].tolist()]
@@ -205,6 +213,10 @@ def build_observed_targets(
         "cache_rebuilt": bool(not observed_meta.get("observed_feature_cache_reused", False)),
         "cache_rebuild_reason": str(observed_meta.get("cache_rebuild_reason") or ""),
         "observed_max_samples_per_dataset": int(max_samples_per_dataset),
+        "observed_cache_mode": str(observed_cache_mode),
+        "observed_min_coverage_by_dataset": str(observed_min_coverage_by_dataset),
+        "force_raw_observed_rebuild_datasets": list(force_raw_observed_rebuild_datasets or []),
+        "reject_partial_predecode_coverage": bool(reject_partial_predecode_coverage),
         "observed_feature_valid_ratio": observed_feature_valid_ratio,
         "observed_slot_feature_available_ratio": observed_slot_feature_available_ratio,
         "observed_proto_valid_ratio": observed_feature_valid_ratio,
@@ -247,6 +259,14 @@ def main() -> None:
     p.add_argument("--observed-max-samples-per-dataset", type=int, default=None)
     p.add_argument("--force-rebuild-observed-cache", action="store_true")
     p.add_argument("--observed-min-coverage", type=float, default=0.0)
+    p.add_argument(
+        "--observed-cache-mode",
+        choices=["predecode_only", "raw_dataset_only", "predecode_then_raw_fallback", "raw_then_predecode_fallback"],
+        default="predecode_then_raw_fallback",
+    )
+    p.add_argument("--observed-min-coverage-by-dataset", default="")
+    p.add_argument("--force-raw-observed-rebuild-datasets", nargs="*", default=[])
+    p.add_argument("--reject-partial-predecode-coverage", action="store_true")
     p.add_argument("--previous-observed-report", default="reports/stwm_observed_semantic_prototype_targets_v1_20260428.json")
     p.add_argument("--device", default="cuda")
     p.add_argument("--batch-size", type=int, default=64)
@@ -266,6 +286,10 @@ def main() -> None:
         batch_size=int(args.batch_size),
         force_rebuild_observed_cache=bool(args.force_rebuild_observed_cache),
         observed_min_coverage=float(args.observed_min_coverage),
+        observed_cache_mode=str(args.observed_cache_mode),
+        observed_min_coverage_by_dataset=str(args.observed_min_coverage_by_dataset),
+        force_raw_observed_rebuild_datasets=[str(x) for x in args.force_raw_observed_rebuild_datasets],
+        reject_partial_predecode_coverage=bool(args.reject_partial_predecode_coverage),
         previous_report=Path(args.previous_observed_report) if args.previous_observed_report else None,
     )
 
