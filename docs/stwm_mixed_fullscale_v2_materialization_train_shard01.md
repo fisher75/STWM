@@ -1,0 +1,29 @@
+# STWM Mixed Fullscale V2 Train Materialization stwm_mixed_fullscale_v2_materialization_train_shard01
+
+- audit_name: `stwm_mixed_fullscale_v2_materialization_train_shard01`
+- split_report: `reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json`
+- source_nominal_eval_item_count: `3019`
+- item_start: `377`
+- item_end: `754`
+- shard_eval_item_count: `377`
+- strict_split: `True`
+- allow_scan_all_stage2_splits: `True`
+- requested_train: `3019`
+- requested_val: `647`
+- requested_test: `1`
+- nominal_eval_item_count: `377`
+- materialized_train: `377`
+- materialized_val: `0`
+- materialized_test: `0`
+- missing_train: `0`
+- missing_val: `0`
+- missing_test: `0`
+- timeout_count: `0`
+- item_key_missing_count: `0`
+- batch_cache_path: `outputs/cache/stwm_mixed_fullscale_v2_materialization_train_shard01_20260428/eval_batches.pt`
+- final_test_item_count: `377`
+- final_eval_item_count: `377`
+- materialization_ok: `True`
+- materialization_limit_reason: ``
+- no_train_split_fallback: `True`
+- item_leakage: `False`

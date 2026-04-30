@@ -1,0 +1,26 @@
+# STWM Mixed Fullscale V2 Test Materialization
+
+- audit_name: `stwm_mixed_fullscale_v2_materialization_test`
+- split_report: `reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json`
+- strict_split: `True`
+- source_nominal_eval_item_count: `647`
+- nominal_eval_item_count: `647`
+- requested_train: `3019`
+- requested_val: `647`
+- requested_test: `647`
+- materialized_train: `0`
+- materialized_val: `0`
+- materialized_test: `647`
+- missing_train: `0`
+- missing_val: `0`
+- missing_test: `0`
+- timeout_count: `0`
+- item_key_missing_count: `0`
+- batch_cache_path: `outputs/cache/stwm_mixed_fullscale_v2_test_20260428/eval_batches.pt`
+- final_test_item_count: `647`
+- final_eval_item_count: `647`
+- materialization_ok: `True`
+- materialization_limit_reason: ``
+- no_train_split_fallback: `True`
+- item_leakage: `False`
+- merged_shard_count: `4`

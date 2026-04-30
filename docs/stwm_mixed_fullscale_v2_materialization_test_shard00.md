@@ -1,0 +1,29 @@
+# STWM Mixed Fullscale V2 VIPSeg Test Materialization stwm_mixed_fullscale_v2_materialization_test_shard00
+
+- audit_name: `stwm_mixed_fullscale_v2_materialization_test_shard00`
+- split_report: `reports/stwm_mixed_fullscale_v2_splits_vipseg_test_20260428.json`
+- source_nominal_eval_item_count: `418`
+- item_start: `0`
+- item_end: `104`
+- shard_eval_item_count: `104`
+- strict_split: `True`
+- allow_scan_all_stage2_splits: `True`
+- requested_train: `1954`
+- requested_val: `419`
+- requested_test: `418`
+- nominal_eval_item_count: `104`
+- materialized_train: `0`
+- materialized_val: `0`
+- materialized_test: `104`
+- missing_train: `0`
+- missing_val: `0`
+- missing_test: `0`
+- timeout_count: `0`
+- item_key_missing_count: `0`
+- batch_cache_path: `outputs/cache/stwm_mixed_fullscale_v2_materialization_test_shard00_20260428/eval_batches.pt`
+- final_test_item_count: `104`
+- final_eval_item_count: `104`
+- materialization_ok: `False`
+- materialization_limit_reason: `V3 no-leakage val+test pool is smaller than requested heldout count or contains slow/missing samples`
+- no_train_split_fallback: `True`
+- item_leakage: `False`

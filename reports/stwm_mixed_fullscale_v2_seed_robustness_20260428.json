@@ -1,0 +1,71 @@
+{
+  "audit_name": "stwm_mixed_fullscale_v2_seed_robustness",
+  "c32_changed_gain_mean_std": {
+    "mean": 0.0,
+    "std": 0.0
+  },
+  "c64_changed_gain_mean_std": {
+    "mean": 0.06391121359549856,
+    "std": 0.0
+  },
+  "dataset_specific_robustness": "reported on mixed val; per-dataset robustness is evaluated on selected test checkpoint only",
+  "failed_seeds": [
+    {
+      "prototype_count": 32,
+      "reason": "long_run_aborted_due_cluster_contention; smoke_50step_passed_but_full_5000step_not_completed",
+      "seed": 42
+    },
+    {
+      "prototype_count": 32,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 123
+    },
+    {
+      "prototype_count": 32,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 456
+    },
+    {
+      "prototype_count": 32,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 789
+    },
+    {
+      "prototype_count": 32,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 1001
+    },
+    {
+      "prototype_count": 64,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 123
+    },
+    {
+      "prototype_count": 64,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 456
+    },
+    {
+      "prototype_count": 64,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 789
+    },
+    {
+      "prototype_count": 64,
+      "reason": "summary_or_checkpoint_missing",
+      "seed": 1001
+    }
+  ],
+  "seed_results": [
+    {
+      "changed_gain_over_copy": 0.06391121359549856,
+      "future_trace_coord_error": 0.31277955605126007,
+      "overall_gain_over_copy": 0.03184787229470065,
+      "proto_top5": 0.8337649348630095,
+      "prototype_count": 64,
+      "seed": 42,
+      "stable_preservation_drop": 0.0008588381190735017
+    }
+  ],
+  "val_split_only": true
+}

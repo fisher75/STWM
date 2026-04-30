@@ -1,0 +1,74 @@
+{
+  "audit_name": "stwm_mixed_fullscale_v2_protocol_audit",
+  "candidate_scorer_used": false,
+  "changed_stable_counts_per_split": {
+    "test": {
+      "changed_count": 12930,
+      "changed_ratio": 0.4872258647976487,
+      "dataset_counts": {
+        "VIPSEG": 418,
+        "VSPW": 229
+      },
+      "future_valid_slot_count": 3475,
+      "item_count": 647,
+      "observed_slot_count": 3645,
+      "overlap_slot_count": 3475,
+      "stable_count": 13608
+    },
+    "train": {
+      "changed_count": 60161,
+      "changed_ratio": 0.49665243988013175,
+      "dataset_counts": {
+        "VIPSEG": 1954,
+        "VSPW": 1065
+      },
+      "future_valid_slot_count": 15869,
+      "item_count": 3019,
+      "observed_slot_count": 16612,
+      "overlap_slot_count": 15869,
+      "stable_count": 60972
+    },
+    "val": {
+      "changed_count": 13065,
+      "changed_ratio": 0.5049665674641518,
+      "dataset_counts": {
+        "VIPSEG": 419,
+        "VSPW": 228
+      },
+      "future_valid_slot_count": 3414,
+      "item_count": 647,
+      "observed_slot_count": 3558,
+      "overlap_slot_count": 3414,
+      "stable_count": 12808
+    }
+  },
+  "dataset_counts_per_split": {
+    "test": {
+      "VIPSEG": 418,
+      "VSPW": 229
+    },
+    "train": {
+      "VIPSEG": 1954,
+      "VSPW": 1065
+    },
+    "val": {
+      "VIPSEG": 419,
+      "VSPW": 228
+    }
+  },
+  "free_rollout_eval_entrypoint_available": true,
+  "mixed_split_includes_vspw_and_vipseg": true,
+  "no_item_leakage": true,
+  "stage1_frozen": true,
+  "test_item_count": 647,
+  "trace_dynamic_path_frozen": true,
+  "train_config_can_consume_mixed_split": true,
+  "train_item_count": 3019,
+  "val_item_count": 647,
+  "video_level_leakage_status": "item key is dataset::clip_id; no duplicate key crosses splits",
+  "vipseg_eligible_count_v2": 2791,
+  "vipseg_future_overlap_ratio_v2": 1.0,
+  "vipseg_observed_memory_repaired": true,
+  "vipseg_observed_proto_valid_ratio_v2": 0.6135793622357578,
+  "vipseg_raw_rebuild_successful": true
+}
