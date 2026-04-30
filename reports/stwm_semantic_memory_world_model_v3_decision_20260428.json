@@ -1,0 +1,92 @@
+{
+  "allowed_claim_boundary": "V3 supports semantic memory residual transition as main supporting evidence under teacher-forced heldout semantic-field evaluation.",
+  "audit_name": "stwm_semantic_memory_world_model_v3_decision",
+  "best_metrics": {
+    "change_detection": {
+      "ap": 0.893846426534205,
+      "auroc": 0.8496799675284127,
+      "eligible": true
+    },
+    "changed_subset_count": 1020,
+    "changed_subset_top5": 0.6794117561158012,
+    "proto_ce": 2.2094525393930455,
+    "proto_top1": 0.4993932208281408,
+    "proto_top5": 0.8015776834296948,
+    "stable_subset_count": 628,
+    "stable_subset_top5": 0.999999996108614,
+    "valid_count": 1648
+  },
+  "best_prototype_count": 32,
+  "best_seed": 456,
+  "best_seed_or_seed_mean": "best_seed=456; seed_mean_top5=0.7871359371155211",
+  "changed_gain_CI_excludes_zero": true,
+  "copy_baseline": {
+    "change_detection": {
+      "ap": 0.612004210697882,
+      "auroc": 0.5,
+      "eligible": true
+    },
+    "changed_subset_count": 1020,
+    "changed_subset_top5": 0.47156863396658616,
+    "proto_ce": 2.5185336372227343,
+    "proto_top1": 0.38106797378763413,
+    "proto_top5": 0.6729369010703946,
+    "stable_subset_count": 628,
+    "stable_subset_top5": 0.999999996108614,
+    "valid_count": 1648
+  },
+  "forbidden_claims": [
+    "paper-level world model claim before robust free-rollout",
+    "candidate scorer framing",
+    "SAM2/CoTracker plugin framing",
+    "external overall SOTA"
+  ],
+  "free_rollout_semantic_field_signal": "unclear",
+  "item_level_significance": {
+    "bootstrap_unit": "item",
+    "residual_vs_copy_changed_top5": {
+      "bootstrap_win_rate": 0.7272727272727273,
+      "ci95": [
+        0.12968590740453112,
+        0.2815128559246659
+      ],
+      "item_count": 33,
+      "mean_delta": 0.20112040616346127,
+      "zero_excluded": true
+    },
+    "residual_vs_copy_overall_top5": {
+      "bootstrap_win_rate": 0.7058823529411765,
+      "ci95": [
+        0.07424194117021911,
+        0.16987515246386034
+      ],
+      "item_count": 34,
+      "mean_delta": 0.11830228172680911,
+      "zero_excluded": true
+    },
+    "stable_preservation_drop": {
+      "bootstrap_win_rate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "item_count": 31,
+      "mean_delta": 0.0,
+      "zero_excluded": false
+    }
+  },
+  "paper_world_model_claimable": "unclear",
+  "protocol_limitations": [
+    "Runtime split materialized 249/320 eligible keys because several samples timed out in dataset loading.",
+    "Heldout test contains 34 materialized items; item-level bootstrap is available but test size is below requested 128 due coverage/I/O limits.",
+    "Free-rollout robust semantic field eval is not completed in this runner; paper-level world-model claim remains unclear."
+  ],
+  "recommended_next_step_choice": "run_full_semantic_trace_field_training",
+  "residual_beats_copy_changed_subset": true,
+  "residual_beats_copy_overall": true,
+  "semantic_field_branch_status": "main_supporting_evidence",
+  "stable_copy_preserved": true,
+  "trace_regression_detected": false,
+  "v3_training_completed": true,
+  "world_model_output_contract_satisfied": true
+}

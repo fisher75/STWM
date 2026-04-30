@@ -1,0 +1,24 @@
+# STWM Semantic Memory World Model V3 Source Audit
+
+- audit_name: `stwm_semantic_memory_world_model_v3_source_audit`
+- observed_proto_valid_ratio: `0.4005859375`
+- future_target_overlap_ratio: `0.6018045112781955`
+- current_best_prototype_count: `32`
+- current_best_seed: `456`
+- copy_baseline_overall: `0.6833085168136392`
+- copy_baseline_stable: `0.9999999889170502`
+- copy_baseline_changed: `0.5283018798462955`
+- residual_overall: `0.7295081996526874`
+- residual_stable: `0.9954648458498135`
+- residual_changed: `0.5993340773534828`
+- changed_subset_gain: `0.07103219750718726`
+- stable_preservation_drop: `0.00453514306723668`
+- trace_regression_detected: `False`
+- v2_significance_available: `True`
+- v2_significance_type: `seed_level_due_current_eval_reports_not_saving_item_level_scores`
+- v2_item_level_bootstrap_available: `False`
+- v2_result_paper_grade: `False`
+- v2_result_status: `positive_sanity_needs_larger_fixed_split_item_bootstrap_and_free_rollout`
+- semantic_memory_transition_v1_signal_positive: `True`
+- tiny_memory_signal_positive: `None`
+- persistence_copy_baseline_strong: `True`

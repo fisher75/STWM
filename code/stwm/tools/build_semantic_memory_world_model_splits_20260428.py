@@ -85,6 +85,11 @@ def main() -> None:
     p.add_argument("--future-report-c64", default="reports/stwm_future_semantic_trace_prototype_targets_v2_c64_20260428.json")
     p.add_argument("--output", default="reports/stwm_semantic_memory_world_model_v2_splits_20260428.json")
     p.add_argument("--doc", default="docs/STWM_SEMANTIC_MEMORY_WORLD_MODEL_V2_SPLITS_20260428.md")
+    p.add_argument("--audit-name", default="stwm_semantic_memory_world_model_v2_splits")
+    p.add_argument("--split-seed", type=int, default=20260428)
+    p.add_argument("--target-train-items", type=int, default=0)
+    p.add_argument("--target-val-items", type=int, default=0)
+    p.add_argument("--target-test-items", type=int, default=0)
     args = p.parse_args()
     observed_report = Path(args.observed_report)
     future_payload32, future32 = _load_report_npz(Path(args.future_report_c32))
@@ -114,13 +119,31 @@ def main() -> None:
         splits["test"].extend(keys[n_train + n_val :])
     for name in splits:
         splits[name] = sorted(splits[name])
+    target_counts = {
+        "train": int(args.target_train_items),
+        "val": int(args.target_val_items),
+        "test": int(args.target_test_items),
+    }
+    unmet = {
+        name: max(int(target_counts[name]) - int(len(splits[name])), 0)
+        for name in ["train", "val", "test"]
+        if int(target_counts[name]) > 0
+    }
     payload = {
-        "audit_name": "stwm_semantic_memory_world_model_v2_splits",
+        "audit_name": str(args.audit_name),
         "prototype_count_choices": [32, 64],
         "eligible_item_count": int(len(eligible)),
         "train_item_count": int(len(splits["train"])),
         "val_item_count": int(len(splits["val"])),
         "test_item_count": int(len(splits["test"])),
+        "requested_min_train_item_count": int(args.target_train_items),
+        "requested_min_val_item_count": int(args.target_val_items),
+        "requested_min_test_item_count": int(args.target_test_items),
+        "requested_min_counts_met": bool(not any(v > 0 for v in unmet.values())),
+        "unmet_requested_item_counts": unmet,
+        "unmet_reason": "observed semantic memory coverage currently exposes only eligible_item_count items" if any(v > 0 for v in unmet.values()) else "",
+        "deterministic_split_seed": int(args.split_seed),
+        "split_hash": hashlib.sha1(json.dumps(splits, sort_keys=True).encode("utf-8")).hexdigest(),
         "splits": splits,
         "stats_c32": {name: _stats_for_keys(keys, future32, observed32) for name, keys in splits.items()},
         "stats_c64": {name: _stats_for_keys(keys, future64, observed64) for name, keys in splits.items()},

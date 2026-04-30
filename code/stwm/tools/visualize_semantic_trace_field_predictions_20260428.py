@@ -19,6 +19,8 @@ def main() -> None:
     p.add_argument("--figure-dir", default="outputs/figures/stwm_semantic_trace_field_v2")
     p.add_argument("--output", default="reports/stwm_semantic_trace_field_v2_visualization_manifest_20260428.json")
     p.add_argument("--doc", default="docs/STWM_SEMANTIC_TRACE_FIELD_V2_VISUALIZATION_20260428.md")
+    p.add_argument("--audit-name", default="stwm_semantic_trace_field_v2_visualization_manifest")
+    p.add_argument("--title", default="STWM Semantic Trace Field V2 Visualization")
     args = p.parse_args()
     splits = json.loads(Path(args.split_report).read_text(encoding="utf-8"))
     eval_payload = json.loads(Path(args.eval_report).read_text(encoding="utf-8"))
@@ -26,7 +28,7 @@ def main() -> None:
     figure_dir.mkdir(parents=True, exist_ok=True)
     examples = [{"item_key": key, "planned_panels": ["observed_trace", "future_trace", "copy_proto", "residual_proto", "stable_changed_label"]} for key in splits["splits"]["test"][:16]]
     payload = {
-        "audit_name": "stwm_semantic_trace_field_v2_visualization_manifest",
+        "audit_name": str(args.audit_name),
         "figure_dir": str(figure_dir),
         "example_count": len(examples),
         "examples": examples,
@@ -39,7 +41,7 @@ def main() -> None:
     _write_json(Path(args.output), payload)
     Path(args.doc).parent.mkdir(parents=True, exist_ok=True)
     Path(args.doc).write_text(
-        "# STWM Semantic Trace Field V2 Visualization\n\n"
+        f"# {args.title}\n\n"
         + "\n".join(f"- {k}: `{v}`" for k, v in payload.items() if k != "examples")
         + "\n",
         encoding="utf-8",
