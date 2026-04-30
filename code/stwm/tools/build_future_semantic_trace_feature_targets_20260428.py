@@ -193,6 +193,16 @@ def _build_split(
     reappearance = np.zeros((len(dataset), max_h, max_k), dtype=bool)
     identity = np.full((len(dataset), max_k), -1, dtype=np.int64)
     extent = np.zeros((len(dataset), max_h, max_k, 4), dtype=np.float32)
+    encode_flush_threshold = max(int(batch_size) * 8, int(batch_size))
+
+    def _flush_crops() -> None:
+        if extractor is None or not all_crops:
+            return
+        encoded = extractor.encode(all_crops, batch_size=int(batch_size))
+        for vec, (ref_idx, ref_fh, ref_slot) in zip(encoded, crop_refs):
+            features[ref_idx, ref_fh, ref_slot, : int(vec.shape[0])] = vec
+        all_crops.clear()
+        crop_refs.clear()
 
     for idx in range(len(dataset)):
         sample = dataset[idx]
@@ -245,14 +255,13 @@ def _build_split(
                     all_crops.append(crop)
                     crop_refs.append((idx, fh, slot))
                     target_mask[idx, fh, slot] = True
+                    if len(all_crops) >= encode_flush_threshold:
+                        _flush_crops()
                 elif extractor is None:
                     features[idx, fh, slot, :14] = _stats_feature(crop, box, image_size)
                     target_mask[idx, fh, slot] = True
 
-    if extractor is not None and all_crops:
-        encoded = extractor.encode(all_crops, batch_size=int(batch_size))
-        for vec, (idx, fh, slot) in zip(encoded, crop_refs):
-            features[idx, fh, slot, : int(vec.shape[0])] = vec
+    _flush_crops()
 
     return keys, splits, datasets, features, target_mask, visibility, reappearance, identity, extent, samples
 

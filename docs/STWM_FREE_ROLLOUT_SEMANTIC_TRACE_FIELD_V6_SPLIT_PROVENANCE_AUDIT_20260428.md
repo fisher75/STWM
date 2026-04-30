@@ -1,0 +1,29 @@
+# STWM Free-Rollout Semantic Trace Field V6 Split Provenance Audit
+
+- audit_name: `stwm_free_rollout_semantic_trace_field_v6_split_provenance_audit`
+- v5_test_item_key_definition: `stage2_item_key(meta)=DATASET::clip_id materialized from semantic-memory split item_keys`
+- v5_test_item_count: `48`
+- v5_test_items_in_v3_training_count: `0`
+- v5_test_items_in_v3_val_count: `0`
+- v5_test_items_in_v3_test_count: `48`
+- v5_test_items_participated_in_v3_training: `False`
+- materialized_source_counts_meaning: `Stage2 dataset source split used to load the raw sample, not semantic-memory V3/V5 train split membership.`
+- stage2_source_train_equals_model_training_train: `False`
+- no_train_split_fallback_actual_meaning: `No semantic-memory train split fallback was used; requested eval item_keys came from V3 test split. Stage2 source train/val is raw data loader provenance only.`
+- item_level_leakage: `False`
+- video_level_leakage_conservative_prefix_overlap_count: `18`
+- video_level_leakage_note: `Conservative prefix grouping may over-count because item_key lacks explicit video_id beyond clip_id; exact video-level isolation is ambiguous unless source metadata exposes parent video ids.`
+- target_cache_leakage: `False`
+- target_cache_leakage_note: `Future prototype targets are supervised labels for heldout metrics, not rollout inputs; observed semantic memory is observed-state input.`
+- test_keys_in_observed_target_cache_count: `48`
+- test_keys_in_future_target_cache_count: `48`
+- seed_C_selection_leakage: `False`
+- seed_C_selection_source: `reports/stwm_free_rollout_semantic_trace_field_v5_val_selection_20260428.json`
+- selected_on_val_only: `True`
+- test_eval_once: `True`
+- candidate_scorer_used: `False`
+- future_candidate_leakage: `False`
+- old_association_report_used: `False`
+- source_split_ambiguity_resolved: `stage2_source_split_is_loader_provenance_not_model_split`
+- final_leakage_status: `no_leakage`
+- continue_expansion_allowed: `True`
