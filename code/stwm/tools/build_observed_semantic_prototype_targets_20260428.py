@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 import json
+import os
 
 import numpy as np
 from stwm.tools.semantic_prototype_predictability_common_20260428 import (
@@ -57,6 +58,19 @@ def _topk_from_scores(scores: np.ndarray, labels: np.ndarray, k: int = 5) -> dic
         "top1": float((pred == labels).mean()),
         "top5": float(np.any(top == labels[:, None], axis=1).mean()),
     }
+
+
+def _apply_process_title_normalization() -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode == "off":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", "python")).strip() or "python"
+    try:
+        import setproctitle  # type: ignore
+
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
 
 
 def build_observed_targets(
@@ -220,6 +234,7 @@ def build_observed_targets(
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     p = ArgumentParser()
     p.add_argument("--feature-report", default="reports/stwm_semantic_trace_field_decoder_v2_feature_targets_large_20260428.json")
     p.add_argument("--checkpoint", default="outputs/checkpoints/stage2_tusb_semantic_only_unfreeze_v1_boundary_audit_20260428/latest.pt")

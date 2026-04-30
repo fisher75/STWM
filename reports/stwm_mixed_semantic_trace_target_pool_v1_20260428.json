@@ -1,0 +1,40 @@
+{
+  "audit_name": "stwm_mixed_semantic_trace_target_pool_v1",
+  "changed_stable_ratio_by_dataset_c64": {
+    "VIPSEG": {
+      "changed": 4952,
+      "changed_ratio": 0.5797237180988059,
+      "stable": 3590
+    },
+    "VSPW": {
+      "changed": 47421,
+      "changed_ratio": 0.6242069237857049,
+      "stable": 28549
+    }
+  },
+  "future_target_overlap_ratio_by_dataset": {
+    "VIPSEG": 0.08647313156269303,
+    "VSPW": 0.492392668842581
+  },
+  "mixed_protocol_blocker": "vipseg_observed_memory_partial_only: 284 observed items out of 2791 future-target items; 2865 VIPSeg predecode files are missing, so paper-grade mixed/cross-dataset training is not launched.",
+  "mixed_protocol_feasible": false,
+  "no_future_leakage": true,
+  "observed_proto_valid_ratio_by_dataset": {
+    "VIPSEG": 0.04910288980628771,
+    "VSPW": 0.40151635439822164
+  },
+  "prototype_stats_c32": {
+    "empty_target_prototype_count": 0,
+    "prototype_count": 32,
+    "prototype_entropy": 3.3838239917511244
+  },
+  "prototype_stats_c64": {
+    "empty_target_prototype_count": 0,
+    "prototype_count": 64,
+    "prototype_entropy": 4.066803426795623
+  },
+  "total_eligible_item_count": 1756,
+  "total_raw_item_count": 6298,
+  "vipseg_eligible": 234,
+  "vspw_eligible": 1522
+}

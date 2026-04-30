@@ -107,6 +107,24 @@ def dataset_for_split(args: dict[str, Any], split: str, max_samples_per_dataset:
     )
 
 
+def _dataset_name_aliases(dataset: str) -> list[str]:
+    """Return filename aliases for dataset names used by older caches.
+
+    STWM item keys use `VIPSEG`, while the Stage2 predecode cache was written as
+    `VIPSeg`.  Treating those as distinct silently drops VIPSeg observed memory.
+    """
+    aliases = [str(dataset)]
+    if str(dataset).upper() == "VIPSEG":
+        aliases.extend(["VIPSeg", "vipseg"])
+    if str(dataset).upper() == "VSPW":
+        aliases.extend(["VSPW", "vspw"])
+    out: list[str] = []
+    for name in aliases:
+        if name and name not in out:
+            out.append(name)
+    return out
+
+
 def _tensor_crop_to_pil(crop: torch.Tensor) -> Image.Image | None:
     if not isinstance(crop, torch.Tensor) or crop.ndim != 3 or int(crop.shape[0]) != 3:
         return None
@@ -204,20 +222,31 @@ def build_or_load_observed_feature_cache(
         crops: list[Any] = []
         refs: list[tuple[int, int, str]] = []
         predecode_hits = 0
+        predecode_hits_by_dataset: dict[str, int] = {}
+        predecode_file_hits_by_dataset: dict[str, int] = {}
+        predecode_missing_by_dataset: dict[str, int] = {}
         for idx, key in enumerate(item_keys):
             dataset, clip = key.split("::", 1) if "::" in key else ("", key)
             split = str(split_by_key.get(key) or splits[idx])
-            candidates = [
-                predecode_cache_path / split / f"{dataset}__{split}__{clip}.npz",
-                predecode_cache_path / "train" / f"{dataset}__train__{clip}.npz",
-                predecode_cache_path / "val" / f"{dataset}__val__{clip}.npz",
-            ]
+            candidates = []
+            for dataset_alias in _dataset_name_aliases(dataset):
+                candidates.extend(
+                    [
+                        predecode_cache_path / split / f"{dataset_alias}__{split}__{clip}.npz",
+                        predecode_cache_path / "train" / f"{dataset_alias}__train__{clip}.npz",
+                        predecode_cache_path / "val" / f"{dataset_alias}__val__{clip}.npz",
+                    ]
+                )
             cache_file = next((p for p in candidates if p.exists()), None)
             if cache_file is None:
-                matches = list(predecode_cache_path.glob(f"*/*{dataset}__*__{clip}.npz"))
+                matches = []
+                for dataset_alias in _dataset_name_aliases(dataset):
+                    matches.extend(predecode_cache_path.glob(f"*/*{dataset_alias}__*__{clip}.npz"))
                 cache_file = matches[0] if matches else None
             if cache_file is None:
+                predecode_missing_by_dataset[dataset] = predecode_missing_by_dataset.get(dataset, 0) + 1
                 continue
+            predecode_file_hits_by_dataset[dataset] = predecode_file_hits_by_dataset.get(dataset, 0) + 1
             try:
                 with np.load(cache_file, allow_pickle=True) as predecode:
                     rgb = np.asarray(predecode["semantic_rgb_crop"], dtype=np.float32)
@@ -243,6 +272,7 @@ def build_or_load_observed_feature_cache(
                 refs.append((idx, slot, "last"))
                 any_hit = True
             predecode_hits += int(any_hit)
+            predecode_hits_by_dataset[dataset] = predecode_hits_by_dataset.get(dataset, 0) + int(any_hit)
         encoded = extractor.encode(crops, batch_size=int(batch_size)) if crops else np.zeros((0, feature_dim), dtype=np.float32)
         for vec, (idx, slot, _mode) in zip(encoded, refs):
             obs_last[idx, slot] = vec
@@ -262,6 +292,10 @@ def build_or_load_observed_feature_cache(
                 "observed_feature_fast_path": "predecode_crop_clip",
                 "predecode_cache_path": str(predecode_cache_path),
                 "direct_cache_item_hits": int(predecode_hits),
+                "direct_cache_item_hits_by_dataset": predecode_hits_by_dataset,
+                "predecode_file_hits_by_dataset": predecode_file_hits_by_dataset,
+                "predecode_missing_by_dataset": predecode_missing_by_dataset,
+                "dataset_name_aliases_enabled": True,
             }
             output_cache.parent.mkdir(parents=True, exist_ok=True)
             np.savez_compressed(
@@ -302,14 +336,20 @@ def build_or_load_observed_feature_cache(
         for idx, key in enumerate(item_keys):
             dataset, clip = key.split("::", 1) if "::" in key else ("", key)
             split = str(split_by_key.get(key) or splits[idx])
-            candidates = [
-                teacher_cache_path / f"{dataset}__{split}__{clip}.npz",
-                teacher_cache_path / f"{dataset}__train__{clip}.npz",
-                teacher_cache_path / f"{dataset}__val__{clip}.npz",
-            ]
+            candidates = []
+            for dataset_alias in _dataset_name_aliases(dataset):
+                candidates.extend(
+                    [
+                        teacher_cache_path / f"{dataset_alias}__{split}__{clip}.npz",
+                        teacher_cache_path / f"{dataset_alias}__train__{clip}.npz",
+                        teacher_cache_path / f"{dataset_alias}__val__{clip}.npz",
+                    ]
+                )
             cache_file = next((p for p in candidates if p.exists()), None)
             if cache_file is None:
-                matches = list(teacher_cache_path.glob(f"{dataset}__*__{clip}.npz"))
+                matches = []
+                for dataset_alias in _dataset_name_aliases(dataset):
+                    matches.extend(teacher_cache_path.glob(f"{dataset_alias}__*__{clip}.npz"))
                 cache_file = matches[0] if matches else None
             if cache_file is None:
                 continue
