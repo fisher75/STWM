@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +26,19 @@ from stwm.tools.overfit_semantic_trace_field_one_batch_20260428 import (
 )
 from stwm.tools.run_semantic_memory_transition_residual_tiny_overfit_20260428 import _binary_metrics, _load_observed, _observed_for_batch
 from stwm.tools.run_semantic_memory_world_model_v3_20260428 import _load_trained_models
+
+
+def _apply_process_title_normalization() -> None:
+    mode = str(os.environ.get("STWM_PROC_TITLE_MODE", "generic")).strip().lower()
+    if mode == "off":
+        return
+    title = str(os.environ.get("STWM_PROC_TITLE", "python")).strip() or "python"
+    try:
+        import setproctitle  # type: ignore
+
+        setproctitle.setproctitle(title)
+    except Exception:
+        pass
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -210,6 +224,7 @@ def _mean_std(values: list[float]) -> dict[str, float]:
 
 
 def main() -> None:
+    _apply_process_title_normalization()
     p = argparse.ArgumentParser()
     p.add_argument("--batch-cache-report", default="reports/stwm_free_rollout_semantic_trace_field_v4_materialization_audit_20260428.json")
     p.add_argument("--start-checkpoint", default="outputs/checkpoints/stage2_tusb_semantic_only_unfreeze_v1_boundary_audit_20260428/latest.pt")

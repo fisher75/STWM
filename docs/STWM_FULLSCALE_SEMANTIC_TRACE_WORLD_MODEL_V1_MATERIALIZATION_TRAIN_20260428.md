@@ -1,0 +1,26 @@
+# STWM Fullscale Semantic Trace World Model V1 Train Materialization
+
+- audit_name: `stwm_fullscale_semantic_trace_world_model_v1_materialization_train`
+- split_report: `reports/stwm_fullscale_semantic_trace_world_model_v1_splits_20260428.json`
+- strict_split: `True`
+- source_nominal_eval_item_count: `1065`
+- nominal_eval_item_count: `1065`
+- requested_train: `1065`
+- requested_val: `228`
+- requested_test: `1`
+- materialized_train: `1065`
+- materialized_val: `0`
+- materialized_test: `0`
+- missing_train: `0`
+- missing_val: `0`
+- missing_test: `0`
+- timeout_count: `0`
+- item_key_missing_count: `0`
+- batch_cache_path: `outputs/cache/stwm_fullscale_semantic_trace_world_model_v1_train_20260428/eval_batches.pt`
+- final_test_item_count: `1065`
+- final_eval_item_count: `1065`
+- materialization_ok: `True`
+- materialization_limit_reason: ``
+- no_train_split_fallback: `True`
+- item_leakage: `False`
+- merged_shard_count: `8`

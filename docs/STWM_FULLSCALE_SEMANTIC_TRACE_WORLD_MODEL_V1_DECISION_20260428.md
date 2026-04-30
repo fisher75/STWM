@@ -1,0 +1,26 @@
+# STWM Fullscale Semantic Trace World Model V1 Decision
+
+- audit_name: `stwm_fullscale_semantic_trace_world_model_v1_decision`
+- fullscale_target_pool_built: `True`
+- eligible_item_count: `1522`
+- train_item_count: `1065`
+- val_item_count: `228`
+- test_item_count: `229`
+- best_prototype_count: `64`
+- best_seed: `123`
+- best_step: `final`
+- residual_beats_copy_overall_test: `True`
+- residual_beats_copy_changed_test: `True`
+- changed_gain_CI_excludes_zero: `True`
+- overall_gain_CI_excludes_zero: `True`
+- stable_copy_preserved: `True`
+- trace_regression_detected: `False`
+- free_rollout_semantic_field_signal: `True`
+- world_model_output_contract_satisfied: `True`
+- paper_world_model_claimable: `true`
+- semantic_field_branch_status: `main_contribution_candidate`
+- recommended_next_step_choice: `proceed_to_paper_assets_with_semantic_field_main`
+- no_candidate_scorer: `True`
+- future_candidate_leakage: `False`
+- teacher_forced_path_used: `False`
+- free_rollout_path: `True`

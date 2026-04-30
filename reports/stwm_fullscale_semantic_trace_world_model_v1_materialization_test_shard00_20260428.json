@@ -1,0 +1,41 @@
+{
+  "allow_scan_all_stage2_splits": true,
+  "audit_name": "stwm_fullscale_semantic_trace_world_model_v1_materialization_test_shard00",
+  "batch_cache_path": "outputs/cache/stwm_fullscale_semantic_trace_world_model_v1_test_shard00_20260428/eval_batches.pt",
+  "eval_splits": [
+    "test"
+  ],
+  "failed_items": [],
+  "final_eval_item_count": 114,
+  "final_test_item_count": 114,
+  "item_end": 114,
+  "item_key_missing_count": 0,
+  "item_leakage": false,
+  "item_start": 0,
+  "materialization_limit_reason": "V3 no-leakage val+test pool is smaller than requested heldout count or contains slow/missing samples",
+  "materialization_ok": false,
+  "materialized_source_counts": {
+    "train": 110,
+    "val": 4
+  },
+  "materialized_test": 114,
+  "materialized_train": 0,
+  "materialized_val": 0,
+  "missing_test": 0,
+  "missing_train": 0,
+  "missing_val": 0,
+  "no_train_split_fallback": true,
+  "nominal_eval_item_count": 114,
+  "requested_test": 200,
+  "requested_train": 1065,
+  "requested_val": 228,
+  "shard_eval_item_count": 114,
+  "source_nominal_eval_item_count": 229,
+  "split_report": "reports/stwm_fullscale_semantic_trace_world_model_v1_splits_20260428.json",
+  "stage2_source_splits_scanned": [
+    "train",
+    "val"
+  ],
+  "strict_split": true,
+  "timeout_count": 0
+}

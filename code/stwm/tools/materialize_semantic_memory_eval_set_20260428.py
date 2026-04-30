@@ -53,6 +53,9 @@ def main() -> None:
     p.add_argument("--batch-size", type=int, default=4)
     p.add_argument("--timeout-seconds", type=int, default=30)
     p.add_argument("--retries", type=int, default=1)
+    p.add_argument("--item-start", type=int, default=0)
+    p.add_argument("--item-end", type=int, default=-1)
+    p.add_argument("--progress-every", type=int, default=50)
     p.add_argument("--strict-split", action="store_true")
     p.add_argument("--allow-scan-all-stage2-splits", action="store_true")
     p.add_argument("--cache-output-val", default="")
@@ -75,6 +78,14 @@ def main() -> None:
     for split in args.eval_splits:
         wanted.extend(str(x) for x in split_payload["splits"].get(str(split), []))
     wanted = list(dict.fromkeys(wanted))
+    source_wanted_count = len(wanted)
+    item_start = max(0, int(args.item_start))
+    item_end = int(args.item_end)
+    if item_end < 0 or item_end > source_wanted_count:
+        item_end = source_wanted_count
+    if item_start > item_end:
+        item_start = item_end
+    wanted = wanted[item_start:item_end]
     payload = _load_checkpoint(Path(args.start_checkpoint), device=torch.device("cpu"))
     checkpoint_args = payload.get("args", {}) if isinstance(payload.get("args"), dict) else {}
     ds_args = _merge_args(checkpoint_args, {"future_semantic_proto_count": 64})
@@ -93,10 +104,16 @@ def main() -> None:
     materialized: list[dict[str, Any]] = []
     materialized_sources: dict[str, str] = {}
     failures: list[dict[str, Any]] = []
-    for key in wanted:
+    for local_idx, key in enumerate(wanted):
         entry_ref = entry_to_idx.get(key)
         if entry_ref is None:
             failures.append({"item_key": key, "reason": "item_key_not_found_in_stage2_dataset_entries"})
+            if int(args.progress_every) > 0 and (local_idx + 1) % int(args.progress_every) == 0:
+                print(
+                    f"[materialize] split={','.join(args.eval_splits)} shard={item_start}:{item_end} "
+                    f"processed={local_idx + 1}/{len(wanted)} materialized={len(materialized)} failures={len(failures)}",
+                    flush=True,
+                )
             continue
         source_split, idx = entry_ref
         ds = datasets[source_split]
@@ -116,13 +133,31 @@ def main() -> None:
                 last_reason = f"{type(exc).__name__}: {str(exc)[:200]}"
         if loaded is None:
             failures.append({"item_key": key, "source_split": source_split, "dataset_index": int(idx), "reason": last_reason})
+            if int(args.progress_every) > 0 and (local_idx + 1) % int(args.progress_every) == 0:
+                print(
+                    f"[materialize] split={','.join(args.eval_splits)} shard={item_start}:{item_end} "
+                    f"processed={local_idx + 1}/{len(wanted)} materialized={len(materialized)} failures={len(failures)}",
+                    flush=True,
+                )
             continue
         loaded_key = stage2_item_key(loaded.get("meta", {}))
         if loaded_key != key:
             failures.append({"item_key": key, "source_split": source_split, "dataset_index": int(idx), "loaded_key": loaded_key, "reason": "loaded_key_mismatch"})
+            if int(args.progress_every) > 0 and (local_idx + 1) % int(args.progress_every) == 0:
+                print(
+                    f"[materialize] split={','.join(args.eval_splits)} shard={item_start}:{item_end} "
+                    f"processed={local_idx + 1}/{len(wanted)} materialized={len(materialized)} failures={len(failures)}",
+                    flush=True,
+                )
             continue
         materialized.append(loaded)
         materialized_sources[key] = source_split
+        if int(args.progress_every) > 0 and (local_idx + 1) % int(args.progress_every) == 0:
+            print(
+                f"[materialize] split={','.join(args.eval_splits)} shard={item_start}:{item_end} "
+                f"processed={local_idx + 1}/{len(wanted)} materialized={len(materialized)} failures={len(failures)}",
+                flush=True,
+            )
     signal.signal(signal.SIGALRM, previous_handler)
 
     batches = [
@@ -137,6 +172,9 @@ def main() -> None:
             "item_keys": [stage2_item_key(x.get("meta", {})) for x in materialized],
             "eval_splits": [str(x) for x in args.eval_splits],
             "split_report": str(args.split_report),
+            "source_nominal_eval_item_count": int(source_wanted_count),
+            "item_start": int(item_start),
+            "item_end": int(item_end),
             "strict_split": bool(args.strict_split),
         },
         cache_path,
@@ -152,6 +190,10 @@ def main() -> None:
         "audit_name": str(args.audit_name),
         "split_report": str(args.split_report),
         "eval_splits": [str(x) for x in args.eval_splits],
+        "source_nominal_eval_item_count": int(source_wanted_count),
+        "item_start": int(item_start),
+        "item_end": int(item_end),
+        "shard_eval_item_count": int(len(wanted)),
         "strict_split": bool(args.strict_split),
         "allow_scan_all_stage2_splits": bool(args.allow_scan_all_stage2_splits),
         "stage2_source_splits_scanned": scan_splits,
@@ -174,6 +216,7 @@ def main() -> None:
         },
         "batch_cache_path": str(cache_path),
         "final_test_item_count": int(len(materialized_keys)),
+        "final_eval_item_count": int(len(materialized_keys)),
         "materialization_ok": bool(len(materialized_keys) >= int(args.requested_heldout_count)),
         "materialization_limit_reason": ""
         if len(materialized_keys) >= int(args.requested_heldout_count)

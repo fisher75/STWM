@@ -1,12 +1,35 @@
 {
   "audit_name": "stwm_fullscale_semantic_trace_world_model_v1_seed_robustness",
-  "candidate_scorer_used": false,
-  "future_candidate_leakage": false,
-  "log_path": "outputs/logs/stwm_fullscale_semantic_trace_world_model_v1_20260428.log",
-  "note": "Placeholder will be overwritten by run_fullscale_semantic_trace_world_model_v1_20260428.sh when each stage completes.",
-  "stage1_frozen": true,
-  "started_at_unix": 1777527178.701848,
-  "status": "running_background_pipeline",
-  "tmux_session": "stwm_fullscale_v1_20260428",
-  "trace_dynamic_path_frozen": true
+  "c32_val_eval": "reports/stwm_fullscale_semantic_trace_world_model_v1_val_eval_c32_20260428.json",
+  "c64_val_eval": "reports/stwm_fullscale_semantic_trace_world_model_v1_val_eval_c64_20260428.json",
+  "completed_run_count": 10,
+  "failed_run_count": 0,
+  "seed_robustness": [
+    {
+      "changed_subset_gain_mean": 0.14845854566750039,
+      "changed_subset_gain_std": 0.0031999758064472023,
+      "failed_seeds": [],
+      "overall_gain_mean": 0.08508604302543903,
+      "overall_gain_std": 0.0017277626317424143,
+      "proto_top5_mean": 0.8273074996014502,
+      "proto_top5_std": 0.0017277626317424143,
+      "prototype_count": 32,
+      "seed_count": 5
+    },
+    {
+      "changed_subset_gain_mean": 0.1532914521035781,
+      "changed_subset_gain_std": 0.003625383267658754,
+      "failed_seeds": [],
+      "overall_gain_mean": 0.09534156094908239,
+      "overall_gain_std": 0.00257995918808923,
+      "proto_top5_mean": 0.7578654699109129,
+      "proto_top5_std": 0.00257995918808923,
+      "prototype_count": 64,
+      "seed_count": 5
+    }
+  ],
+  "selected_prototype_count": 64,
+  "selected_seed": 123,
+  "selection_report": "reports/stwm_fullscale_semantic_trace_world_model_v1_val_selection_20260428.json",
+  "selection_rule": "val-only: changed subset top5 gain, then overall top5 gain, then stable drop, then trace coord error"
 }
