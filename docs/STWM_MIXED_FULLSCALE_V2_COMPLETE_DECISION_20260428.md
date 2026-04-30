@@ -1,0 +1,23 @@
+# STWM Mixed Fullscale V2 Complete Decision
+
+- audit_name: `stwm_mixed_fullscale_v2_complete_decision`
+- expected_run_count: `10`
+- completed_run_count: `10`
+- failed_run_count: `0`
+- all_runs_completed: `True`
+- val_selection_candidate_count: `10`
+- best_prototype_count: `32`
+- best_seed: `456`
+- residual_beats_copy_mixed: `True`
+- residual_beats_copy_vspw: `True`
+- residual_beats_copy_vipseg: `True`
+- changed_gain_CI_excludes_zero_mixed: `True`
+- changed_gain_CI_excludes_zero_vspw: `True`
+- changed_gain_CI_excludes_zero_vipseg: `True`
+- stable_copy_preserved: `True`
+- trace_regression_detected: `False`
+- free_rollout_semantic_field_signal: `True`
+- world_model_output_contract_satisfied: `True`
+- paper_world_model_claimable: `true`
+- semantic_field_branch_status: `main_contribution_candidate`
+- recommended_next_step_choice: `proceed_to_paper_assets_with_mixed_protocol`
