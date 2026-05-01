@@ -1,0 +1,47 @@
+{
+  "audit_name": "stwm_fstf_benchmark_protocol_v6_20260501",
+  "benchmark_name": "STWM-FSTF: Future Semantic Trace Field Prediction",
+  "candidate_scorer_used": false,
+  "copy_baseline_rationale": "Observed semantic memory makes copy extremely strong on stable states, so changed-subset gain isolates actual semantic transition modeling.",
+  "external_tracker_positioning": "SAM2/CoTracker/Cutie are external consumers/boundary references only, not same-output STWM-FSTF baselines.",
+  "free_rollout_required": true,
+  "future_candidate_leakage": false,
+  "input": [
+    "observed video-derived trace",
+    "observed semantic memory"
+  ],
+  "lodo_positioning": "appendix/domain-shift limitation",
+  "main_table_contract": {
+    "must_include": [
+      "mixed",
+      "VSPW",
+      "VIPSEG",
+      "stable/changed split",
+      "copy delta",
+      "same-output baselines"
+    ],
+    "same_output_baselines_complete": false
+  },
+  "metrics": [
+    "overall semantic top1/top5/CE",
+    "stable semantic top5",
+    "changed semantic top5",
+    "changed gain over copy",
+    "stable preservation drop",
+    "future trace coord error",
+    "visibility/reappearance AP/AUROC"
+  ],
+  "output": [
+    "future trace units",
+    "future semantic prototype field",
+    "future visibility",
+    "future reappearance",
+    "future identity belief"
+  ],
+  "stable_changed_split_required": true,
+  "terminology": "semantic trace-unit field",
+  "test_item_count": 647,
+  "trace_guardrail": "future_trace_coord_error + trace_regression_detected=false",
+  "train_item_count": 3019,
+  "val_item_count": 647
+}

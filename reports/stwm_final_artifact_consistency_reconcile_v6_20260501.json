@@ -1,0 +1,131 @@
+{
+  "audit_name": "stwm_final_artifact_consistency_reconcile_v6_20260501",
+  "baseline_scaling_semantics": {
+    "baseline_suite_completed_reported": false,
+    "baseline_suite_is_only_audit_complete": true,
+    "scaling_complete_reported": {
+      "horizon": false,
+      "model": false,
+      "trace_density": false
+    }
+  },
+  "can_claim_5seed_main_result": true,
+  "can_claim_baseline_complete": false,
+  "can_claim_scaling_complete": false,
+  "can_claim_selected_C": true,
+  "lodo_selection_reconciliation": {
+    "completed_run_count": 20,
+    "expected_run_count": 20,
+    "failed_run_count": 0,
+    "lodo_completed": true,
+    "selection_is_source_val_only": true,
+    "vipseg_to_vspw_selected": {
+      "checkpoint": "/raid/chen034/workspace/stwm/outputs/checkpoints/stwm_final_lodo_v3_20260428/vipseg_to_vspw_c32_seed123_final.pt",
+      "prototype_count": 32,
+      "seed": 123
+    },
+    "vspw_to_vipseg_selected": {
+      "checkpoint": "/raid/chen034/workspace/stwm/outputs/checkpoints/stwm_final_lodo_v3_20260428/vspw_to_vipseg_c64_seed42_final.pt",
+      "prototype_count": 64,
+      "seed": 42
+    }
+  },
+  "mixed_fullscale_artifacts": {
+    "all_eval_reports_exist": true,
+    "all_runs_completed_reported": true,
+    "completed_run_count_reported": 10,
+    "empty_log_count": 10,
+    "existing_checkpoint_count": 10,
+    "existing_log_count": 10,
+    "existing_train_report_count": 10,
+    "expected_checkpoint_count": 10,
+    "expected_log_count": 10,
+    "expected_train_report_count": 10,
+    "train_summaries_match_checkpoints": [
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c32_seed42_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c32_seed42_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c32_seed123_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c32_seed123_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c32_seed456_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c32_seed456_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c32_seed789_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c32_seed789_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c32_seed1001_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c32_seed1001_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c64_seed42_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c64_seed42_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c64_seed123_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c64_seed123_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c64_seed456_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c64_seed456_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c64_seed789_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c64_seed789_20260428.json",
+        "trace_regression_detected": false
+      },
+      {
+        "checkpoint_exists": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c64_seed1001_final.pt",
+        "exists": true,
+        "path": "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_train_c64_seed1001_20260428.json",
+        "trace_regression_detected": false
+      }
+    ]
+  },
+  "selected_C_reconciliation": {
+    "canonical_paths": [
+      "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_val_selection_complete_20260428.json",
+      "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_complete_decision_20260428.json",
+      "/raid/chen034/workspace/stwm/reports/stwm_final_prototype_vocab_justification_v3_20260428.json"
+    ],
+    "canonical_selected_C": 32,
+    "canonical_selected_seed": 456,
+    "selected_C_rule": "mixed val only; primary changed gain over copy; secondary overall gain; tertiary stable drop; tie lower trace coord error",
+    "stale_conflicting_paths": [
+      "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_val_selection_20260428.json",
+      "/raid/chen034/workspace/stwm/reports/stwm_mixed_fullscale_v2_decision_20260428.json"
+    ]
+  }
+}

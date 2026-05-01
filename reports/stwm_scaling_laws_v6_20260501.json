@@ -1,0 +1,21 @@
+{
+  "audit_name": "stwm_scaling_laws_v6_20260501",
+  "compute_cost_status": {
+    "horizon_scaling_requires_cache_rebuild_and_retraining": true,
+    "model_scaling_requires_new_runs": true,
+    "prototype_scaling_requires_new_runs": true,
+    "trace_density_requires_cache_rebuild_and_retraining": true
+  },
+  "horizon_scaling_completed": false,
+  "horizon_scaling_positive": false,
+  "model_scaling_completed": false,
+  "model_scaling_positive": false,
+  "prototype_scaling_completed": false,
+  "prototype_scaling_note": "C16 is still missing from the controlled mixed fullscale protocol, so prototype scaling is only partially evidenced even though selected_C is justified from val-only selection plus earlier sweeps.",
+  "recommended_terminology": "semantic trace-unit field",
+  "selected_C": 32,
+  "selected_C_rule": "Early prototype sweep showed C256 becomes long-tailed and C128 is finer but less stable; final mixed fullscale val-only selection over the complete 10-run matrix chose C32 seed456 as the best changed-gain tradeoff with low stable drop and low trace error.",
+  "trace_density_scaling_completed": false,
+  "trace_density_scaling_positive": false,
+  "whether_dense_trace_field_claim_allowed": false
+}

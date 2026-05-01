@@ -1,0 +1,69 @@
+{
+  "audit_name": "stwm_lodo_domain_shift_repair_audit_v6_20260501",
+  "cache_bug_fixed": false,
+  "cache_bug_found": false,
+  "changed_stable_ratio_shift": {
+    "VIPSEG": {
+      "changed": 38735,
+      "changed_ratio": 0.39698075306946523,
+      "stable": 58839
+    },
+    "VSPW": {
+      "changed": 47421,
+      "changed_ratio": 0.6242069237857049,
+      "stable": 28549
+    }
+  },
+  "copy_baseline_strength_shift": {
+    "lodo_vipseg_to_vspw_copy_changed_top5": 0.5568358849087855,
+    "lodo_vspw_to_vipseg_copy_changed_top5": 0.7278933791063426,
+    "mixed_vipseg_copy_changed_top5": 0.8219203357688217,
+    "mixed_vspw_copy_changed_top5": 0.5568358849087855
+  },
+  "crop_feature_norm_shift": {
+    "VIPSEG": {
+      "crop_feature_norm_mean": 0.0,
+      "crop_feature_norm_std": 0.0,
+      "slot_count": 0,
+      "zero_norm_fraction": 0.0
+    },
+    "VSPW": {
+      "crop_feature_norm_mean": 1.0,
+      "crop_feature_norm_std": 2.7177955885804295e-08,
+      "slot_count": 10115,
+      "zero_norm_fraction": 0.0
+    }
+  },
+  "final_lodo_claim_boundary": "LODO is a domain-shift appendix/limitation. Do not claim universal cross-dataset generalization; do not reinterpret the negative as world-model failure because mixed free-rollout remains positive and trace regression stays false.",
+  "future_target_coverage_shift": {
+    "VIPSEG": 1.0,
+    "VSPW": 0.492392668842581
+  },
+  "lodo_completed": true,
+  "lodo_domain_shift_diagnosed": true,
+  "lodo_positive": false,
+  "observed_semantic_memory_coverage_shift": {
+    "VIPSEG": 0.5438234360114322,
+    "VSPW": 0.40151635439822164
+  },
+  "prototype_vocabulary_shift": {
+    "C32": {
+      "js_divergence": 0.16038782546361047,
+      "vipseg_count": 97574,
+      "vspw_count": 152816
+    },
+    "C64": {
+      "js_divergence": 0.1693801967488865,
+      "vipseg_count": 97574,
+      "vspw_count": 152816
+    }
+  },
+  "rerun_required": false,
+  "trace_coord_error_shift": {
+    "lodo_vipseg_to_vspw": 0.283363430150624,
+    "lodo_vspw_to_vipseg": 0.3749566654551704,
+    "mixed_vipseg": 0.29816758210928934,
+    "mixed_vspw": 0.23947533014519462
+  },
+  "trusted_lodo_conclusion": "negative"
+}
