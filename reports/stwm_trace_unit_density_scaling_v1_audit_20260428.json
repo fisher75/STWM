@@ -1,0 +1,67 @@
+{
+  "audit_name": "stwm_trace_unit_density_scaling_v1_audit",
+  "k16_completed": false,
+  "k16_supported_by_cli": true,
+  "k32_completed": false,
+  "k32_supported_by_cli": true,
+  "k8_completed": true,
+  "memory_compute_blocker": "Current semantic trace world model target pools, materialization caches, and mixed fullscale checkpoints are all built with max_entities_per_sample=8. The builders expose --max-entities-per-sample, but K16/K32 would require rebuilding target pools and rerunning materialization and training.",
+  "prior_density_context": {
+    "baseline_mixed": {
+      "dataset_names": [
+        "vspw",
+        "vipseg"
+      ],
+      "entity_count_mean": 6.328125,
+      "fallback_entity_count_mean": 0.0,
+      "instance_source_counts": {
+        "pseudo_semantic_region": 32,
+        "true_instance_id": 32
+      },
+      "pseudo_entity_count_mean": 3.359375,
+      "sample_count": 64,
+      "split": "train",
+      "true_instance_entity_count_mean": 2.96875,
+      "true_instance_ratio_mean": 0.5,
+      "vipseg_true_instance_continuity_coverage_ratio": 1.0
+    },
+    "generated_at_utc": "2026-04-18T06:25:36.704988+00:00",
+    "instance_aware_real_signal_used_if_upweighted": true,
+    "vipseg_only": {
+      "dataset_names": [
+        "vipseg"
+      ],
+      "entity_count_mean": 5.9375,
+      "fallback_entity_count_mean": 0.0,
+      "instance_source_counts": {
+        "true_instance_id": 32
+      },
+      "pseudo_entity_count_mean": 0.0,
+      "sample_count": 32,
+      "split": "train",
+      "true_instance_entity_count_mean": 5.9375,
+      "true_instance_ratio_mean": 1.0,
+      "vipseg_true_instance_continuity_coverage_ratio": 1.0
+    },
+    "vipseg_upweighted": {
+      "dataset_names": [
+        "vipseg",
+        "vipseg",
+        "vspw"
+      ],
+      "entity_count_mean": 6.197916666666667,
+      "fallback_entity_count_mean": 0.0,
+      "instance_source_counts": {
+        "pseudo_semantic_region": 32,
+        "true_instance_id": 64
+      },
+      "pseudo_entity_count_mean": 2.2395833333333335,
+      "sample_count": 96,
+      "split": "train",
+      "true_instance_entity_count_mean": 3.9583333333333335,
+      "true_instance_ratio_mean": 0.6666666666666666,
+      "vipseg_true_instance_continuity_coverage_ratio": 1.0
+    }
+  },
+  "terminology_recommendation": "semantic trace-unit field"
+}

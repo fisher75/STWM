@@ -1,0 +1,27 @@
+{
+  "allowed_claims": [
+    "STWM predicts future semantic trace fields under free rollout.",
+    "Copy-gated residual semantic transition improves changed semantic states while preserving stable states.",
+    "Works on mixed VSPW+VIPSeg protocol.",
+    "Does not degrade trace dynamics.",
+    "Belief association utility supports future identity association."
+  ],
+  "audit_name": "stwm_final_claim_boundary",
+  "candidate_scorer_used": false,
+  "forbidden_claims": [
+    "STWM is SAM2/CoTracker plugin.",
+    "STWM beats all trackers overall.",
+    "Full RGB generation.",
+    "Closed-loop planner.",
+    "Universal OOD dominance.",
+    "Hiding VIPSeg smaller effect.",
+    "Claiming candidate scorer as method."
+  ],
+  "future_candidate_leakage": false,
+  "must_disclose": [
+    "VIPSeg gain is positive and significant but smaller than VSPW.",
+    "LODO remains appendix plan unless separately executed.",
+    "Semantic field uses prototype output, not full RGB generation."
+  ],
+  "old_association_report_used": false
+}

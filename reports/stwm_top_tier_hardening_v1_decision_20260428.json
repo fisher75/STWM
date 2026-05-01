@@ -1,0 +1,148 @@
+{
+  "artifact_audit_passed": true,
+  "audit_name": "stwm_top_tier_hardening_v1_decision",
+  "density_scaling_completed": false,
+  "h16_completed": false,
+  "h16_signal_positive": false,
+  "lodo_completed": false,
+  "lodo_signal_positive": false,
+  "main_risks": [
+    "Dedicated LODO cross-dataset checkpoints/evals are not yet executed.",
+    "Longer-horizon evidence is H=8 only unless H16 appendix is run.",
+    "Trace-unit density scaling beyond K=8 is not yet empirically validated.",
+    "Canonical per-run training logs are present but zero-byte; checkpoints and summaries are the primary live artifacts."
+  ],
+  "mixed_complete_decision_source": {
+    "all_runs_completed": true,
+    "audit_name": "stwm_mixed_fullscale_v2_complete_decision",
+    "best_prototype_count": 32,
+    "best_seed": 456,
+    "changed_gain_CI_excludes_zero_mixed": true,
+    "changed_gain_CI_excludes_zero_vipseg": true,
+    "changed_gain_CI_excludes_zero_vspw": true,
+    "completed_run_count": 10,
+    "expected_run_count": 10,
+    "failed_run_count": 0,
+    "free_rollout_semantic_field_signal": true,
+    "mixed_test_metrics": {
+      "change_detection": {
+        "ap": 0.6283345124109166,
+        "auroc": 0.700411905111267,
+        "eligible": true
+      },
+      "changed_subset_count": 11869,
+      "changed_subset_gain_over_copy": 0.08164124822622099,
+      "changed_subset_top5": 0.7601314430039607,
+      "copy_changed_subset_top5": 0.6784901947777398,
+      "copy_proto_ce": 2.3253055187480562,
+      "copy_proto_top1": 0.5527545471228387,
+      "copy_proto_top5": 0.8562062023496299,
+      "copy_stable_subset_top5": 0.9999999961642385,
+      "future_trace_coord_error": 0.27704221628061154,
+      "overall_gain_over_copy": 0.036400633624272816,
+      "proto_ce": 2.043676973305594,
+      "proto_logit_std_mean": 1.7575327074382363,
+      "proto_top1": 0.5607430910098813,
+      "proto_top5": 0.8926068359739027,
+      "reappearance": {
+        "ap": 0.014182469969657519,
+        "auroc": 0.2931077480600557,
+        "eligible": true
+      },
+      "stable_preservation_drop": 0.00020451294277912258,
+      "stable_subset_count": 14669,
+      "stable_subset_top5": 0.9997954832214594,
+      "valid_count": 26538,
+      "visibility": {
+        "ap": 0.0,
+        "auroc": 0.0,
+        "eligible": false
+      }
+    },
+    "paper_world_model_claimable": "true",
+    "recommended_next_step_choice": "proceed_to_paper_assets_with_mixed_protocol",
+    "residual_beats_copy_mixed": true,
+    "residual_beats_copy_vipseg": true,
+    "residual_beats_copy_vspw": true,
+    "semantic_field_branch_status": "main_contribution_candidate",
+    "stable_copy_preserved": true,
+    "trace_regression_detected": false,
+    "val_selection_candidate_count": 10,
+    "vipseg_test_metrics": {
+      "change_detection": {
+        "ap": 0.48523522236014477,
+        "auroc": 0.6497569209803051,
+        "eligible": true
+      },
+      "changed_subset_count": 5447,
+      "changed_subset_gain_over_copy": 0.018175139971253862,
+      "changed_subset_top5": 0.8400954757400756,
+      "copy_changed_subset_top5": 0.8219203357688217,
+      "copy_proto_ce": 2.1462559707357642,
+      "copy_proto_top1": 0.6391042258689436,
+      "copy_proto_top5": 0.9357318008411225,
+      "copy_stable_subset_top5": 0.9999999950875292,
+      "future_trace_coord_error": 0.29816758210928934,
+      "overall_gain_over_copy": 0.006493076175611234,
+      "proto_ce": 1.8912603630741887,
+      "proto_logit_std_mean": 1.8822829003603954,
+      "proto_top1": 0.6205525784916475,
+      "proto_top5": 0.9422248770167337,
+      "reappearance": {
+        "ap": 0.01796030821551236,
+        "auroc": 0.2685750184221882,
+        "eligible": true
+      },
+      "stable_preservation_drop": 0.00010366996442434662,
+      "stable_subset_count": 9646,
+      "stable_subset_top5": 0.9998963251231049,
+      "valid_count": 15093,
+      "visibility": {
+        "ap": 0.0,
+        "auroc": 0.0,
+        "eligible": false
+      }
+    },
+    "vspw_test_metrics": {
+      "change_detection": {
+        "ap": 0.7222034260302593,
+        "auroc": 0.7171750371833633,
+        "eligible": true
+      },
+      "changed_subset_count": 6422,
+      "changed_subset_gain_over_copy": 0.135471813729928,
+      "changed_subset_top5": 0.6923076986387136,
+      "copy_changed_subset_top5": 0.5568358849087855,
+      "copy_proto_ce": 2.561425643531763,
+      "copy_proto_top1": 0.43888161559684824,
+      "copy_proto_top5": 0.7513324707609798,
+      "copy_stable_subset_top5": 0.9999999982319148,
+      "future_trace_coord_error": 0.23947533014519462,
+      "overall_gain_over_copy": 0.0758409800264267,
+      "proto_ce": 2.2446751293109046,
+      "proto_logit_std_mean": 1.5631916594916377,
+      "proto_top1": 0.48186981931374345,
+      "proto_top5": 0.8271734507874065,
+      "reappearance": {
+        "ap": 0.011307103088548959,
+        "auroc": 0.33745924903040275,
+        "eligible": true
+      },
+      "stable_preservation_drop": 0.0003981684015111897,
+      "stable_subset_count": 5023,
+      "stable_subset_top5": 0.9996018298304036,
+      "valid_count": 11445,
+      "visibility": {
+        "ap": 0.0,
+        "auroc": 0.0,
+        "eligible": false
+      }
+    },
+    "world_model_output_contract_satisfied": true
+  },
+  "ready_for_cvpr_aaai_main": "true",
+  "ready_for_overleaf": true,
+  "recommended_next_step_choice": "run_missing_lodo",
+  "semantic_field_main_claim_strength": "strong_mixed_free_rollout_evidence: 10/10 mixed matrix completed, val-only selection, mixed/VSPW/VIPSeg changed-gain CI excludes zero, stable copy preserved, trace regression false",
+  "terminology_recommendation": "semantic trace-unit field"
+}

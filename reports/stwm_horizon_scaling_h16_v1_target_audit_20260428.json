@@ -1,0 +1,20 @@
+{
+  "audit_name": "stwm_horizon_scaling_h16_v1_target_audit",
+  "builder_supports_fut_len": true,
+  "current_cache_horizon": 8,
+  "current_target_mask_shape": [
+    6298,
+    8,
+    8
+  ],
+  "current_target_shape": [
+    6298,
+    8,
+    8,
+    512
+  ],
+  "h16_blocker": "Current live semantic target caches, materialization reports, and all selected mixed checkpoints are built for H=8 only. Code exposes --fut-len, but H=16 would require rebuilding observed/future target pools, rematerializing eval caches, and retraining at least the best mixed config.",
+  "h16_completed": false,
+  "h16_feasible_from_code": true,
+  "trainer_supports_fut_len": true
+}

@@ -1,0 +1,56 @@
+{
+  "allowed_claims": [
+    "STWM predicts future semantic trace fields under free rollout.",
+    "Copy-gated residual semantic transition improves changed semantic states while preserving stable states.",
+    "The result holds on mixed VSPW+VIPSeg with positive per-dataset breakdown.",
+    "Trace dynamics are not degraded by semantic field training.",
+    "Belief association utility supports future identity association."
+  ],
+  "audit_name": "stwm_paper_asset_final_source_audit",
+  "dataset_protocol_summary": {
+    "candidate_scorer_used": false,
+    "free_rollout": true,
+    "future_candidate_leakage": false,
+    "mixed_test_items": 647,
+    "old_association_report_used": false,
+    "test_eval_once": true,
+    "vipseg_test_items": 418,
+    "vspw_test_items": 229
+  },
+  "final_world_model_output_contract": [
+    "future trace field / trace units",
+    "future semantic prototype field",
+    "future visibility / reappearance",
+    "future identity belief"
+  ],
+  "forbidden_claims": [
+    "STWM is a SAM2/CoTracker plugin.",
+    "STWM beats all external trackers overall.",
+    "Full RGB video generation.",
+    "Closed-loop planner.",
+    "Universal OOD dominance.",
+    "Candidate scorer is the method."
+  ],
+  "generated_at_utc": "2026-04-30T17:45:28.592864+00:00",
+  "main_result_summary": {
+    "best_prototype_count": 32,
+    "best_seed": 456,
+    "completed_run_count": 10,
+    "paper_world_model_claimable": "true",
+    "semantic_field_branch_status": "main_contribution_candidate",
+    "val_selection_candidate_count": 10
+  },
+  "official_method_name": "STWM / TUSB-v3.1 + semantic memory copy-gated residual trace world model",
+  "remaining_limitations": [
+    "VIPSeg effect size is positive but smaller than VSPW.",
+    "LODO cross-dataset training remains appendix/future validation unless run separately.",
+    "Semantic field uses prototype targets rather than open-vocabulary RGB generation.",
+    "Visibility metric is unavailable/ineligible in the current semantic-field eval cache."
+  ],
+  "seed_val_test_protocol_summary": {
+    "run_matrix": "C32/C64 x seeds 42/123/456/789/1001",
+    "selected_checkpoint": "outputs/checkpoints/stwm_mixed_fullscale_v2_20260428/c32_seed456_final.pt",
+    "selection_split": "mixed validation only",
+    "test_metrics_used_for_selection": false
+  }
+}

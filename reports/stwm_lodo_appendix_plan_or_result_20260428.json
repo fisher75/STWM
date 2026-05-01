@@ -1,0 +1,12 @@
+{
+  "audit_name": "stwm_lodo_appendix_plan_or_result",
+  "blocks_main_paper": false,
+  "lodo_executed": false,
+  "placement": "appendix robustness / domain-shift analysis",
+  "proposed_runs": [
+    "VSPW train/val -> VIPSeg test, C64 seeds 42/123/456",
+    "VIPSeg train/val -> VSPW test, C64 seeds 42/123/456"
+  ],
+  "reason": "Full mixed 10-run matrix is complete and paper-grade; dedicated VSPW->VIPSeg and VIPSeg->VSPW checkpoints were not trained in this asset pass.",
+  "status": "plan_only_not_blocking_main"
+}
