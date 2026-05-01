@@ -128,7 +128,24 @@ def load_batches(report_path: Path) -> tuple[list[dict[str, Any]], dict[str, Any
     if not cache_path.is_absolute():
         cache_path = report_path.parent.parent / cache_path
     cache = torch.load(cache_path, map_location="cpu")
-    return list(cache["batches"]), report
+    batches = list(cache["batches"])
+    # Materialized batch caches keep canonical item keys at the cache level. Some
+    # Stage2 batch metadata only contains dataset/clip fields, so inject item_key
+    # here to keep per-item paired bootstrap aligned with the frozen split.
+    item_keys = [str(x) for x in cache.get("item_keys", [])]
+    cursor = 0
+    if item_keys:
+        for batch in batches:
+            meta = batch.get("meta")
+            batch_size = int(batch.get("batch_size", len(meta) if isinstance(meta, list) else 0))
+            if not isinstance(meta, list):
+                meta = [{} for _ in range(batch_size)]
+                batch["meta"] = meta
+            for i in range(min(batch_size, len(meta))):
+                if cursor + i < len(item_keys) and not meta[i].get("item_key"):
+                    meta[i]["item_key"] = item_keys[cursor + i]
+            cursor += batch_size
+    return batches, report
 
 
 def batch_slot_count(batch: dict[str, Any]) -> int:

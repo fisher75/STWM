@@ -1,0 +1,47 @@
+{
+  "audit_name": "stwm_fstf_strong_copyaware_baseline_v8_paired_bootstrap",
+  "common_item_count": 647,
+  "interpretation": {
+    "stable_drop_delta_note": "Positive means STWM has larger stable drop than the baseline; negative favors STWM stable preservation.",
+    "visibility_reappearance_status": "metric_invalid_or_untrained"
+  },
+  "strongest_copyaware_baseline": "copy_residual_mlp",
+  "strongest_eval_paths": [
+    "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/eval_test.json",
+    "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/eval_test.json",
+    "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/eval_test.json",
+    "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/eval_test.json",
+    "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/789/eval_test.json"
+  ],
+  "stwm_eval_path": "reports/stwm_mixed_fullscale_v2_mixed_test_eval_complete_20260428.json",
+  "stwm_minus_strongest_changed_top5": {
+    "bootstrap_win_rate": 1.0,
+    "ci95": [
+      0.04726071874626347,
+      0.0831896554397755
+    ],
+    "item_count": 610,
+    "mean_delta": 0.06527920483565722,
+    "zero_excluded": true
+  },
+  "stwm_minus_strongest_overall_top5": {
+    "bootstrap_win_rate": 1.0,
+    "ci95": [
+      0.03289333287125577,
+      0.050528337183470336
+    ],
+    "item_count": 647,
+    "mean_delta": 0.04174363051283488,
+    "zero_excluded": true
+  },
+  "stwm_minus_strongest_stable_drop": {
+    "bootstrap_win_rate": 0.0,
+    "ci95": [
+      -0.047379059429410134,
+      -0.03001479049083553
+    ],
+    "item_count": 632,
+    "mean_delta": -0.03839903106983704,
+    "zero_excluded": true
+  }
+}
