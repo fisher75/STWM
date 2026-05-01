@@ -1,0 +1,37 @@
+{
+  "audit_name": "stwm_final_lodo_train_summary_v3",
+  "candidate_scorer_used": false,
+  "future_candidate_leakage": false,
+  "lodo_completed": false,
+  "planned_protocols": [
+    {
+      "preferred_seeds": [
+        42,
+        123,
+        456
+      ],
+      "prototype_counts": [
+        32,
+        64
+      ],
+      "test_dataset": "VIPSEG",
+      "train_dataset": "VSPW",
+      "val_dataset": "VSPW"
+    },
+    {
+      "preferred_seeds": [
+        42,
+        123,
+        456
+      ],
+      "prototype_counts": [
+        32,
+        64
+      ],
+      "test_dataset": "VSPW",
+      "train_dataset": "VIPSEG",
+      "val_dataset": "VIPSEG"
+    }
+  ],
+  "skipped_reason": "Dedicated LODO checkpoints were not trained in the live repo hardening pass. Cross-dataset split assets exist, but current GPUs are occupied by unrelated high-utilization jobs and no LODO train/eval artifacts exist yet."
+}

@@ -1,0 +1,26 @@
+# STWM Final LODO V3 Materialization vspw_to_vipseg val
+
+- audit_name: `stwm_final_lodo_v3_materialization_vspw_to_vipseg_val`
+- split_report: `reports/stwm_mixed_fullscale_v2_lodo_vspw_to_vipseg_splits_20260428.json`
+- strict_split: `True`
+- source_nominal_eval_item_count: `228`
+- nominal_eval_item_count: `228`
+- requested_train: `1065`
+- requested_val: `228`
+- requested_test: `1`
+- materialized_train: `0`
+- materialized_val: `228`
+- materialized_test: `0`
+- missing_train: `0`
+- missing_val: `0`
+- missing_test: `0`
+- timeout_count: `0`
+- item_key_missing_count: `0`
+- batch_cache_path: `outputs/cache/stwm_final_lodo_v3_vspw_to_vipseg_20260428/val_eval_batches.pt`
+- final_test_item_count: `228`
+- final_eval_item_count: `228`
+- materialization_ok: `True`
+- materialization_limit_reason: ``
+- no_train_split_fallback: `True`
+- item_leakage: `False`
+- merged_shard_count: `2`
