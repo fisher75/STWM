@@ -1,0 +1,1489 @@
+{
+  "audit_name": "stwm_fstf_v8_live_artifact_audit",
+  "candidate_scorer_used": false,
+  "checkpoint_count": 25,
+  "copy_eval": {
+    "exists": true,
+    "mtime": 1777650515.0365841,
+    "mtime_readable": "2026-05-01 23:48:35 +08",
+    "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_semantic_memory_baseline/eval_test.json",
+    "size_bytes": 560856
+  },
+  "eval_summary_count": 25,
+  "expected_learned_run_count": 25,
+  "exported_snapshot_incomplete": true,
+  "future_candidate_leakage": false,
+  "live_artifacts_exist": true,
+  "log_count": 25,
+  "oracle_eval": {
+    "exists": true,
+    "mtime": 1777650493.8201976,
+    "mtime_readable": "2026-05-01 23:48:13 +08",
+    "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/oracle_change_gate_upper_bound/eval_test.json",
+    "size_bytes": 537917
+  },
+  "run_artifacts": [
+    {
+      "baseline": "copy_residual_mlp",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647154.2488563,
+        "mtime_readable": "2026-05-01 22:52:34 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650506.8632057,
+        "mtime_readable": "2026-05-01 23:48:26 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/eval_test.json",
+        "size_bytes": 574068
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647190.105039,
+        "mtime_readable": "2026-05-01 22:53:10 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed42.log",
+        "size_bytes": 3725
+      },
+      "seed": 42,
+      "statuses": [
+        {
+          "baseline": "copy_residual_mlp",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647154.2488563,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777647191.3797462,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_mlp --seed 42 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed42.log",
+          "log_size_bytes": 3725,
+          "seed": 42,
+          "start_timestamp": 1777646805.3695183,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed42.status.json",
+          "tmux_session": "fstf_v8_copy_residual_mlp_s42",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_mlp_s42",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647154.2508562,
+        "mtime_readable": "2026-05-01 22:52:34 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/42/train_summary.json",
+        "size_bytes": 10204
+      }
+    },
+    {
+      "baseline": "copy_residual_mlp",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648318.8633587,
+        "mtime_readable": "2026-05-01 23:11:58 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "3",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650483.4029899,
+        "mtime_readable": "2026-05-01 23:48:03 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/eval_test.json",
+        "size_bytes": 573900
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648468.5063157,
+        "mtime_readable": "2026-05-01 23:14:28 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed123.log",
+        "size_bytes": 3729
+      },
+      "seed": 123,
+      "statuses": [
+        {
+          "baseline": "copy_residual_mlp",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777648318.8633587,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/checkpoint.pt",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777648469.8626547,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_mlp --seed 123 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed123.log",
+          "log_size_bytes": 3729,
+          "seed": 123,
+          "start_timestamp": 1777646805.6933403,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed123.status.json",
+          "tmux_session": "fstf_v8_copy_residual_mlp_s123",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_mlp_s123",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648318.8643587,
+        "mtime_readable": "2026-05-01 23:11:58 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/123/train_summary.json",
+        "size_bytes": 10207
+      }
+    },
+    {
+      "baseline": "copy_residual_mlp",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647160.6513534,
+        "mtime_readable": "2026-05-01 22:52:40 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650438.6733916,
+        "mtime_readable": "2026-05-01 23:47:18 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/eval_test.json",
+        "size_bytes": 574079
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647195.8985837,
+        "mtime_readable": "2026-05-01 22:53:15 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed456.log",
+        "size_bytes": 3729
+      },
+      "seed": 456,
+      "statuses": [
+        {
+          "baseline": "copy_residual_mlp",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647160.6513534,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777647197.120174,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_mlp --seed 456 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed456.log",
+          "log_size_bytes": 3729,
+          "seed": 456,
+          "start_timestamp": 1777646806.0063925,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed456.status.json",
+          "tmux_session": "fstf_v8_copy_residual_mlp_s456",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_mlp_s456",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647160.6533532,
+        "mtime_readable": "2026-05-01 22:52:40 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/456/train_summary.json",
+        "size_bytes": 10218
+      }
+    },
+    {
+      "baseline": "copy_residual_mlp",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648433.7588885,
+        "mtime_readable": "2026-05-01 23:13:53 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/789/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "3",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650568.3145318,
+        "mtime_readable": "2026-05-01 23:49:28 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/789/eval_test.json",
+        "size_bytes": 574000
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648438.2055595,
+        "mtime_readable": "2026-05-01 23:13:58 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed789.log",
+        "size_bytes": 3566
+      },
+      "seed": 789,
+      "statuses": [
+        {
+          "baseline": "copy_residual_mlp",
+          "cuda_visible_devices": "6",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_mlp --seed 789 --steps 5000",
+          "seed": 789,
+          "start_timestamp": 1777646806.3329024,
+          "status": "running",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed789.status.json",
+          "tmux_session": "fstf_v8_copy_residual_mlp_s789"
+        },
+        {
+          "baseline": "copy_residual_mlp",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777648800.346188,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/789/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed789_eval_relaunch.log",
+          "log_size_bytes": 455,
+          "mode": "eval_relaunch",
+          "seed": 789,
+          "start_timestamp": 1777648655.7299252,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed789_eval_relaunch.status.json",
+          "tmux_session": "fstf_v8_eval_copy_residual_mlp_s789"
+        }
+      ],
+      "tmux_session": "fstf_v8_eval_copy_residual_mlp_s789",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648433.7608883,
+        "mtime_readable": "2026-05-01 23:13:53 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/789/train_summary.json",
+        "size_bytes": 10230
+      }
+    },
+    {
+      "baseline": "copy_residual_mlp",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648323.4840193,
+        "mtime_readable": "2026-05-01 23:12:03 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "3",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650475.8925612,
+        "mtime_readable": "2026-05-01 23:47:55 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/eval_test.json",
+        "size_bytes": 573713
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648473.7019305,
+        "mtime_readable": "2026-05-01 23:14:33 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed1001.log",
+        "size_bytes": 3734
+      },
+      "seed": 1001,
+      "statuses": [
+        {
+          "baseline": "copy_residual_mlp",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777648323.4840193,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/checkpoint.pt",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777648474.9711423,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_mlp --seed 1001 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed1001.log",
+          "log_size_bytes": 3734,
+          "seed": 1001,
+          "start_timestamp": 1777646806.7038608,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp_seed1001.status.json",
+          "tmux_session": "fstf_v8_copy_residual_mlp_s1001",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_mlp_s1001",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648323.4850192,
+        "mtime_readable": "2026-05-01 23:12:03 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_mlp/1001/train_summary.json",
+        "size_bytes": 10205
+      }
+    },
+    {
+      "baseline": "copy_residual_transformer",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647184.2325003,
+        "mtime_readable": "2026-05-01 22:53:04 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/42/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650482.4450626,
+        "mtime_readable": "2026-05-01 23:48:02 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/42/eval_test.json",
+        "size_bytes": 573984
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647211.0463934,
+        "mtime_readable": "2026-05-01 22:53:31 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed42.log",
+        "size_bytes": 3765
+      },
+      "seed": 42,
+      "statuses": [
+        {
+          "baseline": "copy_residual_transformer",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647184.2325003,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/42/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777647212.1618423,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/42/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_transformer --seed 42 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed42.log",
+          "log_size_bytes": 3765,
+          "seed": 42,
+          "start_timestamp": 1777646807.1499364,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed42.status.json",
+          "tmux_session": "fstf_v8_copy_residual_transformer_s42",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/42/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_transformer_s42",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647184.2335002,
+        "mtime_readable": "2026-05-01 22:53:04 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/42/train_summary.json",
+        "size_bytes": 10213
+      }
+    },
+    {
+      "baseline": "copy_residual_transformer",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648440.6393795,
+        "mtime_readable": "2026-05-01 23:14:00 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/123/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "4",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650670.7897375,
+        "mtime_readable": "2026-05-01 23:51:10 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/123/eval_test.json",
+        "size_bytes": 574423
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648444.2721107,
+        "mtime_readable": "2026-05-01 23:14:04 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed123.log",
+        "size_bytes": 3590
+      },
+      "seed": 123,
+      "statuses": [
+        {
+          "baseline": "copy_residual_transformer",
+          "cuda_visible_devices": "6",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_transformer --seed 123 --steps 5000",
+          "seed": 123,
+          "start_timestamp": 1777646807.7795904,
+          "status": "running",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed123.status.json",
+          "tmux_session": "fstf_v8_copy_residual_transformer_s123"
+        },
+        {
+          "baseline": "copy_residual_transformer",
+          "cuda_visible_devices": "4",
+          "end_timestamp": 1777648694.1343942,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/123/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed123_eval_relaunch.log",
+          "log_size_bytes": 471,
+          "mode": "eval_relaunch",
+          "seed": 123,
+          "start_timestamp": 1777648655.74584,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed123_eval_relaunch.status.json",
+          "tmux_session": "fstf_v8_eval_copy_residual_transformer_s123"
+        }
+      ],
+      "tmux_session": "fstf_v8_eval_copy_residual_transformer_s123",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648440.6403794,
+        "mtime_readable": "2026-05-01 23:14:00 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/123/train_summary.json",
+        "size_bytes": 10255
+      }
+    },
+    {
+      "baseline": "copy_residual_transformer",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777646998.3161032,
+        "mtime_readable": "2026-05-01 22:49:58 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/456/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "1",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650494.0821776,
+        "mtime_readable": "2026-05-01 23:48:14 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/456/eval_test.json",
+        "size_bytes": 574467
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647010.3091617,
+        "mtime_readable": "2026-05-01 22:50:10 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed456.log",
+        "size_bytes": 3770
+      },
+      "seed": 456,
+      "statuses": [
+        {
+          "baseline": "copy_residual_transformer",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777646998.3161032,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/456/checkpoint.pt",
+          "cuda_visible_devices": "1",
+          "end_timestamp": 1777647011.4367502,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/456/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_transformer --seed 456 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed456.log",
+          "log_size_bytes": 3770,
+          "seed": 456,
+          "start_timestamp": 1777646808.5244308,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed456.status.json",
+          "tmux_session": "fstf_v8_copy_residual_transformer_s456",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/456/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_transformer_s456",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777646998.317103,
+        "mtime_readable": "2026-05-01 22:49:58 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/456/train_summary.json",
+        "size_bytes": 10205
+      }
+    },
+    {
+      "baseline": "copy_residual_transformer",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648335.1661608,
+        "mtime_readable": "2026-05-01 23:12:15 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/789/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "3",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650513.3687108,
+        "mtime_readable": "2026-05-01 23:48:33 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/789/eval_test.json",
+        "size_bytes": 574297
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648484.5461264,
+        "mtime_readable": "2026-05-01 23:14:44 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed789.log",
+        "size_bytes": 3770
+      },
+      "seed": 789,
+      "statuses": [
+        {
+          "baseline": "copy_residual_transformer",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777648335.1661608,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/789/checkpoint.pt",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777648485.8861482,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/789/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_transformer --seed 789 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed789.log",
+          "log_size_bytes": 3770,
+          "seed": 789,
+          "start_timestamp": 1777646809.2923455,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed789.status.json",
+          "tmux_session": "fstf_v8_copy_residual_transformer_s789",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/789/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_transformer_s789",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648335.1671607,
+        "mtime_readable": "2026-05-01 23:12:15 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/789/train_summary.json",
+        "size_bytes": 10236
+      }
+    },
+    {
+      "baseline": "copy_residual_transformer",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647304.0060866,
+        "mtime_readable": "2026-05-01 22:55:04 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/1001/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "0",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650492.6522865,
+        "mtime_readable": "2026-05-01 23:48:12 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/1001/eval_test.json",
+        "size_bytes": 574619
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647351.1223824,
+        "mtime_readable": "2026-05-01 22:55:51 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed1001.log",
+        "size_bytes": 3775
+      },
+      "seed": 1001,
+      "statuses": [
+        {
+          "baseline": "copy_residual_transformer",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647304.0060866,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/1001/checkpoint.pt",
+          "cuda_visible_devices": "0",
+          "end_timestamp": 1777647352.3514004,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/1001/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_residual_transformer --seed 1001 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed1001.log",
+          "log_size_bytes": 3775,
+          "seed": 1001,
+          "start_timestamp": 1777646810.1719413,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer_seed1001.status.json",
+          "tmux_session": "fstf_v8_copy_residual_transformer_s1001",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/1001/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_residual_transformer_s1001",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647304.0070865,
+        "mtime_readable": "2026-05-01 22:55:04 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_residual_transformer/1001/train_summary.json",
+        "size_bytes": 10256
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_no_trace",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647206.2597694,
+        "mtime_readable": "2026-05-01 22:53:26 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/42/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650446.4198024,
+        "mtime_readable": "2026-05-01 23:47:26 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/42/eval_test.json",
+        "size_bytes": 573916
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647228.7650008,
+        "mtime_readable": "2026-05-01 22:53:48 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed42.log",
+        "size_bytes": 3785
+      },
+      "seed": 42,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647206.2597694,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/42/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777647229.8861806,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/42/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_no_trace --seed 42 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed42.log",
+          "log_size_bytes": 3785,
+          "seed": 42,
+          "start_timestamp": 1777646810.7915287,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed42.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s42",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/42/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s42",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647206.2607694,
+        "mtime_readable": "2026-05-01 22:53:26 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/42/train_summary.json",
+        "size_bytes": 10230
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_no_trace",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777650106.2636657,
+        "mtime_readable": "2026-05-01 23:41:46 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/123/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "3",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650568.7175012,
+        "mtime_readable": "2026-05-01 23:49:28 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/123/eval_test.json",
+        "size_bytes": 573580
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648515.7008135,
+        "mtime_readable": "2026-05-01 23:15:15 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed123.log",
+        "size_bytes": 3046
+      },
+      "seed": 123,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "cuda_visible_devices": "6",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_no_trace --seed 123 --steps 5000",
+          "seed": 123,
+          "start_timestamp": 1777646811.3933313,
+          "status": "running",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed123.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s123"
+        },
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777650106.2636657,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/123/checkpoint.pt",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777650239.9333103,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/123/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed123_relaunch.log",
+          "log_size_bytes": 3790,
+          "mode": "train_relaunch",
+          "seed": 123,
+          "start_timestamp": 1777648655.821069,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed123_relaunch.status.json",
+          "steps": 5000,
+          "tmux_session": "fstf_v8_relaunch_copy_gated_residual_no_trace_s123"
+        }
+      ],
+      "tmux_session": "fstf_v8_relaunch_copy_gated_residual_no_trace_s123",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777650106.2646656,
+        "mtime_readable": "2026-05-01 23:41:46 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/123/train_summary.json",
+        "size_bytes": 10234
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_no_trace",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647004.6006098,
+        "mtime_readable": "2026-05-01 22:50:04 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/456/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "1",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650474.905636,
+        "mtime_readable": "2026-05-01 23:47:54 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/456/eval_test.json",
+        "size_bytes": 573790
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647014.8028088,
+        "mtime_readable": "2026-05-01 22:50:14 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed456.log",
+        "size_bytes": 3788
+      },
+      "seed": 456,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647004.6006098,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/456/checkpoint.pt",
+          "cuda_visible_devices": "1",
+          "end_timestamp": 1777647016.1352181,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/456/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_no_trace --seed 456 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed456.log",
+          "log_size_bytes": 3788,
+          "seed": 456,
+          "start_timestamp": 1777646812.0266087,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed456.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s456",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/456/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s456",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647004.6016097,
+        "mtime_readable": "2026-05-01 22:50:04 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/456/train_summary.json",
+        "size_bytes": 10227
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_no_trace",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648446.8639188,
+        "mtime_readable": "2026-05-01 23:14:06 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650481.3721445,
+        "mtime_readable": "2026-05-01 23:48:01 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/eval_test.json",
+        "size_bytes": 573889
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648579.3960748,
+        "mtime_readable": "2026-05-01 23:16:19 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed789.log",
+        "size_bytes": 3791
+      },
+      "seed": 789,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777648446.8639188,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/checkpoint.pt",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777648580.7418365,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_no_trace --seed 789 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed789.log",
+          "log_size_bytes": 3791,
+          "seed": 789,
+          "start_timestamp": 1777646812.7247715,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed789.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s789",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/train_summary.json"
+        },
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777648700.5270598,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed789_eval_relaunch.log",
+          "log_size_bytes": 477,
+          "mode": "eval_relaunch",
+          "seed": 789,
+          "start_timestamp": 1777648655.763165,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed789_eval_relaunch.status.json",
+          "tmux_session": "fstf_v8_eval_copy_gated_residual_no_trace_s789"
+        }
+      ],
+      "tmux_session": "fstf_v8_eval_copy_gated_residual_no_trace_s789",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648446.8649187,
+        "mtime_readable": "2026-05-01 23:14:06 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/789/train_summary.json",
+        "size_bytes": 10250
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_no_trace",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647342.1510878,
+        "mtime_readable": "2026-05-01 22:55:42 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/1001/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "0",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650670.3687694,
+        "mtime_readable": "2026-05-01 23:51:10 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/1001/eval_test.json",
+        "size_bytes": 574058
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647381.1570208,
+        "mtime_readable": "2026-05-01 22:56:21 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed1001.log",
+        "size_bytes": 3793
+      },
+      "seed": 1001,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_no_trace",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647342.1510878,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/1001/checkpoint.pt",
+          "cuda_visible_devices": "0",
+          "end_timestamp": 1777647382.5102274,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/1001/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_no_trace --seed 1001 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed1001.log",
+          "log_size_bytes": 3793,
+          "seed": 1001,
+          "start_timestamp": 1777646813.5543067,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace_seed1001.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s1001",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/1001/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_no_trace_s1001",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647342.1530876,
+        "mtime_readable": "2026-05-01 22:55:42 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_no_trace/1001/train_summary.json",
+        "size_bytes": 10236
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_trace_only",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647207.5696664,
+        "mtime_readable": "2026-05-01 22:53:27 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/42/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650495.7430513,
+        "mtime_readable": "2026-05-01 23:48:15 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/42/eval_test.json",
+        "size_bytes": 574775
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647229.5739372,
+        "mtime_readable": "2026-05-01 22:53:49 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed42.log",
+        "size_bytes": 3790
+      },
+      "seed": 42,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647207.5696664,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/42/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777647230.682229,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/42/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_trace_only --seed 42 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed42.log",
+          "log_size_bytes": 3790,
+          "seed": 42,
+          "start_timestamp": 1777646814.180406,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed42.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s42",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/42/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s42",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647207.5706663,
+        "mtime_readable": "2026-05-01 22:53:27 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/42/train_summary.json",
+        "size_bytes": 10243
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_trace_only",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777649030.4692287,
+        "mtime_readable": "2026-05-01 23:23:50 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/123/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "4",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650516.1015031,
+        "mtime_readable": "2026-05-01 23:48:36 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/123/eval_test.json",
+        "size_bytes": 574282
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648523.7142181,
+        "mtime_readable": "2026-05-01 23:15:23 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed123.log",
+        "size_bytes": 3044
+      },
+      "seed": 123,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "cuda_visible_devices": "6",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_trace_only --seed 123 --steps 5000",
+          "seed": 123,
+          "start_timestamp": 1777646814.868483,
+          "status": "running",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed123.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s123"
+        },
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777649030.4692287,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/123/checkpoint.pt",
+          "cuda_visible_devices": "4",
+          "end_timestamp": 1777649059.805669,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/123/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed123_relaunch.log",
+          "log_size_bytes": 3796,
+          "mode": "train_relaunch",
+          "seed": 123,
+          "start_timestamp": 1777648655.8295367,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed123_relaunch.status.json",
+          "steps": 5000,
+          "tmux_session": "fstf_v8_relaunch_copy_gated_residual_trace_only_s123"
+        }
+      ],
+      "tmux_session": "fstf_v8_relaunch_copy_gated_residual_trace_only_s123",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777649030.4702287,
+        "mtime_readable": "2026-05-01 23:23:50 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/123/train_summary.json",
+        "size_bytes": 10229
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_trace_only",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647277.210193,
+        "mtime_readable": "2026-05-01 22:54:37 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/456/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "4",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650494.3921542,
+        "mtime_readable": "2026-05-01 23:48:14 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/456/eval_test.json",
+        "size_bytes": 574391
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647313.9013088,
+        "mtime_readable": "2026-05-01 22:55:13 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed456.log",
+        "size_bytes": 3795
+      },
+      "seed": 456,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647277.210193,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/456/checkpoint.pt",
+          "cuda_visible_devices": "4",
+          "end_timestamp": 1777647315.3532338,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/456/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_trace_only --seed 456 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed456.log",
+          "log_size_bytes": 3795,
+          "seed": 456,
+          "start_timestamp": 1777646815.60637,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed456.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s456",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/456/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s456",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647277.2111928,
+        "mtime_readable": "2026-05-01 22:54:37 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/456/train_summary.json",
+        "size_bytes": 10235
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_trace_only",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647008.3893123,
+        "mtime_readable": "2026-05-01 22:50:08 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/789/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "1",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650446.3908048,
+        "mtime_readable": "2026-05-01 23:47:26 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/789/eval_test.json",
+        "size_bytes": 574611
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647018.4875195,
+        "mtime_readable": "2026-05-01 22:50:18 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed789.log",
+        "size_bytes": 3796
+      },
+      "seed": 789,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647008.3893123,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/789/checkpoint.pt",
+          "cuda_visible_devices": "1",
+          "end_timestamp": 1777647019.801749,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/789/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_trace_only --seed 789 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed789.log",
+          "log_size_bytes": 3796,
+          "seed": 789,
+          "start_timestamp": 1777646816.5153987,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed789.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s789",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/789/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s789",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647008.3903122,
+        "mtime_readable": "2026-05-01 22:50:08 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/789/train_summary.json",
+        "size_bytes": 10219
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_trace_only",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648454.8983238,
+        "mtime_readable": "2026-05-01 23:14:14 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "7",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650572.2802303,
+        "mtime_readable": "2026-05-01 23:49:32 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/eval_test.json",
+        "size_bytes": 574568
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648585.6846063,
+        "mtime_readable": "2026-05-01 23:16:25 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed1001.log",
+        "size_bytes": 3801
+      },
+      "seed": 1001,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777648454.8983238,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/checkpoint.pt",
+          "cuda_visible_devices": "3",
+          "end_timestamp": 1777648586.9924905,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_trace_only --seed 1001 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed1001.log",
+          "log_size_bytes": 3801,
+          "seed": 1001,
+          "start_timestamp": 1777646817.6236558,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed1001.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_trace_only_s1001",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/train_summary.json"
+        },
+        {
+          "baseline": "copy_gated_residual_trace_only",
+          "cuda_visible_devices": "7",
+          "end_timestamp": 1777648709.3172371,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed1001_eval_relaunch.log",
+          "log_size_bytes": 483,
+          "mode": "eval_relaunch",
+          "seed": 1001,
+          "start_timestamp": 1777648655.7824097,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only_seed1001_eval_relaunch.status.json",
+          "tmux_session": "fstf_v8_eval_copy_gated_residual_trace_only_s1001"
+        }
+      ],
+      "tmux_session": "fstf_v8_eval_copy_gated_residual_trace_only_s1001",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648454.9003236,
+        "mtime_readable": "2026-05-01 23:14:14 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_trace_only/1001/train_summary.json",
+        "size_bytes": 10235
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_plain_trace_semantic",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647348.0946205,
+        "mtime_readable": "2026-05-01 22:55:48 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/42/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "0",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650476.9894776,
+        "mtime_readable": "2026-05-01 23:47:56 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/42/eval_test.json",
+        "size_bytes": 574624
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647385.8036554,
+        "mtime_readable": "2026-05-01 22:56:25 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed42.log",
+        "size_bytes": 3840
+      },
+      "seed": 42,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_plain_trace_semantic",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647348.0946205,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/42/checkpoint.pt",
+          "cuda_visible_devices": "0",
+          "end_timestamp": 1777647387.0216825,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/42/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_plain_trace_semantic --seed 42 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed42.log",
+          "log_size_bytes": 3840,
+          "seed": 42,
+          "start_timestamp": 1777646819.9503887,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed42.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s42",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/42/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s42",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647348.0956204,
+        "mtime_readable": "2026-05-01 22:55:48 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/42/train_summary.json",
+        "size_bytes": 10279
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_plain_trace_semantic",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777648849.325869,
+        "mtime_readable": "2026-05-01 23:20:49 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/123/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650482.8720303,
+        "mtime_readable": "2026-05-01 23:48:02 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/123/eval_test.json",
+        "size_bytes": 574037
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777648532.7045498,
+        "mtime_readable": "2026-05-01 23:15:32 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed123.log",
+        "size_bytes": 3055
+      },
+      "seed": 123,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_plain_trace_semantic",
+          "cuda_visible_devices": "6",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_plain_trace_semantic --seed 123 --steps 5000",
+          "seed": 123,
+          "start_timestamp": 1777646822.606026,
+          "status": "running",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed123.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s123"
+        },
+        {
+          "baseline": "copy_gated_residual_plain_trace_semantic",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777648849.325869,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/123/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777648881.446938,
+          "eval_summary_exists": true,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/123/eval_test.json",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed123_relaunch.log",
+          "log_size_bytes": 3847,
+          "mode": "train_relaunch",
+          "seed": 123,
+          "start_timestamp": 1777648655.8733613,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed123_relaunch.status.json",
+          "steps": 5000,
+          "tmux_session": "fstf_v8_relaunch_copy_gated_residual_plain_trace_semantic_s123"
+        }
+      ],
+      "tmux_session": "fstf_v8_relaunch_copy_gated_residual_plain_trace_semantic_s123",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777648849.326869,
+        "mtime_readable": "2026-05-01 23:20:49 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/123/train_summary.json",
+        "size_bytes": 10263
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_plain_trace_semantic",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647214.6181126,
+        "mtime_readable": "2026-05-01 22:53:34 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/456/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "5",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650674.2444746,
+        "mtime_readable": "2026-05-01 23:51:14 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/456/eval_test.json",
+        "size_bytes": 574246
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647233.8056047,
+        "mtime_readable": "2026-05-01 22:53:53 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed456.log",
+        "size_bytes": 3846
+      },
+      "seed": 456,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_plain_trace_semantic",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647214.6181126,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/456/checkpoint.pt",
+          "cuda_visible_devices": "5",
+          "end_timestamp": 1777647235.20358,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/456/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_plain_trace_semantic --seed 456 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed456.log",
+          "log_size_bytes": 3846,
+          "seed": 456,
+          "start_timestamp": 1777646825.009944,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed456.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s456",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/456/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s456",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647214.6201124,
+        "mtime_readable": "2026-05-01 22:53:34 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/456/train_summary.json",
+        "size_bytes": 10257
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_plain_trace_semantic",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647289.0772603,
+        "mtime_readable": "2026-05-01 22:54:49 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/789/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "4",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650496.074026,
+        "mtime_readable": "2026-05-01 23:48:16 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/789/eval_test.json",
+        "size_bytes": 573955
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647323.396562,
+        "mtime_readable": "2026-05-01 22:55:23 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed789.log",
+        "size_bytes": 3847
+      },
+      "seed": 789,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_plain_trace_semantic",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647289.0772603,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/789/checkpoint.pt",
+          "cuda_visible_devices": "4",
+          "end_timestamp": 1777647324.59684,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/789/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_plain_trace_semantic --seed 789 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed789.log",
+          "log_size_bytes": 3847,
+          "seed": 789,
+          "start_timestamp": 1777646827.5085716,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed789.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s789",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/789/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s789",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647289.07926,
+        "mtime_readable": "2026-05-01 22:54:49 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/789/train_summary.json",
+        "size_bytes": 10259
+      }
+    },
+    {
+      "baseline": "copy_gated_residual_plain_trace_semantic",
+      "checkpoint": {
+        "exists": true,
+        "mtime": 1777647710.3305674,
+        "mtime_readable": "2026-05-01 23:01:50 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/1001/checkpoint.pt",
+        "size_bytes": 10646261
+      },
+      "cuda_visible_devices": "2",
+      "eval_summary": {
+        "exists": true,
+        "mtime": 1777650514.8775961,
+        "mtime_readable": "2026-05-01 23:48:34 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/1001/eval_test.json",
+        "size_bytes": 574185
+      },
+      "log": {
+        "exists": true,
+        "mtime": 1777647789.3611908,
+        "mtime_readable": "2026-05-01 23:03:09 +08",
+        "path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed1001.log",
+        "size_bytes": 3851
+      },
+      "seed": 1001,
+      "statuses": [
+        {
+          "baseline": "copy_gated_residual_plain_trace_semantic",
+          "checkpoint_exists": true,
+          "checkpoint_mtime": 1777647710.3305674,
+          "checkpoint_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/1001/checkpoint.pt",
+          "cuda_visible_devices": "2",
+          "end_timestamp": 1777647790.6666422,
+          "eval_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/1001/eval_test.json",
+          "launched_command": "/home/chen034/miniconda3/envs/stwm/bin/python train_fstf_strong_copyaware_baseline_v8 --baseline copy_gated_residual_plain_trace_semantic --seed 1001 --steps 5000",
+          "log_path": "logs/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed1001.log",
+          "log_size_bytes": 3851,
+          "seed": 1001,
+          "start_timestamp": 1777646829.3826716,
+          "status": "completed",
+          "status_exists": true,
+          "status_path": "outputs/run_status/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic_seed1001.status.json",
+          "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s1001",
+          "train_summary_path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/1001/train_summary.json"
+        }
+      ],
+      "tmux_session": "fstf_v8_copy_gated_residual_plain_trace_semantic_s1001",
+      "train_summary": {
+        "exists": true,
+        "mtime": 1777647710.3315673,
+        "mtime_readable": "2026-05-01 23:01:50 +08",
+        "path": "outputs/checkpoints/fstf_strong_copyaware_baselines_v8_20260501/copy_gated_residual_plain_trace_semantic/1001/train_summary.json",
+        "size_bytes": 10265
+      }
+    }
+  ],
+  "teacher_forced_path_used": false,
+  "train_summary_count": 25,
+  "zip_snapshot_contains_outputs_or_logs": false
+}

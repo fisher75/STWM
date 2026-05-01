@@ -1,0 +1,441 @@
+{
+  "audit_name": "stwm_fstf_mechanism_ablation_v9_bootstrap",
+  "vs_copy_residual_mlp": {
+    "STWM_copy_only": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          -0.012040721091334939,
+          0.029331971965119483
+        ],
+        "item_count": 610,
+        "mean_delta": 0.008571140172540164,
+        "zero_excluded": false
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.0017935605331034703,
+          0.02076902468062626
+        ],
+        "item_count": 647,
+        "mean_delta": 0.011357580728748297,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.04780100033253054,
+          -0.030253342298578612
+        ],
+        "item_count": 632,
+        "mean_delta": -0.0386539537223834,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_full_selected": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.04726071874626347,
+          0.0831896554397755
+        ],
+        "item_count": 610,
+        "mean_delta": 0.06527920483565722,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.03289333287125577,
+          0.050528337183470336
+        ],
+        "item_count": 647,
+        "mean_delta": 0.04174363051283488,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.047379059429410134,
+          -0.03001479049083553
+        ],
+        "item_count": 632,
+        "mean_delta": -0.03839903106983704,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_gate_zero": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          -0.012040721091334939,
+          0.029331971965119483
+        ],
+        "item_count": 610,
+        "mean_delta": 0.008571140172540164,
+        "zero_excluded": false
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.0017935605331034703,
+          0.02076902468062626
+        ],
+        "item_count": 647,
+        "mean_delta": 0.011357580728748297,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.04780100033253054,
+          -0.030253342298578612
+        ],
+        "item_count": 632,
+        "mean_delta": -0.0386539537223834,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_no_gate_or_gate_one": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.05013011458222983,
+          0.08610849551001533
+        ],
+        "item_count": 610,
+        "mean_delta": 0.06817563372557281,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.0358668600918705,
+          0.05247589078785095
+        ],
+        "item_count": 647,
+        "mean_delta": 0.04401975966978478,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.04675934342078016,
+          -0.02893973533299905
+        ],
+        "item_count": 632,
+        "mean_delta": -0.03762530449636375,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_no_observed_semantic_memory": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          -0.4215043374737267,
+          -0.3675616785999937
+        ],
+        "item_count": 610,
+        "mean_delta": -0.39410111305288603,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          -0.582307285227607,
+          -0.539115170060644
+        ],
+        "item_count": 647,
+        "mean_delta": -0.5604762740225936,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          0.6554708913210308,
+          0.7070393413765049
+        ],
+        "item_count": 632,
+        "mean_delta": 0.6816937970533921,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_no_trace_condition": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.04726071874626347,
+          0.0831896554397755
+        ],
+        "item_count": 610,
+        "mean_delta": 0.06527920483565722,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.03289333287125577,
+          0.050528337183470336
+        ],
+        "item_count": 647,
+        "mean_delta": 0.04174363051283488,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.047379059429410134,
+          -0.03001479049083553
+        ],
+        "item_count": 632,
+        "mean_delta": -0.03839903106983704,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_residual_only_no_copy": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          -0.04947204201802856,
+          -0.0043383288175844765
+        ],
+        "item_count": 610,
+        "mean_delta": -0.026628169230506073,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          -0.05273861963376748,
+          -0.02485372434374538
+        ],
+        "item_count": 647,
+        "mean_delta": -0.038847656599843336,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          0.03705448201161962,
+          0.07153040453602996
+        ],
+        "item_count": 632,
+        "mean_delta": 0.05381749804143476,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    }
+  },
+  "vs_full": {
+    "STWM_copy_only": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.042547087969838596,
+          0.07107476799092331
+        ],
+        "item_count": 610,
+        "mean_delta": 0.05670806466311705,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.023605094718785705,
+          0.03741922131070214
+        ],
+        "item_count": 647,
+        "mean_delta": 0.030386049784086586,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          0.0,
+          0.0006944444737856902
+        ],
+        "item_count": 632,
+        "mean_delta": 0.00025492265254636355,
+        "zero_excluded": false
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_full_selected": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "item_count": 610,
+        "mean_delta": 0.0,
+        "zero_excluded": false
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "item_count": 647,
+        "mean_delta": 0.0,
+        "zero_excluded": false
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "item_count": 632,
+        "mean_delta": 0.0,
+        "zero_excluded": false
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_gate_zero": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.042547087969838596,
+          0.07107476799092331
+        ],
+        "item_count": 610,
+        "mean_delta": 0.05670806466311705,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.023605094718785705,
+          0.03741922131070214
+        ],
+        "item_count": 647,
+        "mean_delta": 0.030386049784086586,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          0.0,
+          0.0006944444737856902
+        ],
+        "item_count": 632,
+        "mean_delta": 0.00025492265254636355,
+        "zero_excluded": false
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_no_gate_or_gate_one": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          -0.012965150592757053,
+          0.006438594299261687
+        ],
+        "item_count": 610,
+        "mean_delta": -0.0028964288899155912,
+        "zero_excluded": false
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          -0.006172822514862697,
+          0.0011119287938938995
+        ],
+        "item_count": 647,
+        "mean_delta": -0.0022761291569498997,
+        "zero_excluded": false
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.0021228271571895746,
+          0.0
+        ],
+        "item_count": 632,
+        "mean_delta": -0.0007737265734732905,
+        "zero_excluded": false
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_no_observed_semantic_memory": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.4301883242993814,
+          0.4879590630714522
+        ],
+        "item_count": 610,
+        "mean_delta": 0.4593803178885433,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.5794704765300202,
+          0.6244130388904116
+        ],
+        "item_count": 647,
+        "mean_delta": 0.6022199045354284,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.7456319825075378,
+          -0.6943810068607283
+        ],
+        "item_count": 632,
+        "mean_delta": -0.7200928281232291,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_no_trace_condition": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "item_count": 610,
+        "mean_delta": 0.0,
+        "zero_excluded": false
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "item_count": 647,
+        "mean_delta": 0.0,
+        "zero_excluded": false
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "item_count": 632,
+        "mean_delta": 0.0,
+        "zero_excluded": false
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    },
+    "STWM_residual_only_no_copy": {
+      "a_minus_b_changed_top5": {
+        "ci95": [
+          0.07127030956574151,
+          0.11282310157892157
+        ],
+        "item_count": 610,
+        "mean_delta": 0.09190737406616328,
+        "zero_excluded": true
+      },
+      "a_minus_b_overall_top5": {
+        "ci95": [
+          0.06799210407634422,
+          0.09292754515936423
+        ],
+        "item_count": 647,
+        "mean_delta": 0.08059128711267823,
+        "zero_excluded": true
+      },
+      "a_minus_b_stable_drop": {
+        "ci95": [
+          -0.10968626671930469,
+          -0.07623336386359945
+        ],
+        "item_count": 632,
+        "mean_delta": -0.09221652911127179,
+        "zero_excluded": true
+      },
+      "common_item_count": 647,
+      "stable_drop_note": "Positive means first run has larger stable drop."
+    }
+  }
+}

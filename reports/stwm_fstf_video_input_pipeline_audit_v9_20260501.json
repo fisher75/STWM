@@ -1,0 +1,44 @@
+{
+  "audit_name": "stwm_fstf_video_input_pipeline_audit_v9",
+  "cache_training_disclosed": true,
+  "current_fstf_training_uses_materialized_cache": true,
+  "dataset_counts": {
+    "VIPSeg": 418,
+    "VSPW": 229
+  },
+  "end_to_end_demo_feasible_count_lower_bound": 5,
+  "example_frame_path_payloads": [
+    [
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1007_nnjklmugBfo/00000077.jpg",
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1008_cjuVdt1f04I/00000288.jpg",
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/100_9OFxODps2Uo/00000610.jpg",
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1010_dFc61Ku1P_M/00001938.jpg"
+    ],
+    [
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1015_-KqXcm-I2zY/00000107.jpg",
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1016_8J41CsGYhNI/00000227.jpg",
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1020_TgCIv6bp3XM/00001833.jpg",
+      "/home/chen034/workspace/stwm/data/external/vipseg/VIPSeg/imgs/1030_J_m6vc8gtvQ/00008373.jpg"
+    ]
+  ],
+  "frozen_frontend_pipeline": true,
+  "future_leakage_detected": false,
+  "future_semantic_prototype_targets_used_as_input": false,
+  "item_count": 647,
+  "mask_paths_traceable_item_estimate": 647,
+  "observed_semantic_memory_from_crop_or_frozen_semantic_cache": true,
+  "pipeline": [
+    "raw video frames",
+    "video-derived trace frontend / Stage1 trace backbone",
+    "observed semantic memory construction",
+    "materialized trace/semantic cache",
+    "STWM FSTF semantic transition",
+    "future semantic prototype field"
+  ],
+  "raw_frame_paths_traceable_item_estimate": 647,
+  "raw_video_end_to_end_training": false,
+  "required_wording_for_paper": "Training/evaluation use a frozen video-derived trace and observed semantic-memory cache. The system pipeline starts from raw video frames, but the FSTF transition is trained on materialized video-derived trace/semantic states, not end-to-end raw RGB.",
+  "semantic_crop_valid_ratio": 0.7496914849856027,
+  "trace_cache_from_video_derived_frontend": true,
+  "video_input_claim_allowed": true
+}

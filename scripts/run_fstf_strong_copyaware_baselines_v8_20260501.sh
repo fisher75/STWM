@@ -148,3 +148,20 @@ while true; do
 done
 
 echo "[fstf-v8] training jobs finished" >&2
+
+mkdir -p "${CKPT_ROOT}/copy_semantic_memory_baseline" "${CKPT_ROOT}/oracle_change_gate_upper_bound"
+"${PY}" code/stwm/tools/eval_fstf_strong_copyaware_baseline_v8_20260501.py \
+  --baseline copy_semantic_memory_baseline \
+  --test-cache-report reports/stwm_mixed_fullscale_v2_materialization_test_20260428.json \
+  --observed-report reports/stwm_mixed_observed_semantic_prototype_targets_v2_20260428.json \
+  --future-cache-report reports/stwm_fullscale_semantic_trace_prototype_targets_c32_v1_20260428.json \
+  --device cuda --output "${CKPT_ROOT}/copy_semantic_memory_baseline/eval_test.json"
+"${PY}" code/stwm/tools/eval_fstf_strong_copyaware_baseline_v8_20260501.py \
+  --baseline oracle_change_gate_upper_bound \
+  --test-cache-report reports/stwm_mixed_fullscale_v2_materialization_test_20260428.json \
+  --observed-report reports/stwm_mixed_observed_semantic_prototype_targets_v2_20260428.json \
+  --future-cache-report reports/stwm_fullscale_semantic_trace_prototype_targets_c32_v1_20260428.json \
+  --device cuda --output "${CKPT_ROOT}/oracle_change_gate_upper_bound/eval_test.json"
+"${PY}" code/stwm/tools/aggregate_fstf_strong_copyaware_baseline_v8_20260501.py
+"${PY}" code/stwm/tools/audit_fstf_v8_live_artifacts_20260501.py
+echo "[fstf-v8] aggregate and live artifact audit finished" >&2
