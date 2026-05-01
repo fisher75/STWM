@@ -1,0 +1,41 @@
+{
+  "audit_name": "stwm_fstf_v10_cvpr_readiness_gate",
+  "best_repair_variant": null,
+  "current_allowed_claims": [
+    "STWM-FSTF future semantic prototype prediction depends on future_hidden trace rollout representations under semantic-head intervention tests.",
+    "Observed semantic memory and copy prior remain strongly load-bearing.",
+    "Trace coordinate and temporal-order load-bearing are not supported by V10; do not claim them.",
+    "Training/eval uses frozen video-derived trace/semantic state cache, not raw-video end-to-end training."
+  ],
+  "current_forbidden_claims": [
+    "Do not use V9 old no_trace_condition as evidence.",
+    "Do not claim future_trace_coord_load_bearing or temporal-order load-bearing from V10.",
+    "Do not claim dense trace field or long-horizon world model until K/H scaling completes.",
+    "Do not claim visibility/reappearance positive evidence."
+  ],
+  "dense_trace_field_claim_allowed": false,
+  "future_hidden_load_bearing": true,
+  "future_trace_coord_load_bearing": false,
+  "long_horizon_claim_allowed": false,
+  "mechanism_gate_stable_tradeoff_stated": true,
+  "next_step_choice": "run_full_scaling_laws",
+  "old_no_trace_ablation_valid": false,
+  "repair_skipped_reason": "trace_conditioning_audit shows future_hidden_load_bearing=true and semantic_memory_dominates_prediction=false",
+  "repair_training_launched": false,
+  "scaling_allowed": true,
+  "scaling_completed": false,
+  "semantic_memory_dominates_prediction": false,
+  "source_reports": {
+    "pipeline_audit": "reports/stwm_fstf_video_input_pipeline_audit_v9_20260501.json",
+    "trace_conditioning_audit": "reports/stwm_fstf_trace_conditioning_audit_v10_20260502.json",
+    "trace_conditioning_bootstrap": "reports/stwm_fstf_trace_conditioning_bootstrap_v10_20260502.json",
+    "v8_artifact_audit": "reports/stwm_fstf_v8_live_artifact_audit_20260501.json",
+    "v9_readiness": "reports/stwm_fstf_v9_cvpr_readiness_gate_20260501.json"
+  },
+  "trace_condition_claim_allowed": true,
+  "trace_conditioning_audit_completed": true,
+  "trace_temporal_order_load_bearing": false,
+  "trace_unit_binding_load_bearing": false,
+  "v8_live_artifacts_verified": true,
+  "video_input_pipeline_wording_fixed": true
+}
