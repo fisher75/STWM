@@ -127,6 +127,41 @@
       "eligible": false
     }
   },
+  "best_test_metrics": {
+    "change_detection": {
+      "ap": 0.5185593699121969,
+      "auroc": 0.638341706627859,
+      "eligible": true
+    },
+    "changed_subset_count": 6152,
+    "changed_subset_gain_over_copy": -0.03478543763866426,
+    "changed_subset_top5": 0.6931079414676783,
+    "copy_changed_subset_top5": 0.7278933791063426,
+    "copy_proto_ce": 2.5913242323217087,
+    "copy_proto_top1": 0.5923938297896832,
+    "copy_proto_top5": 0.8890876625401358,
+    "copy_stable_subset_top5": 0.9999999967867756,
+    "future_trace_coord_error": 0.3749566654551704,
+    "overall_gain_over_copy": -0.018286622986163015,
+    "proto_ce": 2.41266028829576,
+    "proto_logit_std_mean": 2.1547322312615953,
+    "proto_top1": 0.5112303758848044,
+    "proto_top5": 0.8708010395539728,
+    "reappearance": {
+      "ap": 0.05685822707749995,
+      "auroc": 0.6535849656248978,
+      "eligible": true
+    },
+    "stable_preservation_drop": 0.0069343468351207305,
+    "stable_subset_count": 8941,
+    "stable_subset_top5": 0.9930656499516549,
+    "valid_count": 15093,
+    "visibility": {
+      "ap": 0.0,
+      "auroc": 0.0,
+      "eligible": false
+    }
+  },
   "best_val_metrics": {
     "change_detection": {
       "ap": 0.8408818701469127,
@@ -10297,6 +10332,11 @@
       }
     }
   ],
+  "selected_candidate": {
+    "checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stwm_final_lodo_v3_20260428/vspw_to_vipseg_c64_seed42_final.pt",
+    "prototype_count": 64,
+    "seed": 42
+  },
   "selected_checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stwm_final_lodo_v3_20260428/vspw_to_vipseg_c64_seed42_final.pt",
   "selected_prototype_count": 64,
   "selected_seed": 42,

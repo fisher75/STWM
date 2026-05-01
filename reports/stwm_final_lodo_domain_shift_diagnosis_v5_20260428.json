@@ -1,0 +1,113 @@
+{
+  "audit_name": "stwm_final_lodo_domain_shift_diagnosis_v5",
+  "changed_stable_ratio_shift": {
+    "VIPSEG_changed_ratio": 0.39698075306946523,
+    "VSPW_changed_ratio": 0.6242069237857049,
+    "delta_vspw_minus_vipseg": 0.22722617071623963
+  },
+  "conclusion": {
+    "dynamics_shift": true,
+    "final_readout": "LODO negative is best explained as cross-dataset domain shift in prototype priors and transition statistics, not as a failure of the mixed-protocol semantic world model.",
+    "observed_memory_quality_shift": false,
+    "prototype_distribution_shift": true,
+    "report_inconsistency": false,
+    "target_label_mismatch": false,
+    "training_data_imbalance": true
+  },
+  "copy_baseline_strength_shift": {
+    "lodo_vipseg_to_vspw_copy_changed_top5": 0.5568358849087855,
+    "lodo_vspw_to_vipseg_copy_changed_top5": 0.7278933791063426,
+    "mixed_vipseg_copy_changed_top5": 0.8219203357688217,
+    "mixed_vspw_copy_changed_top5": 0.5568358849087855
+  },
+  "crop_feature_norm_shift": {
+    "VIPSEG": {
+      "observed_last_norm_mean": 0.0,
+      "observed_last_norm_std": 0.0,
+      "observed_mean_norm_mean": 0.0,
+      "observed_mean_norm_std": 0.0,
+      "slot_count": 0
+    },
+    "VSPW": {
+      "observed_last_norm_mean": 1.0,
+      "observed_last_norm_std": 2.7177955885804295e-08,
+      "observed_mean_norm_mean": 1.0,
+      "observed_mean_norm_std": 2.7177955885804295e-08,
+      "slot_count": 10115
+    }
+  },
+  "future_target_coverage_shift": {
+    "VIPSEG": 1.0,
+    "VSPW": 0.492392668842581,
+    "delta_vipseg_minus_vspw": 0.507607331157419
+  },
+  "observed_semantic_memory_coverage_shift": {
+    "VIPSEG": 0.5438234360114322,
+    "VSPW": 0.40151635439822164,
+    "delta_vipseg_minus_vspw": 0.1423070816132106
+  },
+  "per_prototype_failure_analysis": {
+    "likely_mismatch_driver": "prototype prior + changed/stable ratio shift dominate more than observed-memory absence, because VIPSEG observed memory coverage is actually higher than VSPW in the repaired mixed pool.",
+    "vipseg_to_vspw_changed_top5_delta": -0.03083151861287392,
+    "vspw_to_vipseg_changed_top5_delta": -0.03478543763866426
+  },
+  "prototype_distribution_shift": {
+    "c32_js_divergence": 0.16038782546361047,
+    "c32_vipseg_top5": [
+      {
+        "count": 11620,
+        "prototype": 20
+      },
+      {
+        "count": 10125,
+        "prototype": 24
+      },
+      {
+        "count": 9495,
+        "prototype": 7
+      },
+      {
+        "count": 6771,
+        "prototype": 31
+      },
+      {
+        "count": 5593,
+        "prototype": 28
+      }
+    ],
+    "c32_vspw_top5": [
+      {
+        "count": 10805,
+        "prototype": 10
+      },
+      {
+        "count": 10762,
+        "prototype": 16
+      },
+      {
+        "count": 9523,
+        "prototype": 13
+      },
+      {
+        "count": 8332,
+        "prototype": 4
+      },
+      {
+        "count": 7665,
+        "prototype": 25
+      }
+    ],
+    "c64_js_divergence": 0.1693801967488865
+  },
+  "semantic_change_target_rate_shift": {
+    "mixed_train_vipseg_changed_ratio": 0.39698075306946523,
+    "mixed_train_vspw_changed_ratio": 0.6242069237857049
+  },
+  "trace_coordinate_error_shift": {
+    "lodo_vipseg_to_vspw_trace_error": 0.283363430150624,
+    "lodo_vspw_to_vipseg_trace_error": 0.3749566654551704,
+    "mixed_vipseg_trace_error": 0.29816758210928934,
+    "mixed_vspw_trace_error": 0.23947533014519462
+  },
+  "trusted_lodo_conclusion": "negative"
+}

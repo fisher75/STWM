@@ -1,0 +1,56 @@
+{
+  "STWM_beats_same_output_baselines": false,
+  "audit_name": "stwm_final_baseline_suite_complete_v5_eval",
+  "available_baselines": [
+    {
+      "name": "frequency",
+      "same_free_rollout_protocol": false,
+      "source": "semantic prototype predictability / persistence reports"
+    },
+    {
+      "mixed_copy_top5": 0.0,
+      "name": "semantic_copy",
+      "same_free_rollout_protocol": true,
+      "source": "mixed fullscale eval copy baseline"
+    },
+    {
+      "name": "trace_only_mlp",
+      "same_free_rollout_protocol": false,
+      "source": "semantic prototype predictability baselines"
+    },
+    {
+      "name": "semantic_only_mlp",
+      "same_free_rollout_protocol": false,
+      "source": "semantic prototype predictability baselines"
+    },
+    {
+      "name": "semantic_plus_trace_simple_transformer",
+      "same_free_rollout_protocol": false,
+      "source": "not present in live repo"
+    },
+    {
+      "name": "slotformer_like_object_slot_dynamics",
+      "same_free_rollout_protocol": false,
+      "source": "not present in live repo"
+    },
+    {
+      "name": "dino_wm_like_feature_latent_dynamics",
+      "same_free_rollout_protocol": false,
+      "source": "not present in live repo"
+    }
+  ],
+  "baseline_suite_completed": false,
+  "fair_input_output_status": "Only copy is fully same-output/free-rollout in the live repo; transformer/slotformer-like/dino-wm-like/fiery-style baselines remain missing.",
+  "skipped_reason": "A fair same-output free-rollout suite beyond copy/probe baselines is not implemented in the live repo. Trace-only/semantic-only/semantic+trace transformers, SlotFormer-like, DINO-WM-like, and FIERY-style same-output baselines remain missing.",
+  "source_significance": {
+    "audit_name": "stwm_final_same_output_baseline_suite_v3_significance",
+    "baseline_suite_completed": false,
+    "skipped_reason": "A fair same-output free-rollout suite beyond copy/probe baselines is not implemented in the live repo. Trace-only/semantic-only/semantic+trace transformers, SlotFormer-like, DINO-WM-like, and FIERY-style same-output baselines remain missing.",
+    "source_v1_significance": {
+      "audit_name": "stwm_world_model_baseline_suite_v1_significance",
+      "baseline_suite_completed": false,
+      "skipped_reason": "A fair same-output free-rollout world-model baseline suite is not fully implemented in the live repo; only trivial/probe baselines and the copy baseline are currently available."
+    }
+  },
+  "trace_guardrail_required": true
+}

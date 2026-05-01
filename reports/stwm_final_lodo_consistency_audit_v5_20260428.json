@@ -1,0 +1,113 @@
+{
+  "audit_name": "stwm_final_lodo_consistency_audit_v5",
+  "codex_prose_both_negative_consistent_with_json": true,
+  "completed_run_count": 20,
+  "expected_run_count": 20,
+  "failed_run_count": 0,
+  "lodo_completed": true,
+  "report_inconsistency_detected": false,
+  "trusted_lodo_conclusion": "negative",
+  "vipseg_to_vspw": {
+    "ce_delta": 0.12371164962890235,
+    "changed_top5_delta": -0.03083151861287392,
+    "ci": {
+      "ce_delta": {
+        "bootstrap_win_rate": 0.8602620087336245,
+        "ci95": [
+          0.10497980862855912,
+          0.13774017437186303
+        ],
+        "item_count": 229,
+        "mean_delta": 0.12150176461607087,
+        "zero_excluded": true
+      },
+      "changed": {
+        "bootstrap_win_rate": 0.26222222222222225,
+        "ci95": [
+          -0.07454895165728198,
+          -0.01974344670813944
+        ],
+        "item_count": 225,
+        "mean_delta": -0.04609957602288988,
+        "zero_excluded": true
+      },
+      "overall": {
+        "bootstrap_win_rate": 0.25327510917030566,
+        "ci95": [
+          -0.03519909959693142,
+          -0.009243043950518927
+        ],
+        "item_count": 229,
+        "mean_delta": -0.0224656910680267,
+        "zero_excluded": true
+      },
+      "stable_drop": {
+        "bootstrap_win_rate": 0.04072398190045249,
+        "ci95": [
+          0.003533361312760487,
+          0.021146212841860315
+        ],
+        "item_count": 221,
+        "mean_delta": 0.01134453680180856,
+        "zero_excluded": true
+      }
+    },
+    "overall_top5_delta": -0.020358234102963446,
+    "selected_checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stwm_final_lodo_v3_20260428/vipseg_to_vspw_c32_seed123_final.pt",
+    "selected_prototype_count": 32,
+    "selected_seed": 123,
+    "stable_drop": 0.006967946427195448
+  },
+  "vspw_to_vipseg": {
+    "ce_delta": 0.17866394402594876,
+    "changed_top5_delta": -0.03478543763866426,
+    "ci": {
+      "ce_delta": {
+        "bootstrap_win_rate": 0.9641148325358851,
+        "ci95": [
+          0.1652666831558401,
+          0.19290466869704462
+        ],
+        "item_count": 418,
+        "mean_delta": 0.17898897063789185,
+        "zero_excluded": true
+      },
+      "changed": {
+        "bootstrap_win_rate": 0.1446700507614213,
+        "ci95": [
+          -0.05916584851976654,
+          -0.02511738734130705
+        ],
+        "item_count": 394,
+        "mean_delta": -0.04137003769729343,
+        "zero_excluded": true
+      },
+      "overall": {
+        "bootstrap_win_rate": 0.1291866028708134,
+        "ci95": [
+          -0.030780406844352133,
+          -0.013425129890869678
+        ],
+        "item_count": 418,
+        "mean_delta": -0.02164462968065408,
+        "zero_excluded": true
+      },
+      "stable_drop": {
+        "bootstrap_win_rate": 0.0364963503649635,
+        "ci95": [
+          0.0029617469712475497,
+          0.016943409266698104
+        ],
+        "item_count": 411,
+        "mean_delta": 0.00878571390815605,
+        "zero_excluded": true
+      }
+    },
+    "overall_top5_delta": -0.018286622986163015,
+    "selected_checkpoint_path": "/raid/chen034/workspace/stwm/outputs/checkpoints/stwm_final_lodo_v3_20260428/vspw_to_vipseg_c64_seed42_final.pt",
+    "selected_prototype_count": 64,
+    "selected_seed": 42,
+    "stable_drop": 0.0069343468351207305
+  },
+  "why_final_lodo_positive_false": "Both directions are negative on changed-subset top5 with zero-excluded negative confidence intervals, even though stable copy is preserved and trace regression stays false."
+}
