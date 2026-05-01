@@ -1,0 +1,118 @@
+{
+  "C128_overfit_or_improve": "blocked unless C128 cache/run exists",
+  "C32_vs_C64": "reported in runs when both are available",
+  "audit_name": "stwm_fstf_prototype_scaling_v11",
+  "changed_gain": {
+    "mean": 0.05924476770835957,
+    "std": 0.035991647762761925
+  },
+  "future_trace_coord_error": {
+    "mean": 0.06769089330067267,
+    "std": 0.0
+  },
+  "overall_top5": {
+    "mean": 0.7386347071863278,
+    "std": 0.0837615623931277
+  },
+  "prototype_scaling_positive": true,
+  "prototype_vocab_claim_allowed": true,
+  "run_count": 7,
+  "runs": [
+    {
+      "changed_subset_gain_over_copy": -0.01414806688694431,
+      "changed_subset_top5": 0.41822173908636373,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c128_seed456/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.5603536831320457,
+      "prototype_count": 128,
+      "scaling_axis": "prototype",
+      "scaling_value": "C128",
+      "seed": 456,
+      "stable_preservation_drop": 0.1788272081591662
+    },
+    {
+      "changed_subset_gain_over_copy": 0.034566144034754,
+      "changed_subset_top5": 0.7475106774276894,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed42/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.8306623619169484,
+      "prototype_count": 16,
+      "scaling_axis": "prototype",
+      "scaling_value": "C16",
+      "seed": 42,
+      "stable_preservation_drop": 0.06563774698937808
+    },
+    {
+      "changed_subset_gain_over_copy": 0.07167856691890984,
+      "changed_subset_top5": 0.6479070503079523,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c32_seed123/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7752427667264095,
+      "prototype_count": 32,
+      "scaling_axis": "prototype",
+      "scaling_value": "C32",
+      "seed": 123,
+      "stable_preservation_drop": 0.06010137059760212
+    },
+    {
+      "changed_subset_gain_over_copy": 0.09127817320778608,
+      "changed_subset_top5": 0.6675066565968285,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c32_seed42/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7872424500817854,
+      "prototype_count": 32,
+      "scaling_axis": "prototype",
+      "scaling_value": "C32",
+      "seed": 42,
+      "stable_preservation_drop": 0.05792903209578548
+    },
+    {
+      "changed_subset_gain_over_copy": 0.10205795785826022,
+      "changed_subset_top5": 0.6782864412473026,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c32_seed456/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7971106117635817,
+      "prototype_count": 32,
+      "scaling_axis": "prototype",
+      "scaling_value": "C32",
+      "seed": 456,
+      "stable_preservation_drop": 0.049239677759420175
+    },
+    {
+      "changed_subset_gain_over_copy": 0.06424210465236024,
+      "changed_subset_top5": 0.5569418719330596,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c64_seed123/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7033236060890599,
+      "prototype_count": 64,
+      "scaling_axis": "prototype",
+      "scaling_value": "C64",
+      "seed": 123,
+      "stable_preservation_drop": 0.08182349020661306
+    },
+    {
+      "changed_subset_gain_over_copy": 0.06503849417339091,
+      "changed_subset_top5": 0.5577382614540902,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c64_seed456/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7165074705944645,
+      "prototype_count": 64,
+      "scaling_axis": "prototype",
+      "scaling_value": "C64",
+      "seed": 456,
+      "stable_preservation_drop": 0.05045781916991876
+    }
+  ],
+  "selected_C": 32,
+  "stable_drop": {
+    "mean": 0.07771662071112627,
+    "std": 0.04249695905530227
+  }
+}
