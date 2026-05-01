@@ -37,30 +37,39 @@ def build_lodo_reports() -> dict[str, Any]:
     a = load_json(REPORT_DIR / "stwm_final_lodo_vspw_to_vipseg_eval_20260428.json")
     b = load_json(REPORT_DIR / "stwm_final_lodo_vipseg_to_vspw_eval_20260428.json")
     sig = load_json(REPORT_DIR / "stwm_final_lodo_significance_20260428.json")
+    lodo_completed = bool(src.get("lodo_completed", False))
+    lodo_positive = bool(sig.get("lodo_positive", False))
     train = {
         "audit_name": "stwm_final_lodo_train_summary_v3",
-        "lodo_completed": bool(src.get("lodo_completed", False)),
+        "lodo_completed": lodo_completed,
         "skipped_reason": src.get("skipped_reason", ""),
         "planned_protocols": src.get("planned_protocols", []),
         "candidate_scorer_used": False,
         "future_candidate_leakage": False,
+        "completed_run_count": int(src.get("completed_run_count", 0)),
+        "failed_run_count": int(src.get("failed_run_count", 0)),
+        "expected_run_count": int(src.get("expected_run_count", 0)),
     }
     eva = {
         "audit_name": "stwm_final_lodo_vspw_to_vipseg_eval_v3",
         "lodo_completed": bool(a.get("lodo_completed", False)),
-        "lodo_positive": False,
+        "lodo_positive": bool(a.get("lodo_positive", False)),
         "skipped_reason": a.get("skipped_reason", train["skipped_reason"]),
+        "selected_prototype_count": int(a.get("selected_prototype_count", 0)),
+        "selected_seed": int(a.get("selected_seed", -1)),
     }
     evb = {
         "audit_name": "stwm_final_lodo_vipseg_to_vspw_eval_v3",
         "lodo_completed": bool(b.get("lodo_completed", False)),
-        "lodo_positive": False,
+        "lodo_positive": bool(b.get("lodo_positive", False)),
         "skipped_reason": b.get("skipped_reason", train["skipped_reason"]),
+        "selected_prototype_count": int(b.get("selected_prototype_count", 0)),
+        "selected_seed": int(b.get("selected_seed", -1)),
     }
     sigv = {
         "audit_name": "stwm_final_lodo_significance_v3",
         "lodo_completed": bool(sig.get("lodo_completed", False)),
-        "lodo_positive": False,
+        "lodo_positive": lodo_positive,
         "skipped_reason": sig.get("skipped_reason", train["skipped_reason"]),
     }
     write_json(REPORT_DIR / "stwm_final_lodo_train_summary_v3_20260428.json", train)
@@ -75,15 +84,17 @@ def build_lodo_reports() -> dict[str, Any]:
             + "\n".join(
                 [
                     f"- lodo_completed: `{train['lodo_completed']}`",
+                    f"- lodo_positive: `{lodo_positive}`",
+                    f"- completed_run_count: `{train['completed_run_count']}`",
                     f"- skipped_reason: `{train['skipped_reason']}`",
                 ]
             ),
-            "## Interpretation\n- Mixed protocol is strong main evidence.\n- Dedicated cross-dataset generalization remains a missing appendix-strength validation.",
+            "## Interpretation\n- Mixed protocol is strong main evidence.\n- Dedicated cross-dataset generalization is propagated from current live LODO artifacts when available.",
         ],
     )
     return {
         "lodo_completed": bool(train["lodo_completed"]),
-        "lodo_positive": False,
+        "lodo_positive": lodo_positive,
         "train_summary_path": str(REPORT_DIR / "stwm_final_lodo_train_summary_v3_20260428.json"),
         "vspw_to_vipseg_eval_path": str(REPORT_DIR / "stwm_final_lodo_vspw_to_vipseg_eval_v3_20260428.json"),
         "vipseg_to_vspw_eval_path": str(REPORT_DIR / "stwm_final_lodo_vipseg_to_vspw_eval_v3_20260428.json"),
@@ -333,7 +344,12 @@ def build_assets() -> dict[str, Any]:
     ready = list(table_v3.get("ready_tables", []))
     if "prototype_vocab_justification" not in ready:
         ready.append("prototype_vocab_justification")
+    lodo = load_json(REPORT_DIR / "stwm_final_lodo_train_summary_20260428.json")
+    if bool(lodo.get("lodo_completed", False)) and "lodo" not in ready:
+        ready.append("lodo")
     table_v3["ready_tables"] = ready
+    appendix = [x for x in list(table_v3.get("appendix_or_missing_tables", [])) if not (x == "lodo" and bool(lodo.get("lodo_completed", False)))]
+    table_v3["appendix_or_missing_tables"] = appendix
     fig_v3 = dict(fig_v2)
     fig_v3["audit_name"] = "stwm_final_cvpr_aaai_figure_pack_v3"
     figs = dict(fig_v3.get("figures", {}))
@@ -395,14 +411,7 @@ def build_readiness(
         "video_visualization_ready": bool(video["ready"]),
         "ready_for_cvpr_aaai_main": "unclear",
         "ready_for_overleaf": True,
-        "remaining_risks": [
-            "Dedicated LODO remains incomplete.",
-            "Same-output baseline suite remains incomplete.",
-            "Model-size scaling remains incomplete.",
-            "Horizon scaling remains incomplete.",
-            "Trace-unit density scaling remains incomplete.",
-            "Final MP4/GIF visualization is not ready.",
-        ],
+        "remaining_risks": [],
         "next_step_choice": "run_missing_lodo",
         "core_main_result_status": {
             "residual_beats_copy_mixed": bool(mixed.get("residual_beats_copy_mixed", False)),
@@ -416,6 +425,26 @@ def build_readiness(
             "semantic_field_branch_status": mixed.get("semantic_field_branch_status", "unknown"),
         },
     }
+    if not readiness["lodo_completed"]:
+        readiness["remaining_risks"].append("Dedicated LODO remains incomplete.")
+        readiness["next_step_choice"] = "run_missing_lodo"
+    elif not readiness["baseline_suite_completed"]:
+        readiness["remaining_risks"].append("Same-output baseline suite remains incomplete.")
+        readiness["next_step_choice"] = "run_missing_baselines"
+    if not readiness["model_scaling_completed"]:
+        readiness["remaining_risks"].append("Model-size scaling remains incomplete.")
+    if not readiness["horizon_scaling_completed"]:
+        readiness["remaining_risks"].append("Horizon scaling remains incomplete.")
+    if not readiness["trace_density_scaling_completed"]:
+        readiness["remaining_risks"].append("Trace-unit density scaling remains incomplete.")
+    if not readiness["video_visualization_ready"]:
+        readiness["remaining_risks"].append("Final MP4/GIF visualization is not ready.")
+    if readiness["lodo_completed"] and readiness["baseline_suite_completed"] and not readiness["model_scaling_completed"]:
+        readiness["next_step_choice"] = "run_missing_scaling"
+    if readiness["lodo_completed"] and readiness["baseline_suite_completed"] and readiness["model_scaling_completed"] and readiness["horizon_scaling_completed"] and readiness["trace_density_scaling_completed"] and not readiness["video_visualization_ready"]:
+        readiness["next_step_choice"] = "fix_visualization"
+    if readiness["lodo_completed"] and readiness["baseline_suite_completed"] and readiness["model_scaling_completed"] and readiness["horizon_scaling_completed"] and readiness["trace_density_scaling_completed"] and readiness["video_visualization_ready"]:
+        readiness["next_step_choice"] = "start_overleaf_draft"
     write_json(REPORT_DIR / "stwm_final_cvpr_aaai_readiness_v3_20260428.json", readiness)
     write_md(
         DOC_DIR / "STWM_FINAL_CVPR_AAAI_READINESS_V3_20260428.md",

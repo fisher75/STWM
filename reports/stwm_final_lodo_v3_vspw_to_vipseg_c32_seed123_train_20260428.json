@@ -1,0 +1,128 @@
+{
+  "audit_name": "stwm_fullscale_semantic_trace_world_model_v1_single_train",
+  "candidate_scorer_used": false,
+  "checkpoint_path": "outputs/checkpoints/stwm_final_lodo_v3_20260428/vspw_to_vipseg_c32_seed123_final.pt",
+  "cuda_visible_devices": "1",
+  "device": "cuda",
+  "dynamic_trainable_params": 0,
+  "future_candidate_leakage": false,
+  "loss_finite_ratio": 1.0,
+  "lr": 3e-05,
+  "prototype_count": 32,
+  "residual_scale": 0.25,
+  "seed": 123,
+  "stage1_trainable_param_count": 0,
+  "steps": 5000,
+  "trace_backbone_trainable": false,
+  "trace_regression_detected": false,
+  "train_batch_count": 268,
+  "train_materialization": {
+    "audit_name": "stwm_final_lodo_v3_materialization_vspw_to_vipseg_train",
+    "batch_cache_path": "outputs/cache/stwm_final_lodo_v3_vspw_to_vipseg_20260428/train_eval_batches.pt",
+    "eval_splits": [
+      "train"
+    ],
+    "failed_items": [],
+    "final_eval_item_count": 1065,
+    "final_test_item_count": 1065,
+    "item_key_missing_count": 0,
+    "item_leakage": false,
+    "materialization_limit_reason": "",
+    "materialization_ok": true,
+    "materialized_source_counts": {
+      "train": 1015,
+      "val": 50
+    },
+    "materialized_test": 0,
+    "materialized_train": 1065,
+    "materialized_val": 0,
+    "merged_shard_count": 4,
+    "merged_shard_reports": [
+      "reports/stwm_final_lodo_v3_vspw_to_vipseg_train_shard00_20260428.json",
+      "reports/stwm_final_lodo_v3_vspw_to_vipseg_train_shard01_20260428.json",
+      "reports/stwm_final_lodo_v3_vspw_to_vipseg_train_shard02_20260428.json",
+      "reports/stwm_final_lodo_v3_vspw_to_vipseg_train_shard03_20260428.json"
+    ],
+    "missing_test": 0,
+    "missing_train": 0,
+    "missing_val": 0,
+    "no_train_split_fallback": true,
+    "nominal_eval_item_count": 1065,
+    "requested_test": 1,
+    "requested_train": 1065,
+    "requested_val": 228,
+    "source_nominal_eval_item_count": 1065,
+    "split_report": "reports/stwm_mixed_fullscale_v2_lodo_vspw_to_vipseg_splits_20260428.json",
+    "strict_split": true,
+    "timeout_count": 0
+  },
+  "train_metrics": {
+    "change_detection": {
+      "ap": 0.789848775085551,
+      "auroc": 0.7447941894363569,
+      "eligible": true
+    },
+    "changed_subset_count": 31286,
+    "changed_subset_top5": 0.7350252500583943,
+    "proto_ce": 2.2428399719374723,
+    "proto_top1": 0.4869491876462555,
+    "proto_top5": 0.8430339434458484,
+    "stable_subset_count": 22044,
+    "stable_subset_top5": 0.996325524451187,
+    "valid_count": 53330
+  },
+  "val_batch_count": 58,
+  "val_materialization": {
+    "audit_name": "stwm_final_lodo_v3_materialization_vspw_to_vipseg_val",
+    "batch_cache_path": "outputs/cache/stwm_final_lodo_v3_vspw_to_vipseg_20260428/val_eval_batches.pt",
+    "eval_splits": [
+      "val"
+    ],
+    "failed_items": [],
+    "final_eval_item_count": 228,
+    "final_test_item_count": 228,
+    "item_key_missing_count": 0,
+    "item_leakage": false,
+    "materialization_limit_reason": "",
+    "materialization_ok": true,
+    "materialized_source_counts": {
+      "train": 224,
+      "val": 4
+    },
+    "materialized_test": 0,
+    "materialized_train": 0,
+    "materialized_val": 228,
+    "merged_shard_count": 2,
+    "merged_shard_reports": [
+      "reports/stwm_final_lodo_v3_vspw_to_vipseg_val_shard00_20260428.json",
+      "reports/stwm_final_lodo_v3_vspw_to_vipseg_val_shard01_20260428.json"
+    ],
+    "missing_test": 0,
+    "missing_train": 0,
+    "missing_val": 0,
+    "no_train_split_fallback": true,
+    "nominal_eval_item_count": 228,
+    "requested_test": 1,
+    "requested_train": 1065,
+    "requested_val": 228,
+    "source_nominal_eval_item_count": 228,
+    "split_report": "reports/stwm_mixed_fullscale_v2_lodo_vspw_to_vipseg_splits_20260428.json",
+    "strict_split": true,
+    "timeout_count": 0
+  },
+  "val_metrics": {
+    "change_detection": {
+      "ap": 0.7735316393124785,
+      "auroc": 0.7439055269238213,
+      "eligible": true
+    },
+    "changed_subset_count": 6566,
+    "changed_subset_top5": 0.7279926920823124,
+    "proto_ce": 2.2235370827125833,
+    "proto_top1": 0.49781152930521655,
+    "proto_top5": 0.8384100114037385,
+    "stable_subset_count": 4629,
+    "stable_subset_top5": 0.9950313135469725,
+    "valid_count": 11195
+  }
+}

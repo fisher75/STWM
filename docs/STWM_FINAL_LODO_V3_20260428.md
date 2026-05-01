@@ -1,9 +1,11 @@
 # STWM Final LODO V3 20260428
 
 ## Status
-- lodo_completed: `False`
-- skipped_reason: `Dedicated LODO checkpoints were not trained in the live repo hardening pass. Cross-dataset split assets exist, but current GPUs are occupied by unrelated high-utilization jobs and no LODO train/eval artifacts exist yet.`
+- lodo_completed: `True`
+- lodo_positive: `False`
+- completed_run_count: `20`
+- skipped_reason: ``
 
 ## Interpretation
 - Mixed protocol is strong main evidence.
-- Dedicated cross-dataset generalization remains a missing appendix-strength validation.
+- Dedicated cross-dataset generalization is propagated from current live LODO artifacts when available.

@@ -1,0 +1,29 @@
+# STWM Final LODO V3 Materialization vipseg_to_vspw train shard
+
+- audit_name: `stwm_final_lodo_v3_materialization_train_shard`
+- split_report: `reports/stwm_mixed_fullscale_v2_lodo_vipseg_to_vspw_splits_20260428.json`
+- source_nominal_eval_item_count: `1954`
+- item_start: `0`
+- item_end: `488`
+- shard_eval_item_count: `488`
+- strict_split: `True`
+- allow_scan_all_stage2_splits: `True`
+- requested_train: `1954`
+- requested_val: `419`
+- requested_test: `1`
+- nominal_eval_item_count: `488`
+- materialized_train: `488`
+- materialized_val: `0`
+- materialized_test: `0`
+- missing_train: `0`
+- missing_val: `0`
+- missing_test: `0`
+- timeout_count: `0`
+- item_key_missing_count: `0`
+- batch_cache_path: `outputs/cache/stwm_final_lodo_v3_vipseg_to_vspw_20260428/train_eval_batches_shard00.pt`
+- final_test_item_count: `488`
+- final_eval_item_count: `488`
+- materialization_ok: `True`
+- materialization_limit_reason: ``
+- no_train_split_fallback: `True`
+- item_leakage: `False`
