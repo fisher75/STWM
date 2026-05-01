@@ -1,0 +1,178 @@
+{
+  "audit_name": "stwm_fstf_same_output_baseline_bootstrap_v7",
+  "baseline_suite_completed": true,
+  "generated_at_unix": 1777641403.7241817,
+  "paired_bootstrap_CI": {
+    "baseline_vs_copy_item_bootstrap": {
+      "dino_wm_like_latent_dynamics_proxy": {
+        "changed_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.39125452919132864,
+            -0.33384561429250614
+          ],
+          "mean_delta": -0.3635322990099507,
+          "sample_count": 610,
+          "zero_excluded": true
+        },
+        "overall_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.5563248653250561,
+            -0.5114204028197639
+          ],
+          "mean_delta": -0.5336223549234965,
+          "sample_count": 647,
+          "zero_excluded": true
+        },
+        "stable_drop_vs_copy": {
+          "bootstrap_win_rate": 1.0,
+          "ci95": [
+            0.6434060232838831,
+            0.6951351679626503
+          ],
+          "mean_delta": 0.6700132925206803,
+          "sample_count": 632,
+          "zero_excluded": true
+        }
+      },
+      "semantic_only_memory_transition": {
+        "changed_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.19375663254058872,
+            -0.14647534785288405
+          ],
+          "mean_delta": -0.1699965723103187,
+          "sample_count": 610,
+          "zero_excluded": true
+        },
+        "overall_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.17707384573883486,
+            -0.1444152228707435
+          ],
+          "mean_delta": -0.16019077524677158,
+          "sample_count": 647,
+          "zero_excluded": true
+        },
+        "stable_drop_vs_copy": {
+          "bootstrap_win_rate": 1.0,
+          "ci95": [
+            0.16444729297723473,
+            0.20702027239795495
+          ],
+          "mean_delta": 0.18569895172126213,
+          "sample_count": 632,
+          "zero_excluded": true
+        }
+      },
+      "slotformer_like_trace_unit_dynamics": {
+        "changed_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.11657952319428609,
+            -0.06885458914624132
+          ],
+          "mean_delta": -0.09317045048937772,
+          "sample_count": 610,
+          "zero_excluded": true
+        },
+        "overall_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.12093652073180688,
+            -0.08978945987681977
+          ],
+          "mean_delta": -0.10545097676473816,
+          "sample_count": 647,
+          "zero_excluded": true
+        },
+        "stable_drop_vs_copy": {
+          "bootstrap_win_rate": 1.0,
+          "ci95": [
+            0.13428820297446198,
+            0.17247004980351066
+          ],
+          "mean_delta": 0.15428153075717924,
+          "sample_count": 632,
+          "zero_excluded": true
+        }
+      },
+      "trace_only_ar_transformer": {
+        "changed_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.24301916871604104,
+            -0.18727112465830714
+          ],
+          "mean_delta": -0.2161113715603378,
+          "sample_count": 610,
+          "zero_excluded": true
+        },
+        "overall_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.36037602475796343,
+            -0.31615146964228014
+          ],
+          "mean_delta": -0.3382227469661735,
+          "sample_count": 647,
+          "zero_excluded": true
+        },
+        "stable_drop_vs_copy": {
+          "bootstrap_win_rate": 1.0,
+          "ci95": [
+            0.43570699271950314,
+            0.4888776972833412
+          ],
+          "mean_delta": 0.4633771796457328,
+          "sample_count": 632,
+          "zero_excluded": true
+        }
+      },
+      "trace_semantic_transformer": {
+        "changed_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.09584643042148625,
+            -0.05037454422361782
+          ],
+          "mean_delta": -0.07344242298578631,
+          "sample_count": 610,
+          "zero_excluded": true
+        },
+        "overall_top5_delta_vs_copy": {
+          "bootstrap_win_rate": 0.0,
+          "ci95": [
+            -0.09820428797733355,
+            -0.07037173210322237
+          ],
+          "mean_delta": -0.08384634844463613,
+          "sample_count": 647,
+          "zero_excluded": true
+        },
+        "stable_drop_vs_copy": {
+          "bootstrap_win_rate": 1.0,
+          "ci95": [
+            0.11074897407518723,
+            0.14494348269020788
+          ],
+          "mean_delta": 0.1289490425676296,
+          "sample_count": 632,
+          "zero_excluded": true
+        }
+      }
+    },
+    "stwm_vs_strongest_baseline_summary": {
+      "changed_gain_delta_STWM_minus_strongest_baseline_mean": 0.12208273715524547,
+      "note": "STWM eval report does not expose item-level scores; baseline-vs-copy CIs are item-level bootstraps.",
+      "overall_gain_delta_STWM_minus_strongest_baseline_mean": 0.12040093411878956,
+      "stable_drop_delta_STWM_minus_strongest_baseline_mean": -0.11904014603295969,
+      "strongest_same_output_baseline": "trace_semantic_transformer"
+    }
+  },
+  "status": "completed_baseline_item_bootstrap",
+  "strongest_same_output_baseline": "trace_semantic_transformer"
+}

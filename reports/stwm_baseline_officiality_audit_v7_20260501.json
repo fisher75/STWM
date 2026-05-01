@@ -1,0 +1,144 @@
+{
+  "allowed_phrases": [
+    "STWM outperforms controlled slot-AR trace-unit proxy",
+    "STWM outperforms DINOv2 latent dynamics proxy",
+    "Official SlotFormer/DINO-WM adaptation remains future work or appendix diagnostic if not completed."
+  ],
+  "appendix_proxy_table_only": [
+    "slot_ar_trace_unit_proxy",
+    "dinov2_latent_dynamics_proxy"
+  ],
+  "audit_name": "stwm_baseline_officiality_audit_v7",
+  "baseline_metadata": {
+    "dino_wm_like_latent_dynamics_proxy": {
+      "adaptation_changes": "Native latent dynamics proxy using existing frozen semantic/visual cache; official DINO-WM repo/code/checkpoint/feature protocol not used.",
+      "allowed_claim": "STWM can be compared against a DINOv2/pretrained-feature latent dynamics proxy.",
+      "allowed_table_placement": "appendix_proxy_table",
+      "baseline": "dino_wm_like_latent_dynamics_proxy",
+      "baseline_family": "pretrained_feature_dynamics_proxy",
+      "baseline_name": "dinov2_latent_dynamics_proxy",
+      "evidence_level": "proxy_inspired",
+      "forbidden_claim": "Cannot claim beating official DINO-WM or say DINO-WM baseline completed.",
+      "official_checkpoint_used": false,
+      "official_commit_hash": "",
+      "official_repo_url_or_path": "",
+      "official_repo_used": false,
+      "output_contract_matched": true,
+      "pretrained_checkpoint_path": "",
+      "uses_future_candidate_measurement": false
+    },
+    "semantic_only_memory_transition": {
+      "adaptation_changes": "Native STWM-FSTF same-output semantic-only transition; no trace rollout hidden input.",
+      "allowed_claim": "Controlled semantic-only same-output ablation under the STWM-FSTF protocol.",
+      "allowed_table_placement": "main_fstf_table",
+      "baseline": "semantic_only_memory_transition",
+      "baseline_family": "semantic_memory_controlled_ablation",
+      "baseline_name": "semantic_only_memory_transition",
+      "evidence_level": "controlled_ablation",
+      "forbidden_claim": "Do not present as evidence against official object-centric dynamics methods.",
+      "official_checkpoint_used": false,
+      "official_commit_hash": "",
+      "official_repo_url_or_path": "",
+      "official_repo_used": false,
+      "output_contract_matched": true,
+      "pretrained_checkpoint_path": "",
+      "uses_future_candidate_measurement": false
+    },
+    "slotformer_like_trace_unit_dynamics": {
+      "adaptation_changes": "Native autoregressive trace-unit slot proxy inspired by object-slot dynamics; official SlotFormer repo/code/checkpoint not used.",
+      "allowed_claim": "STWM can be compared against a controlled slot-AR trace-unit proxy.",
+      "allowed_table_placement": "appendix_proxy_table",
+      "baseline": "slotformer_like_trace_unit_dynamics",
+      "baseline_family": "object_slot_ar_proxy",
+      "baseline_name": "slot_ar_trace_unit_proxy",
+      "evidence_level": "proxy_inspired",
+      "forbidden_claim": "Cannot claim beating official SlotFormer or say SlotFormer baseline completed.",
+      "official_checkpoint_used": false,
+      "official_commit_hash": "",
+      "official_repo_url_or_path": "",
+      "official_repo_used": false,
+      "output_contract_matched": true,
+      "pretrained_checkpoint_path": "",
+      "uses_future_candidate_measurement": false
+    },
+    "trace_only_ar_transformer": {
+      "adaptation_changes": "Native STWM-FSTF same-output trace-only AR Transformer; no official external repo.",
+      "allowed_claim": "Controlled trace-only same-output ablation under the STWM-FSTF protocol.",
+      "allowed_table_placement": "main_fstf_table",
+      "baseline": "trace_only_ar_transformer",
+      "baseline_family": "trace_dynamics_controlled_ablation",
+      "baseline_name": "trace_only_ar_transformer",
+      "evidence_level": "controlled_ablation",
+      "forbidden_claim": "Do not present as an official external trajectory/world-model implementation.",
+      "official_checkpoint_used": false,
+      "official_commit_hash": "",
+      "official_repo_url_or_path": "",
+      "official_repo_used": false,
+      "output_contract_matched": true,
+      "pretrained_checkpoint_path": "",
+      "uses_future_candidate_measurement": false
+    },
+    "trace_semantic_transformer": {
+      "adaptation_changes": "Native plain Transformer over trace rollout features plus observed semantic memory; no copy-gated residual structure.",
+      "allowed_claim": "Controlled same-output plain trace+semantic Transformer comparison.",
+      "allowed_table_placement": "main_fstf_table",
+      "baseline": "trace_semantic_transformer",
+      "baseline_family": "plain_trace_semantic_controlled_ablation",
+      "baseline_name": "plain_trace_semantic_transformer",
+      "evidence_level": "controlled_ablation",
+      "forbidden_claim": "Do not describe as an official SlotFormer/DINO-WM baseline.",
+      "official_checkpoint_used": false,
+      "official_commit_hash": "",
+      "official_repo_url_or_path": "",
+      "official_repo_used": false,
+      "output_contract_matched": true,
+      "pretrained_checkpoint_path": "",
+      "uses_future_candidate_measurement": false
+    }
+  },
+  "controlled_ablations": [
+    "trace_only_ar_transformer",
+    "semantic_only_memory_transition",
+    "plain_trace_semantic_transformer"
+  ],
+  "dino_wm_official_implementation_used": false,
+  "external_boundary_table_allowed": [
+    "STWM_trace_belief_assoc_or_utility_readout",
+    "SAM2 official",
+    "CoTracker official",
+    "Cutie official"
+  ],
+  "forbidden_phrases": [
+    "STWM beats SlotFormer",
+    "STWM beats DINO-WM",
+    "SlotFormer baseline completed",
+    "DINO-WM baseline completed"
+  ],
+  "generated_at_unix": 1777638986.9673822,
+  "main_fstf_table_allowed": [
+    "STWM",
+    "copy_semantic_memory_baseline",
+    "frequency_prototype_prior",
+    "observed_last_prototype",
+    "observed_mean_prototype",
+    "trace_only_ar_transformer",
+    "semantic_only_memory_transition",
+    "plain_trace_semantic_transformer",
+    "STWM_without_copy",
+    "STWM_without_gate",
+    "STWM_residual_only",
+    "STWM_copy_only"
+  ],
+  "official_external": [
+    "SAM2",
+    "CoTracker/CoTracker3",
+    "Cutie"
+  ],
+  "overclaim_detected": "no_new_v7_overclaim_detected",
+  "proxy_inspired_only": [
+    "slot_ar_trace_unit_proxy",
+    "dinov2_latent_dynamics_proxy"
+  ],
+  "proxy_name_downgrade_applied": true,
+  "slotformer_official_implementation_used": false
+}
