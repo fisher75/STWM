@@ -62,6 +62,7 @@ def _iter_batches(samples: list[Any], batch_size: int, *, shuffle: bool, seed: i
 
 
 def _build_model(kind: str, horizon: int) -> OSTFPhysicsResidualWorldModel:
+    dct_only = kind == "dct_residual_prior_only"
     cfg = OSTFPhysicsResidualConfig(
         horizon=horizon,
         hidden_dim=256,
@@ -72,7 +73,7 @@ def _build_model(kind: str, horizon: int) -> OSTFPhysicsResidualWorldModel:
         use_dense_points=kind not in {"v18_wo_dense_points"},
         use_residual_decoder=kind not in {"v18_wo_residual_decoder", "affine_motion_prior_only"},
         use_affine_prior=kind not in {"v18_wo_affine_prior", "dct_residual_prior_only"},
-        use_cv_prior=kind not in {"v18_wo_cv_prior"},
+        use_cv_prior=kind not in {"v18_wo_cv_prior"} and not dct_only,
     )
     return OSTFPhysicsResidualWorldModel(cfg)
 

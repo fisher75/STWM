@@ -18,7 +18,11 @@ def _load_runs() -> dict[str, dict[str, Any]]:
     run_dir = ROOT / "reports/stwm_ostf_v18_runs"
     out = {}
     for path in sorted(run_dir.glob("*.json")):
+        if path.stem.startswith("smoke_"):
+            continue
         r = load_json(path)
+        if str(r.get("experiment_name", "")).startswith("smoke_"):
+            continue
         out[r["experiment_name"]] = r
     return out
 
@@ -34,14 +38,23 @@ def _pair_bootstrap(a: dict[str, Any], b: dict[str, Any], metric: str, higher_be
     ma = _item_map(a)
     mb = _item_map(b)
     keys = sorted(set(ma) & set(mb))
+    keys = [k for k in keys if metric in ma[k] and metric in mb[k] and ma[k][metric] is not None and mb[k][metric] is not None]
     if not keys:
-        return {"item_count": 0, "mean_delta": None, "ci95": [None, None], "zero_excluded": False}
+        return {
+            "item_count": 0,
+            "mean_delta": None,
+            "ci95": [None, None],
+            "zero_excluded": False,
+            "metric_available_in_both_reports": False,
+        }
     av = np.asarray([ma[k][metric] for k in keys], dtype=float)
     bv = np.asarray([mb[k][metric] for k in keys], dtype=float)
     if not higher_better:
         av = -av
         bv = -bv
-    return bootstrap_delta(av, bv)
+    out = bootstrap_delta(av, bv)
+    out["metric_available_in_both_reports"] = True
+    return out
 
 
 def main() -> int:
@@ -122,39 +135,75 @@ def main() -> int:
     cvm = cv["test_metrics"]
     ptm = pt["test_metrics"]
     v17m = v17["test_metrics"]
+    cv_point_boot = bootstrap["v18_m512_vs_constant_velocity_point_L1"]
+    cv_endpoint_boot = bootstrap["v18_m512_vs_constant_velocity_endpoint"]
+    cv_extent_boot = bootstrap["v18_m512_vs_constant_velocity_extent"]
+    v17_point_boot = bootstrap["v18_m512_vs_v17_m512_point_L1"]
+    pt_point_boot = bootstrap["v18_m512_vs_point_transformer_point_L1"]
+    beats_cv_point = bool(cv_point_boot["zero_excluded"] and (cv_point_boot["mean_delta"] or 0.0) > 0.0)
+    beats_cv_endpoint = bool(cv_endpoint_boot["zero_excluded"] and (cv_endpoint_boot["mean_delta"] or 0.0) > 0.0)
+    beats_cv_extent = bool(cv_extent_boot["zero_excluded"] and (cv_extent_boot["mean_delta"] or 0.0) > 0.0)
     decision = {
         "audit_name": "stwm_ostf_v18_decision",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "V18_beats_constant_velocity": bool(
-            (
-                m["PCK_16px"] > cvm["PCK_16px"]
-                or m["PCK_32px"] > cvm["PCK_32px"]
-                or m["endpoint_error_px"] < cvm["endpoint_error_px"]
-                or m["object_extent_iou"] > cvm["object_extent_iou"]
+            beats_cv_point
+            or beats_cv_endpoint
+            or beats_cv_extent
+            or (
+                (m["PCK_32px"] - cvm["PCK_32px"] > 0.01 or m["PCK_16px"] - cvm["PCK_16px"] > 0.01)
+                and m["point_L1_px"] <= cvm["point_L1_px"] + 1.0
             )
-            and m["point_L1_px"] <= 1.5 * cvm["point_L1_px"]
         ),
-        "V18_beats_V17": bool(m["point_L1_px"] < v17m["point_L1_px"] and m["object_extent_iou"] > v17m["object_extent_iou"]),
+        "V18_beats_V17": bool(
+            v17_point_boot["zero_excluded"]
+            and (v17_point_boot["mean_delta"] or 0.0) > 0.0
+            and m["object_extent_iou"] > v17m["object_extent_iou"] + 0.05
+        ),
         "V18_beats_point_transformer_or_tradeoff": bool(
-            m["semantic_top5"] > ptm["semantic_top5"]
-            or (m["point_L1_px"] < ptm["point_L1_px"] and m["object_extent_iou"] > ptm["object_extent_iou"])
+            (m["semantic_top5"] is not None and ptm["semantic_top5"] is not None and m["semantic_top5"] > ptm["semantic_top5"] + 0.02)
+            or (
+                pt_point_boot["zero_excluded"]
+                and (pt_point_boot["mean_delta"] or 0.0) > 0.0
+                and m["object_extent_iou"] > ptm["object_extent_iou"] + 0.05
+            )
         ),
-        "dense_points_load_bearing": bool(m["point_L1_px"] < wo_dense["test_metrics"]["point_L1_px"] and m["object_extent_iou"] >= wo_dense["test_metrics"]["object_extent_iou"]),
+        "dense_points_load_bearing": bool(
+            m["point_L1_px"] + 0.05 < wo_dense["test_metrics"]["point_L1_px"]
+            or m["visibility_F1"] > wo_dense["test_metrics"]["visibility_F1"] + 0.05
+            or m["object_extent_iou"] > wo_dense["test_metrics"]["object_extent_iou"] + 0.0005
+        ),
         "physics_prior_load_bearing": bool(
-            m["point_L1_px"] < wo_aff["test_metrics"]["point_L1_px"] or m["point_L1_px"] < wo_cv["test_metrics"]["point_L1_px"]
+            m["point_L1_px"] + 1.0 < wo_cv["test_metrics"]["point_L1_px"]
+            or m["object_extent_iou"] > wo_cv["test_metrics"]["object_extent_iou"] + 0.05
         ),
-        "semantic_unit_compression_helpful": bool(m["object_extent_iou"] > ptm["object_extent_iou"] and m["point_L1_px"] <= ptm["point_L1_px"]),
+        "point_residual_decoder_load_bearing": bool(
+            m["point_L1_px"] + 0.05 < wo_res["test_metrics"]["point_L1_px"]
+            or m["visibility_F1"] > wo_res["test_metrics"]["visibility_F1"] + 0.05
+            or m["object_extent_iou"] > wo_res["test_metrics"]["object_extent_iou"] + 0.0005
+        ),
+        "semantic_unit_compression_helpful": bool(
+            m["point_L1_px"] + 5.0 < ptm["point_L1_px"] and m["object_extent_iou"] > ptm["object_extent_iou"] + 0.05
+        ),
         "object_dense_semantic_trace_field_claim_allowed": False,
     }
     decision["object_dense_semantic_trace_field_claim_allowed"] = bool(
         decision["V18_beats_V17"]
+        and decision["V18_beats_constant_velocity"]
+        and decision["V18_beats_point_transformer_or_tradeoff"]
         and decision["dense_points_load_bearing"]
         and decision["physics_prior_load_bearing"]
-        and (decision["V18_beats_constant_velocity"] or decision["V18_beats_point_transformer_or_tradeoff"])
+        and decision["point_residual_decoder_load_bearing"]
     )
     decision["next_step_choice"] = (
         "run_v18_multiseed_and_H16"
-        if decision["V18_beats_constant_velocity"] and decision["V18_beats_V17"]
+        if (
+            decision["V18_beats_constant_velocity"]
+            and decision["V18_beats_V17"]
+            and decision["dense_points_load_bearing"]
+            and decision["physics_prior_load_bearing"]
+            and decision["point_residual_decoder_load_bearing"]
+        )
         else ("improve_loss_or_capacity_again" if decision["V18_beats_V17"] else "fallback_to_sparse_STWM")
     )
     decision["rows_used"] = {
