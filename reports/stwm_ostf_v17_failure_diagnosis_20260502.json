@@ -1,0 +1,97 @@
+{
+  "audit_name": "stwm_ostf_v17_failure_diagnosis",
+  "bootstrap_evidence": {
+    "M128_vs_M1_anchor_L1": {
+      "ci95": [
+        10.046192919028984,
+        18.334577524111822
+      ],
+      "item_count": 455,
+      "mean_delta": 14.39685450753013,
+      "zero_excluded": true
+    },
+    "M128_vs_M1_point_L1": {
+      "ci95": [
+        -60.57019672488118,
+        -41.731944317450896
+      ],
+      "item_count": 455,
+      "mean_delta": -51.22710168859461,
+      "zero_excluded": true
+    },
+    "M512_vs_M1_anchor_L1": {
+      "ci95": [
+        -24.022941245378988,
+        -18.852902168083578
+      ],
+      "item_count": 496,
+      "mean_delta": -21.427392168391137,
+      "zero_excluded": true
+    },
+    "M512_vs_M1_point_L1": {
+      "ci95": [
+        -112.62992628759915,
+        -98.64869971972318
+      ],
+      "item_count": 496,
+      "mean_delta": -105.70501960958204,
+      "zero_excluded": true
+    },
+    "M512_vs_point_transformer_point_L1": {
+      "ci95": [
+        -11.084126563995117,
+        -6.060397225137681
+      ],
+      "item_count": 496,
+      "mean_delta": -8.621552928801506,
+      "zero_excluded": true
+    },
+    "audit_name": "stwm_ostf_v17_bootstrap",
+    "generated_at_utc": "2026-05-02T14:43:36.784011+00:00"
+  },
+  "constant_velocity_strength": {
+    "test_endpoint_error_px": 50.64809799194336,
+    "test_object_extent_iou": 0.8097288340646511,
+    "test_point_L1_px": 27.232643127441406,
+    "why_strong": [
+      "teacher trajectories over H8 are near-linear enough that last-step velocity extrapolation is a very strong physical prior",
+      "constant_velocity_copy preserves per-point identity and object extent directly from observed dense tracks",
+      "V17 predicts dense future points from a pooled semantic trace-unit token without anchoring to a strong motion prior"
+    ]
+  },
+  "dense_failure_hypotheses": {
+    "anchor_plus_residual_decoder_insufficient": true,
+    "capacity_or_decoder_issue": true,
+    "evidence": {
+      "no_dense_points_hurts_only_slightly": -1.5513458251953125,
+      "no_point_residual_decoder_hurts_strongly": 57.02679443359375,
+      "no_semantic_memory_hurts_only_slightly": 0.0509033203125
+    },
+    "point_loss_scale_issue": true,
+    "visibility_loss_issue": true
+  },
+  "generated_at_utc": "2026-05-02T15:17:29.280908+00:00",
+  "point_transformer_semantic_advantage": {
+    "likely_reason": [
+      "future semantic target is effectively constant per object prototype in the current cache",
+      "point_transformer_dense can map observed semantic feature directly to prototype logits without needing a compressed semantic trace unit bottleneck",
+      "V17 semantic branch is too weak relative to its trajectory decoder and underuses the direct semantic memory signal"
+    ],
+    "semantic_top5_gap_vs_m512": 0.42691532258064513
+  },
+  "v17_vs_constant_velocity": {
+    "m128_point_L1_gap_px": 106.7623062133789,
+    "m512_endpoint_gap_px": 105.96596145629883,
+    "m512_extent_iou_gap": -0.5982920214904563,
+    "m512_pck16_gap": -0.5890396594299364,
+    "m512_pck32_missing_in_v17": true,
+    "m512_point_L1_gap_px": 123.84368133544922
+  },
+  "v18_must_fix": [
+    "inject a strong physics prior instead of predicting dense future points from scratch",
+    "make residuals low-frequency and regularized so the model cannot drift far from a good physical prior",
+    "improve direct semantic-memory-to-prototype readout",
+    "add extent/shape loss so object cloud geometry matters, not only average point error",
+    "separate anchor, dense-point, visibility, and semantic objectives more explicitly"
+  ]
+}
