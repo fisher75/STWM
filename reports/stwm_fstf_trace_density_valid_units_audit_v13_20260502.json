@@ -1,0 +1,136 @@
+{
+  "K16_actually_adds_semantic_supervision": false,
+  "K32_actually_adds_semantic_supervision": false,
+  "audit_name": "stwm_fstf_trace_density_valid_units_audit_v13",
+  "by_K": {
+    "K16": {
+      "K": 16,
+      "future_cache_path": "outputs/cache/stwm_fstf_trace_density_k16_prototype_targets_c32_v12_20260502/prototype_targets.npz",
+      "future_target_coverage": 0.3632651238488409,
+      "horizon": 8,
+      "invalid_slot_ratio": 0.8951651317878692,
+      "joint_supervision_coverage": 0.10483486821213084,
+      "new_valid_slots_added_vs_K8": 0,
+      "per_dataset": {
+        "VIPSeg": {
+          "future_target_coverage": 0.3073321887900921,
+          "item_count": 3149,
+          "joint_supervision_coverage": 0.021192243569387106,
+          "total_slots": 403072,
+          "valid_changed_slots": 4710,
+          "valid_future_target_slots": 123877,
+          "valid_joint_supervised_slots": 8542,
+          "valid_observed_memory_slots": 9896,
+          "valid_stable_slots": 3832
+        },
+        "VSPW": {
+          "future_target_coverage": 0.4191980589075897,
+          "item_count": 3149,
+          "joint_supervision_coverage": 0.18847749285487456,
+          "total_slots": 403072,
+          "valid_changed_slots": 44274,
+          "valid_future_target_slots": 168967,
+          "valid_joint_supervised_slots": 75970,
+          "valid_observed_memory_slots": 80920,
+          "valid_stable_slots": 31696
+        }
+      },
+      "slot_count": 16,
+      "total_items": 6298,
+      "total_slots": 806144,
+      "valid_changed_slots": 48984,
+      "valid_future_target_slots": 292844,
+      "valid_joint_supervised_slots": 84512,
+      "valid_observed_memory_slots": 90816,
+      "valid_stable_slots": 35528
+    },
+    "K32": {
+      "K": 32,
+      "future_cache_path": "outputs/cache/stwm_fstf_trace_density_k32_prototype_targets_c32_v12_20260502/prototype_targets.npz",
+      "future_target_coverage": 0.18958461515560496,
+      "horizon": 8,
+      "invalid_slot_ratio": 0.9475825658939345,
+      "joint_supervision_coverage": 0.05241743410606542,
+      "new_valid_slots_added_vs_K8": 0,
+      "per_dataset": {
+        "VIPSeg": {
+          "future_target_coverage": 0.16929853723404256,
+          "item_count": 3149,
+          "joint_supervision_coverage": 0.010596121784693553,
+          "total_slots": 806144,
+          "valid_changed_slots": 4710,
+          "valid_future_target_slots": 136479,
+          "valid_joint_supervised_slots": 8542,
+          "valid_observed_memory_slots": 9896,
+          "valid_stable_slots": 3832
+        },
+        "VSPW": {
+          "future_target_coverage": 0.20987069307716735,
+          "item_count": 3149,
+          "joint_supervision_coverage": 0.09423874642743728,
+          "total_slots": 806144,
+          "valid_changed_slots": 44274,
+          "valid_future_target_slots": 169186,
+          "valid_joint_supervised_slots": 75970,
+          "valid_observed_memory_slots": 80920,
+          "valid_stable_slots": 31696
+        }
+      },
+      "slot_count": 32,
+      "total_items": 6298,
+      "total_slots": 1612288,
+      "valid_changed_slots": 48984,
+      "valid_future_target_slots": 305665,
+      "valid_joint_supervised_slots": 84512,
+      "valid_observed_memory_slots": 90816,
+      "valid_stable_slots": 35528
+    },
+    "K8": {
+      "K": 8,
+      "future_cache_path": "outputs/cache/stwm_fullscale_semantic_trace_prototype_targets_c32_v1_20260428/prototype_targets.npz",
+      "future_target_coverage": 0.6212041521117815,
+      "horizon": 8,
+      "invalid_slot_ratio": 0.7903302635757383,
+      "joint_supervision_coverage": 0.20966973642426168,
+      "new_valid_slots_added_vs_K8": null,
+      "per_dataset": {
+        "VIPSeg": {
+          "future_target_coverage": 0.4841517148301048,
+          "item_count": 3149,
+          "joint_supervision_coverage": 0.04238448713877421,
+          "total_slots": 201536,
+          "valid_changed_slots": 4698,
+          "valid_future_target_slots": 97574,
+          "valid_joint_supervised_slots": 8542,
+          "valid_observed_memory_slots": 9896,
+          "valid_stable_slots": 3844
+        },
+        "VSPW": {
+          "future_target_coverage": 0.7582565893934582,
+          "item_count": 3149,
+          "joint_supervision_coverage": 0.3769549857097491,
+          "total_slots": 201536,
+          "valid_changed_slots": 44274,
+          "valid_future_target_slots": 152816,
+          "valid_joint_supervised_slots": 75970,
+          "valid_observed_memory_slots": 80920,
+          "valid_stable_slots": 31696
+        }
+      },
+      "slot_count": 8,
+      "total_items": 6298,
+      "total_slots": 403072,
+      "valid_changed_slots": 48972,
+      "valid_future_target_slots": 250390,
+      "valid_joint_supervised_slots": 84512,
+      "valid_observed_memory_slots": 90816,
+      "valid_stable_slots": 35540
+    }
+  },
+  "dense_trace_field_claim_allowed": false,
+  "density_claim_note": "K16/K32 are valid scaling experiments, but dense-field wording requires additional valid semantic units rather than mostly invalid added slots.",
+  "generated_at_utc": "2026-05-02T05:33:52.130217+00:00",
+  "observed_cache_path": "outputs/cache/stwm_mixed_observed_semantic_prototype_targets_v2_20260428/observed_proto_targets_c32.npz",
+  "recommended_wording": "semantic trace-unit field",
+  "trace_density_scaling_positive": "weak_or_inconclusive"
+}

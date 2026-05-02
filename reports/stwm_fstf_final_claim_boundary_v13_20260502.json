@@ -1,0 +1,35 @@
+{
+  "allowed_moderate_claims": [
+    "H16/H24 retain positive changed-subset gains under the frozen-cache FSTF protocol.",
+    "K16/K32 are evaluated as trace-unit density stress tests, but current valid-unit coverage only supports semantic trace-unit field wording.",
+    "Raw-frame rollout visualizations are available as system demonstrations, while training/evaluation uses frozen video-derived trace/semantic caches."
+  ],
+  "allowed_strong_claims": [
+    "STWM predicts future semantic trace-unit fields over frozen video-derived trace/semantic states.",
+    "STWM improves changed semantic prototype prediction over copy and strong copy-aware baselines while preserving stable semantic memory.",
+    "Future rollout hidden is load-bearing at H8 and remains load-bearing at H16/H24 under V13 hidden-shuffle/random intervention audits.",
+    "C32 is selected as the best prototype vocabulary tradeoff; C128 fails the stability/granularity tradeoff."
+  ],
+  "audit_name": "stwm_fstf_final_claim_boundary_v13",
+  "dense_trace_field_claim_allowed": false,
+  "forbidden_claims": [
+    "Raw-video end-to-end training.",
+    "Full RGB video generation world model.",
+    "Dense semantic trace field, because K16/K32 valid-unit coverage is weak/inconclusive.",
+    "Model-size scaling is positive, because base/large do not beat small under strict grouped rules.",
+    "Future trace coordinate or temporal order is load-bearing.",
+    "Universal OOD dominance or universal cross-dataset generalization.",
+    "STWM beats SAM2/CoTracker overall external SOTA or treats SAM2/CoTracker as same-output FSTF baselines."
+  ],
+  "generated_at_utc": "2026-05-02T05:38:01.247064+00:00",
+  "long_horizon_claim_allowed": true,
+  "model_size_scaling_claim_allowed": false,
+  "raw_video_end_to_end_training_claim_allowed": false,
+  "required_wording_for_paper": "video-derived trace/semantic state cache for training and evaluation; video-to-FSTF system visualization for qualitative demos.",
+  "source_reports": {
+    "horizon_trace_conditioning": "reports/stwm_fstf_trace_conditioning_horizon_v13_20260502.json",
+    "scaling_claim_verification": "reports/stwm_fstf_scaling_claim_verification_v13_20260502.json",
+    "trace_density_valid_units": "reports/stwm_fstf_trace_density_valid_units_audit_v13_20260502.json",
+    "visualization_artifact_audit": "reports/stwm_fstf_visualization_artifact_audit_v13_20260502.json"
+  }
+}

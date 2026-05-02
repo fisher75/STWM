@@ -1,0 +1,340 @@
+{
+  "C128_overfit_or_fail": true,
+  "C32_vs_C64": {
+    "C32_changed_gain": 0.08833823266165204,
+    "C32_stable_drop": 0.05575669348426926,
+    "C64_changed_gain": 0.046411823807337806,
+    "C64_stable_drop": 0.06474446028270682
+  },
+  "H16_vs_H8": {
+    "changed_gain_delta": -0.005975267491047334,
+    "overall_top5_delta": 0.01777014540036914,
+    "stable_drop_delta": -0.011362154604809528
+  },
+  "H24_vs_H8": {
+    "changed_gain_delta": 0.02464069373819193,
+    "overall_top5_delta": 0.04725348801922702,
+    "stable_drop_delta": -0.0158778491975616
+  },
+  "audit_name": "stwm_fstf_scaling_claim_verification_v13",
+  "base_beats_small": false,
+  "claim_corrections": [
+    "model_size_scaling_positive downgraded: small/current outperforms base and large under the strict grouped rule.",
+    "dense_trace_field_claim_allowed downgraded: K16/K32 numeric gains occur under reduced valid-slot coverage, so wording must remain semantic trace-unit field.",
+    "C128 marked failed/overfit: negative changed gain and high stable drop relative to C32."
+  ],
+  "corrected_horizon_scaling_positive": true,
+  "corrected_model_size_scaling_positive": false,
+  "corrected_prototype_scaling_positive": true,
+  "corrected_trace_density_scaling_positive": "weak_or_inconclusive",
+  "dense_trace_field_claim_allowed": false,
+  "future_hidden_load_bearing_retained_at_H16_H24": true,
+  "generated_at_utc": "2026-05-02T05:36:51.463610+00:00",
+  "horizon_by_H": {
+    "H16": {
+      "changed_gain_mean": 0.08236296517060471,
+      "changed_gain_std": 0.02843106520053321,
+      "overall_top5_mean": 0.8043020882576281,
+      "overall_top5_std": 0.018273128268836883,
+      "proto_ce_mean": 2.284747260199009,
+      "proto_ce_std": 0.04577087847617112,
+      "reports": [
+        "reports/stwm_fstf_scaling_v12_horizon_h16_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_horizon_h16_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_horizon_h16_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.04439453887945973,
+      "stable_drop_std": 0.005923795545300984
+    },
+    "H24": {
+      "changed_gain_mean": 0.11297892639984397,
+      "changed_gain_std": 0.006866888048624067,
+      "overall_top5_mean": 0.8337854308764859,
+      "overall_top5_std": 0.006403861344554321,
+      "proto_ce_mean": 2.1988621980299086,
+      "proto_ce_std": 0.013429682448087716,
+      "reports": [
+        "reports/stwm_fstf_scaling_v12_horizon_h24_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_horizon_h24_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_horizon_h24_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.03987884428670766,
+      "stable_drop_std": 0.005869215828995192
+    },
+    "H8": {
+      "changed_gain_mean": 0.08833823266165204,
+      "changed_gain_std": 0.01257535383922518,
+      "overall_top5_mean": 0.7865319428572589,
+      "overall_top5_std": 0.008941635832050814,
+      "proto_ce_mean": 2.3268485766066234,
+      "proto_ce_std": 0.05132219113776665,
+      "reports": [
+        "reports/stwm_fstf_scaling_v12_horizon_h8_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_horizon_h8_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_horizon_h8_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.05575669348426926,
+      "stable_drop_std": 0.00469278766549027
+    }
+  },
+  "large_beats_base": false,
+  "long_horizon_claim_allowed": true,
+  "long_horizon_claim_allowed_before_horizon_trace_audit": false,
+  "model_size_by_scale": {
+    "base": {
+      "changed_gain_mean": 0.04479910353089733,
+      "changed_gain_std": 0.019362511412066397,
+      "overall_top5_mean": 0.7641641114389707,
+      "overall_top5_std": 0.011555414873806581,
+      "proto_ce_mean": 2.446194140431956,
+      "proto_ce_std": 0.025406163043504217,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_model_base_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_model_base_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_model_base_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.05074824565167787,
+      "stable_drop_std": 0.010720308970030457
+    },
+    "large": {
+      "changed_gain_mean": -0.03672593395556053,
+      "changed_gain_std": 0.03748795210243015,
+      "overall_top5_mean": 0.7148496193627439,
+      "overall_top5_std": 0.03562681287803553,
+      "proto_ce_mean": 2.547970565867196,
+      "proto_ce_std": 0.045597268973335,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_model_large_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_model_large_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_model_large_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.0584117737082814,
+      "stable_drop_std": 0.03516993332342979
+    },
+    "small": {
+      "changed_gain_mean": 0.08833823266165204,
+      "changed_gain_std": 0.01257535383922518,
+      "overall_top5_mean": 0.7865319428572589,
+      "overall_top5_std": 0.008941635832050814,
+      "proto_ce_mean": 2.3268485766066234,
+      "proto_ce_std": 0.05132219113776665,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_model_small_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_model_small_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_model_small_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.05575669348426926,
+      "stable_drop_std": 0.00469278766549027
+    }
+  },
+  "model_size_rule": "positive only if base beats small or large beats base on changed gain and overall top5 without worse stable drop.",
+  "model_size_scaling_claim_allowed": false,
+  "per_step_long_horizon_analysis_missing": true,
+  "prototype_by_C": {
+    "C128": {
+      "changed_gain_mean": -0.025368947549156806,
+      "changed_gain_std": 0.00936733454614807,
+      "overall_top5_mean": 0.5501171102989605,
+      "overall_top5_std": 0.012468414004758488,
+      "proto_ce_mean": 3.4561809582012724,
+      "proto_ce_std": 0.012978493913695054,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_prototype_c128_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c128_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c128_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.18725752695073108,
+      "stable_drop_std": 0.02052941641825253
+    },
+    "C16": {
+      "changed_gain_mean": 0.008582266046183803,
+      "changed_gain_std": 0.022312564202112684,
+      "overall_top5_mean": 0.8143733162612796,
+      "overall_top5_std": 0.016648828086191392,
+      "proto_ce_mean": 1.9853542530408976,
+      "proto_ce_std": 0.02858461033535337,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_prototype_c16_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c16_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c16_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.06983619719262617,
+      "stable_drop_std": 0.011611489556733967
+    },
+    "C32": {
+      "changed_gain_mean": 0.08833823266165204,
+      "changed_gain_std": 0.01257535383922518,
+      "overall_top5_mean": 0.7865319428572589,
+      "overall_top5_std": 0.008941635832050814,
+      "proto_ce_mean": 2.3268485766066234,
+      "proto_ce_std": 0.05132219113776665,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_prototype_c32_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c32_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c32_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.05575669348426926,
+      "stable_drop_std": 0.00469278766549027
+    },
+    "C64": {
+      "changed_gain_mean": 0.046411823807337806,
+      "changed_gain_std": 0.02578100758015945,
+      "overall_top5_mean": 0.6996394930530582,
+      "overall_top5_std": 0.015497201707635425,
+      "proto_ce_mean": 2.852276188944965,
+      "proto_ce_std": 0.07856434577573199,
+      "reports": [
+        "reports/stwm_fstf_scaling_v11_prototype_c64_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c64_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v11_prototype_c64_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.06474446028270682,
+      "stable_drop_std": 0.012956321657782205
+    }
+  },
+  "prototype_selection_scores": {
+    "C128": -0.0639859999946263,
+    "C16": 0.05510149907599869,
+    "C32": 0.13911308020524332,
+    "C64": 0.08400354297129022
+  },
+  "selected_C": 32,
+  "selected_C_rule": "changed_gain minus half stable_drop plus small overall_top5 tie-break; C128 rejected if changed gain is non-positive or stable drop worsens.",
+  "source_v12_summary": "reports/stwm_fstf_full_scaling_laws_v12_20260502.json",
+  "trace_density_by_K": {
+    "K16": {
+      "changed_gain_mean": 0.09664473317162303,
+      "changed_gain_std": 0.02370582500466286,
+      "overall_top5_mean": 0.7951106649353009,
+      "overall_top5_std": 0.017582580789516872,
+      "proto_ce_mean": 2.35013948694373,
+      "proto_ce_std": 0.07259089486050639,
+      "reports": [
+        "reports/stwm_fstf_scaling_v12_density_k16_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_density_k16_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_density_k16_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.04682596774887352,
+      "stable_drop_std": 0.009671419807199195
+    },
+    "K32": {
+      "changed_gain_mean": 0.09547808972517251,
+      "changed_gain_std": 0.012575354569326524,
+      "overall_top5_mean": 0.7943212124690238,
+      "overall_top5_std": 0.008412356476125732,
+      "proto_ce_mean": 2.302910809830482,
+      "proto_ce_std": 0.036873988875722796,
+      "reports": [
+        "reports/stwm_fstf_scaling_v12_density_k32_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_density_k32_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_density_k32_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.04712768048659455,
+      "stable_drop_std": 0.004698216290167111
+    },
+    "K8": {
+      "changed_gain_mean": 0.08833823266165204,
+      "changed_gain_std": 0.01257535383922518,
+      "overall_top5_mean": 0.7865319428572589,
+      "overall_top5_std": 0.008941635832050814,
+      "proto_ce_mean": 2.3268485766066234,
+      "proto_ce_std": 0.05132219113776665,
+      "reports": [
+        "reports/stwm_fstf_scaling_v12_density_k8_seed123_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_density_k8_seed42_eval_20260502.json",
+        "reports/stwm_fstf_scaling_v12_density_k8_seed456_eval_20260502.json"
+      ],
+      "run_count": 3,
+      "seeds": [
+        42,
+        123,
+        456
+      ],
+      "stable_drop_mean": 0.05575669348426926,
+      "stable_drop_std": 0.00469278766549027
+    }
+  },
+  "trace_density_coverage_checks": {
+    "K16_changed_count": 48984,
+    "K16_stable_count": 35528,
+    "K16_target_coverage": 0.3632651238488409,
+    "K32_changed_count": 48984,
+    "K32_stable_count": 35528,
+    "K32_target_coverage": 0.18958461515560496,
+    "K8_observed_coverage_reference": 0.0,
+    "K8_target_coverage_reference": 0.7865319428572589,
+    "coverage_collapse_detected": true
+  }
+}
