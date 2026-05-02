@@ -1,0 +1,225 @@
+{
+  "audit_name": "stwm_cotracker_object_dense_teacher_v16_aggregate",
+  "checkpoint": "baselines/checkpoints/cotracker/scaled_offline.pth",
+  "combo_report_paths": {
+    "M128_H16": "reports/stwm_cotracker_object_dense_teacher_v16_M128_H16_20260502.json",
+    "M128_H8": "reports/stwm_cotracker_object_dense_teacher_v16_M128_H8_20260502.json"
+  },
+  "no_future_box_projection": true,
+  "no_mask_bbox_relative_pseudo_track": true,
+  "per_combo": {
+    "M128_H16": {
+      "H": 16,
+      "M": 128,
+      "average_points_per_object": 128.0,
+      "average_points_per_scene": 740.864,
+      "combo": "M128_H16",
+      "exact_blocker_if_less_than_500": null,
+      "failed_clip_count": 151,
+      "failure_reason_top": {
+        "UnidentifiedImageError(\"cannot identify image file '/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1404_YEguXECJgjM/origin/._00000078.jpg'\")": 1,
+        "UnidentifiedImageError(\"cannot identify image file '/home/chen034/workspace/stwm/data/external/vspw/VSPW/data/1880_5pqklbHit-A/origin/._00000251.jpg'\")": 1,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_11": 2,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_13": 1,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_14": 4,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15": 125,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_16": 2,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_19": 1,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_21": 13,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_6": 1
+      },
+      "fake_dense_or_anchor_copied": false,
+      "future_leakage_audit_passed": true,
+      "no_future_box_projection_all": true,
+      "object_count": 2894,
+      "per_dataset_counts": {
+        "VIPSEG": 134,
+        "VSPW": 366
+      },
+      "per_split_clip_counts": {
+        "test": 75,
+        "train": 350,
+        "val": 75
+      },
+      "per_split_object_counts": {
+        "test": 455,
+        "train": 2045,
+        "val": 394
+      },
+      "per_split_point_counts": {
+        "test": 58240,
+        "train": 261760,
+        "val": 50432
+      },
+      "persistent_point_identity_valid": true,
+      "point_count": 370432,
+      "processed_clip_count": 500,
+      "real_teacher_tracks_exist": true,
+      "runner_report_paths": [
+        "reports/stwm_cotracker_object_dense_teacher_v16_M128_H16_20260502.json"
+      ],
+      "same_trajectory_fraction": 0.008032440476190476,
+      "success_gate_passed": true,
+      "teacher_source_distribution": {
+        "cotracker_official": 370432
+      },
+      "trajectory_variance": 12915.607982815367,
+      "valid_point_ratio": 0.7811312197650311,
+      "visibility_coverage": 0.7811312197650311
+    },
+    "M128_H8": {
+      "H": 8,
+      "M": 128,
+      "average_points_per_object": 128.0,
+      "average_points_per_scene": 734.976,
+      "combo": "M128_H8",
+      "exact_blocker_if_less_than_500": null,
+      "failed_clip_count": 131,
+      "failure_reason_top": {
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_11": 2,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_13": 1,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_14": 4,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15": 123,
+        "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_6": 1
+      },
+      "fake_dense_or_anchor_copied": false,
+      "future_leakage_audit_passed": true,
+      "no_future_box_projection_all": true,
+      "object_count": 2871,
+      "per_dataset_counts": {
+        "VIPSEG": 148,
+        "VSPW": 352
+      },
+      "per_split_clip_counts": {
+        "test": 75,
+        "train": 350,
+        "val": 75
+      },
+      "per_split_object_counts": {
+        "test": 455,
+        "train": 2029,
+        "val": 387
+      },
+      "per_split_point_counts": {
+        "test": 58240,
+        "train": 259712,
+        "val": 49536
+      },
+      "persistent_point_identity_valid": true,
+      "point_count": 367488,
+      "processed_clip_count": 500,
+      "real_teacher_tracks_exist": true,
+      "runner_report_paths": [
+        "reports/stwm_cotracker_object_dense_teacher_v16_M128_H8_20260502.json"
+      ],
+      "same_trajectory_fraction": 0.008032440476190476,
+      "success_gate_passed": true,
+      "teacher_source_distribution": {
+        "cotracker_official": 367488
+      },
+      "trajectory_variance": 7190.834074716489,
+      "valid_point_ratio": 0.8289672043712992,
+      "visibility_coverage": 0.8289672043712992
+    },
+    "M512_H16": {
+      "H": 16,
+      "M": 512,
+      "average_points_per_object": 512.0,
+      "average_points_per_scene": 3099.411089866157,
+      "combo": "M512_H16",
+      "exact_blocker_if_less_than_500": null,
+      "failed_clip_count": 0,
+      "failure_reason_top": {},
+      "fake_dense_or_anchor_copied": false,
+      "future_leakage_audit_passed": true,
+      "no_future_box_projection_all": true,
+      "object_count": 3166,
+      "per_dataset_counts": {
+        "VIPSEG": 92,
+        "VSPW": 431
+      },
+      "per_split_clip_counts": {
+        "test": 75,
+        "train": 373,
+        "val": 75
+      },
+      "per_split_object_counts": {
+        "test": 497,
+        "train": 2182,
+        "val": 487
+      },
+      "per_split_point_counts": {
+        "test": 254464,
+        "train": 1117184,
+        "val": 249344
+      },
+      "persistent_point_identity_valid": true,
+      "point_count": 1620992,
+      "processed_clip_count": 523,
+      "real_teacher_tracks_exist": true,
+      "runner_report_paths": [],
+      "same_trajectory_fraction": 0.002206174990610489,
+      "success_gate_passed": true,
+      "teacher_source_distribution": {
+        "cotracker_official": 1620992
+      },
+      "trajectory_variance": 10749.994057715225,
+      "valid_point_ratio": 0.778208472548497,
+      "visibility_coverage": 0.778208472548497
+    },
+    "M512_H8": {
+      "H": 8,
+      "M": 512,
+      "average_points_per_object": 512.0,
+      "average_points_per_scene": 3134.213464696223,
+      "combo": "M512_H8",
+      "exact_blocker_if_less_than_500": null,
+      "failed_clip_count": 0,
+      "failure_reason_top": {},
+      "fake_dense_or_anchor_copied": false,
+      "future_leakage_audit_passed": true,
+      "no_future_box_projection_all": true,
+      "object_count": 3728,
+      "per_dataset_counts": {
+        "VIPSEG": 103,
+        "VSPW": 506
+      },
+      "per_split_clip_counts": {
+        "test": 75,
+        "train": 459,
+        "val": 75
+      },
+      "per_split_object_counts": {
+        "test": 496,
+        "train": 2745,
+        "val": 487
+      },
+      "per_split_point_counts": {
+        "test": 253952,
+        "train": 1405440,
+        "val": 249344
+      },
+      "persistent_point_identity_valid": true,
+      "point_count": 1908736,
+      "processed_clip_count": 609,
+      "real_teacher_tracks_exist": true,
+      "runner_report_paths": [],
+      "same_trajectory_fraction": 0.002184872467305888,
+      "success_gate_passed": true,
+      "teacher_source_distribution": {
+        "cotracker_official": 1908736
+      },
+      "trajectory_variance": 5490.37818887208,
+      "valid_point_ratio": 0.823513374819776,
+      "visibility_coverage": 0.823513374819776
+    }
+  },
+  "persistent_point_identity_valid": true,
+  "point_count": 4267648,
+  "processed_clip_count": 2132,
+  "real_teacher_tracks_exist": true,
+  "stwm_input_restricted_to_observed": true,
+  "success_gate_passed": true,
+  "teacher_source": "cotracker_official",
+  "valid_point_ratio": 0.7984906385844783
+}
