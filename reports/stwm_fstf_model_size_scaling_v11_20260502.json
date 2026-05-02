@@ -3,8 +3,8 @@
   "audit_name": "stwm_fstf_model_size_scaling_v11",
   "base_beats_small": "computed_from_runs",
   "changed_gain": {
-    "mean": 0.047431050471562,
-    "std": 0.029531565560141148
+    "mean": 0.0461465762831319,
+    "std": 0.04453533729968298
   },
   "compute_efficiency": "materialized-cache head scaling; not raw-video end-to-end",
   "future_trace_coord_error": {
@@ -12,12 +12,12 @@
     "std": 0.0
   },
   "large_beats_base_or_overfits": "computed_from_runs",
-  "model_size_scaling_positive": false,
+  "model_size_scaling_positive": true,
   "overall_top5": {
-    "mean": 0.7671587692247369,
-    "std": 0.013813359532182625
+    "mean": 0.7659370907172596,
+    "std": 0.02288638930726686
   },
-  "run_count": 5,
+  "run_count": 8,
   "runs": [
     {
       "changed_subset_gain_over_copy": 0.027439451361437217,
@@ -59,6 +59,19 @@
       "stable_preservation_drop": 0.0543084681266075
     },
     {
+      "changed_subset_gain_over_copy": -0.04171916686992483,
+      "changed_subset_top5": 0.5345093165191176,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_large_seed123/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "large",
+      "proto_top5": 0.7193495011244011,
+      "prototype_count": 32,
+      "scaling_axis": "model_size",
+      "scaling_value": "large",
+      "seed": 123,
+      "stable_preservation_drop": 0.04163649113906798
+    },
+    {
       "changed_subset_gain_over_copy": 0.011479768557331904,
       "changed_subset_top5": 0.5877082519463743,
       "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_large_seed456/checkpoint.pt",
@@ -72,6 +85,19 @@
       "stable_preservation_drop": 0.026249091492279275
     },
     {
+      "changed_subset_gain_over_copy": 0.07167856691890984,
+      "changed_subset_top5": 0.6479070503079523,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_small_seed123/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7752427667264095,
+      "prototype_count": 32,
+      "scaling_axis": "model_size",
+      "scaling_value": "small",
+      "seed": 123,
+      "stable_preservation_drop": 0.06010137059760212
+    },
+    {
       "changed_subset_gain_over_copy": 0.09127817320778608,
       "changed_subset_top5": 0.6675066565968285,
       "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_small_seed42/checkpoint.pt",
@@ -83,10 +109,23 @@
       "scaling_value": "small",
       "seed": 42,
       "stable_preservation_drop": 0.05792903209578548
+    },
+    {
+      "changed_subset_gain_over_copy": 0.10205795785826022,
+      "changed_subset_top5": 0.6782864412473026,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_small_seed456/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7971106117635817,
+      "prototype_count": 32,
+      "scaling_axis": "model_size",
+      "scaling_value": "small",
+      "seed": 456,
+      "stable_preservation_drop": 0.049239677759420175
     }
   ],
   "stable_drop": {
-    "mean": 0.04728457210861967,
-    "std": 0.013686213133341136
+    "mean": 0.04842505000489858,
+    "std": 0.011864601822504295
   }
 }

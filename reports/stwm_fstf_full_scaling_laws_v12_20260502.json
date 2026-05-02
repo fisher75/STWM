@@ -1,0 +1,407 @@
+{
+  "audit_name": "stwm_fstf_full_scaling_laws_v12",
+  "completed_eval_count": 26,
+  "completed_eval_names": [
+    "v11_model_base_seed123",
+    "v11_model_base_seed42",
+    "v11_model_base_seed456",
+    "v11_model_large_seed123",
+    "v11_model_large_seed456",
+    "v11_model_small_seed123",
+    "v11_model_small_seed42",
+    "v11_model_small_seed456",
+    "v11_prototype_c128_seed123",
+    "v11_prototype_c128_seed42",
+    "v11_prototype_c128_seed456",
+    "v11_prototype_c16_seed123",
+    "v11_prototype_c16_seed42",
+    "v11_prototype_c16_seed456",
+    "v11_prototype_c32_seed123",
+    "v11_prototype_c32_seed42",
+    "v11_prototype_c32_seed456",
+    "v11_prototype_c64_seed123",
+    "v11_prototype_c64_seed42",
+    "v11_prototype_c64_seed456",
+    "v12_density_k8_seed123",
+    "v12_density_k8_seed42",
+    "v12_density_k8_seed456",
+    "v12_horizon_h8_seed123",
+    "v12_horizon_h8_seed42",
+    "v12_horizon_h8_seed456"
+  ],
+  "dense_trace_field_claim_allowed": false,
+  "expected_eval_count": 39,
+  "future_hidden_load_bearing_retained_at_H16_H24": false,
+  "generated_at_utc": "2026-05-01T18:34:24.476292+00:00",
+  "horizon_scaling": {
+    "changed_gain": {
+      "mean": 0.08833823266165204,
+      "std": 0.01257535383922518
+    },
+    "overall_top5": {
+      "mean": 0.7865319428572588,
+      "std": 0.008941635832050814
+    },
+    "run_count": 3,
+    "runs": [
+      {
+        "axis": "horizon",
+        "changed_gain": 0.07167856691890984,
+        "proto_top5": 0.7752427667264095,
+        "report_path": "reports/stwm_fstf_scaling_v12_horizon_h8_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.06010137059760212,
+        "trace_error": 0.06769089330067267,
+        "value": "H8"
+      },
+      {
+        "axis": "horizon",
+        "changed_gain": 0.09127817320778608,
+        "proto_top5": 0.7872424500817854,
+        "report_path": "reports/stwm_fstf_scaling_v12_horizon_h8_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.05792903209578548,
+        "trace_error": 0.06769089330067267,
+        "value": "H8"
+      },
+      {
+        "axis": "horizon",
+        "changed_gain": 0.10205795785826022,
+        "proto_top5": 0.7971106117635817,
+        "report_path": "reports/stwm_fstf_scaling_v12_horizon_h8_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.049239677759420175,
+        "trace_error": 0.06769089330067267,
+        "value": "H8"
+      }
+    ],
+    "stable_drop": {
+      "mean": 0.05575669348426926,
+      "std": 0.00469278766549027
+    },
+    "trace_error": {
+      "mean": 0.06769089330067267,
+      "std": 0.0
+    }
+  },
+  "horizon_scaling_positive": false,
+  "long_horizon_claim_allowed": false,
+  "missing_eval_names": [
+    "v11_model_large_seed42",
+    "v12_horizon_h16_seed42",
+    "v12_horizon_h16_seed123",
+    "v12_horizon_h16_seed456",
+    "v12_horizon_h24_seed42",
+    "v12_horizon_h24_seed123",
+    "v12_horizon_h24_seed456",
+    "v12_density_k16_seed42",
+    "v12_density_k16_seed123",
+    "v12_density_k16_seed456",
+    "v12_density_k32_seed42",
+    "v12_density_k32_seed123",
+    "v12_density_k32_seed456"
+  ],
+  "model_size_scaling": {
+    "changed_gain": {
+      "mean": 0.0461465762831319,
+      "std": 0.04453533729968298
+    },
+    "overall_top5": {
+      "mean": 0.7659370907172596,
+      "std": 0.02288638930726686
+    },
+    "run_count": 8,
+    "runs": [
+      {
+        "axis": "model_size",
+        "changed_gain": 0.027439451361437217,
+        "proto_top5": 0.7495855470589768,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_base_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.061730624318856564,
+        "trace_error": 0.06769089330067267,
+        "value": "base"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": 0.035139296857850555,
+        "proto_top5": 0.7650588244626777,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_base_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.036205644509569535,
+        "trace_error": 0.06769089330067267,
+        "value": "base"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": 0.07181856237340423,
+        "proto_top5": 0.7778479627952576,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_base_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.0543084681266075,
+        "trace_error": 0.06769089330067267,
+        "value": "base"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": -0.04171916686992483,
+        "proto_top5": 0.7193495011244011,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_large_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.04163649113906798,
+        "trace_error": 0.06769089330067267,
+        "value": "large"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": 0.011479768557331904,
+        "proto_top5": 0.7560590617249869,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_large_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.026249091492279275,
+        "trace_error": 0.06769089330067267,
+        "value": "large"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": 0.07167856691890984,
+        "proto_top5": 0.7752427667264095,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_small_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.06010137059760212,
+        "trace_error": 0.06769089330067267,
+        "value": "small"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": 0.09127817320778608,
+        "proto_top5": 0.7872424500817854,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_small_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.05792903209578548,
+        "trace_error": 0.06769089330067267,
+        "value": "small"
+      },
+      {
+        "axis": "model_size",
+        "changed_gain": 0.10205795785826022,
+        "proto_top5": 0.7971106117635817,
+        "report_path": "reports/stwm_fstf_scaling_v11_model_small_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.049239677759420175,
+        "trace_error": 0.06769089330067267,
+        "value": "small"
+      }
+    ],
+    "stable_drop": {
+      "mean": 0.04842505000489858,
+      "std": 0.011864601822504295
+    },
+    "trace_error": {
+      "mean": 0.06769089330067267,
+      "std": 0.0
+    }
+  },
+  "model_size_scaling_positive": false,
+  "new_checkpoint_count": 26,
+  "new_eval_summary_count": 26,
+  "next_step_choice": "run_remaining_failed_scaling_jobs",
+  "prototype_scaling": {
+    "changed_gain": {
+      "mean": 0.02949084374150421,
+      "std": 0.04638021513696985
+    },
+    "overall_top5": {
+      "mean": 0.7126654656176393,
+      "std": 0.10385705086434757
+    },
+    "run_count": 12,
+    "runs": [
+      {
+        "axis": "prototype",
+        "changed_gain": -0.03707769195783067,
+        "proto_top5": 0.5325649405724543,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c128_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.21553266767475787,
+        "trace_error": 0.06769089330067267,
+        "value": "C128"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": -0.024881083802695436,
+        "proto_top5": 0.5574327071923817,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c128_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.16741270501826921,
+        "trace_error": 0.06769089330067267,
+        "value": "C128"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": -0.01414806688694431,
+        "proto_top5": 0.5603536831320457,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c128_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.1788272081591662,
+        "trace_error": 0.06769089330067267,
+        "value": "C128"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": -0.019914651033104303,
+        "proto_top5": 0.7915054969721909,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c16_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.08568386935227634,
+        "trace_error": 0.06769089330067267,
+        "value": "C16"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.034566144034754,
+        "proto_top5": 0.8306623619169484,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c16_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.06563774698937808,
+        "trace_error": 0.06769089330067267,
+        "value": "C16"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.011095305136901712,
+        "proto_top5": 0.8209520898946997,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c16_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.05818697523622407,
+        "trace_error": 0.06769089330067267,
+        "value": "C16"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.07167856691890984,
+        "proto_top5": 0.7752427667264095,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c32_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.06010137059760212,
+        "trace_error": 0.06769089330067267,
+        "value": "C32"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.09127817320778608,
+        "proto_top5": 0.7872424500817854,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c32_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.05792903209578548,
+        "trace_error": 0.06769089330067267,
+        "value": "C32"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.10205795785826022,
+        "proto_top5": 0.7971106117635817,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c32_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.049239677759420175,
+        "trace_error": 0.06769089330067267,
+        "value": "C32"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.06424210465236024,
+        "proto_top5": 0.7033236060890599,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c64_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.08182349020661306,
+        "trace_error": 0.06769089330067267,
+        "value": "C64"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.009954872596262265,
+        "proto_top5": 0.67908740247565,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c64_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.061952071471588654,
+        "trace_error": 0.06769089330067267,
+        "value": "C64"
+      },
+      {
+        "axis": "prototype",
+        "changed_gain": 0.06503849417339091,
+        "proto_top5": 0.7165074705944645,
+        "report_path": "reports/stwm_fstf_scaling_v11_prototype_c64_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.05045781916991876,
+        "trace_error": 0.06769089330067267,
+        "value": "C64"
+      }
+    ],
+    "stable_drop": {
+      "mean": 0.09439871947758334,
+      "std": 0.05555364309109816
+    },
+    "trace_error": {
+      "mean": 0.06769089330067267,
+      "std": 0.0
+    }
+  },
+  "prototype_scaling_positive": true,
+  "raw_frame_visualization_ready": true,
+  "reviewer_risk_after_v12": "high until H16/H24 and K16/K32 complete",
+  "scaling_completed": false,
+  "trace_density_scaling": {
+    "changed_gain": {
+      "mean": 0.08833823266165204,
+      "std": 0.01257535383922518
+    },
+    "overall_top5": {
+      "mean": 0.7865319428572588,
+      "std": 0.008941635832050814
+    },
+    "run_count": 3,
+    "runs": [
+      {
+        "axis": "density",
+        "changed_gain": 0.07167856691890984,
+        "proto_top5": 0.7752427667264095,
+        "report_path": "reports/stwm_fstf_scaling_v12_density_k8_seed123_eval_20260502.json",
+        "seed": 123,
+        "stable_drop": 0.06010137059760212,
+        "trace_error": 0.06769089330067267,
+        "value": "K8"
+      },
+      {
+        "axis": "density",
+        "changed_gain": 0.09127817320778608,
+        "proto_top5": 0.7872424500817854,
+        "report_path": "reports/stwm_fstf_scaling_v12_density_k8_seed42_eval_20260502.json",
+        "seed": 42,
+        "stable_drop": 0.05792903209578548,
+        "trace_error": 0.06769089330067267,
+        "value": "K8"
+      },
+      {
+        "axis": "density",
+        "changed_gain": 0.10205795785826022,
+        "proto_top5": 0.7971106117635817,
+        "report_path": "reports/stwm_fstf_scaling_v12_density_k8_seed456_eval_20260502.json",
+        "seed": 456,
+        "stable_drop": 0.049239677759420175,
+        "trace_error": 0.06769089330067267,
+        "value": "K8"
+      }
+    ],
+    "stable_drop": {
+      "mean": 0.05575669348426926,
+      "std": 0.00469278766549027
+    },
+    "trace_error": {
+      "mean": 0.06769089330067267,
+      "std": 0.0
+    }
+  },
+  "trace_density_scaling_positive": false,
+  "visualization_report": "reports/stwm_fstf_visualization_v12_20260502.json"
+}

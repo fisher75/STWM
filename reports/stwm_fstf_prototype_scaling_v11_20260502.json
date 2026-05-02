@@ -3,21 +3,47 @@
   "C32_vs_C64": "reported in runs when both are available",
   "audit_name": "stwm_fstf_prototype_scaling_v11",
   "changed_gain": {
-    "mean": 0.05924476770835957,
-    "std": 0.035991647762761925
+    "mean": 0.02949084374150421,
+    "std": 0.04638021513696985
   },
   "future_trace_coord_error": {
     "mean": 0.06769089330067267,
     "std": 0.0
   },
   "overall_top5": {
-    "mean": 0.7386347071863278,
-    "std": 0.0837615623931277
+    "mean": 0.7126654656176393,
+    "std": 0.10385705086434757
   },
   "prototype_scaling_positive": true,
   "prototype_vocab_claim_allowed": true,
-  "run_count": 7,
+  "run_count": 12,
   "runs": [
+    {
+      "changed_subset_gain_over_copy": -0.03707769195783067,
+      "changed_subset_top5": 0.39529211401547737,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c128_seed123/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.5325649405724543,
+      "prototype_count": 128,
+      "scaling_axis": "prototype",
+      "scaling_value": "C128",
+      "seed": 123,
+      "stable_preservation_drop": 0.21553266767475787
+    },
+    {
+      "changed_subset_gain_over_copy": -0.024881083802695436,
+      "changed_subset_top5": 0.4074887221706126,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c128_seed42/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.5574327071923817,
+      "prototype_count": 128,
+      "scaling_axis": "prototype",
+      "scaling_value": "C128",
+      "seed": 42,
+      "stable_preservation_drop": 0.16741270501826921
+    },
     {
       "changed_subset_gain_over_copy": -0.01414806688694431,
       "changed_subset_top5": 0.41822173908636373,
@@ -32,6 +58,19 @@
       "stable_preservation_drop": 0.1788272081591662
     },
     {
+      "changed_subset_gain_over_copy": -0.019914651033104303,
+      "changed_subset_top5": 0.6930298823598311,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed123/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.7915054969721909,
+      "prototype_count": 16,
+      "scaling_axis": "prototype",
+      "scaling_value": "C16",
+      "seed": 123,
+      "stable_preservation_drop": 0.08568386935227634
+    },
+    {
       "changed_subset_gain_over_copy": 0.034566144034754,
       "changed_subset_top5": 0.7475106774276894,
       "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed42/checkpoint.pt",
@@ -43,6 +82,19 @@
       "scaling_value": "C16",
       "seed": 42,
       "stable_preservation_drop": 0.06563774698937808
+    },
+    {
+      "changed_subset_gain_over_copy": 0.011095305136901712,
+      "changed_subset_top5": 0.7240398385298371,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed456/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.8209520898946997,
+      "prototype_count": 16,
+      "scaling_axis": "prototype",
+      "scaling_value": "C16",
+      "seed": 456,
+      "stable_preservation_drop": 0.05818697523622407
     },
     {
       "changed_subset_gain_over_copy": 0.07167856691890984,
@@ -97,6 +149,19 @@
       "stable_preservation_drop": 0.08182349020661306
     },
     {
+      "changed_subset_gain_over_copy": 0.009954872596262265,
+      "changed_subset_top5": 0.5026546398769616,
+      "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c64_seed42/checkpoint.pt",
+      "future_trace_coord_error": 0.06769089330067267,
+      "model_size": "small",
+      "proto_top5": 0.67908740247565,
+      "prototype_count": 64,
+      "scaling_axis": "prototype",
+      "scaling_value": "C64",
+      "seed": 42,
+      "stable_preservation_drop": 0.061952071471588654
+    },
+    {
       "changed_subset_gain_over_copy": 0.06503849417339091,
       "changed_subset_top5": 0.5577382614540902,
       "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c64_seed456/checkpoint.pt",
@@ -112,7 +177,7 @@
   ],
   "selected_C": 32,
   "stable_drop": {
-    "mean": 0.07771662071112627,
-    "std": 0.04249695905530227
+    "mean": 0.09439871947758334,
+    "std": 0.05555364309109816
   }
 }

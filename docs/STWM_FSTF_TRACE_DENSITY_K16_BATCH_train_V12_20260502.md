@@ -1,0 +1,21 @@
+# STWM-FSTF Batch Cache V12
+
+- audit_name: `stwm_fstf_trace_density_k16_batch_train_v12`
+- generated_at_utc: `2026-05-01T18:45:37.812205+00:00`
+- split_report: `reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json`
+- eval_split: `train`
+- requested_item_count: `3019`
+- final_eval_item_count: `0`
+- batch_count: `0`
+- batch_cache_path: `outputs/cache/stwm_fstf_trace_density_k16_train_v12_20260502/eval_batches.pt`
+- cache_size_bytes: `1483`
+- cache_mtime: `1777661137.8118842`
+- fut_len: `8`
+- horizon: `8`
+- max_entities_per_sample: `16`
+- slot_count_verified: `16`
+- failed_item_count: `3019`
+- materialization_success: `False`
+- exact_blocking_reason: `some split item keys failed to materialize with requested fut_len/max_entities_per_sample`
+- future_leakage_audit: `True`
+- item_leakage: `False`

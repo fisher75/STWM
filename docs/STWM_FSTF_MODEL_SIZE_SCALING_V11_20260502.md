@@ -1,8 +1,8 @@
 # STWM-FSTF Model Size Scaling V11
 
 - audit_name: `stwm_fstf_model_size_scaling_v11`
-- run_count: `5`
-- model_size_scaling_positive: `False`
+- run_count: `8`
+- model_size_scaling_positive: `True`
 - base_beats_small: `computed_from_runs`
 - large_beats_base_or_overfits: `computed_from_runs`
 - compute_efficiency: `materialized-cache head scaling; not raw-video end-to-end`

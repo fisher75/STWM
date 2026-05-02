@@ -4,14 +4,22 @@
     "model_base_seed123",
     "model_base_seed42",
     "model_base_seed456",
+    "model_large_seed123",
     "model_large_seed456",
+    "model_small_seed123",
     "model_small_seed42",
+    "model_small_seed456",
+    "prototype_c128_seed123",
+    "prototype_c128_seed42",
     "prototype_c128_seed456",
+    "prototype_c16_seed123",
     "prototype_c16_seed42",
+    "prototype_c16_seed456",
     "prototype_c32_seed123",
     "prototype_c32_seed42",
     "prototype_c32_seed456",
     "prototype_c64_seed123",
+    "prototype_c64_seed42",
     "prototype_c64_seed456"
   ],
   "completed_scaling_points": [
@@ -26,7 +34,7 @@
   "dense_trace_field_claim_allowed": false,
   "expected_eval_count": 21,
   "future_hidden_load_bearing_retained_under_scaling": true,
-  "generated_at_utc": "2026-05-01T17:55:45.271502+00:00",
+  "generated_at_utc": "2026-05-01T18:07:15.138750+00:00",
   "gpu_jobs_launched": 24,
   "gpu_log_checkpoint_evidence": [
     {
@@ -41,7 +49,7 @@
       "contains_start": false,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/full_scaling_master.log",
       "non_empty": true,
-      "size_bytes": 944
+      "size_bytes": 1494
     },
     {
       "contains_done": true,
@@ -65,18 +73,18 @@
       "size_bytes": 2349
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_large_seed123.log",
       "non_empty": true,
-      "size_bytes": 659
+      "size_bytes": 2278
     },
     {
       "contains_done": false,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_large_seed42.log",
       "non_empty": true,
-      "size_bytes": 1100
+      "size_bytes": 1416
     },
     {
       "contains_done": true,
@@ -90,14 +98,14 @@
       "contains_start": false,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_master.log",
       "non_empty": true,
-      "size_bytes": 942
+      "size_bytes": 1425
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_small_seed123.log",
       "non_empty": true,
-      "size_bytes": 1682
+      "size_bytes": 2353
     },
     {
       "contains_done": true,
@@ -107,25 +115,25 @@
       "size_bytes": 2346
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_small_seed456.log",
       "non_empty": true,
-      "size_bytes": 1523
+      "size_bytes": 2352
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/prototype_c128_seed123.log",
       "non_empty": true,
-      "size_bytes": 1214
+      "size_bytes": 2371
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/prototype_c128_seed42.log",
       "non_empty": true,
-      "size_bytes": 1265
+      "size_bytes": 2365
     },
     {
       "contains_done": true,
@@ -135,11 +143,11 @@
       "size_bytes": 2371
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/prototype_c16_seed123.log",
       "non_empty": true,
-      "size_bytes": 1682
+      "size_bytes": 2359
     },
     {
       "contains_done": true,
@@ -149,11 +157,11 @@
       "size_bytes": 2353
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/prototype_c16_seed456.log",
       "non_empty": true,
-      "size_bytes": 1260
+      "size_bytes": 2359
     },
     {
       "contains_done": true,
@@ -184,11 +192,11 @@
       "size_bytes": 2367
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/prototype_c64_seed42.log",
       "non_empty": true,
-      "size_bytes": 660
+      "size_bytes": 2286
     },
     {
       "contains_done": true,
@@ -221,15 +229,7 @@
   "horizon_scaling_positive": false,
   "long_horizon_claim_allowed": false,
   "missing_eval_names": [
-    "prototype_c16_seed123",
-    "prototype_c16_seed456",
-    "prototype_c64_seed42",
-    "prototype_c128_seed42",
-    "prototype_c128_seed123",
-    "model_small_seed123",
-    "model_small_seed456",
-    "model_large_seed42",
-    "model_large_seed123"
+    "model_large_seed42"
   ],
   "missing_scaling_points": [
     "H=16: H16 future feature/prototype target cache not materialized in V11 yet",
@@ -239,18 +239,18 @@
   ],
   "model_size_scaling": {
     "changed_gain": {
-      "mean": 0.047431050471562,
-      "std": 0.029531565560141148
+      "mean": 0.0461465762831319,
+      "std": 0.04453533729968298
     },
     "future_trace_coord_error": {
       "mean": 0.06769089330067267,
       "std": 0.0
     },
     "overall_top5": {
-      "mean": 0.7671587692247369,
-      "std": 0.013813359532182625
+      "mean": 0.7659370907172596,
+      "std": 0.02288638930726686
     },
-    "run_count": 5,
+    "run_count": 8,
     "runs": [
       {
         "changed_subset_gain_over_copy": 0.027439451361437217,
@@ -292,6 +292,19 @@
         "stable_preservation_drop": 0.0543084681266075
       },
       {
+        "changed_subset_gain_over_copy": -0.04171916686992483,
+        "changed_subset_top5": 0.5345093165191176,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_large_seed123/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "large",
+        "proto_top5": 0.7193495011244011,
+        "prototype_count": 32,
+        "scaling_axis": "model_size",
+        "scaling_value": "large",
+        "seed": 123,
+        "stable_preservation_drop": 0.04163649113906798
+      },
+      {
         "changed_subset_gain_over_copy": 0.011479768557331904,
         "changed_subset_top5": 0.5877082519463743,
         "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_large_seed456/checkpoint.pt",
@@ -305,6 +318,19 @@
         "stable_preservation_drop": 0.026249091492279275
       },
       {
+        "changed_subset_gain_over_copy": 0.07167856691890984,
+        "changed_subset_top5": 0.6479070503079523,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_small_seed123/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.7752427667264095,
+        "prototype_count": 32,
+        "scaling_axis": "model_size",
+        "scaling_value": "small",
+        "seed": 123,
+        "stable_preservation_drop": 0.06010137059760212
+      },
+      {
         "changed_subset_gain_over_copy": 0.09127817320778608,
         "changed_subset_top5": 0.6675066565968285,
         "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_small_seed42/checkpoint.pt",
@@ -316,32 +342,71 @@
         "scaling_value": "small",
         "seed": 42,
         "stable_preservation_drop": 0.05792903209578548
+      },
+      {
+        "changed_subset_gain_over_copy": 0.10205795785826022,
+        "changed_subset_top5": 0.6782864412473026,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_small_seed456/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.7971106117635817,
+        "prototype_count": 32,
+        "scaling_axis": "model_size",
+        "scaling_value": "small",
+        "seed": 456,
+        "stable_preservation_drop": 0.049239677759420175
       }
     ],
     "stable_drop": {
-      "mean": 0.04728457210861967,
-      "std": 0.013686213133341136
+      "mean": 0.04842505000489858,
+      "std": 0.011864601822504295
     }
   },
-  "model_size_scaling_positive": false,
-  "new_checkpoint_count": 12,
-  "new_eval_summary_count": 12,
-  "new_train_summary_count": 12,
+  "model_size_scaling_positive": true,
+  "new_checkpoint_count": 20,
+  "new_eval_summary_count": 20,
+  "new_train_summary_count": 20,
   "prototype_scaling": {
     "changed_gain": {
-      "mean": 0.05924476770835957,
-      "std": 0.035991647762761925
+      "mean": 0.02949084374150421,
+      "std": 0.04638021513696985
     },
     "future_trace_coord_error": {
       "mean": 0.06769089330067267,
       "std": 0.0
     },
     "overall_top5": {
-      "mean": 0.7386347071863278,
-      "std": 0.0837615623931277
+      "mean": 0.7126654656176393,
+      "std": 0.10385705086434757
     },
-    "run_count": 7,
+    "run_count": 12,
     "runs": [
+      {
+        "changed_subset_gain_over_copy": -0.03707769195783067,
+        "changed_subset_top5": 0.39529211401547737,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c128_seed123/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.5325649405724543,
+        "prototype_count": 128,
+        "scaling_axis": "prototype",
+        "scaling_value": "C128",
+        "seed": 123,
+        "stable_preservation_drop": 0.21553266767475787
+      },
+      {
+        "changed_subset_gain_over_copy": -0.024881083802695436,
+        "changed_subset_top5": 0.4074887221706126,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c128_seed42/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.5574327071923817,
+        "prototype_count": 128,
+        "scaling_axis": "prototype",
+        "scaling_value": "C128",
+        "seed": 42,
+        "stable_preservation_drop": 0.16741270501826921
+      },
       {
         "changed_subset_gain_over_copy": -0.01414806688694431,
         "changed_subset_top5": 0.41822173908636373,
@@ -356,6 +421,19 @@
         "stable_preservation_drop": 0.1788272081591662
       },
       {
+        "changed_subset_gain_over_copy": -0.019914651033104303,
+        "changed_subset_top5": 0.6930298823598311,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed123/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.7915054969721909,
+        "prototype_count": 16,
+        "scaling_axis": "prototype",
+        "scaling_value": "C16",
+        "seed": 123,
+        "stable_preservation_drop": 0.08568386935227634
+      },
+      {
         "changed_subset_gain_over_copy": 0.034566144034754,
         "changed_subset_top5": 0.7475106774276894,
         "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed42/checkpoint.pt",
@@ -367,6 +445,19 @@
         "scaling_value": "C16",
         "seed": 42,
         "stable_preservation_drop": 0.06563774698937808
+      },
+      {
+        "changed_subset_gain_over_copy": 0.011095305136901712,
+        "changed_subset_top5": 0.7240398385298371,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c16_seed456/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.8209520898946997,
+        "prototype_count": 16,
+        "scaling_axis": "prototype",
+        "scaling_value": "C16",
+        "seed": 456,
+        "stable_preservation_drop": 0.05818697523622407
       },
       {
         "changed_subset_gain_over_copy": 0.07167856691890984,
@@ -421,6 +512,19 @@
         "stable_preservation_drop": 0.08182349020661306
       },
       {
+        "changed_subset_gain_over_copy": 0.009954872596262265,
+        "changed_subset_top5": 0.5026546398769616,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c64_seed42/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "small",
+        "proto_top5": 0.67908740247565,
+        "prototype_count": 64,
+        "scaling_axis": "prototype",
+        "scaling_value": "C64",
+        "seed": 42,
+        "stable_preservation_drop": 0.061952071471588654
+      },
+      {
         "changed_subset_gain_over_copy": 0.06503849417339091,
         "changed_subset_top5": 0.5577382614540902,
         "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/prototype_c64_seed456/checkpoint.pt",
@@ -435,8 +539,8 @@
       }
     ],
     "stable_drop": {
-      "mean": 0.07771662071112627,
-      "std": 0.04249695905530227
+      "mean": 0.09439871947758334,
+      "std": 0.05555364309109816
     }
   },
   "prototype_scaling_positive": true,

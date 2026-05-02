@@ -1,0 +1,21 @@
+# STWM-FSTF density cache k16 V12
+
+- audit_name: `stwm_fstf_density_cache_k16_v12`
+- generated_at_utc: `2026-05-01T18:45:58.806653+00:00`
+- axis: `density`
+- value: `k16`
+- horizon: `8`
+- K: `16`
+- slot_count_verified: `16`
+- train_item_count: `0`
+- val_item_count: `0`
+- test_item_count: `0`
+- future_target_cache_path: `/raid/chen034/workspace/stwm/outputs/cache/stwm_fstf_trace_density_k16_prototype_targets_c32_v12_20260502/prototype_targets.npz`
+- observed_memory_cache_path: `/raid/chen034/workspace/stwm/outputs/cache/stwm_fstf_trace_density_k16_observed_targets_v12_20260502/observed_proto_targets_c32.npz`
+- changed_count: `48984`
+- stable_count: `35528`
+- target_coverage: `0.3632651238488409`
+- observed_semantic_memory_coverage: `0.11265481105112735`
+- future_leakage_audit: `True`
+- materialization_success: `False`
+- exact_blocking_reason: ``
