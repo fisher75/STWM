@@ -30,10 +30,42 @@ def _onehot_proto_logits(proto_target: np.ndarray, k: int = 32, logit_value: flo
     return out
 
 
-def analytic_constant_velocity_predict(samples: list[OSTFObjectSample], *, proto_count: int = 32) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def semantic_logits_from_observed_memory(
+    samples: list[OSTFObjectSample],
+    *,
+    proto_centers: np.ndarray | None,
+    proto_count: int = 32,
+    horizon: int | None = None,
+    temperature: float = 8.0,
+) -> np.ndarray:
+    if horizon is None:
+        horizon = int(samples[0].h) if samples else 1
+    if proto_centers is None:
+        majority = np.zeros((len(samples), proto_count), dtype=np.float32)
+        majority[:, 0] = temperature
+        base = majority
+    else:
+        feats = np.stack([s.semantic_feat for s in samples], axis=0).astype(np.float32)
+        centers = np.asarray(proto_centers, dtype=np.float32)
+        dist = ((feats[:, None, :] - centers[None, :, :]) ** 2).sum(axis=-1)
+        base = (-temperature * dist).astype(np.float32)
+    return np.repeat(base[:, None, :], horizon, axis=1)
+
+
+def analytic_constant_velocity_predict(
+    samples: list[OSTFObjectSample],
+    *,
+    proto_count: int = 32,
+    proto_centers: np.ndarray | None = None,
+    semantic_mode: str = "oracle",
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     point_preds = []
     vis_logits = []
-    sem_logits = []
+    sem_logits = semantic_logits_from_observed_memory(
+        samples,
+        proto_centers=proto_centers,
+        proto_count=proto_count,
+    ) if semantic_mode == "observed_memory" else None
     for s in samples:
         last = s.obs_points[:, -1]
         vel = s.obs_points[:, -1] - s.obs_points[:, -2]
@@ -41,8 +73,16 @@ def analytic_constant_velocity_predict(samples: list[OSTFObjectSample], *, proto
         pred = last[:, None, :] + vel[:, None, :] * times
         point_preds.append(pred.astype(np.float32))
         vis_logits.append(np.where(np.repeat(s.obs_vis[:, -1:], s.h, axis=1), 8.0, -8.0).astype(np.float32))
-        sem_logits.append(np.repeat(_onehot_proto_logits(np.asarray([s.proto_target]), proto_count)[:, None, :], s.h, axis=1)[0])
-    return np.stack(point_preds), np.stack(vis_logits), np.stack(sem_logits)
+        if sem_logits is None:
+            if "oracle" == semantic_mode:
+                pass
+    if sem_logits is None:
+        sem_rows = [
+            np.repeat(_onehot_proto_logits(np.asarray([s.proto_target]), proto_count)[:, None, :], s.h, axis=1)[0]
+            for s in samples
+        ]
+        sem_logits = np.stack(sem_rows)
+    return np.stack(point_preds), np.stack(vis_logits), sem_logits
 
 
 def _fit_affine_last_step(s: OSTFObjectSample) -> np.ndarray:
@@ -58,10 +98,20 @@ def _fit_affine_last_step(s: OSTFObjectSample) -> np.ndarray:
     return (np.linalg.solve(xtx, xty)).astype(np.float32)
 
 
-def analytic_affine_motion_predict(samples: list[OSTFObjectSample], *, proto_count: int = 32) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def analytic_affine_motion_predict(
+    samples: list[OSTFObjectSample],
+    *,
+    proto_count: int = 32,
+    proto_centers: np.ndarray | None = None,
+    semantic_mode: str = "oracle",
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     point_preds = []
     vis_logits = []
-    sem_logits = []
+    sem_logits = semantic_logits_from_observed_memory(
+        samples,
+        proto_centers=proto_centers,
+        proto_count=proto_count,
+    ) if semantic_mode == "observed_memory" else None
     for s in samples:
         a = _fit_affine_last_step(s)
         anchor_last = s.anchor_obs[-1]
@@ -75,8 +125,13 @@ def analytic_affine_motion_predict(samples: list[OSTFObjectSample], *, proto_cou
             preds.append(rel_cur + anchor_t[None])
         point_preds.append(np.stack(preds, axis=1).astype(np.float32))
         vis_logits.append(np.where(np.repeat(s.obs_vis[:, -1:], s.h, axis=1), 8.0, -8.0).astype(np.float32))
-        sem_logits.append(np.repeat(_onehot_proto_logits(np.asarray([s.proto_target]), proto_count)[:, None, :], s.h, axis=1)[0])
-    return np.stack(point_preds), np.stack(vis_logits), np.stack(sem_logits)
+    if sem_logits is None:
+        sem_rows = [
+            np.repeat(_onehot_proto_logits(np.asarray([s.proto_target]), proto_count)[:, None, :], s.h, axis=1)[0]
+            for s in samples
+        ]
+        sem_logits = np.stack(sem_rows)
+    return np.stack(point_preds), np.stack(vis_logits), sem_logits
 
 
 def extent_center_from_points(points: torch.Tensor, valid: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
