@@ -1,0 +1,43 @@
+{
+  "OSTF_real_teacher_pilot_metrics": {
+    "M1": {
+      "PCK_4px": 0.012658227235078812,
+      "anchor_or_centroid_L1_px": 52.810848236083984,
+      "endpoint_error_px": 68.59366607666016,
+      "object_count": 61,
+      "point_L1_px": 52.810848236083984,
+      "visibility_F1_last_observed_baseline": 0.9916142557651992
+    },
+    "M128": {
+      "PCK_4px": 0.002117596406606026,
+      "anchor_or_centroid_L1_px": 94.56281852722168,
+      "endpoint_error_px": 119.15346145629883,
+      "object_count": 61,
+      "point_L1_px": 105.6882495880127,
+      "visibility_F1_last_observed_baseline": 0.9634255465445948
+    },
+    "metric_note": "M1 anchor/centroid metrics and M128 internal point metrics are separated; M128 point L1 is not directly used as the sole comparison against M1 anchor L1."
+  },
+  "audit_name": "stwm_ostf_v15c_real_teacher_decision",
+  "average_points_per_object": 128.0,
+  "average_points_per_scene": 707.2,
+  "cache_audit_path": "reports/stwm_real_object_dense_teacher_cache_audit_v15c_20260502.json",
+  "cotracker_teacher_runner_path": "reports/stwm_cotracker_object_dense_teacher_v15c_20260502.json",
+  "generated_at_utc": "2026-05-02T13:25:47.657279+00:00",
+  "next_step_choice": "proceed_to_full_real_teacher_cache",
+  "object_dense_physical_teacher_cache_ready": true,
+  "persistent_point_identity_valid": true,
+  "pilot_interpretation": "CoTracker teacher integration is successful. M128 pilot is not yet stronger than M1 under the tiny 1000-step head, so this is a cache/teacher success plus model-capacity follow-up, not a full OSTF claim.",
+  "processed_clip_count": 40,
+  "real_teacher_pilot_path": "reports/stwm_ostf_real_teacher_pilot_v15c_20260502.json",
+  "real_teacher_tracks_exist": true,
+  "split_counts": {
+    "test": 10,
+    "train": 20,
+    "val": 10
+  },
+  "teacher_source": "cotracker_official",
+  "valid_point_ratio": 0.856504966770362,
+  "visualization_path": "reports/stwm_real_teacher_object_dense_visualization_v15c_20260502.json",
+  "visualization_ready": true
+}

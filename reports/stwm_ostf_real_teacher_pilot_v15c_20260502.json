@@ -1,0 +1,120 @@
+{
+  "M128_metrics": {
+    "PCK_4px": 0.002117596406606026,
+    "anchor_or_centroid_L1_px": 94.56281852722168,
+    "endpoint_error_px": 119.15346145629883,
+    "object_count": 61,
+    "point_L1_px": 105.6882495880127,
+    "visibility_F1_last_observed_baseline": 0.9634255465445948
+  },
+  "M1_metrics": {
+    "PCK_4px": 0.012658227235078812,
+    "anchor_or_centroid_L1_px": 52.810848236083984,
+    "endpoint_error_px": 68.59366607666016,
+    "object_count": 61,
+    "point_L1_px": 52.810848236083984,
+    "visibility_F1_last_observed_baseline": 0.9916142557651992
+  },
+  "audit_name": "stwm_ostf_real_teacher_pilot_v15c",
+  "device": "cuda",
+  "generated_at_utc": "2026-05-02T13:25:04.874209+00:00",
+  "metric_note": "M1 anchor/centroid metrics and M128 internal point metrics are separated; M128 point L1 is not directly used as the sole comparison against M1 anchor L1.",
+  "next_step_choice": "proceed_to_full_real_teacher_cache",
+  "pilot_success": true,
+  "runs": {
+    "M128_seed42": {
+      "M": 128,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_real_teacher_pilot_v15c/M128_seed42.pt",
+      "loss_curve": [
+        0.03156612068414688,
+        0.0025852229446172714,
+        0.001259764190763235,
+        0.0006683981046080589,
+        0.0005582422018051147,
+        0.000508572265971452,
+        0.00037147823604755104,
+        0.00025525520322844386,
+        0.00040548451943323016,
+        0.0002666923974175006,
+        0.0001965160045074299
+      ],
+      "seed": 42,
+      "steps": 1000,
+      "test_metrics": {
+        "PCK_4px": 0.002117596406606026,
+        "anchor_or_centroid_L1_px": 94.56281852722168,
+        "endpoint_error_px": 119.15346145629883,
+        "object_count": 61,
+        "point_L1_px": 105.6882495880127,
+        "visibility_F1_last_observed_baseline": 0.9634255465445948
+      },
+      "train_metrics": {
+        "PCK_4px": 0.007520472098674093,
+        "anchor_or_centroid_L1_px": 56.682908739362446,
+        "endpoint_error_px": 60.63472693307059,
+        "object_count": 112,
+        "point_L1_px": 55.81092779976981,
+        "visibility_F1_last_observed_baseline": 0.9504341474398756
+      },
+      "val_metrics": {
+        "PCK_4px": 0.0011316724897672732,
+        "anchor_or_centroid_L1_px": 153.39964803059897,
+        "endpoint_error_px": 178.5135752360026,
+        "object_count": 48,
+        "point_L1_px": 150.91452280680338,
+        "visibility_F1_last_observed_baseline": 0.9750315907708148
+      }
+    },
+    "M1_seed42": {
+      "M": 1,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_real_teacher_pilot_v15c/M1_seed42.pt",
+      "loss_curve": [
+        0.03346752002835274,
+        0.0010629502357915044,
+        0.0011104372097179294,
+        0.0006676285993307829,
+        0.0006759297684766352,
+        0.00041018406045623124,
+        0.0005589797510765493,
+        0.0004869542026426643,
+        0.0005613234243355691,
+        0.0004661346320062876,
+        0.000349158130120486
+      ],
+      "seed": 42,
+      "steps": 1000,
+      "test_metrics": {
+        "PCK_4px": 0.012658227235078812,
+        "anchor_or_centroid_L1_px": 52.810848236083984,
+        "endpoint_error_px": 68.59366607666016,
+        "object_count": 61,
+        "point_L1_px": 52.810848236083984,
+        "visibility_F1_last_observed_baseline": 0.9916142557651992
+      },
+      "train_metrics": {
+        "PCK_4px": 0.011423540650866926,
+        "anchor_or_centroid_L1_px": 66.78889846801758,
+        "endpoint_error_px": 89.1417007446289,
+        "object_count": 112,
+        "point_L1_px": 66.78889846801758,
+        "visibility_F1_last_observed_baseline": 0.9954493742889646
+      },
+      "val_metrics": {
+        "PCK_4px": 0.0078125,
+        "anchor_or_centroid_L1_px": 98.48684692382812,
+        "endpoint_error_px": 137.49240112304688,
+        "object_count": 48,
+        "point_L1_px": 98.48684692382812,
+        "visibility_F1_last_observed_baseline": 1.0
+      }
+    }
+  },
+  "seed": 42,
+  "split_object_counts": {
+    "test": 61,
+    "train": 112,
+    "val": 48
+  },
+  "steps": 1000,
+  "teacher_source": "cotracker_official"
+}
