@@ -1,9 +1,0 @@
-# Stage2 SemObjV2 Plus Codec Decision
-
-- chosen_bootstrap_backend: local_clip_vit_b32_mask_crop_visual_teacher
-- best_v2_objective_combo: readout_semantic_alignment_head+persistence_contrastive_or_ranking_loss
-- true_new_best_not_warm_start_inherited: False
-- semantic_hard_positive_signal: True
-- current_3m_visual_branch_likely_primary_bottleneck: False
-- stronger_frozen_visual_vae_features_clearly_better: False
-- next_step_choice: redesign_stage2_semantic_objective_v3
