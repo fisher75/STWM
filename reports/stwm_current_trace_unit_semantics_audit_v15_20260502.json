@@ -1,0 +1,48 @@
+{
+  "K8_K16_K32_add_dense_object_internal_points": false,
+  "K_scaling_valid_supervision": {
+    "K16": {
+      "joint_supervision_coverage": 0.10483486821213084,
+      "new_valid_slots_added_vs_K8": 0,
+      "slot_count": 16,
+      "valid_joint_supervised_slots": 84512
+    },
+    "K32": {
+      "joint_supervision_coverage": 0.05241743410606542,
+      "new_valid_slots_added_vs_K8": 0,
+      "slot_count": 32,
+      "valid_joint_supervised_slots": 84512
+    },
+    "K8": {
+      "joint_supervision_coverage": 0.20966973642426168,
+      "new_valid_slots_added_vs_K8": null,
+      "slot_count": 8,
+      "valid_joint_supervised_slots": 84512
+    }
+  },
+  "audit_name": "stwm_current_trace_unit_semantics_audit_v15",
+  "current_K_meaning": "max_entities_per_sample / semantic entity slots, not object-internal dense trajectories",
+  "current_can_claim_dense_trace_field": false,
+  "entity_state_observed_fields": [
+    "bbox center x/y",
+    "valid/visibility-like flag",
+    "velocity x/y",
+    "bbox width/height"
+  ],
+  "entity_state_only_bbox_center_velocity_visibility": true,
+  "generated_at_utc": "2026-05-02T12:47:49.947554+00:00",
+  "max_entities_per_sample_config": 8,
+  "object_internal_point_traces_exist": false,
+  "recommended_wording": "semantic entity trace-unit field; object-dense trace field requires V15 object-internal point supervision",
+  "supporting_reports": [
+    "reports/stwm_fstf_trace_density_valid_units_audit_v13_20260502.json",
+    "reports/stwm_fstf_scaling_claim_verification_v13_20260502.json"
+  ],
+  "valid_entity_count_stats": {
+    "count": 6298,
+    "max": 8,
+    "mean": 5.286281359161639,
+    "median": 6.0,
+    "p90": 8.0
+  }
+}

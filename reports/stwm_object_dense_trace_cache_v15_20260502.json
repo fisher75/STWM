@@ -1,0 +1,116 @@
+{
+  "H16_blocker": "stage2_tusb_v3_predecode_cache contains 16 total timesteps (obs8+future8); H16 requires raw rematerialization or an external point teacher over 24 timesteps",
+  "H16_cache_available": false,
+  "H8_cache_available": true,
+  "audit_name": "stwm_object_dense_trace_cache_v15",
+  "caches": {
+    "M1": {
+      "M": 1,
+      "boundary_coverage": "boundary_plus_interior_mixture_for_M>=128",
+      "cache_path": "outputs/cache/stwm_object_dense_trace_v15/M1/object_dense_trace_cache.npz",
+      "cache_size_bytes": 509298,
+      "checksum_sha256": "0fea6eb69a47382e5cbef50585b8daf0094be8b56942a9927f376bf1fc678c52",
+      "failed_item_count": 0,
+      "failed_items": [],
+      "item_count": 1756,
+      "mask_coverage": 0.992694877505568,
+      "object_count": 11225,
+      "per_dataset": {
+        "VIPSEG": {
+          "item_count": 234,
+          "object_count": 1173,
+          "point_count": 1173,
+          "valid_point_ratio": 0.6266025641025641
+        },
+        "VSPW": {
+          "item_count": 1522,
+          "object_count": 10052,
+          "point_count": 10052,
+          "valid_point_ratio": 0.8235155223390276
+        }
+      },
+      "point_count": 11225,
+      "runtime_seconds": 3.3886806964874268,
+      "valid_point_ratio": 0.7972754128701595
+    },
+    "M128": {
+      "M": 128,
+      "boundary_coverage": "boundary_plus_interior_mixture_for_M>=128",
+      "cache_path": "outputs/cache/stwm_object_dense_trace_v15/M128/object_dense_trace_cache.npz",
+      "cache_size_bytes": 58814776,
+      "checksum_sha256": "73c43680e0df33b45f75789dc263ab0a41ce65d08eaa898ebf70b48859f706c1",
+      "failed_item_count": 0,
+      "failed_items": [],
+      "item_count": 1756,
+      "mask_coverage": 0.992694877505568,
+      "object_count": 11225,
+      "per_dataset": {
+        "VIPSEG": {
+          "item_count": 234,
+          "object_count": 1173,
+          "point_count": 150144,
+          "valid_point_ratio": 0.6266025641025641
+        },
+        "VSPW": {
+          "item_count": 1522,
+          "object_count": 10052,
+          "point_count": 1286656,
+          "valid_point_ratio": 0.8235155223390276
+        }
+      },
+      "point_count": 1436800,
+      "runtime_seconds": 12.790349006652832,
+      "valid_point_ratio": 0.7972754128701595
+    },
+    "M512": {
+      "M": 512,
+      "boundary_coverage": "boundary_plus_interior_mixture_for_M>=128",
+      "cache_path": "outputs/cache/stwm_object_dense_trace_v15/M512/object_dense_trace_cache.npz",
+      "cache_size_bytes": 221070208,
+      "checksum_sha256": "4043419f3b074122bea9ef8716c5348545ba3e8e3b9790df35842ba9d0ba8069",
+      "failed_item_count": 0,
+      "failed_items": [],
+      "item_count": 1756,
+      "mask_coverage": 0.992694877505568,
+      "object_count": 11225,
+      "per_dataset": {
+        "VIPSEG": {
+          "item_count": 234,
+          "object_count": 1173,
+          "point_count": 600576,
+          "valid_point_ratio": 0.6266025641025641
+        },
+        "VSPW": {
+          "item_count": 1522,
+          "object_count": 10052,
+          "point_count": 5146624,
+          "valid_point_ratio": 0.8235155223390276
+        }
+      },
+      "point_count": 5747200,
+      "runtime_seconds": 35.70058584213257,
+      "valid_point_ratio": 0.7972754128701595
+    }
+  },
+  "future_leakage_audit": "observed input uses first 8 points only; future points stored as targets in cache",
+  "generated_at_utc": "2026-05-02T12:48:42.115630+00:00",
+  "item_count": 1756,
+  "materialization_success": true,
+  "object_count": 11225,
+  "physical_point_teacher_used": false,
+  "point_count": {
+    "M1": 11225,
+    "M128": 1436800,
+    "M512": 5747200
+  },
+  "raw_visualization": [
+    "assets/figures/stwm_object_dense_trace_v15/M128_sample_points.png",
+    "assets/figures/stwm_object_dense_trace_v15/M512_sample_points.png"
+  ],
+  "teacher_source": "mask_bbox_relative_pseudo_track",
+  "valid_point_ratio": {
+    "M1": 0.7972754128701595,
+    "M128": 0.7972754128701595,
+    "M512": 0.7972754128701595
+  }
+}

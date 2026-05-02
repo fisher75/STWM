@@ -1,0 +1,50 @@
+{
+  "M128_vs_M1_result": {
+    "M128_beats_M1": false,
+    "M128_point_l1": 0.10938920403988857,
+    "M1_point_l1": 0.0872948510306222
+  },
+  "M512_vs_M1_result": {
+    "M1_point_l1": 0.0872948510306222,
+    "M512_beats_M1": false,
+    "M512_point_l1": 0.10929383253151516
+  },
+  "actual_point_count_per_object_and_scene": {
+    "objects_per_scene_mean": 6.392369020501139,
+    "points_per_object": {
+      "M1": 1,
+      "M128": 128,
+      "M512": 512
+    },
+    "points_per_scene_mean": {
+      "M1": 6.392369020501139,
+      "M128": 818.2232346241458,
+      "M512": 3272.892938496583
+    },
+    "total_points": {
+      "M1": 11225,
+      "M128": 1436800,
+      "M512": 5747200
+    }
+  },
+  "audit_name": "stwm_ostf_v15_decision",
+  "current_trace_unit_audit": "reports/stwm_current_trace_unit_semantics_audit_v15_20260502.json",
+  "hierarchical_semantic_trace_unit_story_supported": "partial_cache_foundation_only_not_model_claim",
+  "multitrace_pilot": "reports/stwm_ostf_multitrace_pilot_v15_20260502.json",
+  "next_step_choice": "fix_trace_teacher_or_cache",
+  "object_dense_cache": "reports/stwm_object_dense_trace_cache_v15_20260502.json",
+  "object_dense_trace_field_claim_allowed": false,
+  "object_dense_trace_field_claim_boundary": "Phase-1 created object-internal pseudo point trace caches and visualization, but physical teacher/GT is not wired and M128/M512 pilot did not beat M1.",
+  "physical_point_teacher_used": false,
+  "teacher_audit": "reports/stwm_object_dense_trace_teacher_audit_v15_20260502.json",
+  "teacher_decision": {
+    "can_build_object_internal_point_supervision_now": true,
+    "can_claim_physical_dense_trace_GT": false,
+    "phase1_cache_source": "mask_bbox_relative_pseudo_track from internal Stage2 predecode masks/boxes",
+    "physical_point_teacher_ready_for_full_OSTF": true,
+    "required_next_teacher_step": "wire CoTracker/TraceAnything teacher if physical long-range point supervision is required",
+    "true_GT_dense_trajectory_dataset_available": false
+  },
+  "visualization": "reports/stwm_object_dense_trace_visualization_v15_20260502.json",
+  "visualization_gif_count": 6
+}

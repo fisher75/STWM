@@ -1,0 +1,19 @@
+{
+  "M1_vs_M512_metric_comparable": false,
+  "M512_failure_interpretation": "weak_teacher",
+  "audit_name": "stwm_ostf_v15b_forensic_decision",
+  "fake_dense_or_anchor_copied": true,
+  "forensic_visualization_path": "reports/stwm_v15_forensic_visualization_20260502.json",
+  "future_leakage_detected": false,
+  "generated_at_utc": "2026-05-02T13:07:48.157591+00:00",
+  "metric_fairness_path": "reports/stwm_v15_multitrace_metric_fairness_20260502.json",
+  "object_dense_trace_claim_allowed": false,
+  "object_dense_trace_claim_allowed_reason": "V15B found non-empty object-internal point tensors and forensic GIFs, but teacher_source is fallback mask_bbox_relative_pseudo_track, persistent identity is index-based rather than physical tracking, and M1/M512 losses are not a fair final dense metric.",
+  "persistent_identity_audit_path": "reports/stwm_v15_persistent_point_identity_audit_20260502.json",
+  "persistent_point_identity_valid": false,
+  "proceed_to": "fix_teacher_cache",
+  "real_teacher_tracks_exist": false,
+  "teacher_forensic_path": "reports/stwm_v15_teacher_source_forensics_20260502.json",
+  "training_budget_audit_path": "reports/stwm_v15_training_budget_audit_20260502.json",
+  "visualization_gif_count": 12
+}

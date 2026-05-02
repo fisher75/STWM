@@ -1,0 +1,58 @@
+{
+  "M512_failure_interpretation_from_budget": "insufficient_training_and_capacity_for_high_M_plus_pseudo_teacher_metric_mismatch",
+  "M512_needs_PointNet_or_SetTransformer_encoder": true,
+  "M512_output_dimension_vs_M1_multiplier": 512,
+  "audit_name": "stwm_v15_training_budget_audit",
+  "can_use_M512_underperformance_as_final_dense_failure": false,
+  "current_head_is_minimal_phase1_pilot": true,
+  "generated_at_utc": "2026-05-02T13:06:06.806485+00:00",
+  "object_relative_coordinates_used": true,
+  "output_dimension_increases_with_M": {
+    "M128_future_xy_outputs": 2048,
+    "M1_future_xy_outputs": 16,
+    "M512_future_xy_outputs": 8192
+  },
+  "per_M": {
+    "M1": {
+      "M": 1,
+      "checkpoint_exists": true,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_multitrace_pilot_v15/M1_seed42.pt",
+      "checkpoint_size_bytes": 297893,
+      "constant_velocity_point_l1": 0.048456099654500304,
+      "loss_curve_length": 9,
+      "point_l1": 0.0872948510306222,
+      "steps_observed_from_loss_curve": "200_steps_with_9_logged_points",
+      "test_object_count": 1678,
+      "train_object_count": 7891
+    },
+    "M128": {
+      "M": 128,
+      "checkpoint_exists": true,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_multitrace_pilot_v15/M128_seed42.pt",
+      "checkpoint_size_bytes": 297925,
+      "constant_velocity_point_l1": 0.04660901067104299,
+      "loss_curve_length": 9,
+      "point_l1": 0.10938920403988857,
+      "steps_observed_from_loss_curve": "200_steps_with_9_logged_points",
+      "test_object_count": 1678,
+      "train_object_count": 7891
+    },
+    "M512": {
+      "M": 512,
+      "checkpoint_exists": true,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_multitrace_pilot_v15/M512_seed42.pt",
+      "checkpoint_size_bytes": 297925,
+      "constant_velocity_point_l1": 0.04653591808844657,
+      "loss_curve_length": 9,
+      "point_l1": 0.10929383253151516,
+      "steps_observed_from_loss_curve": "200_steps_with_9_logged_points",
+      "test_object_count": 1678,
+      "train_object_count": 7891
+    }
+  },
+  "point_loss_potentially_dominated_by_invalid_or_large_targets": "partially_mitigated_by_valid_mask_but pseudo bbox target scale and point count imbalance remain",
+  "same_model_capacity_for_M1_M128_M512": true,
+  "same_step_count_for_M1_M128_M512": true,
+  "training_time_too_short_for_M512_conclusion": true,
+  "visibility_masked_point_loss_used": true
+}

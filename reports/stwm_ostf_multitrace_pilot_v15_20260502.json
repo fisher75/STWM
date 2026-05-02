@@ -1,0 +1,100 @@
+{
+  "M128_beats_M1": false,
+  "M512_beats_M1": false,
+  "audit_name": "stwm_ostf_multitrace_pilot_v15",
+  "baselines": {
+    "M1_entity_anchor_current_STWM": "represented by M1 pilot/cache and existing sparse STWM evidence",
+    "constant_velocity_point_rollout_semantic_copy": "constant_velocity_* metrics in each run",
+    "object_dense_transformer_without_semantic_unit_compression": "not yet trained in Phase-1; requires full OSTF follow-up"
+  },
+  "claim_boundary": "Phase-1 supports object-internal pseudo point trace foundation, not physical dense optical trajectories.",
+  "dense_points_load_bearing": false,
+  "device": "cuda",
+  "generated_at_utc": "2026-05-02T12:51:07.741788+00:00",
+  "proceed_to_full_ostf": false,
+  "runs": {
+    "M128_seed42": {
+      "M": 128,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_multitrace_pilot_v15/M128_seed42.pt",
+      "constant_velocity_endpoint_error": 0.08036923101708898,
+      "constant_velocity_pck_0_05": 0.7891172090569352,
+      "constant_velocity_point_l1": 0.04660901067104299,
+      "endpoint_error": 0.11510398435705113,
+      "loss_curve": [
+        0.05921474099159241,
+        0.007636742666363716,
+        0.008119591511785984,
+        0.005437515676021576,
+        0.0028008182998746634,
+        0.00345993647351861,
+        0.005340713541954756,
+        0.0032008448615670204,
+        0.0037149961572140455
+      ],
+      "pck_0_05": 0.19346467897577105,
+      "point_l1": 0.10938920403988857,
+      "seed": 42,
+      "semantic_changed_top5": "not_trained_in_phase1_pilot",
+      "stable_preservation": "not_trained_in_phase1_pilot",
+      "test_object_count": 1678,
+      "train_object_count": 7891,
+      "visibility_F1": "visibility_target_from_pseudo_valid_mask_not_claimed"
+    },
+    "M1_seed42": {
+      "M": 1,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_multitrace_pilot_v15/M1_seed42.pt",
+      "constant_velocity_endpoint_error": 0.08357275066076107,
+      "constant_velocity_pck_0_05": 0.7732391761961654,
+      "constant_velocity_point_l1": 0.048456099654500304,
+      "endpoint_error": 0.09302647571478571,
+      "loss_curve": [
+        0.05999268963932991,
+        0.00716362614184618,
+        0.007357005961239338,
+        0.00598397571593523,
+        0.0033737379126250744,
+        0.003375471569597721,
+        0.0022415462881326675,
+        0.001991278026252985,
+        0.0018424130976200104
+      ],
+      "pck_0_05": 0.33166512846946716,
+      "point_l1": 0.0872948510306222,
+      "seed": 42,
+      "semantic_changed_top5": "not_trained_in_phase1_pilot",
+      "stable_preservation": "not_trained_in_phase1_pilot",
+      "test_object_count": 1678,
+      "train_object_count": 7891,
+      "visibility_F1": "visibility_target_from_pseudo_valid_mask_not_claimed"
+    },
+    "M512_seed42": {
+      "M": 512,
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_multitrace_pilot_v15/M512_seed42.pt",
+      "constant_velocity_endpoint_error": 0.08026137201792423,
+      "constant_velocity_pck_0_05": 0.7889695634965083,
+      "constant_velocity_point_l1": 0.04653591808844657,
+      "endpoint_error": 0.11511102304706033,
+      "loss_curve": [
+        0.059265051037073135,
+        0.007530068047344685,
+        0.008107434958219528,
+        0.005507332272827625,
+        0.002867428120225668,
+        0.0034704424906522036,
+        0.005190878640860319,
+        0.003231973387300968,
+        0.0037094485014677048
+      ],
+      "pck_0_05": 0.19436169486000854,
+      "point_l1": 0.10929383253151516,
+      "seed": 42,
+      "semantic_changed_top5": "not_trained_in_phase1_pilot",
+      "stable_preservation": "not_trained_in_phase1_pilot",
+      "test_object_count": 1678,
+      "train_object_count": 7891,
+      "visibility_F1": "visibility_target_from_pseudo_valid_mask_not_claimed"
+    }
+  },
+  "runtime_seconds": 13.531934022903442,
+  "semantic_unit_compression_helpful": "inconclusive_without_uncompressed_dense_transformer"
+}

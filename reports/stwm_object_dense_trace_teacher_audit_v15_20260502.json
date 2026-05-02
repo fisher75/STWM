@@ -1,0 +1,64 @@
+{
+  "audit_name": "stwm_object_dense_trace_teacher_audit_v15",
+  "decision": {
+    "can_build_object_internal_point_supervision_now": true,
+    "can_claim_physical_dense_trace_GT": false,
+    "phase1_cache_source": "mask_bbox_relative_pseudo_track from internal Stage2 predecode masks/boxes",
+    "physical_point_teacher_ready_for_full_OSTF": true,
+    "required_next_teacher_step": "wire CoTracker/TraceAnything teacher if physical long-range point supervision is required",
+    "true_GT_dense_trajectory_dataset_available": false
+  },
+  "generated_at_utc": "2026-05-02T12:47:49.998183+00:00",
+  "teachers": {
+    "CoTracker_or_CoTracker3": {
+      "checkpoint_path": "baselines/checkpoints/cotracker/scaled_offline.pth",
+      "exact_blocker": "",
+      "expected_point_count": "128-2048 query points feasible per object after adapter work",
+      "gpu_memory_estimate": "likely B200-feasible for batched clips; exact memory not profiled in V15",
+      "license_status": "external baseline used previously; OSTF teacher use needs separate protocol note",
+      "repo_or_path": "baselines/repos/co-tracker/cotracker",
+      "speed_estimate": "adapter exists for external baseline; OSTF mask-grid target generation not yet wired",
+      "teacher_available": true
+    },
+    "PointOdyssey_GT": {
+      "checkpoint_path": "GT trajectories if dataset exists",
+      "exact_blocker": "PointOdyssey data not present under data/external or data/raw",
+      "expected_point_count": "dense GT possible only if local PointOdyssey data exists",
+      "gpu_memory_estimate": "CPU data read",
+      "license_status": "dataset not found locally",
+      "repo_or_path": "",
+      "speed_estimate": "not applicable",
+      "teacher_available": false
+    },
+    "TAPIR": {
+      "checkpoint_path": "",
+      "exact_blocker": "TAPIR repo/checkpoint not present locally",
+      "expected_point_count": "not available locally",
+      "gpu_memory_estimate": "not audited",
+      "license_status": "not audited",
+      "repo_or_path": "",
+      "speed_estimate": "not audited",
+      "teacher_available": false
+    },
+    "TraceAnything": {
+      "checkpoint_path": "",
+      "exact_blocker": "",
+      "expected_point_count": "interactive/sparse-to-dense depending adapter; no audited local checkpoint in this repo",
+      "gpu_memory_estimate": "unknown; must audit before full use",
+      "license_status": "third_party source present; official checkpoint/license not audited for OSTF target generation",
+      "repo_or_path": "third_party/TraceAnything",
+      "speed_estimate": "unknown",
+      "teacher_available": true
+    },
+    "internal_stage1_or_stage2_trace_cache": {
+      "checkpoint_path": "predecoded entity boxes/masks, not object-internal physical point tracks",
+      "exact_blocker": "not a true physical point tracker; must label as mask_bbox_relative_pseudo_track",
+      "expected_point_count": "M1/M128/M512 pseudo point targets can be derived from masks/bboxes",
+      "gpu_memory_estimate": "CPU materialization; no teacher GPU required",
+      "license_status": "derived from VSPW/VIPSeg local masks",
+      "repo_or_path": "data/processed/stage2_tusb_v3_predecode_cache_20260418",
+      "speed_estimate": "minutes for mixed split depending M",
+      "teacher_available": true
+    }
+  }
+}
