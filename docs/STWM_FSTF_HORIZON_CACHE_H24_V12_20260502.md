@@ -1,15 +1,15 @@
-# STWM-FSTF horizon cache h24 V12
+# STWM-FSTF horizon cache horizon_h24 V12
 
-- audit_name: `stwm_fstf_horizon_cache_h24_v12`
-- generated_at_utc: `2026-05-01T19:54:34.297774+00:00`
+- audit_name: `stwm_fstf_horizon_cache_horizon_h24_v12`
+- generated_at_utc: `2026-05-02T05:00:17.071273+00:00`
 - axis: `horizon`
-- value: `h24`
+- value: `horizon_h24`
 - horizon: `24`
 - K: `8`
 - slot_count_verified: `8`
-- train_item_count: `0`
-- val_item_count: `0`
-- test_item_count: `0`
+- train_item_count: `3019`
+- val_item_count: `647`
+- test_item_count: `647`
 - future_target_cache_path: `/raid/chen034/workspace/stwm/outputs/cache/stwm_fstf_horizon_h24_prototype_targets_c32_v12_20260502/prototype_targets.npz`
 - observed_memory_cache_path: `/raid/chen034/workspace/stwm/outputs/cache/stwm_mixed_observed_semantic_prototype_targets_v2_20260428/observed_proto_targets_c32.npz`
 - changed_count: `146461`
@@ -17,5 +17,5 @@
 - target_coverage: `0.6289604173282524`
 - observed_semantic_memory_coverage: `0.2253096221022547`
 - future_leakage_audit: `True`
-- materialization_success: `False`
+- materialization_success: `True`
 - exact_blocking_reason: ``

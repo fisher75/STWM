@@ -15,6 +15,22 @@ export STWM_TORCH_NUM_THREADS="${STWM_TORCH_NUM_THREADS:-4}"
 cd "${REPO_ROOT}"
 mkdir -p reports docs outputs/cache outputs/logs/stwm_fstf_scaling_v12_20260502
 
+report_success() {
+  local report="$1"
+  [[ -s "${report}" ]] || return 1
+  "${PY}" - "${report}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+try:
+    payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+except Exception:
+    sys.exit(1)
+sys.exit(0 if payload.get("materialization_success") is True else 1)
+PY
+}
+
 gpu_for_slot() {
   local slot="$1"
   nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits |
@@ -75,7 +91,7 @@ build_horizon() {
   fi
   for SPLIT in train val test; do
     local BATCH_REPORT="reports/stwm_fstf_horizon_h${H}_batch_${SPLIT}_v12_20260502.json"
-    if [[ -s "${BATCH_REPORT}" ]]; then continue; fi
+    if report_success "${BATCH_REPORT}"; then continue; fi
     "${PY}" code/stwm/tools/materialize_stwm_fstf_batch_cache_v12_20260502.py \
       --eval-split "${SPLIT}" \
       --fut-len "${H}" \

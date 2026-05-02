@@ -113,8 +113,18 @@ def main() -> None:
             and observed_cache.exists()
         ),
         "exact_blocking_reason": ""
-        if future_cache.exists() and observed_cache.exists()
-        else "future or observed cache missing",
+        if (
+            train.get("materialization_success", False)
+            and val.get("materialization_success", False)
+            and test.get("materialization_success", False)
+            and future_cache.exists()
+            and observed_cache.exists()
+        )
+        else (
+            "future or observed cache missing"
+            if not (future_cache.exists() and observed_cache.exists())
+            else "one or more train/val/test batch cache materializations failed"
+        ),
     }
     write_json(Path(args.output), payload)
     write_doc(Path(args.doc), f"STWM-FSTF {args.axis} cache {args.value} V12", payload)

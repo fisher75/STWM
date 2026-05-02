@@ -1,11 +1,11 @@
 # STWM-FSTF Full Scaling Laws V11
 
 - audit_name: `stwm_fstf_full_scaling_laws_v11`
-- generated_at_utc: `2026-05-01T18:07:15.138750+00:00`
+- generated_at_utc: `2026-05-02T05:11:11.635975+00:00`
 - expected_eval_count: `21`
-- new_checkpoint_count: `20`
-- new_eval_summary_count: `20`
-- new_train_summary_count: `20`
+- new_checkpoint_count: `21`
+- new_eval_summary_count: `21`
+- new_train_summary_count: `21`
 - gpu_jobs_launched: `24`
 - prototype_scaling_positive: `True`
 - horizon_scaling_positive: `False`

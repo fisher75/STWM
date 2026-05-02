@@ -1,0 +1,26 @@
+# STWM-FSTF Batch Cache V12
+
+- audit_name: `stwm_fstf_trace_density_k16_batch_train_shard01_v12`
+- generated_at_utc: `2026-05-02T04:47:04.191384+00:00`
+- split_report: `reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json`
+- eval_split: `train`
+- item_start: `94`
+- item_end: `188`
+- requested_total_item_count: `3019`
+- requested_item_count: `94`
+- final_eval_item_count: `94`
+- batch_count: `24`
+- batch_cache_path: `outputs/cache/stwm_fstf_trace_density_k16_train_shard01_v12_20260502/eval_batches.pt`
+- cache_size_bytes: `861645`
+- cache_mtime: `1777697224.190841`
+- fut_len: `8`
+- horizon: `8`
+- max_entities_per_sample: `16`
+- predecode_cache_disabled_for_scaling: `True`
+- minimal_state_only_batch: `True`
+- slot_count_verified: `16`
+- failed_item_count: `0`
+- materialization_success: `True`
+- exact_blocking_reason: ``
+- future_leakage_audit: `True`
+- item_leakage: `False`

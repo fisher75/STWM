@@ -8,10 +8,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import torch
 
 from stwm.tracewm_v2_stage2.datasets.stage2_semantic_dataset import stage2_semantic_collate_fn
 from stwm.tracewm_v2_stage2.utils.future_semantic_feature_targets import stage2_item_key
+from stwm.tools.build_future_semantic_trace_feature_targets_20260428 import _fast_target_from_entry
 from stwm.tools.overfit_semantic_trace_field_one_batch_20260428 import _load_checkpoint, _make_dataset, _merge_args
 
 
@@ -43,11 +45,93 @@ def entry_key(entry: Any) -> str:
         if isinstance(meta, dict):
             return stage2_item_key(meta)
         dataset = entry.get("dataset_name") or entry.get("dataset") or ""
-        split = entry.get("split") or ""
         clip = entry.get("clip_id") or entry.get("video_id") or entry.get("id") or ""
-        if dataset and split and clip:
-            return f"{dataset}::{split}::{clip}"
+        if dataset and clip:
+            return f"{str(dataset).strip().upper()}::{str(clip).strip()}"
     return ""
+
+
+def minimal_state_sample(entry: dict[str, Any], dataset: Any, *, fut_len: int, max_k: int) -> dict[str, Any]:
+    fast = _fast_target_from_entry(entry=entry, cfg=dataset.cfg, max_h=int(fut_len), max_k=int(max_k))
+    obs_len = int(dataset.cfg.obs_len)
+    state = np.asarray(fast["state"], dtype=np.float32)
+    valid = np.asarray(fast["valid_over_time"], dtype=bool)
+    identity = np.asarray(fast["identity"], dtype=np.int64)
+    k = int(max_k)
+    token_mask = identity[:k] >= 0
+    dataset_name = str(fast["dataset_upper"])
+    clip_id = str(fast["clip_id"])
+    return {
+        "obs_state": torch.from_numpy(state[:obs_len, :k]).to(torch.float32),
+        "fut_state": torch.from_numpy(state[obs_len : obs_len + int(fut_len), :k]).to(torch.float32),
+        "obs_valid": torch.from_numpy(valid[:obs_len, :k]).to(torch.bool),
+        "fut_valid": torch.from_numpy(valid[obs_len : obs_len + int(fut_len), :k]).to(torch.bool),
+        "point_ids": torch.from_numpy(identity[:k]).to(torch.long),
+        "token_mask": torch.from_numpy(token_mask[:k]).to(torch.bool),
+        "meta": {
+            "dataset": dataset_name,
+            "clip_id": clip_id,
+            "frame_count_total": int(len(fast.get("frame_paths", []))),
+            "entity_count": int(token_mask[:k].sum()),
+            "item_key": f"{dataset_name}::{clip_id}",
+        },
+    }
+
+
+def minimal_collate(batch: list[dict[str, Any]]) -> dict[str, Any]:
+    bsz = len(batch)
+    obs_len = int(batch[0]["obs_state"].shape[0])
+    fut_len = int(batch[0]["fut_state"].shape[0])
+    k = max(int(item["obs_state"].shape[1]) for item in batch)
+    d = int(batch[0]["obs_state"].shape[-1])
+    obs_state = torch.zeros((bsz, obs_len, k, d), dtype=torch.float32)
+    fut_state = torch.zeros((bsz, fut_len, k, d), dtype=torch.float32)
+    obs_valid = torch.zeros((bsz, obs_len, k), dtype=torch.bool)
+    fut_valid = torch.zeros((bsz, fut_len, k), dtype=torch.bool)
+    token_mask = torch.zeros((bsz, k), dtype=torch.bool)
+    point_ids = torch.full((bsz, k), -1, dtype=torch.long)
+    meta: list[dict[str, Any]] = []
+    for i, item in enumerate(batch):
+        kk = int(item["obs_state"].shape[1])
+        obs_state[i, :, :kk] = item["obs_state"]
+        fut_state[i, :, :kk] = item["fut_state"]
+        obs_valid[i, :, :kk] = item["obs_valid"]
+        fut_valid[i, :, :kk] = item["fut_valid"]
+        token_mask[i, :kk] = item["token_mask"]
+        point_ids[i, :kk] = item["point_ids"]
+        meta.append(dict(item.get("meta", {})))
+    semantic_features = torch.zeros((bsz, k, 10), dtype=torch.float32)
+    semantic_mask = token_mask.clone()
+    crop_h = crop_w = 1
+    temporal_window = 1
+    return {
+        "obs_state": obs_state,
+        "fut_state": fut_state,
+        "obs_valid": obs_valid,
+        "fut_valid": fut_valid,
+        "token_mask": token_mask,
+        "point_ids": point_ids,
+        "semantic_features": semantic_features,
+        "semantic_mask": semantic_mask,
+        "semantic_rgb_crop": torch.zeros((bsz, k, 3, crop_h, crop_w), dtype=torch.float32),
+        "semantic_mask_crop": torch.zeros((bsz, k, 1, crop_h, crop_w), dtype=torch.float32),
+        "semantic_crop_valid": torch.zeros((bsz, k), dtype=torch.bool),
+        "semantic_mask_crop_valid": torch.zeros((bsz, k), dtype=torch.bool),
+        "semantic_rgb_crop_temporal": torch.zeros((bsz, k, temporal_window, 3, crop_h, crop_w), dtype=torch.float32),
+        "semantic_mask_crop_temporal": torch.zeros((bsz, k, temporal_window, 1, crop_h, crop_w), dtype=torch.float32),
+        "semantic_temporal_valid": torch.zeros((bsz, k, temporal_window), dtype=torch.bool),
+        "semantic_instance_id_crop": torch.zeros((bsz, k, 1, crop_h, crop_w), dtype=torch.long),
+        "semantic_instance_id_temporal": torch.zeros((bsz, k, temporal_window, 1, crop_h, crop_w), dtype=torch.long),
+        "semantic_instance_valid": torch.zeros((bsz, k, temporal_window), dtype=torch.bool),
+        "semantic_objectness_score": torch.zeros((bsz, k), dtype=torch.float32),
+        "semantic_entity_dominant_instance_id": torch.zeros((bsz, k), dtype=torch.long),
+        "semantic_entity_instance_overlap_score_over_time": torch.zeros((bsz, k, temporal_window), dtype=torch.float32),
+        "semantic_entity_true_instance_confidence": torch.zeros((bsz, k), dtype=torch.float32),
+        "semantic_teacher_prior": torch.zeros((bsz, k, 512), dtype=torch.float32),
+        "meta": meta,
+        "batch_size": bsz,
+        "minimal_state_only_batch": True,
+    }
 
 
 def main() -> None:
@@ -59,6 +143,8 @@ def main() -> None:
     p.add_argument("--max-entities-per-sample", type=int, default=8)
     p.add_argument("--max-samples-per-dataset", type=int, default=999999)
     p.add_argument("--batch-size", type=int, default=4)
+    p.add_argument("--item-start", type=int, default=0)
+    p.add_argument("--item-end", type=int, default=-1)
     p.add_argument("--timeout-seconds", type=int, default=60)
     p.add_argument("--retries", type=int, default=2)
     p.add_argument("--allow-scan-all-stage2-splits", action="store_true")
@@ -69,7 +155,10 @@ def main() -> None:
     args = p.parse_args()
 
     split_payload = json.loads(Path(args.split_report).read_text(encoding="utf-8"))
-    wanted = list(dict.fromkeys(str(x) for x in split_payload["splits"].get(str(args.eval_split), [])))
+    wanted_all = list(dict.fromkeys(str(x) for x in split_payload["splits"].get(str(args.eval_split), [])))
+    start = max(int(args.item_start), 0)
+    end = len(wanted_all) if int(args.item_end) < 0 else min(int(args.item_end), len(wanted_all))
+    wanted = wanted_all[start:max(start, end)]
     payload = _load_checkpoint(Path(args.start_checkpoint), device=torch.device("cpu"))
     checkpoint_args = payload.get("args", {}) if isinstance(payload.get("args"), dict) else {}
     ds_args = _merge_args(
@@ -80,7 +169,10 @@ def main() -> None:
             "max_entities_per_sample": int(args.max_entities_per_sample),
         },
     )
-    scan_splits = ["train", "val"] if bool(args.allow_scan_all_stage2_splits) else ["train"]
+    force_raw_stage2 = int(args.fut_len) != 8 or int(args.max_entities_per_sample) != 8
+    if force_raw_stage2:
+        ds_args.predecode_cache_path = ""
+    scan_splits = ["train", "val", "test"] if bool(args.allow_scan_all_stage2_splits) else [str(args.eval_split)]
     entry_to_idx: dict[str, tuple[str, int]] = {}
     datasets: dict[str, Any] = {}
     for source_split in scan_splits:
@@ -106,7 +198,15 @@ def main() -> None:
         for _attempt in range(int(args.retries) + 1):
             try:
                 signal.alarm(int(args.timeout_seconds))
-                loaded = datasets[source_split][idx]
+                if force_raw_stage2:
+                    loaded = minimal_state_sample(
+                        getattr(datasets[source_split], "entries", [])[idx],
+                        datasets[source_split],
+                        fut_len=int(args.fut_len),
+                        max_k=int(args.max_entities_per_sample),
+                    )
+                else:
+                    loaded = datasets[source_split][idx]
                 signal.alarm(0)
                 break
             except _SampleTimeout:
@@ -126,7 +226,8 @@ def main() -> None:
         sources[source_split] += 1
     signal.signal(signal.SIGALRM, previous_handler)
 
-    batches = [stage2_semantic_collate_fn(materialized[i : i + int(args.batch_size)]) for i in range(0, len(materialized), int(args.batch_size))]
+    collate = minimal_collate if force_raw_stage2 else stage2_semantic_collate_fn
+    batches = [collate(materialized[i : i + int(args.batch_size)]) for i in range(0, len(materialized), int(args.batch_size))]
     cache_path = Path(args.cache_output)
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(
@@ -146,6 +247,9 @@ def main() -> None:
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "split_report": str(args.split_report),
         "eval_split": str(args.eval_split),
+        "item_start": int(start),
+        "item_end": int(max(start, end)),
+        "requested_total_item_count": int(len(wanted_all)),
         "requested_item_count": int(len(wanted)),
         "final_eval_item_count": int(len(materialized)),
         "batch_count": int(len(batches)),
@@ -155,6 +259,8 @@ def main() -> None:
         "fut_len": int(args.fut_len),
         "horizon": int(args.fut_len),
         "max_entities_per_sample": int(args.max_entities_per_sample),
+        "predecode_cache_disabled_for_scaling": bool(force_raw_stage2),
+        "minimal_state_only_batch": bool(force_raw_stage2),
         "slot_count_verified": int(args.max_entities_per_sample),
         "materialized_source_counts": sources,
         "failed_items": failures[:50],

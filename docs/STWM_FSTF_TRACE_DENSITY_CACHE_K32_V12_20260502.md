@@ -1,15 +1,15 @@
-# STWM-FSTF density cache k32 V12
+# STWM-FSTF density cache trace_density_k32 V12
 
-- audit_name: `stwm_fstf_density_cache_k32_v12`
-- generated_at_utc: `2026-05-01T19:22:56.154319+00:00`
+- audit_name: `stwm_fstf_density_cache_trace_density_k32_v12`
+- generated_at_utc: `2026-05-02T05:00:29.586513+00:00`
 - axis: `density`
-- value: `k32`
+- value: `trace_density_k32`
 - horizon: `8`
 - K: `32`
 - slot_count_verified: `32`
-- train_item_count: `0`
-- val_item_count: `0`
-- test_item_count: `0`
+- train_item_count: `3019`
+- val_item_count: `647`
+- test_item_count: `647`
 - future_target_cache_path: `/raid/chen034/workspace/stwm/outputs/cache/stwm_fstf_trace_density_k32_prototype_targets_c32_v12_20260502/prototype_targets.npz`
 - observed_memory_cache_path: `/raid/chen034/workspace/stwm/outputs/cache/stwm_fstf_trace_density_k32_observed_targets_v12_20260502/observed_proto_targets_c32.npz`
 - changed_count: `48984`
@@ -17,5 +17,5 @@
 - target_coverage: `0.18958461515560496`
 - observed_semantic_memory_coverage: `0.05632740552556367`
 - future_leakage_audit: `True`
-- materialization_success: `False`
+- materialization_success: `True`
 - exact_blocking_reason: ``

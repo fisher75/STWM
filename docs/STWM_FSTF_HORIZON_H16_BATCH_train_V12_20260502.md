@@ -1,21 +1,24 @@
-# STWM-FSTF Batch Cache V12
+# STWM-FSTF Batch Cache Shard Merge V12
 
 - audit_name: `stwm_fstf_horizon_h16_batch_train_v12`
-- generated_at_utc: `2026-05-01T18:55:58.392988+00:00`
+- generated_at_utc: `2026-05-02T05:00:08.129899+00:00`
+- shard_report_count: `32`
 - split_report: `reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json`
 - eval_split: `train`
 - requested_item_count: `3019`
-- final_eval_item_count: `0`
-- batch_count: `0`
+- requested_total_item_count: `3019`
+- final_eval_item_count: `3019`
+- batch_count: `768`
 - batch_cache_path: `outputs/cache/stwm_fstf_horizon_h16_train_v12_20260502/eval_batches.pt`
-- cache_size_bytes: `1483`
-- cache_mtime: `1777661758.3914738`
+- cache_size_bytes: `76862629`
+- cache_mtime: `1777698008.1173353`
 - fut_len: `16`
 - horizon: `16`
 - max_entities_per_sample: `8`
 - slot_count_verified: `8`
-- failed_item_count: `3019`
-- materialization_success: `False`
-- exact_blocking_reason: `some split item keys failed to materialize with requested fut_len/max_entities_per_sample`
+- failed_item_count: `0`
+- materialization_success: `True`
+- exact_blocking_reason: ``
 - future_leakage_audit: `True`
 - item_leakage: `False`
+- merged_sharded_materialization: `True`

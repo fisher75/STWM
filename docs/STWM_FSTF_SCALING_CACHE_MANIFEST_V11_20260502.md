@@ -1,6 +1,6 @@
 # STWM-FSTF Scaling Cache Manifest V11
 
-- generated_at_utc: `2026-05-01T17:35:09.059279+00:00`
+- generated_at_utc: `2026-05-02T05:11:11.354170+00:00`
 - cache_manifest_completed: `True`
 - future_leakage_audit: `True`
 - observed_semantic_memory_coverage: `0.2253096221022547`

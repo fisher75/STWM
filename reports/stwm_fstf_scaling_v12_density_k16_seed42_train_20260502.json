@@ -1,0 +1,265 @@
+{
+  "allowed_claim": "Copy-aware same-output learned baseline under the STWM-FSTF protocol.",
+  "allowed_table_placement": "main_fstf_table",
+  "audit_name": "stwm_fstf_scaling_v11_train",
+  "baseline": "copy_gated_residual_plain_trace_semantic",
+  "baseline_family": "copy_aware_controlled_baseline",
+  "baseline_name": "copy_gated_residual_plain_trace_semantic",
+  "baseline_type": "same_output_fstf",
+  "candidate_scorer_used": false,
+  "checkpoint_mtime": 1777698359.8204715,
+  "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v12_20260502/density_k16_seed42/checkpoint.pt",
+  "cuda_visible_devices": "5",
+  "elapsed_seconds": 303.5698490142822,
+  "evidence_level": "controlled_ablation",
+  "forbidden_claim": "Do not describe as STWM/TUSB or external official baseline.",
+  "free_rollout_path": "copy_aware_baseline_forward_observed_inputs_only",
+  "frozen_video_derived_trace_semantic_cache": true,
+  "future_candidate_leakage": false,
+  "history": [
+    {
+      "loss": 9.332097053527832,
+      "step": 1.0,
+      "top5": 0.9097222089767456
+    },
+    {
+      "loss": -0.0,
+      "step": 250.0,
+      "top5": 0.0
+    },
+    {
+      "loss": 10.826627731323242,
+      "step": 500.0,
+      "top5": 0.6487804651260376
+    },
+    {
+      "loss": 9.749112129211426,
+      "step": 750.0,
+      "top5": 0.7045454978942871
+    },
+    {
+      "loss": -0.0,
+      "step": 1000.0,
+      "top5": 0.0
+    },
+    {
+      "loss": -0.0,
+      "step": 1250.0,
+      "top5": 0.0
+    },
+    {
+      "loss": 10.514498710632324,
+      "step": 1500.0,
+      "top5": 0.6037735939025879
+    },
+    {
+      "loss": -0.0,
+      "step": 1750.0,
+      "top5": 0.0
+    },
+    {
+      "loss": -0.0,
+      "step": 2000.0,
+      "top5": 0.0
+    },
+    {
+      "loss": 8.644267082214355,
+      "step": 2250.0,
+      "top5": 0.8399999737739563
+    },
+    {
+      "loss": -0.0,
+      "step": 2500.0,
+      "top5": 0.0
+    },
+    {
+      "loss": -0.0,
+      "step": 2750.0,
+      "top5": 0.0
+    },
+    {
+      "loss": 8.900903701782227,
+      "step": 3000.0,
+      "top5": 0.8240000605583191
+    },
+    {
+      "loss": -0.0,
+      "step": 3250.0,
+      "top5": 0.0
+    },
+    {
+      "loss": -0.0,
+      "step": 3500.0,
+      "top5": 0.0
+    },
+    {
+      "loss": 8.15953254699707,
+      "step": 3750.0,
+      "top5": 0.8653846383094788
+    },
+    {
+      "loss": -0.0,
+      "step": 4000.0,
+      "top5": 0.0
+    },
+    {
+      "loss": -0.0,
+      "step": 4250.0,
+      "top5": 0.0
+    },
+    {
+      "loss": 8.986522674560547,
+      "step": 4500.0,
+      "top5": 0.826483964920044
+    },
+    {
+      "loss": -0.0,
+      "step": 4750.0,
+      "top5": 0.0
+    },
+    {
+      "loss": -0.0,
+      "step": 5000.0,
+      "top5": 0.0
+    }
+  ],
+  "loss_finite_ratio": 1.0,
+  "lr": 0.0003,
+  "model_size": "small",
+  "official_checkpoint_used": false,
+  "official_commit_hash": "",
+  "official_repo_url_or_path": "",
+  "official_repo_used": false,
+  "output_contract_matched": true,
+  "parameter_count": 2658593,
+  "pretrained_checkpoint_path": "",
+  "prototype_count": 32,
+  "raw_video_end_to_end_training": false,
+  "scaling_axis": "density",
+  "scaling_value": "K16",
+  "seed": 42,
+  "semantic_transition_backend": "materialized_cache_copy_gated_residual_plain_trace_semantic",
+  "should_appear_in_external_boundary_table": false,
+  "should_appear_in_main_fstf_table": true,
+  "steps": 5000,
+  "teacher_forced_path_used": false,
+  "train_batch_count": 768,
+  "train_report": {
+    "audit_name": "stwm_fstf_trace_density_k16_batch_train_v12",
+    "batch_cache_path": "outputs/cache/stwm_fstf_trace_density_k16_train_v12_20260502/eval_batches.pt",
+    "batch_count": 768,
+    "cache_mtime": 1777698020.1504195,
+    "cache_size_bytes": 135789029,
+    "eval_split": "train",
+    "exact_blocking_reason": "",
+    "failed_item_count": 0,
+    "failed_items": [],
+    "final_eval_item_count": 3019,
+    "fut_len": 8,
+    "future_leakage_audit": true,
+    "generated_at_utc": "2026-05-02T05:00:20.181438+00:00",
+    "horizon": 8,
+    "item_leakage": false,
+    "materialization_success": true,
+    "materialized_source_counts": {
+      "test": 0,
+      "train": 2768,
+      "val": 251
+    },
+    "max_entities_per_sample": 16,
+    "merged_sharded_materialization": true,
+    "requested_item_count": 3019,
+    "requested_total_item_count": 3019,
+    "shard_report_count": 32,
+    "shard_reports": [
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard00_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard01_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard02_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard03_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard04_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard05_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard06_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard07_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard08_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard09_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard10_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard11_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard12_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard13_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard14_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard15_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard16_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard17_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard18_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard19_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard20_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard21_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard22_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard23_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard24_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard25_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard26_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard27_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard28_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard29_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard30_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_train_shard31_v12_20260502.json"
+    ],
+    "slot_count_verified": 16,
+    "split_report": "reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json"
+  },
+  "uses_future_candidate_measurement": false,
+  "val_batch_count": 167,
+  "val_metrics": {
+    "changed_subset_count": 7230,
+    "changed_subset_gain_over_copy": 0.08437067674650689,
+    "changed_subset_top5": 0.6795297420247461,
+    "copy_changed_subset_top5": 0.5951590652782393,
+    "copy_stable_subset_top5": 0.9999999899083869,
+    "proto_top5": 0.7940613054557398,
+    "stable_preservation_drop": 0.04964136595814217,
+    "stable_subset_count": 5298,
+    "stable_subset_top5": 0.9503586239502447,
+    "valid_count": 12528
+  },
+  "val_report": {
+    "audit_name": "stwm_fstf_trace_density_k16_batch_val_v12",
+    "batch_cache_path": "outputs/cache/stwm_fstf_trace_density_k16_val_v12_20260502/eval_batches.pt",
+    "batch_count": 167,
+    "cache_mtime": 1777698021.6103084,
+    "cache_size_bytes": 29112761,
+    "eval_split": "val",
+    "exact_blocking_reason": "",
+    "failed_item_count": 0,
+    "failed_items": [],
+    "final_eval_item_count": 647,
+    "fut_len": 8,
+    "future_leakage_audit": true,
+    "generated_at_utc": "2026-05-02T05:00:21.615903+00:00",
+    "horizon": 8,
+    "item_leakage": false,
+    "materialization_success": true,
+    "materialized_source_counts": {
+      "test": 0,
+      "train": 591,
+      "val": 56
+    },
+    "max_entities_per_sample": 16,
+    "merged_sharded_materialization": true,
+    "requested_item_count": 647,
+    "requested_total_item_count": 647,
+    "shard_report_count": 8,
+    "shard_reports": [
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard00_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard01_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard02_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard03_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard04_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard05_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard06_v12_20260502.json",
+      "reports/stwm_fstf_trace_density_k16_batch_val_shard07_v12_20260502.json"
+    ],
+    "slot_count_verified": 16,
+    "split_report": "reports/stwm_mixed_semantic_trace_world_model_v2_splits_20260428.json"
+  }
+}

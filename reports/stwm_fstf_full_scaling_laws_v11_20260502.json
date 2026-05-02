@@ -5,6 +5,7 @@
     "model_base_seed42",
     "model_base_seed456",
     "model_large_seed123",
+    "model_large_seed42",
     "model_large_seed456",
     "model_small_seed123",
     "model_small_seed42",
@@ -34,7 +35,7 @@
   "dense_trace_field_claim_allowed": false,
   "expected_eval_count": 21,
   "future_hidden_load_bearing_retained_under_scaling": true,
-  "generated_at_utc": "2026-05-01T18:07:15.138750+00:00",
+  "generated_at_utc": "2026-05-02T05:11:11.635975+00:00",
   "gpu_jobs_launched": 24,
   "gpu_log_checkpoint_evidence": [
     {
@@ -49,7 +50,7 @@
       "contains_start": false,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/full_scaling_master.log",
       "non_empty": true,
-      "size_bytes": 1494
+      "size_bytes": 29906
     },
     {
       "contains_done": true,
@@ -80,11 +81,11 @@
       "size_bytes": 2278
     },
     {
-      "contains_done": false,
+      "contains_done": true,
       "contains_start": true,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_large_seed42.log",
       "non_empty": true,
-      "size_bytes": 1416
+      "size_bytes": 2347
     },
     {
       "contains_done": true,
@@ -98,7 +99,7 @@
       "contains_start": false,
       "log_path": "outputs/logs/stwm_fstf_scaling_v11_20260502/model_master.log",
       "non_empty": true,
-      "size_bytes": 1425
+      "size_bytes": 29271
     },
     {
       "contains_done": true,
@@ -228,9 +229,7 @@
   },
   "horizon_scaling_positive": false,
   "long_horizon_claim_allowed": false,
-  "missing_eval_names": [
-    "model_large_seed42"
-  ],
+  "missing_eval_names": [],
   "missing_scaling_points": [
     "H=16: H16 future feature/prototype target cache not materialized in V11 yet",
     "H=24: H24 future feature/prototype target cache not materialized in V11 yet",
@@ -239,18 +238,18 @@
   ],
   "model_size_scaling": {
     "changed_gain": {
-      "mean": 0.0461465762831319,
-      "std": 0.04453533729968298
+      "mean": 0.032137134078996286,
+      "std": 0.05773330643752784
     },
     "future_trace_coord_error": {
       "mean": 0.06769089330067267,
       "std": 0.0
     },
     "overall_top5": {
-      "mean": 0.7659370907172596,
-      "std": 0.02288638930726686
+      "mean": 0.7551818912196578,
+      "std": 0.03729588194869889
     },
-    "run_count": 8,
+    "run_count": 9,
     "runs": [
       {
         "changed_subset_gain_over_copy": 0.027439451361437217,
@@ -303,6 +302,19 @@
         "scaling_value": "large",
         "seed": 123,
         "stable_preservation_drop": 0.04163649113906798
+      },
+      {
+        "changed_subset_gain_over_copy": -0.07993840355408866,
+        "changed_subset_top5": 0.49629007983495377,
+        "checkpoint_path": "outputs/checkpoints/stwm_fstf_scaling_v11_20260502/model_large_seed42/checkpoint.pt",
+        "future_trace_coord_error": 0.06769089330067267,
+        "model_size": "large",
+        "proto_top5": 0.6691402952388439,
+        "prototype_count": 32,
+        "scaling_axis": "model_size",
+        "scaling_value": "large",
+        "seed": 42,
+        "stable_preservation_drop": 0.10734973849349694
       },
       {
         "changed_subset_gain_over_copy": 0.011479768557331904,
@@ -358,14 +370,14 @@
       }
     ],
     "stable_drop": {
-      "mean": 0.04842505000489858,
-      "std": 0.011864601822504295
+      "mean": 0.05497223761474284,
+      "std": 0.021634535493933585
     }
   },
   "model_size_scaling_positive": true,
-  "new_checkpoint_count": 20,
-  "new_eval_summary_count": 20,
-  "new_train_summary_count": 20,
+  "new_checkpoint_count": 21,
+  "new_eval_summary_count": 21,
+  "new_train_summary_count": 21,
   "prototype_scaling": {
     "changed_gain": {
       "mean": 0.02949084374150421,
