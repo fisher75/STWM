@@ -1,0 +1,123 @@
+{
+  "audit_name": "stwm_external_point_benchmark_audit_v2",
+  "dataset_wrappers": {
+    "pointodyssey_wrapper": "code/stwm/tracewm/datasets/stage1_pointodyssey.py",
+    "tapvid3d_wrapper": "code/stwm/tracewm/datasets/stage1_tapvid3d.py",
+    "tapvid_wrapper": "code/stwm/tracewm/datasets/stage1_tapvid.py"
+  },
+  "exact_blockers": [
+    "PointOdyssey GT dataset not materialized under /raid/chen034/workspace/stwm/data",
+    "No full TAP-Vid dataset payload found under /raid/chen034/workspace/stwm/data",
+    "No TAPIR official repo/cache/weights found under /raid/chen034/workspace/stwm/data",
+    "Only 6 local TAP-Vid mini-cache clips are available; cannot build the requested 20-clip OSTF-compatible GT sample from current live files"
+  ],
+  "external_point_benchmark_ready": false,
+  "generated_at_utc": "2026-05-05T10:53:52.527490+00:00",
+  "pointodyssey_dataset_available_under_data_root": false,
+  "pointodyssey_dataset_paths": [],
+  "recommended_next_step": "download_pointodyssey_tapvid",
+  "tapir_cache_or_repo_available_under_data_root": false,
+  "tapir_paths": [],
+  "tapvid_dataset_available_under_data_root": false,
+  "tapvid_dataset_paths": [],
+  "tapvid_minicache_available": true,
+  "tapvid_minicache_clip_count": 6,
+  "tapvid_minicache_examples": [
+    {
+      "keys": [
+        "occluded",
+        "points"
+      ],
+      "occluded_shape": [
+        5,
+        50
+      ],
+      "path": "outputs/stage1_minisplit_cache/tapvid_20260408/davis_blackswan.npz",
+      "points_shape": [
+        5,
+        50,
+        2
+      ]
+    },
+    {
+      "keys": [
+        "occluded",
+        "points"
+      ],
+      "occluded_shape": [
+        25,
+        50
+      ],
+      "path": "outputs/stage1_minisplit_cache/tapvid_20260408/davis_loading.npz",
+      "points_shape": [
+        25,
+        50,
+        2
+      ]
+    },
+    {
+      "keys": [
+        "occluded",
+        "points"
+      ],
+      "occluded_shape": [
+        25,
+        100
+      ],
+      "path": "outputs/stage1_minisplit_cache/tapvid_20260408/davis_parkour.npz",
+      "points_shape": [
+        25,
+        100,
+        2
+      ]
+    },
+    {
+      "keys": [
+        "occluded",
+        "points"
+      ],
+      "occluded_shape": [
+        30,
+        250
+      ],
+      "path": "outputs/stage1_minisplit_cache/tapvid_20260408/rgb_rgb_0000.npz",
+      "points_shape": [
+        30,
+        250,
+        2
+      ]
+    },
+    {
+      "keys": [
+        "occluded",
+        "points"
+      ],
+      "occluded_shape": [
+        30,
+        250
+      ],
+      "path": "outputs/stage1_minisplit_cache/tapvid_20260408/rgb_rgb_0025.npz",
+      "points_shape": [
+        30,
+        250,
+        2
+      ]
+    },
+    {
+      "keys": [
+        "occluded",
+        "points"
+      ],
+      "occluded_shape": [
+        30,
+        250
+      ],
+      "path": "outputs/stage1_minisplit_cache/tapvid_20260408/rgb_rgb_0049.npz",
+      "points_shape": [
+        30,
+        250,
+        2
+      ]
+    }
+  ]
+}

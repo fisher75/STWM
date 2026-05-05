@@ -1,0 +1,628 @@
+{
+  "audit_name": "stwm_traceanything_teacher_pilot_v2",
+  "checkpoint_path": "/raid/chen034/workspace/stwm/models/checkpoints/traceanything/traceanything_pretrained.pt",
+  "comparison_to_cotracker_same_clips": {
+    "M128": {
+      "matched_clip_count": 10,
+      "mean_cotracker_trajectory_variance": 6656.456501960754,
+      "mean_endpoint_consistency_l2_px": 195.40928382873534,
+      "mean_point_consistency_l2_px": 74.76064710617065,
+      "mean_traceanything_trajectory_variance": 8991.601403427125,
+      "mean_visibility_agreement": 0.7024005417596726
+    },
+    "M512": {
+      "matched_clip_count": 0
+    }
+  },
+  "device": "cuda",
+  "exact_command": "code/stwm/tools/run_traceanything_object_trajectory_teacher_v2_20260502.py --allowed-splits val --max-train 0 --max-val 10 --max-test 0 --m-values 128 512 --max-side 512 --report-path reports/stwm_traceanything_teacher_pilot_v2_val_20260505.json --doc-path docs/STWM_TRACEANYTHING_TEACHER_PILOT_V2_val_20260505.md",
+  "failed_clip_count": 5,
+  "failures": [
+    {
+      "dataset": "VIPSEG",
+      "item_key": "VIPSEG::1103_wM2oQjkvxE4",
+      "reason": "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15",
+      "split": "val"
+    },
+    {
+      "dataset": "VIPSEG",
+      "item_key": "VIPSEG::1049_5KkIdNEHHFQ",
+      "reason": "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15",
+      "split": "val"
+    },
+    {
+      "dataset": "VIPSEG",
+      "item_key": "VIPSEG::1028_BH1XVabTjso",
+      "reason": "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15",
+      "split": "val"
+    },
+    {
+      "dataset": "VIPSEG",
+      "item_key": "VIPSEG::1655_scluLCGBtFI",
+      "reason": "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15",
+      "split": "val"
+    },
+    {
+      "dataset": "VIPSEG",
+      "item_key": "VIPSEG::1102_vI2v7EwZizY",
+      "reason": "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_15",
+      "split": "val"
+    }
+  ],
+  "generated_at_utc": "2026-05-05T11:12:37.067655+00:00",
+  "gpu_id": "4",
+  "horizon": 8,
+  "m_values": [
+    128,
+    512
+  ],
+  "mean_forward_seconds_per_clip": 25.780279874801636,
+  "mean_same_trajectory_fraction": 0.03322777157738095,
+  "mean_valid_point_ratio": 0.7542736525762649,
+  "model_load_status": {
+    "load_consistent_with_official_infer": false,
+    "missing_key_count": 274,
+    "missing_keys_head": [
+      "ds_head_local.dpt.scratch.layer1_rn.weight",
+      "ds_head_local.dpt.scratch.layer2_rn.weight",
+      "ds_head_local.dpt.scratch.layer3_rn.weight",
+      "ds_head_local.dpt.scratch.layer4_rn.weight",
+      "ds_head_local.dpt.scratch.layer_rn.0.weight",
+      "ds_head_local.dpt.scratch.layer_rn.1.weight",
+      "ds_head_local.dpt.scratch.layer_rn.2.weight",
+      "ds_head_local.dpt.scratch.layer_rn.3.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.bias"
+    ],
+    "unexpected_key_count": 0,
+    "unexpected_keys_head": []
+  },
+  "native_visibility_available": false,
+  "obs_len": 8,
+  "official_commit_hash": "b937bfeb466e4c9cd12e10dcb4aa1e14d04bbc80",
+  "official_repo_path": "/raid/chen034/workspace/stwm/third_party/TraceAnything",
+  "peak_gpu_memory_bytes_max": 9519906304,
+  "processed_clip_count": 10,
+  "processed_dataset_counts": {
+    "VIPSEG": 2,
+    "VSPW": 8
+  },
+  "processed_split_counts": {
+    "val": 10
+  },
+  "recommended_next_step": "train_ostf_v2_on_traceanything_hardbench",
+  "requested_split_counts": {
+    "test": 0,
+    "train": 0,
+    "val": 10
+  },
+  "rows": [
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1892_Zyq_UpOQ9r4.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1892_Zyq_UpOQ9r4.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1892_Zyq_UpOQ9r4.npz",
+          "cotracker_trajectory_variance": 2582.496826171875,
+          "cotracker_visible_ratio": 0.8,
+          "endpoint_consistency_l2_px": 144.83071899414062,
+          "point_consistency_l2_px": 50.223350524902344,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 3520.23291015625,
+          "traceanything_visible_ratio": 0.7119140625,
+          "visibility_agreement": 0.669140625
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 27.74614667892456,
+      "frame_count": 16,
+      "item_key": "VSPW::1892_Zyq_UpOQ9r4",
+      "peak_gpu_memory_bytes": 7536524288,
+      "point_count_by_m": {
+        "M128": 640,
+        "M512": 2560
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.0046875,
+        "M512": 0.028515625
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.7119140625,
+        "M512": 0.7165771484375
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1058_9tvZOFs1xvc.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1058_9tvZOFs1xvc.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1058_9tvZOFs1xvc.npz",
+          "cotracker_trajectory_variance": 36.31451416015625,
+          "cotracker_visible_ratio": 0.98583984375,
+          "endpoint_consistency_l2_px": 17.625993728637695,
+          "point_consistency_l2_px": 10.802915573120117,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 92.61808013916016,
+          "traceanything_visible_ratio": 0.8693359375,
+          "visibility_agreement": 0.85927734375
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.775553941726685,
+      "frame_count": 16,
+      "item_key": "VSPW::1058_9tvZOFs1xvc",
+      "peak_gpu_memory_bytes": 9518595584,
+      "point_count_by_m": {
+        "M128": 640,
+        "M512": 2560
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.009375,
+        "M512": 0.017578125
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.8693359375,
+        "M512": 0.873779296875
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1199_5qVaYyKYVNg.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1199_5qVaYyKYVNg.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1199_5qVaYyKYVNg.npz",
+          "cotracker_trajectory_variance": 41.71267318725586,
+          "cotracker_visible_ratio": 0.9424641927083334,
+          "endpoint_consistency_l2_px": 16.345922470092773,
+          "point_consistency_l2_px": 13.704110145568848,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 57.8145637512207,
+          "traceanything_visible_ratio": 0.8391927083333334,
+          "visibility_agreement": 0.8036295572916666
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.45860505104065,
+      "frame_count": 16,
+      "item_key": "VSPW::1199_5qVaYyKYVNg",
+      "peak_gpu_memory_bytes": 9510665728,
+      "point_count_by_m": {
+        "M128": 768,
+        "M512": 3072
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1280,
+        720
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.033854166666666664,
+        "M512": 0.12434895833333333
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.8391927083333334,
+        "M512": 0.8381144205729166
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1269_VEtgq6IeCWc.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1269_VEtgq6IeCWc.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1269_VEtgq6IeCWc.npz",
+          "cotracker_trajectory_variance": 19.92043113708496,
+          "cotracker_visible_ratio": 0.9795619419642857,
+          "endpoint_consistency_l2_px": 21.790180206298828,
+          "point_consistency_l2_px": 17.24213409423828,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 165.86105346679688,
+          "traceanything_visible_ratio": 0.9014369419642857,
+          "visibility_agreement": 0.8837890625
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.660057544708252,
+      "frame_count": 16,
+      "item_key": "VSPW::1269_VEtgq6IeCWc",
+      "peak_gpu_memory_bytes": 9514532352,
+      "point_count_by_m": {
+        "M128": 896,
+        "M512": 3584
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.033482142857142856,
+        "M512": 0.09263392857142858
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.9014369419642857,
+        "M512": 0.9036516462053571
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__15_ZiZqE1bZ8lU.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__15_ZiZqE1bZ8lU.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__15_ZiZqE1bZ8lU.npz",
+          "cotracker_trajectory_variance": 11192.083984375,
+          "cotracker_visible_ratio": 0.84771728515625,
+          "endpoint_consistency_l2_px": 408.93560791015625,
+          "point_consistency_l2_px": 243.13796997070312,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 50346.9453125,
+          "traceanything_visible_ratio": 0.4844970703125,
+          "visibility_agreement": 0.37823486328125
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.535528421401978,
+      "frame_count": 16,
+      "item_key": "VSPW::15_ZiZqE1bZ8lU",
+      "peak_gpu_memory_bytes": 9518267904,
+      "point_count_by_m": {
+        "M128": 1024,
+        "M512": 4096
+      },
+      "query_frame": 0,
+      "raw_size": [
+        3840,
+        2160
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.0322265625,
+        "M512": 0.1328125
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.4844970703125,
+        "M512": 0.478515625
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VIPSEG__1039_QZROp4t0doU.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VIPSEG__1039_QZROp4t0doU.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VIPSEG__1039_QZROp4t0doU.npz",
+          "cotracker_trajectory_variance": 48791.81640625,
+          "cotracker_visible_ratio": 0.61083984375,
+          "endpoint_consistency_l2_px": 747.98486328125,
+          "point_consistency_l2_px": 77.75543212890625,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 3485.71240234375,
+          "traceanything_visible_ratio": 0.77490234375,
+          "visibility_agreement": 0.5087890625
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VIPSEG",
+      "forward_seconds": 25.577797412872314,
+      "frame_count": 16,
+      "item_key": "VIPSEG::1039_QZROp4t0doU",
+      "peak_gpu_memory_bytes": 9515122176,
+      "point_count_by_m": {
+        "M128": 128,
+        "M512": 512
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.0,
+        "M512": 0.001953125
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.77490234375,
+        "M512": 0.7587890625
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1063_naPMk89Na88.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1063_naPMk89Na88.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1063_naPMk89Na88.npz",
+          "cotracker_trajectory_variance": 1286.24951171875,
+          "cotracker_visible_ratio": 0.8806966145833334,
+          "endpoint_consistency_l2_px": 85.83740234375,
+          "point_consistency_l2_px": 19.415176391601562,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 2011.96484375,
+          "traceanything_visible_ratio": 0.5792643229166666,
+          "visibility_agreement": 0.6783854166666666
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.608644723892212,
+      "frame_count": 16,
+      "item_key": "VSPW::1063_naPMk89Na88",
+      "peak_gpu_memory_bytes": 9507126784,
+      "point_count_by_m": {
+        "M128": 384,
+        "M512": 1536
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.0026041666666666665,
+        "M512": 0.010416666666666666
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.5792643229166666,
+        "M512": 0.5947672526041666
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1297_X7S2nETEm7I.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1297_X7S2nETEm7I.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1297_X7S2nETEm7I.npz",
+          "cotracker_trajectory_variance": 406.8761291503906,
+          "cotracker_visible_ratio": 0.8879045758928571,
+          "endpoint_consistency_l2_px": 33.320152282714844,
+          "point_consistency_l2_px": 27.185161590576172,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 1549.4576416015625,
+          "traceanything_visible_ratio": 0.9401506696428571,
+          "visibility_agreement": 0.8494001116071429
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.619222402572632,
+      "frame_count": 16,
+      "item_key": "VSPW::1297_X7S2nETEm7I",
+      "peak_gpu_memory_bytes": 9519906304,
+      "point_count_by_m": {
+        "M128": 896,
+        "M512": 3584
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.015625,
+        "M512": 0.05412946428571429
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.9401506696428571,
+        "M512": 0.9470738002232143
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VIPSEG__358_t384CT-gxlA.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VIPSEG__358_t384CT-gxlA.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VIPSEG__358_t384CT-gxlA.npz",
+          "cotracker_trajectory_variance": 1216.8692626953125,
+          "cotracker_visible_ratio": 0.97900390625,
+          "endpoint_consistency_l2_px": 247.9987030029297,
+          "point_consistency_l2_px": 239.50425720214844,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 15536.12109375,
+          "traceanything_visible_ratio": 0.77978515625,
+          "visibility_agreement": 0.765625
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VIPSEG",
+      "forward_seconds": 25.333507776260376,
+      "frame_count": 16,
+      "item_key": "VIPSEG::358_t384CT-gxlA",
+      "peak_gpu_memory_bytes": 9515384320,
+      "point_count_by_m": {
+        "M128": 128,
+        "M512": 512
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1280,
+        720
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.015625,
+        "M512": 0.03125
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.77978515625,
+        "M512": 0.789306640625
+      }
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_object_dense_v2/M128_H8/val/VSPW__1908_pYFJrXI1TL4.npz",
+        "M512": "outputs/cache/stwm_traceanything_object_dense_v2/M512_H8/val/VSPW__1908_pYFJrXI1TL4.npz"
+      },
+      "comparison_by_m": {
+        "M128": {
+          "comparison_available": true,
+          "cotracker_cache_path": "outputs/cache/stwm_real_teacher_object_dense_v15c/val/VSPW__1908_pYFJrXI1TL4.npz",
+          "cotracker_trajectory_variance": 990.2252807617188,
+          "cotracker_visible_ratio": 0.84736328125,
+          "endpoint_consistency_l2_px": 229.4232940673828,
+          "point_consistency_l2_px": 48.635963439941406,
+          "query_points_match": true,
+          "traceanything_trajectory_variance": 13149.2861328125,
+          "traceanything_visible_ratio": 0.66689453125,
+          "visibility_agreement": 0.627734375
+        },
+        "M512": {
+          "comparison_available": false,
+          "reason": "matching_cotracker_cache_missing"
+        }
+      },
+      "dataset": "VSPW",
+      "forward_seconds": 25.4877347946167,
+      "frame_count": 16,
+      "item_key": "VSPW::1908_pYFJrXI1TL4",
+      "peak_gpu_memory_bytes": 9518202368,
+      "point_count_by_m": {
+        "M128": 640,
+        "M512": 2560
+      },
+      "query_frame": 0,
+      "raw_size": [
+        1280,
+        720
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "same_trajectory_fraction_by_m": {
+        "M128": 0.0046875,
+        "M512": 0.01875
+      },
+      "split": "val",
+      "valid_point_ratio_by_m": {
+        "M128": 0.66689453125,
+        "M512": 0.6375244140625
+      }
+    }
+  ],
+  "runtime_seconds": 911.2398934364319,
+  "stwm_input_restricted_to_observed": true,
+  "target_side_object_box_search_used": true,
+  "teacher_source": "traceanything_official_trajectory_field",
+  "teacher_uses_full_obs_future_clip_as_target": true,
+  "traceanything_object_tracks_valid": true,
+  "traceanything_teacher_runnable": true
+}

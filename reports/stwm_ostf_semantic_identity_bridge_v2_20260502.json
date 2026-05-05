@@ -1,0 +1,26 @@
+{
+  "audit_name": "stwm_ostf_semantic_identity_bridge_v2",
+  "binding_mechanism": "V16 object-dense cache stores object_id and semantic_id per sampled point set; predecode cache stores dominant instance ids and semantic features for the same entity ordering.",
+  "binding_sampled_object_count": 168,
+  "binding_sampled_semantic_bound_count": 168,
+  "false_confuser_reacquisition_utility_evaluable": true,
+  "future_semantic_prototype_target_available": true,
+  "future_semantic_prototype_target_report": "reports/stwm_fullscale_semantic_trace_prototype_targets_c32_v1_20260428.json",
+  "generated_at_utc": "2026-05-05T10:53:36.811882+00:00",
+  "no_future_semantic_leakage_audit": {
+    "fstf_protocol_disallows_future_candidate_leakage": true,
+    "fut_prototype_targets_are_target_side_only": true,
+    "ostf_v2_observed_only_input_requirement_matches_existing_stwm_rule": true
+  },
+  "object_dense_points_bind_to_object_and_semantic_ids": true,
+  "semantic_identity_bridge_ready": true,
+  "semantic_memory_feature_bridge_available_now": true,
+  "semantic_memory_feature_bridge_note": "Observed semantic features / semantic_id / prototype targets are available now and can serve as the first semantic object token without future leakage.",
+  "tusb_fstf_hidden_available_as_serialized_token": false,
+  "tusb_fstf_hidden_note": "Current live repo serializes observed semantic memory/features and future prototype targets, but not a ready-to-reuse exported FSTF/TUSB hidden token tensor for OSTF-v2 training.",
+  "utility_reports": {
+    "counterfactual": "reports/stwm_counterfactual_association_eval_20260425.json",
+    "reacquisition": "reports/stwm_reacquisition_utility_eval_20260425.json",
+    "trace_belief": "reports/stwm_trace_belief_eval_20260424.json"
+  }
+}
