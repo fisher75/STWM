@@ -12,9 +12,9 @@ import numpy as np
 from stwm.tools.ostf_v17_common_20260502 import ROOT, dump_json, write_doc
 
 
-REPORT_PATH = ROOT / "reports/stwm_traceanything_vs_cotracker_teacher_comparison_v24_20260502.json"
-DOC_PATH = ROOT / "docs/STWM_TRACEANYTHING_VS_COTRACKER_TEACHER_COMPARISON_V24_20260502.md"
-HARDBENCH_PATH = ROOT / "reports/stwm_traceanything_hardbench_cache_v24_20260502.json"
+REPORT_PATH = ROOT / "reports/stwm_traceanything_vs_cotracker_teacher_comparison_v25_20260502.json"
+DOC_PATH = ROOT / "docs/STWM_TRACEANYTHING_VS_COTRACKER_TEACHER_COMPARISON_V25_20260502.md"
+HARDBENCH_PATH = ROOT / "reports/stwm_traceanything_hardbench_cache_v25_20260502.json"
 
 
 def _scalar(x: Any) -> Any:
@@ -95,13 +95,13 @@ def main() -> int:
                     )
     if not pairs:
         payload = {
-            "audit_name": "stwm_traceanything_vs_cotracker_teacher_comparison_v24",
+            "audit_name": "stwm_traceanything_vs_cotracker_teacher_comparison_v25",
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "comparison_available": False,
             "recommended_primary_teacher": "unresolved",
         }
         dump_json(REPORT_PATH, payload)
-        write_doc(DOC_PATH, "STWM TraceAnything vs CoTracker Teacher Comparison V24", payload, list(payload.keys()))
+        write_doc(DOC_PATH, "STWM TraceAnything vs CoTracker Teacher Comparison V25", payload, list(payload.keys()))
         return 1
     metrics = {
         "mean_trajectory_disagreement_l2_px": float(np.mean([p["trajectory_disagreement_l2_px"] for p in pairs])),
@@ -121,7 +121,7 @@ def main() -> int:
     else:
         rec = "cotracker"
     payload = {
-        "audit_name": "stwm_traceanything_vs_cotracker_teacher_comparison_v24",
+        "audit_name": "stwm_traceanything_vs_cotracker_teacher_comparison_v25",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "comparison_available": True,
         "pair_count": len(pairs),
@@ -135,7 +135,7 @@ def main() -> int:
     dump_json(REPORT_PATH, payload)
     write_doc(
         DOC_PATH,
-        "STWM TraceAnything vs CoTracker Teacher Comparison V24",
+        "STWM TraceAnything vs CoTracker Teacher Comparison V25",
         payload,
         ["pair_count", "per_dataset_counts", "metrics", "teacher_more_nonlinear_votes", "teacher_harder_for_cv_votes", "recommended_primary_teacher"],
     )

@@ -24,11 +24,17 @@ def _scalar(x: Any) -> Any:
 
 def main() -> int:
     cache_report = json.loads(V25_CACHE_REPORT.read_text(encoding="utf-8"))
-    cache_root = ROOT / "outputs/cache/stwm_traceanything_hardbench_v24"
+    cache_root = ROOT / "outputs/cache/stwm_traceanything_hardbench_v25"
+    shard_dir = ROOT / "reports/stwm_traceanything_hardbench_v25_shards"
+    shard_rows = []
+    for report in sorted(shard_dir.glob("stwm_ta_v25_h*_s*.json")):
+        data = json.loads(report.read_text(encoding="utf-8"))
+        shard_rows.extend(data.get("rows", []))
     combo_stats: dict[str, dict[str, Any]] = {}
     target_side_flags = []
     native_visibility_flags = []
-    query_frame_only_eval_count = 0
+    qf_alt_seen = 0
+    qf_alt_disagreement = []
     for combo in ["M128_H32", "M512_H32", "M128_H64", "M512_H64"]:
         files = sorted((cache_root / combo).glob("*/*.npz"))
         if not files:
@@ -69,6 +75,14 @@ def main() -> int:
             "native_visibility_available": bool(np.mean(native_visibility_flags[-len(files) :]) > 0.5) if native_visibility_flags else False,
         }
 
+    for row in shard_rows:
+        for mkey, comp in row.get("alternative_extraction_comparison_by_m", {}).items():
+            if not isinstance(comp, dict):
+                continue
+            qf_alt_seen += 1
+            if comp.get("mean_point_disagreement_px") is not None:
+                qf_alt_disagreement.append(float(comp["mean_point_disagreement_px"]))
+
     overall_valid = [
         stats["valid_point_ratio"]
         for stats in combo_stats.values()
@@ -102,14 +116,20 @@ def main() -> int:
             combo: stats["trajectory_variance"] for combo, stats in combo_stats.items()
         },
         "target_side_box_search_used_ratio": float(np.mean(target_side_flags)) if target_side_flags else 1.0,
-        "query_frame_only_extraction_alternative_clip_count": query_frame_only_eval_count,
-        "query_frame_only_extraction_alternative_exact_blocker": "not_recomputed_for_20_clips_in_v25_partial_freeze; current cache carries teacher-only target-side-box extraction path",
-        "comparison_target_box_vs_query_frame_only": "missing_for_full_20_clip_v25_audit",
+        "query_frame_only_extraction_alternative_clip_count": int(qf_alt_seen),
+        "query_frame_only_extraction_alternative_exact_blocker": None if qf_alt_seen >= 20 else "fewer_than_20_processed_clip_m_pairs_available_for_alternative_extraction_comparison",
+        "comparison_target_box_vs_query_frame_only": {
+            "mean_point_disagreement_px": float(np.mean(qf_alt_disagreement)) if qf_alt_disagreement else None,
+            "sample_count": int(len(qf_alt_disagreement)),
+        },
         "teacher_target_construction_acceptable_for_training": bool(
             cache_report.get("valid_point_ratio", 0.0) >= 0.4 and cache_report.get("processed_clip_count", 0) > 0
         ),
         "visibility_quality_acceptable": bool(np.mean(overall_vis) >= 0.4 if overall_vis else False),
-        "extraction_quality_acceptable": False,
+        "extraction_quality_acceptable": bool(
+            (np.mean(overall_vis) >= 0.4 if overall_vis else False)
+            and (float(np.mean(qf_alt_disagreement)) <= 25.0 if qf_alt_disagreement else False)
+        ),
         "overall_valid_point_ratio": float(np.mean(overall_valid)) if overall_valid else 0.0,
         "overall_estimated_visibility_coverage": float(np.mean(overall_vis)) if overall_vis else 0.0,
         "overall_trajectory_variance": float(np.mean(overall_var)) if overall_var else 0.0,

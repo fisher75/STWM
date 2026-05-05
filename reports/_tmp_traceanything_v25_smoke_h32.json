@@ -1,0 +1,132 @@
+{
+  "audit_name": "stwm_traceanything_hardbench_cache_v25_shard",
+  "checkpoint_path": "/raid/chen034/workspace/stwm/models/checkpoints/traceanything/traceanything_pretrained.pt",
+  "comparison_to_cotracker_same_clips": {
+    "M128": {
+      "matched_clip_count": 0
+    },
+    "M512": {
+      "matched_clip_count": 0
+    }
+  },
+  "device": "cuda",
+  "estimated_visibility_quality_audit": "confidence_plus_trajectory_consistency_teacher_only",
+  "failed_clip_count": 0,
+  "failed_clip_reasons": {},
+  "failures": [],
+  "generated_at_utc": "2026-05-05T15:09:44.981500+00:00",
+  "gpu_id": "1",
+  "horizon": 32,
+  "m_values": [
+    128,
+    512
+  ],
+  "mean_same_trajectory_fraction": 1.0,
+  "mean_valid_point_ratio": 0.0,
+  "mean_visibility_coverage": 0.0,
+  "model_input_observed_only": true,
+  "model_load_status": {
+    "load_consistent_with_official_infer": false,
+    "missing_key_count": 274,
+    "missing_keys_head": [
+      "ds_head_local.dpt.scratch.layer1_rn.weight",
+      "ds_head_local.dpt.scratch.layer2_rn.weight",
+      "ds_head_local.dpt.scratch.layer3_rn.weight",
+      "ds_head_local.dpt.scratch.layer4_rn.weight",
+      "ds_head_local.dpt.scratch.layer_rn.0.weight",
+      "ds_head_local.dpt.scratch.layer_rn.1.weight",
+      "ds_head_local.dpt.scratch.layer_rn.2.weight",
+      "ds_head_local.dpt.scratch.layer_rn.3.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.bias"
+    ],
+    "unexpected_key_count": 0,
+    "unexpected_keys_head": []
+  },
+  "native_visibility_available": false,
+  "num_shards": 1,
+  "official_commit_hash": "07a5f0686fc8205857c1529d4d9956b3ab25627d",
+  "official_repo_path": "/raid/chen034/workspace/stwm/third_party/TraceAnything",
+  "peak_gpu_memory_bytes_max": 0,
+  "per_subset_counts": {},
+  "point_count": 0,
+  "processed_clip_count": 0,
+  "processed_dataset_counts": {},
+  "processed_split_counts": {},
+  "retry_count": 0,
+  "rows": [],
+  "runtime_seconds": 7.362801551818848,
+  "selected_clip_count_for_this_shard": 2,
+  "selected_clip_count_total": 2,
+  "selected_clip_target_count": 2,
+  "selection_horizon": 32,
+  "selection_stats": {
+    "candidate_blocker_counts": {
+      "H32_benchmark_infeasible": 29,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_22": 2,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_28": 1,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_29": 2,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_31": 2,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_33": 1,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_36": 1,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_37": 1,
+      "insufficient_contiguous_frames_for_last_or_first_visible_query_idx_0_frame_count_38": 1,
+      "reason_tags_missing": 77
+    },
+    "candidate_count_after_actual_frame_feasibility": 383,
+    "dataset_blocked_by_actual_frames": {
+      "VSPW": 11
+    },
+    "per_dataset_candidate_counts": {
+      "VIPSEG": 103,
+      "VSPW": 280
+    },
+    "per_split_candidate_counts": {
+      "test": 66,
+      "train": 265,
+      "val": 52
+    },
+    "selected_candidate_count": 2
+  },
+  "shard_index": 0,
+  "shard_terminal_status": "completed",
+  "skipped": [
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_hardbench_v25_smoke/M128_H32/train/VIPSEG__0_wHveSGjXyDY.npz",
+        "M512": "outputs/cache/stwm_traceanything_hardbench_v25_smoke/M512_H32/train/VIPSEG__0_wHveSGjXyDY.npz"
+      },
+      "dataset": "VIPSEG",
+      "item_key": "VIPSEG::0_wHveSGjXyDY",
+      "reason": "resume_existing_successful_cache",
+      "split": "train"
+    },
+    {
+      "cache_paths_by_m": {
+        "M128": "outputs/cache/stwm_traceanything_hardbench_v25_smoke/M128_H32/train/VSPW__1008_cjuVdt1f04I.npz",
+        "M512": "outputs/cache/stwm_traceanything_hardbench_v25_smoke/M512_H32/train/VSPW__1008_cjuVdt1f04I.npz"
+      },
+      "dataset": "VSPW",
+      "item_key": "VSPW::1008_cjuVdt1f04I",
+      "reason": "resume_existing_successful_cache",
+      "split": "train"
+    }
+  ],
+  "skipped_clip_count": 2,
+  "target_side_object_box_search_used_teacher_only": true,
+  "teacher_source": "traceanything_official_trajectory_field",
+  "teacher_target_uses_full_clip": true,
+  "teacher_target_uses_full_clip_for_target_extraction_only": true,
+  "traceanything_object_tracks_valid": false,
+  "traceanything_teacher_runnable": true
+}

@@ -1,28 +1,309 @@
 {
   "audit_name": "stwm_traceanything_hardbench_visualization_v25",
-  "available_reference_asset_count": 20,
-  "available_reference_assets": [
-    "assets/videos/stwm_real_teacher_object_dense_v16/case07_M512_H8_vipseg_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case11_M128_H16_vipseg_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case17_M512_H16_vipseg_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case14_M128_H16_vspw_test.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case03_M128_H8_vipseg_val.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case01_M128_H8_vipseg_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case06_M512_H8_vspw_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case15_M128_H16_vipseg_test.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case13_M128_H16_vipseg_val.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case09_M512_H8_vspw_test.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case16_M512_H16_vspw_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case05_M128_H8_vipseg_test.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case00_M128_H8_vspw_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case12_M128_H16_vspw_val.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case04_M128_H8_vspw_test.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case10_M128_H16_vspw_train.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case08_M512_H8_vspw_val.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case18_M512_H16_vspw_val.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case02_M128_H8_vspw_val.gif",
-    "assets/videos/stwm_real_teacher_object_dense_v16/case19_M512_H16_vspw_test.gif"
+  "cases": [
+    {
+      "case_index": 0,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case00_M128_H32_vipseg_train.gif",
+      "item_key": "VIPSEG::0_wHveSGjXyDY",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/train/VIPSEG__0_wHveSGjXyDY.npz",
+      "split": "train"
+    },
+    {
+      "case_index": 1,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case01_M128_H32_vspw_train.gif",
+      "item_key": "VSPW::1008_cjuVdt1f04I",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/train/VSPW__1008_cjuVdt1f04I.npz",
+      "split": "train"
+    },
+    {
+      "case_index": 2,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case02_M128_H32_vipseg_val.gif",
+      "item_key": "VIPSEG::1019_OfFne6dmXvE",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/val/VIPSEG__1019_OfFne6dmXvE.npz",
+      "split": "val"
+    },
+    {
+      "case_index": 3,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case03_M128_H32_vspw_val.gif",
+      "item_key": "VSPW::1038_EDWTSDKkbk4",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/val/VSPW__1038_EDWTSDKkbk4.npz",
+      "split": "val"
+    },
+    {
+      "case_index": 4,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case04_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1007_nnjklmugBfo",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1007_nnjklmugBfo.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 5,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case05_M128_H32_vspw_test.gif",
+      "item_key": "VSPW::1035_248bbw7mpdw",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VSPW__1035_248bbw7mpdw.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 6,
+      "combo": "M512_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case06_M512_H32_vipseg_train.gif",
+      "item_key": "VIPSEG::0_wHveSGjXyDY",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H32/train/VIPSEG__0_wHveSGjXyDY.npz",
+      "split": "train"
+    },
+    {
+      "case_index": 7,
+      "combo": "M512_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case07_M512_H32_vspw_train.gif",
+      "item_key": "VSPW::1008_cjuVdt1f04I",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H32/train/VSPW__1008_cjuVdt1f04I.npz",
+      "split": "train"
+    },
+    {
+      "case_index": 8,
+      "combo": "M512_H32",
+      "cotracker_reference_available": false,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case08_M512_H32_vipseg_val.gif",
+      "item_key": "VIPSEG::1019_OfFne6dmXvE",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H32/val/VIPSEG__1019_OfFne6dmXvE.npz",
+      "split": "val"
+    },
+    {
+      "case_index": 9,
+      "combo": "M512_H32",
+      "cotracker_reference_available": false,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case09_M512_H32_vspw_val.gif",
+      "item_key": "VSPW::1038_EDWTSDKkbk4",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H32/val/VSPW__1038_EDWTSDKkbk4.npz",
+      "split": "val"
+    },
+    {
+      "case_index": 10,
+      "combo": "M512_H32",
+      "cotracker_reference_available": false,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case10_M512_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1007_nnjklmugBfo",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H32/test/VIPSEG__1007_nnjklmugBfo.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 11,
+      "combo": "M512_H32",
+      "cotracker_reference_available": false,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case11_M512_H32_vspw_test.gif",
+      "item_key": "VSPW::1035_248bbw7mpdw",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H32/test/VSPW__1035_248bbw7mpdw.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 12,
+      "combo": "M128_H64",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case12_M128_H64_vspw_train.gif",
+      "item_key": "VSPW::1006_XnpEQX8Gv70",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H64/train/VSPW__1006_XnpEQX8Gv70.npz",
+      "split": "train"
+    },
+    {
+      "case_index": 13,
+      "combo": "M128_H64",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case13_M128_H64_vspw_val.gif",
+      "item_key": "VSPW::1063_naPMk89Na88",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H64/val/VSPW__1063_naPMk89Na88.npz",
+      "split": "val"
+    },
+    {
+      "case_index": 14,
+      "combo": "M128_H64",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case14_M128_H64_vspw_test.gif",
+      "item_key": "VSPW::1031_xzuhRhedIM4",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H64/test/VSPW__1031_xzuhRhedIM4.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 15,
+      "combo": "M512_H64",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case15_M512_H64_vspw_train.gif",
+      "item_key": "VSPW::1006_XnpEQX8Gv70",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H64/train/VSPW__1006_XnpEQX8Gv70.npz",
+      "split": "train"
+    },
+    {
+      "case_index": 16,
+      "combo": "M512_H64",
+      "cotracker_reference_available": false,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case16_M512_H64_vspw_val.gif",
+      "item_key": "VSPW::1063_naPMk89Na88",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H64/val/VSPW__1063_naPMk89Na88.npz",
+      "split": "val"
+    },
+    {
+      "case_index": 17,
+      "combo": "M512_H64",
+      "cotracker_reference_available": false,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case17_M512_H64_vspw_test.gif",
+      "item_key": "VSPW::1031_xzuhRhedIM4",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M512_H64/test/VSPW__1031_xzuhRhedIM4.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 18,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case18_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1015_-KqXcm-I2zY",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1015_-KqXcm-I2zY.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 19,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case19_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1016_8J41CsGYhNI",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1016_8J41CsGYhNI.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 20,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case20_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1033_79Whs_1_nWs",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1033_79Whs_1_nWs.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 21,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case21_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1035_P1c2o2aupEc",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1035_P1c2o2aupEc.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 22,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case22_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1041_kIXALP9plU0",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1041_kIXALP9plU0.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 23,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case23_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1064_ASPrLKRQayQ",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1064_ASPrLKRQayQ.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 24,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case24_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1070_n0CkTLKWDDk",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1070_n0CkTLKWDDk.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 25,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case25_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::107_tQA8kJXlTwc",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__107_tQA8kJXlTwc.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 26,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case26_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1105_OsZzzXVy3gI",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1105_OsZzzXVy3gI.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 27,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case27_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::1115_fSv8HIpvAcc",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__1115_fSv8HIpvAcc.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 28,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VIPSEG",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case28_M128_H32_vipseg_test.gif",
+      "item_key": "VIPSEG::387_Estkfs5A7Gg",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VIPSEG__387_Estkfs5A7Gg.npz",
+      "split": "test"
+    },
+    {
+      "case_index": 29,
+      "combo": "M128_H32",
+      "cotracker_reference_available": true,
+      "dataset": "VSPW",
+      "gif_path": "assets/videos/stwm_traceanything_hardbench_v25/case29_M128_H32_vspw_test.gif",
+      "item_key": "VSPW::115_fdG4Jz1oY58",
+      "source_cache": "outputs/cache/stwm_traceanything_hardbench_v25/M128_H32/test/VSPW__115_fdG4Jz1oY58.npz",
+      "split": "test"
+    }
   ],
-  "exact_blocker": "v25 traceanything-specific 30-case H32/H64 M128/M512 visualization pack not generated because hardbench cache completion did not finish in this turn",
-  "traceanything_hardbench_visualization_ready": false
+  "generated_at_utc": "2026-05-05T15:56:49.866319+00:00",
+  "generated_gif_count": 30,
+  "output_dir": "assets/videos/stwm_traceanything_hardbench_v25",
+  "traceanything_hardbench_visualization_ready": true
 }

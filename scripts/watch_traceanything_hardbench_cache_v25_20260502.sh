@@ -2,48 +2,80 @@
 set -euo pipefail
 
 ROOT=/raid/chen034/workspace/stwm
-python - <<'PY'
-import json
+MANIFEST="$ROOT/reports/stwm_traceanything_hardbench_launch_manifest_v25_20260502.json"
+WATCH_PATH="$ROOT/reports/stwm_traceanything_hardbench_watcher_v25_20260502.json"
+POLL_SECONDS="${POLL_SECONDS:-30}"
+WAIT_MODE="${WAIT_MODE:-1}"
+
+while true; do
+  /home/chen034/miniconda3/envs/stwm/bin/python - "$MANIFEST" "$WATCH_PATH" <<'PY'
+import json, subprocess, sys, time
 from pathlib import Path
-ROOT = Path('/raid/chen034/workspace/stwm')
-manifest_path = ROOT / 'reports/stwm_traceanything_hardbench_launch_manifest_v25_20260502.json'
-watch_path = ROOT / 'reports/stwm_traceanything_hardbench_watcher_v25_20260502.json'
-manifest = json.loads(manifest_path.read_text())['launch_manifest']
+
+manifest_path = Path(sys.argv[1])
+watch_path = Path(sys.argv[2])
+root = Path('/raid/chen034/workspace/stwm')
+payload = json.loads(manifest_path.read_text())
 rows = []
-for row in manifest:
-    report = ROOT / row['report_path']
-    log = ROOT / row['log_path']
-    if report.exists():
+all_terminal = True
+
+def tmux_exists(session: str) -> bool:
+    return subprocess.call(["tmux", "has-session", "-t", session], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+
+for row in payload.get("launch_manifest", []):
+    report = root / row["report_path"]
+    log = root / row["log_path"]
+    session = row["session_name"]
+    if tmux_exists(session):
+        status = "running"
+        all_terminal = False
+        reason = None
+    elif report.exists():
         data = json.loads(report.read_text())
-        if int(data.get('processed_clip_count', 0)) > 0:
-            status = 'completed'
-            reason = None
-        elif int(data.get('failed_clip_count', 0)) > 0:
-            status = 'failed'
-            reason = data.get('failed_clip_reasons') or 'failed_without_successful_rows'
-        else:
-            status = 'skipped_with_reason'
-            reason = 'no_successful_rows_materialized'
+        status = data.get("shard_terminal_status", "completed")
+        reason = None
+        if status == "skipped_with_reason":
+            reason = data.get("failed_clip_reasons") or data.get("selection_stats", {}).get("candidate_blocker_counts")
+        elif status == "failed":
+            reason = data.get("failed_clip_reasons") or "failed_without_report_reason"
     else:
-        status = 'skipped_with_reason'
-        reason = 'shard_report_missing_after_live_freeze'
+        status = "failed"
+        reason = "tmux_ended_but_report_missing"
     rows.append(
         {
             **row,
-            'terminal_status': status,
-            'reason': reason,
-            'log_exists': log.exists(),
-            'report_exists': report.exists(),
+            "terminal_status": status,
+            "reason": reason,
+            "log_exists": log.exists(),
+            "report_exists": report.exists(),
         }
     )
-payload = {
-    'watcher_name': 'stwm_traceanything_hardbench_watcher_v25',
-    'all_terminal': True,
-    'rows': rows,
-    'completed_count': sum(r['terminal_status'] == 'completed' for r in rows),
-    'failed_count': sum(r['terminal_status'] == 'failed' for r in rows),
-    'skipped_count': sum(r['terminal_status'] == 'skipped_with_reason' for r in rows),
+
+summary = {
+    "watcher_name": "stwm_traceanything_hardbench_watcher_v25",
+    "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    "all_terminal": all_terminal,
+    "completed_count": sum(r["terminal_status"] == "completed" for r in rows),
+    "failed_count": sum(r["terminal_status"] == "failed" for r in rows),
+    "skipped_count": sum(r["terminal_status"] == "skipped_with_reason" for r in rows),
+    "running_count": sum(r["terminal_status"] == "running" for r in rows),
+    "rows": rows,
 }
-watch_path.write_text(json.dumps(payload, indent=2) + '\n')
-print(watch_path)
+watch_path.write_text(json.dumps(summary, indent=2) + "\n")
+print(str(summary["all_terminal"]).lower())
 PY
+  done_flag="$(tail -n 1 "$WATCH_PATH" 2>/dev/null | tr -d '\n\r ' || true)"
+  all_terminal="$(/home/chen034/miniconda3/envs/stwm/bin/python - <<'PY'
+import json
+from pathlib import Path
+p=Path('/raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_watcher_v25_20260502.json')
+print('true' if json.loads(p.read_text()).get('all_terminal') else 'false')
+PY
+)"
+  if [[ "$WAIT_MODE" != "1" || "$all_terminal" == "true" ]]; then
+    break
+  fi
+  sleep "$POLL_SECONDS"
+done
+
+echo "$WATCH_PATH"
