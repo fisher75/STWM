@@ -1,0 +1,100 @@
+{
+  "launch_manifest": [
+    {
+      "session_name": "stwm_ta_v24_h32_s0",
+      "horizon": 32,
+      "shard_index": 0,
+      "gpu_id": 1,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s0.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s0.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=1 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 32 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 0 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s0.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s0.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s0.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h32_s1",
+      "horizon": 32,
+      "shard_index": 1,
+      "gpu_id": 2,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s1.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s1.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=2 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 32 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 1 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s1.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s1.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s1.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h32_s2",
+      "horizon": 32,
+      "shard_index": 2,
+      "gpu_id": 3,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s2.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s2.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=3 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 32 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 2 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s2.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s2.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s2.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h32_s3",
+      "horizon": 32,
+      "shard_index": 3,
+      "gpu_id": 4,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s3.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s3.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=4 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 32 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 3 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s3.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h32_s3.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h32_s3.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h64_s0",
+      "horizon": 64,
+      "shard_index": 0,
+      "gpu_id": 5,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s0.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s0.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=5 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 64 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 0 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s0.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s0.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s0.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h64_s1",
+      "horizon": 64,
+      "shard_index": 1,
+      "gpu_id": 6,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s1.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s1.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=6 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 64 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 1 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s1.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s1.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s1.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h64_s2",
+      "horizon": 64,
+      "shard_index": 2,
+      "gpu_id": 7,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s2.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s2.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=7 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 64 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 2 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s2.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s2.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s2.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    },
+    {
+      "session_name": "stwm_ta_v24_h64_s3",
+      "horizon": 64,
+      "shard_index": 3,
+      "gpu_id": 4,
+      "log_path": "logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s3.log",
+      "report_path": "reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s3.json",
+      "command": "cd /raid/chen034/workspace/stwm && export PYTHONPATH=/raid/chen034/workspace/stwm/code:/raid/chen034/workspace/stwm/third_party/TraceAnything && export CUDA_VISIBLE_DEVICES=4 && export STWM_PROC_TITLE=python && export STWM_PROC_TITLE_MODE=generic && /home/chen034/miniconda3/envs/stwm/bin/python -u code/stwm/tools/run_traceanything_object_trajectory_teacher_v24_20260502.py --horizon 64 --selection-horizon 64 --max-clips 150 --num-shards 4 --shard-index 3 --report-path /raid/chen034/workspace/stwm/reports/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s3.json --doc-path /raid/chen034/workspace/stwm/docs/stwm_traceanything_hardbench_v24_shards/stwm_ta_v24_h64_s3.md > /raid/chen034/workspace/stwm/logs/traceanything_hardbench_v24_20260502/stwm_ta_v24_h64_s3.log 2>&1",
+      "min_free_mem_gb": 25,
+      "preferred_free_mem_gb": 40,
+      "launch_mode": "retroactive_manifest_for_live_v25_execution"
+    }
+  ]
+}
