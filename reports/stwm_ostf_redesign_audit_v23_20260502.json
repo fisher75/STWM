@@ -1,0 +1,88 @@
+{
+  "audit_name": "stwm_ostf_redesign_audit_v23",
+  "generated_at_utc": "2026-05-05T00:00:00Z",
+  "scope": "audit_only_no_training",
+  "traceanything": {
+    "official_repo_available": true,
+    "repo_path": "/raid/chen034/workspace/stwm/third_party/TraceAnything",
+    "repo_commit": "96bba9c7d29d83d86c259754cbd822803a40ee4c",
+    "weights_available": true,
+    "weights_path": "/raid/chen034/workspace/stwm/models/checkpoints/traceanything/traceanything_pretrained.pt",
+    "official_inference_scripts_present": true,
+    "readme_gpu_requirement": "single GPU with >= 48 GB VRAM",
+    "teacher_feasibility": "high_for_pilot",
+    "exact_blockers": [
+      "not integrated into the STWM teacher-cache pipeline yet",
+      "needs an adapter from trajectory-field outputs to persistent per-object sampled tracks",
+      "requires a fresh audit of query strategy, object binding, and storage format"
+    ]
+  },
+  "pointodyssey": {
+    "local_code_present": true,
+    "dataset_wrappers_present": true,
+    "training_remnants_present": true,
+    "live_dataset_materialized_under_data_root": false,
+    "current_status": "blocked_by_missing_local_dataset_payload",
+    "exact_blockers": [
+      "no PointOdyssey dataset directory was found under /raid/chen034/workspace/stwm/data",
+      "only old training outputs and dataset wrapper code are present locally"
+    ]
+  },
+  "tapvid_tapir": {
+    "tapvid_dataset_wrappers_present": true,
+    "tapvid_minicache_present": true,
+    "official_tapir_repo_or_weights_found_locally": false,
+    "current_status": "benchmark_feasible_but_not_turnkey_teacher_pipeline",
+    "exact_blockers": [
+      "no local TAPIR official repo/weights were found",
+      "current live repo contains stage1 TAP-Vid wrappers and small cache artifacts, not a full OSTF-v2 evaluation stack"
+    ]
+  },
+  "h32_h64_feasibility": {
+    "current_h16_status": "works_but_already_shows_contiguous-frame eligibility loss on many clips",
+    "h32_feasible_under_current_windowing": false,
+    "h64_feasible_under_current_windowing": false,
+    "reason": "V16 H16 logs already show many failures from insufficient contiguous frames; H32/H64 would require re-windowing from longer source clips and likely a new eligibility policy",
+    "storage_estimate_sampled_cache_only": {
+      "reference_live_v16_total_cache_size_bytes": 622812407,
+      "h32_estimate_all_current_combos_bytes": 1200000000,
+      "h64_estimate_all_current_combos_bytes": 2400000000,
+      "note": "rough linear estimate from live M128/M512 H8/H16 sampled-point caches; actual coverage would likely drop before storage becomes the main blocker"
+    }
+  },
+  "current_cotracker_reference_cost": {
+    "live_reference_cache_size_bytes": 622812407,
+    "live_reference_video_size_bytes": 111575285,
+    "live_reference_scope": "2132 clips across M128/M512 and H8/H16 sampled-point caches",
+    "note": "current live repo gives a concrete storage anchor for sampled-point caches, but not a trustworthy end-to-end B200 runtime benchmark"
+  },
+  "estimated_b200_budget": {
+    "estimate_type": "engineering_estimate_not_measured_from_live_traceanything_runs",
+    "traceanything_pilot_500_clips": {
+      "gpu": "1x B200 should satisfy the official >=48GB VRAM requirement",
+      "time_estimate": "approximately 0.5-2 B200-days depending on batching, resolution, and whether dense intermediate fields are retained",
+      "sampled_cache_storage_estimate": "approximately 1-3 GB if only sampled object-point tracks are kept",
+      "raw_dense_intermediate_storage_estimate": "tens to low hundreds of GB if raw trajectory-field intermediates are retained"
+    },
+    "traceanything_full_2kplus_clips": {
+      "gpu": "1-4x B200 recommended for practical throughput",
+      "time_estimate": "approximately 2-7 B200-days depending on resolution, cache format, and whether H32/H64 is attempted",
+      "sampled_cache_storage_estimate": "approximately 3-10 GB if sampled caches only",
+      "raw_dense_intermediate_storage_estimate": "likely the dominant storage cost and may exceed 100 GB"
+    }
+  },
+  "requires_new_benchmark_for_real_ostf_v2": true,
+  "why_new_benchmark_or_teacher_is_needed": [
+    "The current CoTracker-teacher H8/H16 setup is CV-saturated at deployable top-1 mode selection.",
+    "V21 oracle gains do not transfer into a claimable top-1 world-model result.",
+    "A stronger trajectory-field teacher or GT point-trajectory benchmark is needed to test true object-dense forecasting value."
+  ],
+  "recommended_ostf_v2_roadmap": [
+    "Pilot TraceAnything as a denser trajectory-field teacher with object-mask-conditioned point extraction and persistent identity auditing.",
+    "If PointOdyssey GT can be materialized locally, add it as a non-pseudo-target benchmark for dense-point forecasting.",
+    "Use TAP-style point-trajectory benchmarks for harder nonlinear/occlusion-heavy evaluation when the benchmark payload is fully local and reproducible.",
+    "Redesign clip windowing before attempting H32/H64; current H16 logs already reveal eligibility loss from insufficient contiguous frames.",
+    "Only revisit main-paper OSTF claims after a redesigned teacher/benchmark stack produces non-CV top-1 gains."
+  ],
+  "recommended_next_step_choice": "run_traceanything_redesign_only"
+}

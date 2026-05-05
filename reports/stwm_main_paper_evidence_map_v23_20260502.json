@@ -1,0 +1,167 @@
+{
+  "audit_name": "stwm_main_paper_evidence_map_v23",
+  "generated_at_utc": "2026-05-05T00:00:00Z",
+  "source_of_truth": "live_repo_only",
+  "repo_root": "/raid/chen034/workspace/stwm",
+  "official_main_paper_track": "STWM-FSTF + TUSB/trace_belief utility",
+  "official_ostf_track": "appendix_or_future_redesign_only",
+  "canonical_task_definition": {
+    "name": "STWM-FSTF",
+    "full_name": "Future Semantic Trace Field Prediction",
+    "input": "observed video-derived trace + observed semantic memory",
+    "output": "future trace units + future semantic prototype field + visibility/reappearance/identity belief",
+    "protocol": {
+      "free_rollout_required": true,
+      "candidate_scorer_used": false,
+      "future_candidate_leakage": false,
+      "terminology": "semantic trace-unit field"
+    }
+  },
+  "main_fstf_evidence": {
+    "five_seed_matrix_complete": true,
+    "selected_C": 32,
+    "selected_seed": 456,
+    "selection_rule": "mixed val only; primary changed gain over copy; secondary overall gain; tertiary stable drop; tie lower trace coord error",
+    "completed_run_count": 10,
+    "all_runs_completed": true,
+    "residual_beats_copy": {
+      "mixed": true,
+      "vspw": true,
+      "vipseg": true
+    },
+    "changed_gain_ci_excludes_zero": {
+      "mixed": true,
+      "vspw": true,
+      "vipseg": true
+    },
+    "stable_copy_preserved": true,
+    "trace_regression_detected": false,
+    "free_rollout_semantic_field_signal": true,
+    "world_model_output_contract_satisfied": true,
+    "future_hidden_load_bearing": {
+      "H8": true,
+      "H16": true,
+      "H24": true
+    },
+    "trace_coordinate_load_bearing": false,
+    "temporal_order_load_bearing": false,
+    "same_output_controlled_baseline_result": {
+      "strongest_copy_aware_baseline": "copy_residual_mlp",
+      "stwm_minus_strongest_changed_top5_mean_delta": 0.06527920483565722,
+      "stwm_minus_strongest_changed_top5_ci95": [
+        0.04726071874626347,
+        0.0831896554397755
+      ],
+      "stwm_minus_strongest_overall_top5_mean_delta": 0.04174363051283488,
+      "stwm_minus_strongest_overall_top5_ci95": [
+        0.03289333287125577,
+        0.050528337183470336
+      ],
+      "stwm_minus_strongest_stable_drop_mean_delta": -0.03839903106983704,
+      "stwm_minus_strongest_stable_drop_ci95": [
+        -0.047379059429410134,
+        -0.03001479049083553
+      ]
+    },
+    "claimable": true,
+    "source_reports": [
+      "reports/stwm_mixed_fullscale_v2_complete_decision_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_train_summary_complete_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_val_selection_complete_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_mixed_test_eval_complete_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_vspw_test_eval_complete_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_vipseg_test_eval_complete_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_significance_complete_20260428.json",
+      "reports/stwm_mixed_fullscale_v2_seed_robustness_complete_20260428.json",
+      "reports/stwm_fstf_strong_copyaware_baseline_bootstrap_v8_20260501.json",
+      "reports/stwm_fstf_trace_conditioning_audit_v10_20260502.json",
+      "reports/stwm_fstf_trace_conditioning_horizon_v13_20260502.json",
+      "reports/stwm_fstf_scaling_claim_verification_v13_20260502.json",
+      "reports/stwm_fstf_final_claim_boundary_v13_20260502.json"
+    ]
+  },
+  "utility_and_trace_belief_evidence": {
+    "tusb_light_readout_integrated": true,
+    "improved_vs_bestpt_coordonly": true,
+    "improved_vs_legacysem": true,
+    "bootstrap_zero_excluded_vs_legacysem": true,
+    "trace_belief_assoc_improved_vs_frozen_external_teacher_only": true,
+    "trace_belief_assoc_improved_vs_legacysem": true,
+    "trace_semantic_coupling_load_bearing": true,
+    "official_story_supported": true,
+    "claim_level": "moderate_to_strong_supporting",
+    "source_reports": [
+      "reports/stwm_tusb_light_readout_decision_20260422.json",
+      "reports/stwm_trace_belief_decision_20260424.json",
+      "reports/stwm_trace_belief_eval_20260424.json",
+      "reports/stwm_trace_belief_bootstrap_20260424.json"
+    ]
+  },
+  "external_boundary_evidence": {
+    "boundary_role": "consumer_utility_and_claim_boundary_only",
+    "strongest_external_baseline": "sam2",
+    "stwm_external_overall_sota": false,
+    "stwm_beats_sam2_overall": false,
+    "stwm_beats_cotracker_overall": false,
+    "stwm_overall_rank_on_389_item_hard_case_manifest": 3,
+    "complementary_advantage": [
+      "significant long-gap advantage over CoTracker",
+      "significant occlusion-heavy continuity advantage over CoTracker",
+      "numerically near SAM2 on long-gap but not significantly above SAM2 overall"
+    ],
+    "main_paper_usage": "boundary_or_appendix_only_not_same_output_main_table",
+    "source_reports": [
+      "reports/stwm_external_baseline_full_eval_summary_20260426.json",
+      "reports/stwm_external_baseline_result_interpretation_20260426.json",
+      "docs/STWM_EXTERNAL_CONSUMER_UTILITY_BOUNDARY_20260427.md"
+    ]
+  },
+  "scaling_and_claim_boundary": {
+    "prototype_scaling_positive": true,
+    "selected_C": 32,
+    "C128_failed_tradeoff": true,
+    "horizon_scaling_positive": true,
+    "long_horizon_claim_allowed": true,
+    "trace_density_scaling_positive": "weak_or_inconclusive",
+    "dense_trace_field_claim_allowed": false,
+    "model_size_scaling_positive": false,
+    "model_size_scaling_claim_allowed": false,
+    "raw_video_end_to_end_training_claim_allowed": false,
+    "recommended_wording": "semantic trace-unit field"
+  },
+  "figures_and_videos_available": {
+    "fstf_visualization_pack_ready": true,
+    "fstf_visualization_artifact_pack": "artifacts/stwm_fstf_visualization_pack_v13_20260502.tar.gz",
+    "fstf_visualization_videos": "assets/videos/stwm_fstf_rollout_v12",
+    "fstf_visualization_figures": "assets/figures/stwm_fstf_rollout_v12",
+    "ostf_real_teacher_visualization_available": true,
+    "ostf_real_teacher_visualization_dir": "assets/videos/stwm_real_teacher_object_dense_v16",
+    "ostf_v17_to_v22_visualizations_available": true
+  },
+  "missing_or_live_repo_only_artifacts": [
+    "assets/ and artifacts/ are gitignored; exported snapshots may omit visualization packs and OSTF teacher videos even when live repo contains them.",
+    "OSTF teacher caches are live-repo assets and should not be assumed present in exported zip snapshots.",
+    "External frozen-baseline rerun payload is not packaged as a clean raw-frame/prompt benchmark bundle in the current export, so those baselines should remain boundary evidence rather than a required reproducibility blocker for the FSTF main paper."
+  ],
+  "main_paper_allowed_claims": [
+    "STWM predicts future semantic trace-unit fields over frozen video-derived trace/semantic states.",
+    "STWM improves changed semantic prototype prediction over copy and strong controlled copy-aware baselines while preserving stable semantic memory.",
+    "Future rollout hidden is load-bearing at H8 and remains load-bearing at H16/H24 under the frozen-cache FSTF protocol.",
+    "C32 is the best prototype-vocabulary tradeoff under val-only selection; C128 fails the stability/granularity tradeoff.",
+    "H16/H24 retain positive changed-subset gains under the frozen-cache FSTF protocol.",
+    "Trace-belief / TUSB utility provides complementary continuity-heavy evidence for future identity association and reacquisition.",
+    "External SAM2/CoTracker/Cutie comparisons define the boundary of STWM and show complementary long-gap/occlusion-heavy advantages, especially against CoTracker."
+  ],
+  "main_paper_forbidden_claims": [
+    "Raw-video end-to-end STWM training.",
+    "Full RGB video generation world model.",
+    "Dense semantic trace field.",
+    "Positive model-size scaling law for capacity.",
+    "Future trace coordinate or temporal order as a demonstrated load-bearing semantic mechanism.",
+    "Universal OOD dominance or universal cross-dataset generalization.",
+    "STWM beats SAM2/CoTracker overall external SOTA.",
+    "STWM is a SAM2/CoTracker plugin or reranker."
+  ],
+  "recommended_paper_mode": "start_overleaf_with_OSTF_appendix",
+  "next_step_choice": "start_overleaf_with_OSTF_appendix"
+}
