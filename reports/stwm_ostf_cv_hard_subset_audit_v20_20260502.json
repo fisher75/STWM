@@ -1,0 +1,226 @@
+{
+  "M128_H8": {
+    "all_metrics": {
+      "PCK_16px": 0.7448956316473491,
+      "PCK_32px": 0.8555764793252526,
+      "PCK_4px": 0.525578866403204,
+      "PCK_8px": 0.6338832453650903,
+      "anchor_centroid_L1_px": 60.87271499633789,
+      "endpoint_error_px": 31.421735763549805,
+      "item_count": 455,
+      "object_extent_iou": 0.8251403804913405,
+      "point_L1_px": 17.287643432617188,
+      "semantic_changed_top5": null,
+      "semantic_metric_note": "future semantic target is constant per object prototype in current OSTF teacher cache; changed/stable semantic split remains weak.",
+      "semantic_top1": 1.0,
+      "semantic_top5": 1.0,
+      "stable_semantic_preservation": null,
+      "visibility_F1": 0.9508580929024438
+    },
+    "models_on_top20_cv_hard": {
+      "m1_anchor": {
+        "endpoint_mean": null,
+        "extent_iou_mean": null,
+        "item_count": 91,
+        "point_l1_mean": 117.52758353097099
+      },
+      "v18_m128": {
+        "endpoint_mean": 134.82224263201704,
+        "extent_iou_mean": 0.5090893684112852,
+        "item_count": 91,
+        "point_l1_mean": 75.88918704776974
+      },
+      "v19_m128": {
+        "endpoint_mean": 134.75496002343985,
+        "extent_iou_mean": 0.5092029027920558,
+        "item_count": 91,
+        "point_l1_mean": 75.83944922227126
+      }
+    },
+    "per_dataset": {
+      "VIPSEG": {
+        "PCK_16px": 0.5104043816339177,
+        "PCK_32px": 0.6231634917144742,
+        "PCK_4px": 0.24544745837247886,
+        "PCK_8px": 0.38143402562616185,
+        "anchor_centroid_L1_px": 134.0502166748047,
+        "endpoint_error_px": 76.953369140625,
+        "item_count": 70,
+        "object_extent_iou": 0.5325625213515376,
+        "point_L1_px": 47.51777648925781,
+        "semantic_changed_top5": null,
+        "semantic_metric_note": "future semantic target is constant per object prototype in current OSTF teacher cache; changed/stable semantic split remains weak.",
+        "semantic_top1": 1.0,
+        "semantic_top5": 1.0,
+        "stable_semantic_preservation": null,
+        "visibility_F1": 0.8905336751340014
+      },
+      "VSPW": {
+        "PCK_16px": 0.780769595385975,
+        "PCK_32px": 0.8911324972553769,
+        "PCK_4px": 0.5684351519710829,
+        "PCK_8px": 0.6725045335975511,
+        "anchor_centroid_L1_px": 47.567718505859375,
+        "endpoint_error_px": 24.614614486694336,
+        "item_count": 385,
+        "object_extent_iou": 0.8744469442939172,
+        "point_L1_px": 12.662848472595215,
+        "semantic_changed_top5": null,
+        "semantic_metric_note": "future semantic target is constant per object prototype in current OSTF teacher cache; changed/stable semantic split remains weak.",
+        "semantic_top1": 1.0,
+        "semantic_top5": 1.0,
+        "stable_semantic_preservation": null,
+        "visibility_F1": 0.960589095950642
+      }
+    },
+    "top10_cv_hard_count": 46,
+    "top20_cv_hard_count": 91,
+    "top30_cv_hard_count": 137
+  },
+  "M512_H8": {
+    "all_metrics": {
+      "PCK_16px": 0.7377116893845518,
+      "PCK_32px": 0.8465791455824487,
+      "PCK_4px": 0.4685619764112519,
+      "PCK_8px": 0.6126252105224794,
+      "anchor_centroid_L1_px": 85.89753723144531,
+      "endpoint_error_px": 37.740760803222656,
+      "item_count": 496,
+      "object_extent_iou": 0.8503870771526503,
+      "point_L1_px": 18.531028747558594,
+      "semantic_changed_top5": null,
+      "semantic_metric_note": "future semantic target is constant per object prototype in current OSTF teacher cache; changed/stable semantic split remains weak.",
+      "semantic_top1": 1.0,
+      "semantic_top5": 1.0,
+      "stable_semantic_preservation": null,
+      "visibility_F1": 0.9439682076160714
+    },
+    "interaction_count": 100,
+    "models_on_interaction_subset": {
+      "m1_anchor": {
+        "endpoint_mean": null,
+        "extent_iou_mean": null,
+        "item_count": 100,
+        "point_l1_mean": 66.95543863296508
+      },
+      "v18_m512": {
+        "endpoint_mean": 111.5737446641922,
+        "extent_iou_mean": 0.6676041823047438,
+        "item_count": 100,
+        "point_l1_mean": 56.565066390037536
+      },
+      "v19_m512": {
+        "endpoint_mean": 111.59659507751465,
+        "extent_iou_mean": 0.667681698876695,
+        "item_count": 100,
+        "point_l1_mean": 56.58517293453217
+      }
+    },
+    "models_on_nonlinear_subset": {
+      "m1_anchor": {
+        "endpoint_mean": null,
+        "extent_iou_mean": null,
+        "item_count": 100,
+        "point_l1_mean": 97.30877132415772
+      },
+      "v18_m512": {
+        "endpoint_mean": 103.50500351786613,
+        "extent_iou_mean": 0.6559544745707396,
+        "item_count": 100,
+        "point_l1_mean": 55.41895332098007
+      },
+      "v19_m512": {
+        "endpoint_mean": 103.50337707400323,
+        "extent_iou_mean": 0.6562174932505391,
+        "item_count": 100,
+        "point_l1_mean": 55.42201598703861
+      }
+    },
+    "models_on_occlusion_subset": {
+      "m1_anchor": {
+        "endpoint_mean": null,
+        "extent_iou_mean": null,
+        "item_count": 229,
+        "point_l1_mean": 59.94079083854975
+      },
+      "v18_m512": {
+        "endpoint_mean": 63.491585476429705,
+        "extent_iou_mean": 0.7559420126300869,
+        "item_count": 229,
+        "point_l1_mean": 33.24177047675354
+      },
+      "v19_m512": {
+        "endpoint_mean": 63.482194100144646,
+        "extent_iou_mean": 0.7560379910253983,
+        "item_count": 229,
+        "point_l1_mean": 33.23932697392968
+      }
+    },
+    "models_on_top20_cv_hard": {
+      "m1_anchor": {
+        "endpoint_mean": null,
+        "extent_iou_mean": null,
+        "item_count": 100,
+        "point_l1_mean": 79.06383131980895
+      },
+      "v18_m512": {
+        "endpoint_mean": 146.25960311889648,
+        "extent_iou_mean": 0.6034887646012344,
+        "item_count": 100,
+        "point_l1_mean": 76.5317342376709
+      },
+      "v19_m512": {
+        "endpoint_mean": 146.28408348083497,
+        "extent_iou_mean": 0.603403734210248,
+        "item_count": 100,
+        "point_l1_mean": 76.55396282196045
+      }
+    },
+    "nonlinear_count": 100,
+    "occlusion_count": 229,
+    "per_dataset": {
+      "VSPW": {
+        "PCK_16px": 0.7377116893845518,
+        "PCK_32px": 0.8465791455824487,
+        "PCK_4px": 0.4685619764112519,
+        "PCK_8px": 0.6126252105224794,
+        "anchor_centroid_L1_px": 85.89753723144531,
+        "endpoint_error_px": 37.740760803222656,
+        "item_count": 496,
+        "object_extent_iou": 0.8503870771526503,
+        "point_L1_px": 18.531028747558594,
+        "semantic_changed_top5": null,
+        "semantic_metric_note": "future semantic target is constant per object prototype in current OSTF teacher cache; changed/stable semantic split remains weak.",
+        "semantic_top1": 1.0,
+        "semantic_top5": 1.0,
+        "stable_semantic_preservation": null,
+        "visibility_F1": 0.9439682076160714
+      }
+    },
+    "top10_cv_hard_count": 50,
+    "top20_cv_hard_count": 100,
+    "top30_cv_hard_count": 149
+  },
+  "audit_name": "stwm_ostf_cv_hard_subset_audit_v20",
+  "cv_distribution": {
+    "all_mean_point_l1": 0.02239936922482992,
+    "cv_point_l1_percentiles": {
+      "p50": 0.00947656948119402,
+      "p75": 0.026862775906920433,
+      "p90": 0.055514220148324966,
+      "p95": 0.08393293805420399
+    },
+    "easy80_mean_point_l1": 0.008729864310942392,
+    "hard20_error_share": 0.6888389600400069,
+    "hard20_mean_point_l1": 0.07653060868382454
+  },
+  "cv_hard_subset_available": true,
+  "cv_saturation_detected": true,
+  "generated_at_utc": "2026-05-05T04:05:54.365548+00:00",
+  "next_model_needs_context_features": true,
+  "notes": {
+    "all_average_metric_dominated_by_cv_easy_clips": false,
+    "semantic_target_status": "OSTF semantic prototype target remains mostly static; hard-subset decision is driven by point/visibility/extent behavior, not changed/stable semantic evidence."
+  },
+  "object_dense_value_visible_on_hard_subset": true
+}
