@@ -1,0 +1,602 @@
+{
+  "adapter_load_status": {
+    "load_consistent_with_official_infer": true,
+    "missing_key_count": 274,
+    "missing_keys_head": [
+      "ds_head_local.dpt.scratch.layer1_rn.weight",
+      "ds_head_local.dpt.scratch.layer2_rn.weight",
+      "ds_head_local.dpt.scratch.layer3_rn.weight",
+      "ds_head_local.dpt.scratch.layer4_rn.weight",
+      "ds_head_local.dpt.scratch.layer_rn.0.weight",
+      "ds_head_local.dpt.scratch.layer_rn.1.weight",
+      "ds_head_local.dpt.scratch.layer_rn.2.weight",
+      "ds_head_local.dpt.scratch.layer_rn.3.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.bias"
+    ],
+    "unexpected_key_count": 0,
+    "unexpected_keys_head": []
+  },
+  "adapter_matches_official_infer": true,
+  "audit_name": "stwm_traceanything_official_certification_v24",
+  "checkpoint_path": "/raid/chen034/workspace/stwm/models/checkpoints/traceanything/traceanything_pretrained.pt",
+  "clip_rows": [
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 2.942108154296875,
+        "ctrl_conf_shape_first": [
+          10,
+          384,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          384,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.0016243905993178487,
+        "pred_count": 11
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 11,
+      "kind": "official_demo",
+      "name": "cabinet",
+      "official_summary": {
+        "ctrl_conf_mean_first": 2.942108154296875,
+        "ctrl_conf_shape_first": [
+          10,
+          384,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          384,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.0016243905993178487,
+        "pred_count": 11
+      },
+      "peak_gpu_memory_bytes": 11309435904,
+      "raw_size": null,
+      "resized_size": null,
+      "runtime_seconds": 35.41630744934082,
+      "scale_xy": null
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 4.797945976257324,
+        "ctrl_conf_shape_first": [
+          10,
+          256,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          256,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.007314741145819426,
+        "pred_count": 2
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 2,
+      "kind": "official_demo",
+      "name": "corgi",
+      "official_summary": {
+        "ctrl_conf_mean_first": 4.797945976257324,
+        "ctrl_conf_shape_first": [
+          10,
+          256,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          256,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.007314741145819426,
+        "pred_count": 2
+      },
+      "peak_gpu_memory_bytes": 8835842560,
+      "raw_size": null,
+      "resized_size": null,
+      "runtime_seconds": 5.378968000411987,
+      "scale_xy": null
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 8.508027076721191,
+        "ctrl_conf_shape_first": [
+          10,
+          400,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          400,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.006041663698852062,
+        "pred_count": 2
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 2,
+      "kind": "official_demo",
+      "name": "dog",
+      "official_summary": {
+        "ctrl_conf_mean_first": 8.508027076721191,
+        "ctrl_conf_shape_first": [
+          10,
+          400,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          400,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.006041663698852062,
+        "pred_count": 2
+      },
+      "peak_gpu_memory_bytes": 6482822656,
+      "raw_size": null,
+      "resized_size": null,
+      "runtime_seconds": 5.655682563781738,
+      "scale_xy": null
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 5.802446365356445,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.018167169764637947,
+        "pred_count": 30
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 30,
+      "kind": "official_demo",
+      "name": "elephant",
+      "official_summary": {
+        "ctrl_conf_mean_first": 5.802446365356445,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.018167169764637947,
+        "pred_count": 30
+      },
+      "peak_gpu_memory_bytes": 20341129216,
+      "raw_size": null,
+      "resized_size": null,
+      "runtime_seconds": 125.73771739006042,
+      "scale_xy": null
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 8.43083667755127,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.009973435662686825,
+        "pred_count": 31
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 31,
+      "kind": "official_demo",
+      "name": "monkeys",
+      "official_summary": {
+        "ctrl_conf_mean_first": 8.43083667755127,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.009973435662686825,
+        "pred_count": 31
+      },
+      "peak_gpu_memory_bytes": 26511245312,
+      "raw_size": null,
+      "resized_size": null,
+      "runtime_seconds": 125.74324893951416,
+      "scale_xy": null
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 1.6309453248977661,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.012954751960933208,
+        "pred_count": 16
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 16,
+      "kind": "stwm_clip",
+      "name": "VSPW::322_rUWndTh2COM",
+      "official_summary": {
+        "ctrl_conf_mean_first": 1.6309453248977661,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.012954751960933208,
+        "pred_count": 16
+      },
+      "peak_gpu_memory_bytes": 22314618368,
+      "raw_size": [
+        3840,
+        2160
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "runtime_seconds": 59.89826488494873,
+      "scale_xy": [
+        0.13333333333333333,
+        0.13333333333333333
+      ]
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 3.348764419555664,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.011511199176311493,
+        "pred_count": 16
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 16,
+      "kind": "stwm_clip",
+      "name": "VSPW::1230_nBNHSOn7N1s",
+      "official_summary": {
+        "ctrl_conf_mean_first": 3.348764419555664,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.011511199176311493,
+        "pred_count": 16
+      },
+      "peak_gpu_memory_bytes": 14211878400,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "runtime_seconds": 52.27725601196289,
+      "scale_xy": [
+        0.26666666666666666,
+        0.26666666666666666
+      ]
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 16.22386360168457,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.0036922928411513567,
+        "pred_count": 16
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 16,
+      "kind": "stwm_clip",
+      "name": "VSPW::1747_LYWGYsBrLa4",
+      "official_summary": {
+        "ctrl_conf_mean_first": 16.22386360168457,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.0036922928411513567,
+        "pred_count": 16
+      },
+      "peak_gpu_memory_bytes": 14209256960,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "runtime_seconds": 52.41197991371155,
+      "scale_xy": [
+        0.26666666666666666,
+        0.26666666666666666
+      ]
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 4.000096797943115,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.004103133920580149,
+        "pred_count": 16
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 16,
+      "kind": "stwm_clip",
+      "name": "VIPSEG::1095_W39pB_sKRGs",
+      "official_summary": {
+        "ctrl_conf_mean_first": 4.000096797943115,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.004103133920580149,
+        "pred_count": 16
+      },
+      "peak_gpu_memory_bytes": 14219841024,
+      "raw_size": [
+        1920,
+        1080
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "runtime_seconds": 51.59527778625488,
+      "scale_xy": [
+        0.26666666666666666,
+        0.26666666666666666
+      ]
+    },
+    {
+      "adapter_summary": {
+        "ctrl_conf_mean_first": 1.3666541576385498,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.004124648869037628,
+        "pred_count": 16
+      },
+      "comparison": {
+        "max_abs_ctrl_conf_diff": 0.0,
+        "max_abs_ctrl_pts3d_diff": 0.0,
+        "pred_count_match": true,
+        "shapes_match": true
+      },
+      "frame_count": 16,
+      "kind": "stwm_clip",
+      "name": "VSPW::1881_8wLFTgJlOTs",
+      "official_summary": {
+        "ctrl_conf_mean_first": 1.3666541576385498,
+        "ctrl_conf_shape_first": [
+          10,
+          288,
+          512
+        ],
+        "ctrl_pts3d_shape_first": [
+          10,
+          288,
+          512,
+          3
+        ],
+        "ctrl_pts3d_variance_first": 0.004124648869037628,
+        "pred_count": 16
+      },
+      "peak_gpu_memory_bytes": 14224494080,
+      "raw_size": [
+        1280,
+        720
+      ],
+      "resized_size": [
+        512,
+        288
+      ],
+      "runtime_seconds": 51.3067843914032,
+      "scale_xy": [
+        0.4,
+        0.4
+      ]
+    }
+  ],
+  "device": "cuda",
+  "exact_blocker": null,
+  "generated_at_utc": "2026-05-05T12:53:22.131349+00:00",
+  "gpu_id": "2",
+  "load_consistent_with_official_infer": false,
+  "missing_key_count_274_is_safe_explanation": "empirically_safe_for_official_non_local_inference_under_current_eval_yaml: official_and_adapter_outputs_match_exactly_on_5_official_demo_clips_plus_5_STWM_clips; missing keys belong to unused local-head weights in this inference path.",
+  "official_commit_hash": "da7530da7512d341ac13510f56c4e0de766d7ab3",
+  "official_load_consistent": true,
+  "official_load_status": {
+    "load_consistent_with_official_infer": true,
+    "missing_key_count": 274,
+    "missing_keys_all_safe": false,
+    "missing_keys_head": [
+      "ds_head_local.dpt.scratch.layer1_rn.weight",
+      "ds_head_local.dpt.scratch.layer2_rn.weight",
+      "ds_head_local.dpt.scratch.layer3_rn.weight",
+      "ds_head_local.dpt.scratch.layer4_rn.weight",
+      "ds_head_local.dpt.scratch.layer_rn.0.weight",
+      "ds_head_local.dpt.scratch.layer_rn.1.weight",
+      "ds_head_local.dpt.scratch.layer_rn.2.weight",
+      "ds_head_local.dpt.scratch.layer_rn.3.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.bias"
+    ],
+    "unexpected_key_count": 0,
+    "unexpected_keys_head": []
+  },
+  "official_repo_path": "/raid/chen034/workspace/stwm/third_party/TraceAnything",
+  "peak_gpu_memory_bytes_max": 26511245312,
+  "processed_demo_clip_count": 5,
+  "processed_stwm_clip_count": 5,
+  "runtime_seconds": 586.5151126384735
+}

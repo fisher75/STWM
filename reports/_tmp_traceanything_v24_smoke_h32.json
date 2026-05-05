@@ -1,0 +1,105 @@
+{
+  "audit_name": "stwm_traceanything_hardbench_cache_v24_shard",
+  "checkpoint_path": "/raid/chen034/workspace/stwm/models/checkpoints/traceanything/traceanything_pretrained.pt",
+  "comparison_to_cotracker_same_clips": {
+    "M128": {
+      "matched_clip_count": 0
+    },
+    "M512": {
+      "matched_clip_count": 0
+    }
+  },
+  "device": "cuda",
+  "estimated_visibility_quality_audit": "confidence_plus_trajectory_consistency_teacher_only",
+  "failed_clip_count": 4,
+  "failed_clip_reasons": {
+    "IndexError('index 16 is out of bounds for axis 0 with size 16')": 4
+  },
+  "failures": [
+    {
+      "dataset": "VSPW",
+      "item_key": "VSPW::1008_cjuVdt1f04I",
+      "reason": "IndexError('index 16 is out of bounds for axis 0 with size 16')",
+      "split": "train"
+    },
+    {
+      "dataset": "VSPW",
+      "item_key": "VSPW::1016_8J41CsGYhNI",
+      "reason": "IndexError('index 16 is out of bounds for axis 0 with size 16')",
+      "split": "train"
+    },
+    {
+      "dataset": "VSPW",
+      "item_key": "VSPW::1030_J_m6vc8gtvQ",
+      "reason": "IndexError('index 16 is out of bounds for axis 0 with size 16')",
+      "split": "train"
+    },
+    {
+      "dataset": "VSPW",
+      "item_key": "VSPW::1038_EDWTSDKkbk4",
+      "reason": "IndexError('index 16 is out of bounds for axis 0 with size 16')",
+      "split": "val"
+    }
+  ],
+  "generated_at_utc": "2026-05-05T12:41:08.128269+00:00",
+  "gpu_id": "3",
+  "horizon": 32,
+  "m_values": [
+    128,
+    512
+  ],
+  "mean_same_trajectory_fraction": 1.0,
+  "mean_valid_point_ratio": 0.0,
+  "mean_visibility_coverage": 0.0,
+  "model_input_observed_only": true,
+  "model_load_status": {
+    "load_consistent_with_official_infer": false,
+    "missing_key_count": 274,
+    "missing_keys_head": [
+      "ds_head_local.dpt.scratch.layer1_rn.weight",
+      "ds_head_local.dpt.scratch.layer2_rn.weight",
+      "ds_head_local.dpt.scratch.layer3_rn.weight",
+      "ds_head_local.dpt.scratch.layer4_rn.weight",
+      "ds_head_local.dpt.scratch.layer_rn.0.weight",
+      "ds_head_local.dpt.scratch.layer_rn.1.weight",
+      "ds_head_local.dpt.scratch.layer_rn.2.weight",
+      "ds_head_local.dpt.scratch.layer_rn.3.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet1.out_conv.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit1.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv1.bias",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.weight",
+      "ds_head_local.dpt.scratch.refinenet1.resConfUnit2.conv2.bias",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.weight",
+      "ds_head_local.dpt.scratch.refinenet2.out_conv.bias"
+    ],
+    "unexpected_key_count": 0,
+    "unexpected_keys_head": []
+  },
+  "native_visibility_available": false,
+  "num_shards": 1,
+  "official_commit_hash": "da7530da7512d341ac13510f56c4e0de766d7ab3",
+  "official_repo_path": "/raid/chen034/workspace/stwm/third_party/TraceAnything",
+  "peak_gpu_memory_bytes_max": 0,
+  "per_subset_counts": {},
+  "point_count": 0,
+  "processed_clip_count": 0,
+  "processed_dataset_counts": {},
+  "processed_split_counts": {},
+  "rows": [],
+  "runtime_seconds": 437.7293417453766,
+  "selected_clip_count_for_this_shard": 4,
+  "selected_clip_target_count": 4,
+  "selection_horizon": 64,
+  "shard_index": 0,
+  "target_side_object_box_search_used_teacher_only": true,
+  "teacher_source": "traceanything_official_trajectory_field",
+  "teacher_target_uses_full_clip": true,
+  "teacher_target_uses_full_clip_for_target_extraction_only": true,
+  "traceanything_object_tracks_valid": false,
+  "traceanything_teacher_runnable": false
+}

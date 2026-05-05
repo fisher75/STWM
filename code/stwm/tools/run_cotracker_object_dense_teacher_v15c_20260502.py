@@ -124,7 +124,14 @@ def _frame_sequence(anchor: Path, total: int = 16, preferred_query_frame: int = 
     if not anchor.exists():
         return None, None, "anchor_frame_missing"
     exts = {".jpg", ".jpeg", ".png"}
-    frames = sorted([p for p in anchor.parent.iterdir() if p.suffix.lower() in exts], key=lambda p: (_numeric_stem(p) is None, _numeric_stem(p) or 0, p.name))
+    frames = sorted(
+        [
+            p
+            for p in anchor.parent.iterdir()
+            if p.suffix.lower() in exts and not p.name.startswith("._") and not p.name.startswith(".")
+        ],
+        key=lambda p: (_numeric_stem(p) is None, _numeric_stem(p) or 0, p.name),
+    )
     try:
         idx = frames.index(anchor)
     except ValueError:
