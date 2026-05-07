@@ -1,0 +1,327 @@
+{
+  "combo_reports": {
+    "M128_H32": {
+      "input_counts": {
+        "test": 257,
+        "train": 1207,
+        "val": 205
+      },
+      "input_dataset_counts": {
+        "test": {
+          "VIPSEG": 58,
+          "VSPW": 199
+        },
+        "train": {
+          "VIPSEG": 256,
+          "VSPW": 951
+        },
+        "val": {
+          "VIPSEG": 55,
+          "VSPW": 150
+        }
+      },
+      "prior_metric_distributions_on_selected_test": {
+        "last_visible_minFDE_px": {
+          "count": 90,
+          "max": 514.1226196289062,
+          "mean": 183.83933499654134,
+          "median": 162.1793441772461,
+          "p10": 20.623879432678226,
+          "p25": 91.85346221923828,
+          "p75": 275.7140579223633,
+          "p80": 290.5579772949219,
+          "p90": 361.0022705078125,
+          "p95": 413.023518371582,
+          "p99": 450.5346890258789
+        },
+        "visibility_aware_damped_minFDE_px": {
+          "count": 90,
+          "max": 514.1226196289062,
+          "mean": 183.83933499654134,
+          "median": 162.1793441772461,
+          "p10": 20.623879432678226,
+          "p25": 91.85346221923828,
+          "p75": 275.7140579223633,
+          "p80": 290.5579772949219,
+          "p90": 361.0022705078125,
+          "p95": 413.023518371582,
+          "p99": 450.5346890258789
+        }
+      },
+      "selected_counts": {
+        "test": 90,
+        "train": 633,
+        "val": 100
+      },
+      "selected_dataset_counts": {
+        "test": {
+          "VIPSEG": 24,
+          "VSPW": 66
+        },
+        "train": {
+          "VIPSEG": 144,
+          "VSPW": 489
+        },
+        "val": {
+          "VIPSEG": 22,
+          "VSPW": 78
+        }
+      },
+      "thresholds": {
+        "endpoint_displacement_from_last_visible_px": 151.7336959838867,
+        "last_visible_minFDE_px": 187.53939056396484,
+        "motion_quantile": 70.0,
+        "nonlinear_curvature_px": 47.18617424368858,
+        "outlier_last_visible_minFDE_px": 650.3766510009773,
+        "selection_source": "train_val_only",
+        "target_extraction_uncertainty": 1.0910840286867367,
+        "train_val_valid_count": 1138,
+        "valid": true
+      }
+    },
+    "M128_H64": {
+      "input_counts": {
+        "test": 54,
+        "train": 275,
+        "val": 47
+      },
+      "input_dataset_counts": {
+        "test": {
+          "VSPW": 54
+        },
+        "train": {
+          "VSPW": 275
+        },
+        "val": {
+          "VSPW": 47
+        }
+      },
+      "prior_metric_distributions_on_selected_test": {
+        "last_visible_minFDE_px": {
+          "count": 7,
+          "max": 139.9816131591797,
+          "mean": 79.8995794568743,
+          "median": 87.93244171142578,
+          "p10": 22.160114669799803,
+          "p25": 31.064024925231934,
+          "p75": 125.24883270263672,
+          "p80": 132.94207763671878,
+          "p90": 138.83518981933594,
+          "p95": 139.4084014892578,
+          "p99": 139.86697082519532
+        },
+        "visibility_aware_damped_minFDE_px": {
+          "count": 7,
+          "max": 139.9816131591797,
+          "mean": 79.8995794568743,
+          "median": 87.93244171142578,
+          "p10": 22.160114669799803,
+          "p25": 31.064024925231934,
+          "p75": 125.24883270263672,
+          "p80": 132.94207763671878,
+          "p90": 138.83518981933594,
+          "p95": 139.4084014892578,
+          "p99": 139.86697082519532
+        }
+      },
+      "selected_counts": {
+        "test": 7,
+        "train": 162,
+        "val": 22
+      },
+      "selected_dataset_counts": {
+        "test": {
+          "VSPW": 7
+        },
+        "train": {
+          "VSPW": 162
+        },
+        "val": {
+          "VSPW": 22
+        }
+      },
+      "thresholds": {
+        "endpoint_displacement_from_last_visible_px": 105.74367675781257,
+        "last_visible_minFDE_px": 136.28447723388678,
+        "motion_quantile": 55.0,
+        "nonlinear_curvature_px": 49.51188936829569,
+        "outlier_last_visible_minFDE_px": 575.3194598388669,
+        "selection_source": "train_val_only",
+        "target_extraction_uncertainty": 1.129710856203594,
+        "train_val_valid_count": 255,
+        "valid": true
+      }
+    }
+  },
+  "external_official_dataset_preflight": {
+    "Kubric": {
+      "available": false,
+      "exact_access_blocker": "no official local Kubric data directory found under checked roots",
+      "existing_paths": []
+    },
+    "MatrixCity": {
+      "available": false,
+      "exact_access_blocker": "no official local MatrixCity data directory found under checked roots",
+      "existing_paths": []
+    },
+    "PointOdyssey": {
+      "available": false,
+      "exact_access_blocker": "no official local PointOdyssey data directory found under checked roots",
+      "existing_paths": []
+    },
+    "Spring": {
+      "available": false,
+      "exact_access_blocker": "no official local Spring data directory found under checked roots",
+      "existing_paths": []
+    },
+    "TAP-Vid": {
+      "available": false,
+      "exact_access_blocker": "no official local TAP-Vid data directory found under checked roots",
+      "existing_paths": []
+    },
+    "TAPVid-3D": {
+      "available": false,
+      "exact_access_blocker": "no official local TAPVid-3D data directory found under checked roots",
+      "existing_paths": []
+    }
+  },
+  "generated_at_utc": "2026-05-07T16:25:59.859224+00:00",
+  "h32_main_ready": false,
+  "h64_main_ready": false,
+  "h64_stress_only": true,
+  "main_ready_note": "TraceAnything anti-prior split is diagnostic until H32 count/balance improves or external GT benchmark is integrated.",
+  "manifest_dir": "manifests/ostf_v29_antiprior",
+  "manifest_name": "stwm_ostf_v29_antiprior_hardbench_manifest",
+  "manifest_paths": {
+    "test": "manifests/ostf_v29_antiprior/test.json",
+    "test_h32_mixed": "manifests/ostf_v29_antiprior/test_h32_mixed.json",
+    "test_h64_motion": "manifests/ostf_v29_antiprior/test_h64_motion.json",
+    "test_nonlinear_large_disp": "manifests/ostf_v29_antiprior/test_nonlinear_large_disp.json",
+    "test_occlusion_reappearance": "manifests/ostf_v29_antiprior/test_occlusion_reappearance.json",
+    "test_semantic_confuser": "manifests/ostf_v29_antiprior/test_semantic_confuser.json",
+    "train": "manifests/ostf_v29_antiprior/train.json",
+    "val": "manifests/ostf_v29_antiprior/val.json"
+  },
+  "no_test_selection_rule": "All thresholds are selected on train/val only; test is filtered once by the frozen rule.",
+  "per_dataset_counts": {
+    "test": {
+      "VIPSEG": 24,
+      "VSPW": 73
+    },
+    "train": {
+      "VIPSEG": 144,
+      "VSPW": 651
+    },
+    "val": {
+      "VIPSEG": 22,
+      "VSPW": 100
+    }
+  },
+  "per_subset_counts": {
+    "test_h32_mixed": {
+      "by_combo": {
+        "M128_H32": 90
+      },
+      "by_dataset": {
+        "VIPSEG": 24,
+        "VSPW": 66
+      },
+      "by_subset": {
+        "anti_prior_motion": 41,
+        "extraction_uncertainty": 30,
+        "last_visible_hard": 42,
+        "nonlinear_large_disp": 24,
+        "occlusion_reappearance": 60,
+        "semantic_confuser": 10
+      },
+      "item_count": 90
+    },
+    "test_h64_motion": {
+      "by_combo": {
+        "M128_H64": 2
+      },
+      "by_dataset": {
+        "VSPW": 2
+      },
+      "by_subset": {
+        "anti_prior_motion": 2,
+        "last_visible_hard": 2,
+        "occlusion_reappearance": 2
+      },
+      "item_count": 2
+    },
+    "test_nonlinear_large_disp": {
+      "by_combo": {
+        "M128_H32": 24
+      },
+      "by_dataset": {
+        "VIPSEG": 4,
+        "VSPW": 20
+      },
+      "by_subset": {
+        "anti_prior_motion": 15,
+        "extraction_uncertainty": 9,
+        "last_visible_hard": 16,
+        "nonlinear_large_disp": 24,
+        "occlusion_reappearance": 18
+      },
+      "item_count": 24
+    },
+    "test_occlusion_reappearance": {
+      "by_combo": {
+        "M128_H32": 60,
+        "M128_H64": 4
+      },
+      "by_dataset": {
+        "VIPSEG": 17,
+        "VSPW": 47
+      },
+      "by_subset": {
+        "anti_prior_motion": 36,
+        "extraction_uncertainty": 15,
+        "last_visible_hard": 37,
+        "nonlinear_large_disp": 18,
+        "occlusion_reappearance": 64,
+        "semantic_confuser": 4
+      },
+      "item_count": 64
+    },
+    "test_semantic_confuser": {
+      "by_combo": {
+        "M128_H32": 10
+      },
+      "by_dataset": {
+        "VSPW": 10
+      },
+      "by_subset": {
+        "anti_prior_motion": 4,
+        "extraction_uncertainty": 1,
+        "last_visible_hard": 4,
+        "occlusion_reappearance": 4,
+        "semantic_confuser": 10
+      },
+      "item_count": 10
+    }
+  },
+  "rejected_counts": {
+    "M128_H32": {
+      "excluded_impossible_or_extraction_corrupt_outlier": 6,
+      "not_antiprior_hard_by_train_val_thresholds": 505,
+      "valid_future_point_ratio_lt_0.4": 335
+    },
+    "M128_H64": {
+      "excluded_impossible_or_extraction_corrupt_outlier": 2,
+      "not_antiprior_hard_by_train_val_thresholds": 101,
+      "valid_future_point_ratio_lt_0.4": 82
+    }
+  },
+  "threshold_auc_metrics_defined": [
+    "threshold_auc_endpoint_16_32_64_128"
+  ],
+  "total_item_counts": {
+    "test": 97,
+    "train": 795,
+    "val": 122
+  },
+  "v29_benchmark_main_ready": false
+}
