@@ -1,13 +1,79 @@
 {
   "bootstrap_name": "stwm_ostf_v28_multiseed_bootstrap",
   "comparisons": {
+    "H64_dense_points_load_bearing_hard_minfde": {
+      "ci95": [
+        0.0009601043932365649,
+        0.002351731965036103
+      ],
+      "item_count": 33,
+      "mean_delta": 0.0016013636733546402,
+      "metric": "minFDE_K_px",
+      "subset_key": "last_observed_hard_top20",
+      "zero_excluded": true
+    },
+    "H64_dense_shape_extent_load_bearing_hard_iou": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "item_count": 33,
+      "mean_delta": 0.0,
+      "metric": "top1_object_extent_iou",
+      "subset_key": "last_observed_hard_top20",
+      "zero_excluded": false
+    },
+    "H64_residual_modes_load_bearing_hard_minfde": {
+      "ci95": [
+        0.0011874025518243962,
+        0.002655220031738281
+      ],
+      "item_count": 33,
+      "mean_delta": 0.0018688548694957387,
+      "metric": "minFDE_K_px",
+      "subset_key": "last_observed_hard_top20",
+      "zero_excluded": true
+    },
+    "H64_semantic_field_load_bearing_top5": {
+      "ci95": [
+        0.43209876543209874,
+        0.5802469135802469
+      ],
+      "item_count": 162,
+      "mean_delta": 0.5061728395061729,
+      "metric": "semantic_top5",
+      "subset_key": null,
+      "zero_excluded": true
+    },
+    "H64_semantic_trace_dynamics_hard_minfde": {
+      "ci95": [
+        0.00010549660884972775,
+        0.0016819693825461646
+      ],
+      "item_count": 33,
+      "mean_delta": 0.0008624683726917614,
+      "metric": "minFDE_K_px",
+      "subset_key": "last_observed_hard_top20",
+      "zero_excluded": true
+    },
+    "H64_vs_prior_only_hard_minfde": {
+      "ci95": [
+        0.0011899254538796165,
+        0.002657673575661399
+      ],
+      "item_count": 33,
+      "mean_delta": 0.0018712824041193182,
+      "metric": "minFDE_K_px",
+      "subset_key": "last_observed_hard_top20",
+      "zero_excluded": true
+    },
     "M128_H32_vs_last_observed_copy_all_minfde": {
       "ci95": [
-        0.0007827200778263553,
-        1.0560216271459815
+        0.10234345661063139,
+        0.6235788682694565
       ],
-      "item_count": 257,
-      "mean_delta": 0.337976778527642,
+      "item_count": 1285,
+      "mean_delta": 0.33781367480059077,
       "metric": "minFDE_K_px",
       "subset_key": null,
       "zero_excluded": true
@@ -17,7 +83,7 @@
         0.0,
         0.0
       ],
-      "item_count": 257,
+      "item_count": 1285,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": null,
@@ -25,11 +91,11 @@
     },
     "M128_H32_vs_last_observed_copy_hard_minfde": {
       "ci95": [
-        0.0011156669029822716,
-        4.788066159761869
+        0.5033651102506197,
+        3.206272449493408
       ],
-      "item_count": 52,
-      "mean_delta": 1.667313208946815,
+      "item_count": 260,
+      "mean_delta": 1.6670649601862981,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": true
@@ -39,7 +105,7 @@
         0.0,
         0.0
       ],
-      "item_count": 52,
+      "item_count": 260,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -47,21 +113,21 @@
     },
     "M128_H32_vs_last_visible_copy_all_minfde": {
       "ci95": [
-        1.5039745859134985,
-        5.769757920805119
+        2.5374018022568774,
+        4.350338176428576
       ],
-      "item_count": 257,
-      "mean_delta": 3.4304914734242957,
+      "item_count": 1285,
+      "mean_delta": 3.430328369697244,
       "metric": "minFDE_K_px",
       "subset_key": null,
       "zero_excluded": true
     },
     "M128_H32_vs_last_visible_copy_all_miss32": {
       "ci95": [
-        -0.027237354085603113,
-        0.007782101167315175
+        -0.01634241245136187,
+        0.0
       ],
-      "item_count": 257,
+      "item_count": 1285,
       "mean_delta": -0.007782101167315175,
       "metric": "MissRate_32px",
       "subset_key": null,
@@ -69,11 +135,11 @@
     },
     "M128_H32_vs_last_visible_copy_hard_minfde": {
       "ci95": [
-        4.9581464547377365,
-        18.229128815577578
+        7.962483323904184,
+        14.070579649118276
       ],
-      "item_count": 52,
-      "mean_delta": 10.833057697002705,
+      "item_count": 260,
+      "mean_delta": 10.832809448242188,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": true
@@ -83,7 +149,7 @@
         0.0,
         0.0
       ],
-      "item_count": 52,
+      "item_count": 260,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -91,21 +157,21 @@
     },
     "M128_H32_vs_median_object_anchor_copy_all_minfde": {
       "ci95": [
-        1.503974624969616,
-        5.7697581762933545
+        2.5374017805672806,
+        4.350338234929259
       ],
-      "item_count": 257,
-      "mean_delta": 3.4304914993998605,
+      "item_count": 1285,
+      "mean_delta": 3.4303283956728094,
       "metric": "minFDE_K_px",
       "subset_key": null,
       "zero_excluded": true
     },
     "M128_H32_vs_median_object_anchor_copy_all_miss32": {
       "ci95": [
-        -0.027237354085603113,
-        0.007782101167315175
+        -0.01634241245136187,
+        0.0
       ],
-      "item_count": 257,
+      "item_count": 1285,
       "mean_delta": -0.007782101167315175,
       "metric": "MissRate_32px",
       "subset_key": null,
@@ -113,11 +179,11 @@
     },
     "M128_H32_vs_median_object_anchor_copy_hard_minfde": {
       "ci95": [
-        4.958146425393911,
-        18.229128815577578
+        7.962482854402983,
+        14.070579068110538
       ],
-      "item_count": 52,
-      "mean_delta": 10.833057110126202,
+      "item_count": 260,
+      "mean_delta": 10.832808861365685,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": true
@@ -127,7 +193,7 @@
         0.0,
         0.0
       ],
-      "item_count": 52,
+      "item_count": 260,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -135,21 +201,21 @@
     },
     "M128_H32_vs_visibility_aware_damped_velocity_all_minfde": {
       "ci95": [
-        1.5039745859134985,
-        5.769757920805119
+        2.5374018022568774,
+        4.350338176428576
       ],
-      "item_count": 257,
-      "mean_delta": 3.4304914734242957,
+      "item_count": 1285,
+      "mean_delta": 3.430328369697244,
       "metric": "minFDE_K_px",
       "subset_key": null,
       "zero_excluded": true
     },
     "M128_H32_vs_visibility_aware_damped_velocity_all_miss32": {
       "ci95": [
-        -0.027237354085603113,
-        0.007782101167315175
+        -0.01634241245136187,
+        0.0
       ],
-      "item_count": 257,
+      "item_count": 1285,
       "mean_delta": -0.007782101167315175,
       "metric": "MissRate_32px",
       "subset_key": null,
@@ -157,11 +223,11 @@
     },
     "M128_H32_vs_visibility_aware_damped_velocity_hard_minfde": {
       "ci95": [
-        4.9581464547377365,
-        18.229128815577578
+        7.962483323904184,
+        14.070579649118276
       ],
-      "item_count": 52,
-      "mean_delta": 10.833057697002705,
+      "item_count": 260,
+      "mean_delta": 10.832809448242188,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": true
@@ -171,7 +237,7 @@
         0.0,
         0.0
       ],
-      "item_count": 52,
+      "item_count": 260,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -179,11 +245,11 @@
     },
     "M128_H64_vs_last_observed_copy_all_minfde": {
       "ci95": [
-        0.000750735291728267,
-        0.0018221422478004736
+        0.0009293143837540238,
+        0.0013382489592940717
       ],
-      "item_count": 54,
-      "mean_delta": 0.0012768551155372902,
+      "item_count": 270,
+      "mean_delta": 0.0011260756739863644,
       "metric": "minFDE_K_px",
       "subset_key": null,
       "zero_excluded": true
@@ -193,7 +259,7 @@
         0.0,
         0.0
       ],
-      "item_count": 54,
+      "item_count": 270,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": null,
@@ -201,11 +267,11 @@
     },
     "M128_H64_vs_last_observed_copy_hard_minfde": {
       "ci95": [
-        0.0011006268587979405,
-        0.004292964935302734
+        0.0014293393221768466,
+        0.002483598535711115
       ],
-      "item_count": 11,
-      "mean_delta": 0.0026630054820667615,
+      "item_count": 55,
+      "mean_delta": 0.0019136602228338067,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": true
@@ -215,7 +281,7 @@
         0.0,
         0.0
       ],
-      "item_count": 11,
+      "item_count": 55,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -223,33 +289,33 @@
     },
     "M128_H64_vs_last_visible_copy_all_minfde": {
       "ci95": [
-        -0.995825449625651,
-        0.08287901856281127
+        -0.6973972024078723,
+        -0.21026786272172585
       ],
-      "item_count": 54,
-      "mean_delta": -0.45512518617841935,
+      "item_count": 270,
+      "mean_delta": -0.45527596561997025,
       "metric": "minFDE_K_px",
       "subset_key": null,
-      "zero_excluded": false
+      "zero_excluded": true
     },
     "M128_H64_vs_last_visible_copy_all_miss32": {
       "ci95": [
-        -0.14814814814814814,
-        0.018518518518518517
+        -0.08888888888888889,
+        -0.022222222222222223
       ],
-      "item_count": 54,
+      "item_count": 270,
       "mean_delta": -0.05555555555555555,
       "metric": "MissRate_32px",
       "subset_key": null,
-      "zero_excluded": false
+      "zero_excluded": true
     },
     "M128_H64_vs_last_visible_copy_hard_minfde": {
       "ci95": [
-        -1.6616347833113236,
-        1.0064344926313917
+        -0.922444638338956,
+        0.2984263974970035
       ],
-      "item_count": 11,
-      "mean_delta": -0.34177433360706677,
+      "item_count": 55,
+      "mean_delta": -0.3425236788662997,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": false
@@ -259,7 +325,7 @@
         0.0,
         0.0
       ],
-      "item_count": 11,
+      "item_count": 55,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -267,33 +333,33 @@
     },
     "M128_H64_vs_median_object_anchor_copy_all_minfde": {
       "ci95": [
-        -0.9958249429861704,
-        0.08287922563376238
+        -0.6973971175043672,
+        -0.2102676499552198
       ],
-      "item_count": 54,
-      "mean_delta": -0.4551249654204757,
+      "item_count": 270,
+      "mean_delta": -0.45527574486202665,
       "metric": "minFDE_K_px",
       "subset_key": null,
-      "zero_excluded": false
+      "zero_excluded": true
     },
     "M128_H64_vs_median_object_anchor_copy_all_miss32": {
       "ci95": [
-        -0.14814814814814814,
-        0.018518518518518517
+        -0.08888888888888889,
+        -0.022222222222222223
       ],
-      "item_count": 54,
+      "item_count": 270,
       "mean_delta": -0.05555555555555555,
       "metric": "MissRate_32px",
       "subset_key": null,
-      "zero_excluded": false
+      "zero_excluded": true
     },
     "M128_H64_vs_median_object_anchor_copy_hard_minfde": {
       "ci95": [
-        -1.6616340897300026,
-        1.0064345273104578
+        -0.9224440626664595,
+        0.2984273719787595
       ],
-      "item_count": 11,
-      "mean_delta": -0.34177364002574573,
+      "item_count": 55,
+      "mean_delta": -0.3425229852849787,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": false
@@ -303,7 +369,7 @@
         0.0,
         0.0
       ],
-      "item_count": 11,
+      "item_count": 55,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
@@ -311,33 +377,33 @@
     },
     "M128_H64_vs_visibility_aware_damped_velocity_all_minfde": {
       "ci95": [
-        -0.995825449625651,
-        0.08287901856281127
+        -0.6973972024078723,
+        -0.21026786272172585
       ],
-      "item_count": 54,
-      "mean_delta": -0.45512518617841935,
+      "item_count": 270,
+      "mean_delta": -0.45527596561997025,
       "metric": "minFDE_K_px",
       "subset_key": null,
-      "zero_excluded": false
+      "zero_excluded": true
     },
     "M128_H64_vs_visibility_aware_damped_velocity_all_miss32": {
       "ci95": [
-        -0.14814814814814814,
-        0.018518518518518517
+        -0.08888888888888889,
+        -0.022222222222222223
       ],
-      "item_count": 54,
+      "item_count": 270,
       "mean_delta": -0.05555555555555555,
       "metric": "MissRate_32px",
       "subset_key": null,
-      "zero_excluded": false
+      "zero_excluded": true
     },
     "M128_H64_vs_visibility_aware_damped_velocity_hard_minfde": {
       "ci95": [
-        -1.6616347833113236,
-        1.0064344926313917
+        -0.922444638338956,
+        0.2984263974970035
       ],
-      "item_count": 11,
-      "mean_delta": -0.34177433360706677,
+      "item_count": 55,
+      "mean_delta": -0.3425236788662997,
       "metric": "minFDE_K_px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": false
@@ -347,13 +413,13 @@
         0.0,
         0.0
       ],
-      "item_count": 11,
+      "item_count": 55,
       "mean_delta": 0.0,
       "metric": "MissRate_32px",
       "subset_key": "last_observed_hard_top20",
       "zero_excluded": false
     }
   },
-  "generated_at_utc": "2026-05-07T11:11:58.777603+00:00",
-  "partial": true
+  "generated_at_utc": "2026-05-07T15:47:14.848032+00:00",
+  "partial": false
 }
