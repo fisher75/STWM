@@ -1,0 +1,198 @@
+{
+  "H64_seed42_stress_result_exists": true,
+  "H64_seed42_test_metrics": {
+    "BestOfK_PCK_16px": 0.42972692303777754,
+    "BestOfK_PCK_32px": 0.67784895498311,
+    "BestOfK_PCK_8px": 0.2562938720782848,
+    "MissRate_16px": 0.7962962962962963,
+    "MissRate_32px": 0.6296296296296297,
+    "MissRate_64px": 0.12962962962962962,
+    "best_mode_non_cv_rate": 1.0,
+    "collapse_rate_8px": 0.0,
+    "item_count": 54,
+    "minADE_K_px": 34.35086451194905,
+    "minFDE_K_px": 49.925334563961734,
+    "mode_entropy": 1.2691096685550831,
+    "nll": null,
+    "pairwise_endpoint_diversity_px": 240.45399224869468,
+    "semantic_top1": 0.5185185185185185,
+    "semantic_top5": 0.8333333333333334,
+    "top1_PCK_16px": 0.42972692303777754,
+    "top1_PCK_32px": 0.67784895498311,
+    "top1_PCK_8px": 0.25612207477819543,
+    "top1_anchor_centroid_L1_px": 92.53766831203744,
+    "top1_endpoint_error_px": 49.926611419077275,
+    "top1_matches_oracle_fde_rate": 0.5,
+    "top1_mode_non_cv_rate": 1.0,
+    "top1_object_extent_iou": 0.712069063111737,
+    "top1_point_L1_px": 34.351657527464404,
+    "top1_visibility_F1": 0.683830901228562,
+    "weighted_endpoint_error_px": 49.97144385178884,
+    "weighted_object_extent_iou": 0.7120024635634195,
+    "weighted_point_L1_px": 34.382232674845945
+  },
+  "all_required_files_exist": true,
+  "audit_name": "stwm_ostf_v28_contract_and_claims_audit",
+  "dense_point_minfde_bootstrap": {
+    "ci95": [
+      0.0007112062894381009,
+      0.0014729133019080528
+    ],
+    "item_count": 52,
+    "mean_delta": 0.0010915902944711538,
+    "zero_excluded": true
+  },
+  "dense_point_minfde_load_bearing": true,
+  "dense_shape_extent_bootstrap": {
+    "ci95": [
+      -0.004856015423050777,
+      0.005657526816251517
+    ],
+    "item_count": 52,
+    "mean_delta": 0.0001784287543683765,
+    "zero_excluded": false
+  },
+  "dense_shape_extent_load_bearing": false,
+  "forward_contract": {
+    "damped_gamma": 0.0,
+    "mode0_is_last_observed_by_construction": true,
+    "output_keys_present": {
+      "point_hypotheses": true,
+      "point_pred": true,
+      "semantic_logits": true,
+      "top1_point_pred": true,
+      "visibility_logits": true
+    },
+    "output_shapes": {
+      "anchor_pred": [
+        1,
+        32,
+        2
+      ],
+      "delta": [
+        1,
+        128,
+        32,
+        3,
+        2
+      ],
+      "hypothesis_logits": [
+        1,
+        6
+      ],
+      "num_prior_modes": [
+        1
+      ],
+      "physics_mix_alpha": [
+        1,
+        32
+      ],
+      "point_hypotheses": [
+        1,
+        128,
+        32,
+        6,
+        2
+      ],
+      "point_pred": [
+        1,
+        128,
+        32,
+        2
+      ],
+      "residual_scale": [
+        1
+      ],
+      "semantic_logits": [
+        1,
+        32,
+        32
+      ],
+      "top1_mode_idx": [
+        1
+      ],
+      "top1_point_pred": [
+        1,
+        128,
+        32,
+        2
+      ],
+      "visibility_logits": [
+        1,
+        128,
+        32
+      ]
+    },
+    "required_output_keys": [
+      "point_hypotheses",
+      "point_pred",
+      "top1_point_pred",
+      "visibility_logits",
+      "semantic_logits"
+    ]
+  },
+  "generated_at_utc": "2026-05-07T11:05:56.987009+00:00",
+  "model_input_observed_only": true,
+  "object_dense_semantic_trace_field_claim_allowed_strict": false,
+  "object_dense_semantic_trace_field_claim_allowed_strict_reason": "strict claim blocked because semantic trace dynamics is negative or dense shape/identity utility is not established, despite original V28 positive pilot.",
+  "required_files": {
+    "code/stwm/modules/ostf_lastobs_residual_world_model_v28.py": {
+      "exists": true,
+      "size_bytes": 14418
+    },
+    "code/stwm/tools/eval_ostf_lastobs_residual_v28_20260502.py": {
+      "exists": true,
+      "size_bytes": 14001
+    },
+    "code/stwm/tools/ostf_lastobs_v28_common_20260502.py": {
+      "exists": true,
+      "size_bytes": 16207
+    },
+    "code/stwm/tools/render_ostf_lastobs_residual_v28_20260502.py": {
+      "exists": true,
+      "size_bytes": 9424
+    },
+    "code/stwm/tools/train_ostf_lastobs_residual_v28_20260502.py": {
+      "exists": true,
+      "size_bytes": 16772
+    },
+    "code/stwm/tools/verify_ostf_lastobs_residual_v28_20260502.py": {
+      "exists": true,
+      "size_bytes": 687
+    },
+    "reports/stwm_ostf_v28_decision_20260502.json": {
+      "exists": true,
+      "size_bytes": 3898
+    },
+    "reports/stwm_ostf_v28_eval_summary_20260502.json": {
+      "exists": true,
+      "size_bytes": 408987
+    },
+    "scripts/run_ostf_lastobs_residual_v28_20260502.sh": {
+      "exists": true,
+      "size_bytes": 874
+    },
+    "scripts/start_ostf_lastobs_residual_v28_tmux_20260502.sh": {
+      "exists": true,
+      "size_bytes": 5091
+    }
+  },
+  "semantic_field_load_bearing": true,
+  "semantic_identity_reacquisition_load_bearing": null,
+  "semantic_identity_reacquisition_note": "No V28 reacquisition/false-confuser utility metric is wired into this run; semantic identity utility cannot be claimed from V28 alone.",
+  "semantic_memory_load_bearing_original": true,
+  "semantic_memory_load_bearing_triggered_by_semantic_top5": true,
+  "semantic_trace_dynamics_bootstrap_vs_wo_semantic": {
+    "ci95": [
+      -0.0020439001230093145,
+      -0.0005175076998197116
+    ],
+    "item_count": 52,
+    "mean_delta": -0.0012984642615685095,
+    "zero_excluded": true
+  },
+  "semantic_trace_dynamics_load_bearing": "negative",
+  "strongest_prior": "last_observed_copy",
+  "strongest_prior_is_last_observed_copy": true,
+  "teacher_source_target_cache_only": true
+}

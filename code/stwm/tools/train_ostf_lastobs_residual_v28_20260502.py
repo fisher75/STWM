@@ -200,6 +200,10 @@ def main() -> int:
             "v28_lastobs_m128_h32_prior_only",
             "v28_lastobs_m512_h32",
             "v28_lastobs_m128_h64",
+            "v28_lastobs_m128_h64_wo_dense_points",
+            "v28_lastobs_m128_h64_wo_semantic_memory",
+            "v28_lastobs_m128_h64_wo_residual_modes",
+            "v28_lastobs_m128_h64_prior_only",
         ],
     )
     parser.add_argument("--horizon", type=int, required=True)

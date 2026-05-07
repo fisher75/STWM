@@ -21,6 +21,7 @@ from stwm.tools.ostf_traceanything_metrics_v26_20260502 import aggregate_item_ro
 from stwm.tools.ostf_v17_common_20260502 import dump_json, write_doc
 from stwm.tools.ostf_v27_prior_utils_20260502 import (
     choose_gamma_on_val,
+    observed_memory_logits,
     predict_damped_velocity,
     predict_last,
 )
@@ -58,6 +59,109 @@ def selected_damped_gamma(combo: str, rows: dict[str, list[Any]], proto_centers:
             return float(val)
     gamma, _ = choose_gamma_on_val(rows.get("val", []), proto_centers)
     return float(gamma)
+
+
+def _last_visible_xy(obs_points: np.ndarray, obs_vis: np.ndarray) -> np.ndarray:
+    out = obs_points[:, -1].astype(np.float32, copy=True)
+    for i in range(obs_points.shape[0]):
+        idx = np.flatnonzero(obs_vis[i])
+        if idx.size:
+            out[i] = obs_points[i, int(idx[-1])]
+    return out.astype(np.float32)
+
+
+def _last_two_visible_velocity(obs_points: np.ndarray, obs_vis: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    last = obs_points[:, -1].astype(np.float32, copy=True)
+    vel = np.zeros_like(last, dtype=np.float32)
+    for i in range(obs_points.shape[0]):
+        idx = np.flatnonzero(obs_vis[i])
+        if idx.size:
+            last_idx = int(idx[-1])
+            last[i] = obs_points[i, last_idx]
+            if idx.size >= 2:
+                prev_idx = int(idx[-2])
+                dt = max(float(last_idx - prev_idx), 1.0)
+                vel[i] = (obs_points[i, last_idx] - obs_points[i, prev_idx]) / dt
+    return last.astype(np.float32), vel.astype(np.float32)
+
+
+def predict_last_visible_copy(samples: list[Any]) -> np.ndarray:
+    preds = []
+    for s in samples:
+        last = _last_visible_xy(s.obs_points, s.obs_vis)
+        preds.append(np.repeat(last[:, None, :], s.h, axis=1).astype(np.float32))
+    return np.stack(preds, axis=0) if preds else np.zeros((0, 0, 0, 2), dtype=np.float32)
+
+
+def predict_visibility_aware_damped_velocity(samples: list[Any], gamma: float) -> np.ndarray:
+    preds = []
+    for s in samples:
+        last, vel = _last_two_visible_velocity(s.obs_points, s.obs_vis)
+        times = np.arange(1, s.h + 1, dtype=np.float32)[None, :, None]
+        preds.append((last[:, None, :] + float(gamma) * vel[:, None, :] * times).astype(np.float32))
+    return np.stack(preds, axis=0) if preds else np.zeros((0, 0, 0, 2), dtype=np.float32)
+
+
+def predict_visibility_aware_cv(samples: list[Any]) -> np.ndarray:
+    return predict_visibility_aware_damped_velocity(samples, 1.0)
+
+
+def predict_median_object_anchor_copy(samples: list[Any]) -> np.ndarray:
+    preds = []
+    for s in samples:
+        last_visible = _last_visible_xy(s.obs_points, s.obs_vis)
+        last_anchor = np.median(last_visible, axis=0).astype(np.float32) if last_visible.size else np.zeros((2,), dtype=np.float32)
+        layout = last_visible - last_anchor[None]
+        # Median anchor copy keeps object shape/layout fixed while suppressing noisy point-wise drift.
+        fut = last_anchor[None, None, :] + layout[:, None, :]
+        preds.append(np.repeat(fut.astype(np.float32), s.h, axis=1))
+    return np.stack(preds, axis=0) if preds else np.zeros((0, 0, 0, 2), dtype=np.float32)
+
+
+def visibility_logits_last_visible(samples: list[Any]) -> np.ndarray:
+    out = []
+    for s in samples:
+        last_vis = s.obs_vis[:, -1].copy()
+        for i in range(s.obs_vis.shape[0]):
+            idx = np.flatnonzero(s.obs_vis[i])
+            if idx.size:
+                last_vis[i] = bool(s.obs_vis[i, int(idx[-1])])
+        out.append(np.where(np.repeat(last_vis[:, None], s.h, axis=1), 8.0, -8.0).astype(np.float32))
+    return np.stack(out, axis=0) if out else np.zeros((0, 0, 0), dtype=np.float32)
+
+
+def choose_visibility_aware_gamma_on_val(
+    samples: list[Any],
+    proto_centers: np.ndarray,
+    gammas: tuple[float, ...] = (0.0, 0.1, 0.25, 0.5, 0.75, 1.0),
+) -> tuple[float, dict[str, Any]]:
+    from stwm.tools.ostf_traceanything_metrics_v26_20260502 import aggregate_item_rows_v26, multimodal_item_scores_v26
+
+    scores: dict[str, Any] = {}
+    best_gamma = float(gammas[0])
+    best_score = float("inf")
+    vis_logits = visibility_logits_last_visible(samples)
+    sem_logits = observed_memory_logits(samples, proto_centers, proto_count=32)
+    for gamma in gammas:
+        pred = predict_visibility_aware_damped_velocity(samples, gamma)
+        rows = multimodal_item_scores_v26(
+            samples,
+            point_modes=pred[:, :, :, None, :],
+            mode_logits=np.zeros((len(samples), 1), dtype=np.float32),
+            top1_point_pred=pred,
+            weighted_point_pred=pred,
+            pred_vis_logits=vis_logits,
+            pred_proto_logits=sem_logits,
+            pred_logvar=None,
+            cv_mode_index=0,
+        )
+        agg = aggregate_item_rows_v26(add_v28_flags_to_item_rows(rows, samples))
+        scores[str(gamma)] = agg
+        score = float(agg.get("minFDE_K_px") or float("inf"))
+        if score < best_score:
+            best_score = score
+            best_gamma = float(gamma)
+    return best_gamma, scores
 
 
 def _endpoint_l1(pred: np.ndarray, gt: np.ndarray, valid: np.ndarray) -> float:
@@ -253,6 +357,12 @@ __all__ = [
     "add_v28_flags_to_item_rows",
     "v28_subset_aggregate",
     "write_v28_cache_hardbench_verification",
+    "choose_visibility_aware_gamma_on_val",
     "predict_damped_velocity",
     "predict_last",
+    "predict_last_visible_copy",
+    "predict_median_object_anchor_copy",
+    "predict_visibility_aware_cv",
+    "predict_visibility_aware_damped_velocity",
+    "visibility_logits_last_visible",
 ]
