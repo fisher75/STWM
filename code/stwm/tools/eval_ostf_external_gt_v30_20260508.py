@@ -45,7 +45,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--wo-semantic", action="store_true")
     p.add_argument("--cpu", action="store_true")
     p.add_argument("--point-dropout", type=float, default=0.0)
-    p.add_argument("--density-aware-pooling", choices=("none", "valid_weighted", "local_attention"), default="none")
+    p.add_argument(
+        "--density-aware-pooling",
+        choices=("none", "mean", "valid_weighted", "local_attention", "moments", "induced_attention", "motion_topk", "hybrid_moments_attention"),
+        default="mean",
+    )
+    p.add_argument("--density-inducing-tokens", type=int, default=16)
+    p.add_argument("--density-motion-topk", type=int, default=128)
+    p.add_argument("--density-token-dropout", type=float, default=0.0)
     return p.parse_args()
 
 
@@ -54,7 +61,7 @@ def main() -> int:
     device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
     model = build_model(args).to(device)
     ckpt = torch.load(ROOT / args.checkpoint, map_location=device)
-    model.load_state_dict(ckpt["model"])
+    model.load_state_dict(ckpt["model"], strict=False)
     test_loader = make_loader("test", args, shuffle=False, max_items=args.max_eval_items)
     metrics, rows = evaluate(model, test_loader, device)
     payload = {

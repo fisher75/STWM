@@ -22,7 +22,10 @@ class OSTFExternalGTConfigV30:
     semantic_dim: int = 32
     predict_logvar: bool = True
     point_dropout: float = 0.0
-    density_aware_pooling: str = "none"
+    density_aware_pooling: str = "mean"
+    density_inducing_tokens: int = 16
+    density_motion_topk: int = 128
+    density_token_dropout: float = 0.0
 
 
 def _last_visible(obs_points: torch.Tensor, obs_vis: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -53,6 +56,142 @@ def _visible_velocity(obs_points: torch.Tensor, obs_vis: torch.Tensor, last_idx:
     return torch.where((prev_idx >= 0)[..., None], vel, torch.zeros_like(vel))
 
 
+class DensityAwarePointSetEncoderV30(nn.Module):
+    """Pool object-internal point tokens without full MxM self-attention."""
+
+    def __init__(
+        self,
+        hidden_dim: int,
+        *,
+        mode: str = "mean",
+        inducing_tokens: int = 16,
+        motion_topk: int = 128,
+        token_dropout: float = 0.0,
+        num_heads: int = 4,
+    ) -> None:
+        super().__init__()
+        self.hidden_dim = int(hidden_dim)
+        self.mode = "mean" if mode in {"none", "valid_weighted"} else str(mode)
+        self.inducing_tokens = int(inducing_tokens)
+        self.motion_topk = int(motion_topk)
+        self.token_dropout = float(token_dropout)
+        self.moments_proj = nn.Sequential(
+            nn.LayerNorm(hidden_dim * 3),
+            nn.Linear(hidden_dim * 3, hidden_dim),
+            nn.GELU(),
+        )
+        self.motion_proj = nn.Sequential(
+            nn.LayerNorm(hidden_dim),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.GELU(),
+        )
+        self.inducing = nn.Parameter(torch.randn(max(1, inducing_tokens), hidden_dim) * 0.02)
+        self.induced_attn = nn.MultiheadAttention(
+            embed_dim=hidden_dim,
+            num_heads=max(1, min(int(num_heads), hidden_dim // 16 if hidden_dim >= 16 else 1)),
+            batch_first=True,
+            dropout=0.0,
+        )
+        self.induced_proj = nn.Sequential(nn.LayerNorm(hidden_dim), nn.Linear(hidden_dim, hidden_dim), nn.GELU())
+        self.hybrid_proj = nn.Sequential(
+            nn.LayerNorm(hidden_dim * 2),
+            nn.Linear(hidden_dim * 2, hidden_dim),
+            nn.GELU(),
+        )
+
+    @staticmethod
+    def _safe_valid(valid_point: torch.Tensor) -> torch.Tensor:
+        valid = valid_point.float()
+        empty = valid.sum(dim=1, keepdim=True) <= 0
+        if bool(empty.any()):
+            valid = torch.where(empty, torch.ones_like(valid), valid)
+        return valid
+
+    @staticmethod
+    def _masked_mean(point_token: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
+        denom = valid.sum(dim=1, keepdim=True).clamp_min(1.0)
+        return (point_token * valid[..., None]).sum(dim=1) / denom
+
+    def _moments(self, point_token: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
+        mean = self._masked_mean(point_token, valid)
+        masked = point_token.masked_fill(valid[..., None] <= 0, -1e4)
+        maxv = masked.max(dim=1).values
+        maxv = torch.where(torch.isfinite(maxv), maxv, mean)
+        var = self._masked_mean((point_token - mean[:, None, :]).pow(2), valid)
+        std = torch.sqrt(var.clamp_min(1e-8))
+        return self.moments_proj(torch.cat([mean, maxv, std], dim=-1))
+
+    def _motion_scores(self, obs_points: torch.Tensor, obs_vis: torch.Tensor) -> torch.Tensor:
+        points = torch.nan_to_num(obs_points.float(), nan=0.0, posinf=1e6, neginf=-1e6)
+        vis = obs_vis.float()
+        vel = torch.zeros_like(points[:, :, 1:])
+        vel[:] = points[:, :, 1:] - points[:, :, :-1]
+        vel_mag = vel.abs().sum(dim=-1) * (vis[:, :, 1:] * vis[:, :, :-1])
+        acc = torch.zeros_like(vel_mag)
+        if vel_mag.shape[-1] > 1:
+            acc[:, :, 1:] = (vel[:, :, 1:] - vel[:, :, :-1]).abs().sum(dim=-1)
+        return vel_mag.max(dim=-1).values + 0.5 * acc.max(dim=-1).values + (1.0 - vis.mean(dim=-1))
+
+    def _motion_topk(self, point_token: torch.Tensor, valid: torch.Tensor, obs_points: torch.Tensor, obs_vis: torch.Tensor) -> torch.Tensor:
+        b, m, d = point_token.shape
+        k = max(1, min(int(self.motion_topk), m))
+        scores = self._motion_scores(obs_points, obs_vis).masked_fill(valid <= 0, -1e9)
+        idx = scores.topk(k, dim=1).indices
+        gathered = point_token.gather(1, idx[..., None].expand(b, k, d))
+        return self.motion_proj(gathered.mean(dim=1))
+
+    def _induced(self, point_token: torch.Tensor, valid: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        b = point_token.shape[0]
+        query = self.inducing[None, :, :].expand(b, -1, -1)
+        key_padding_mask = valid <= 0
+        attn_out, attn_weights = self.induced_attn(
+            query,
+            point_token,
+            point_token,
+            key_padding_mask=key_padding_mask,
+            need_weights=True,
+            average_attn_weights=False,
+        )
+        pooled = self.induced_proj(attn_out.mean(dim=1))
+        weights = attn_weights.clamp_min(1e-8)
+        entropy = (-(weights * weights.log()).sum(dim=-1)).mean()
+        return pooled, entropy
+
+    def forward(
+        self,
+        point_token: torch.Tensor,
+        valid_point: torch.Tensor,
+        obs_points: torch.Tensor,
+        obs_vis: torch.Tensor,
+    ) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
+        valid = self._safe_valid(valid_point)
+        if self.training and self.token_dropout > 0:
+            keep = (torch.rand_like(valid) >= self.token_dropout).float()
+            keep = torch.where(keep.sum(dim=1, keepdim=True) <= 0, torch.ones_like(keep), keep)
+            valid = valid * keep
+            point_token = point_token * keep[..., None]
+        entropy = torch.zeros((), device=point_token.device, dtype=point_token.dtype)
+        if self.mode == "mean":
+            pooled = point_token.mean(dim=1)
+        elif self.mode == "moments":
+            pooled = self._moments(point_token, valid)
+        elif self.mode == "motion_topk":
+            pooled = self._motion_topk(point_token, valid, obs_points, obs_vis)
+        elif self.mode == "induced_attention":
+            pooled, entropy = self._induced(point_token, valid)
+        elif self.mode == "hybrid_moments_attention":
+            moments = self._moments(point_token, valid)
+            induced, entropy = self._induced(point_token, valid)
+            pooled = self.hybrid_proj(torch.cat([moments, induced], dim=-1))
+        else:
+            pooled = point_token.mean(dim=1)
+        stats = {
+            "density_attention_entropy": entropy.detach(),
+            "object_token_norm": pooled.detach().norm(dim=-1).mean(),
+        }
+        return pooled, stats
+
+
 class OSTFExternalGTWorldModelV30(nn.Module):
     def __init__(self, cfg: OSTFExternalGTConfigV30) -> None:
         super().__init__()
@@ -64,6 +203,14 @@ class OSTFExternalGTWorldModelV30(nn.Module):
             nn.GELU(),
             nn.Linear(cfg.point_token_dim, cfg.hidden_dim),
             nn.GELU(),
+        )
+        self.density_pooler = DensityAwarePointSetEncoderV30(
+            cfg.hidden_dim,
+            mode=cfg.density_aware_pooling,
+            inducing_tokens=cfg.density_inducing_tokens,
+            motion_topk=cfg.density_motion_topk,
+            token_dropout=cfg.density_token_dropout,
+            num_heads=cfg.num_heads,
         )
         self.semantic_embed = nn.Embedding(cfg.semantic_buckets, cfg.semantic_dim)
         self.object_encoder = nn.Sequential(
@@ -159,11 +306,7 @@ class OSTFExternalGTWorldModelV30(nn.Module):
             keep = torch.maximum(keep, valid_point * 0.0 + (keep.sum(dim=1, keepdim=True) <= 0).float())
             valid_point = valid_point * keep
             point_token = point_token * keep[..., None]
-        if self.cfg.density_aware_pooling in {"valid_weighted", "local_attention"}:
-            denom = valid_point.sum(dim=1, keepdim=True).clamp_min(1.0)
-            pooled = (point_token * valid_point[..., None]).sum(dim=1) / denom
-        else:
-            pooled = point_token.mean(dim=1)
+        pooled, density_stats = self.density_pooler(point_token, valid_point, obs_points, obs_vis)
         if semantic_id is None:
             semantic_id = torch.full((obs_points.shape[0],), -1, device=obs_points.device, dtype=torch.long)
         sem_idx = semantic_id.clamp_min(0) % self.cfg.semantic_buckets
@@ -207,6 +350,8 @@ class OSTFExternalGTWorldModelV30(nn.Module):
             "point_encoder_activation_norm": point_token.detach().norm(dim=-1).mean(),
             "point_valid_ratio": valid_point.detach().mean(),
             "actual_m_points": torch.tensor(obs_points.shape[1], device=obs_points.device),
+            "density_attention_entropy": density_stats["density_attention_entropy"],
+            "object_token_norm": density_stats["object_token_norm"],
         }
         if self.cfg.predict_logvar:
             out["mode_logvar"] = self.logvar_head(step_hidden).squeeze(-1)

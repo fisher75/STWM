@@ -72,7 +72,10 @@ def build_model(args: argparse.Namespace) -> OSTFExternalGTWorldModelV30:
         damped_gamma=float(args.damped_gamma),
         use_semantic=not bool(args.wo_semantic),
         point_dropout=float(getattr(args, "point_dropout", 0.0)),
-        density_aware_pooling=str(getattr(args, "density_aware_pooling", "none")),
+        density_aware_pooling=str(getattr(args, "density_aware_pooling", "mean")),
+        density_inducing_tokens=int(getattr(args, "density_inducing_tokens", 16)),
+        density_motion_topk=int(getattr(args, "density_motion_topk", 128)),
+        density_token_dropout=float(getattr(args, "density_token_dropout", 0.0)),
     )
     return OSTFExternalGTWorldModelV30(cfg)
 
@@ -105,6 +108,8 @@ def loss_fn(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor]) -> tup
         "point_encoder_activation_norm": float(out.get("point_encoder_activation_norm", torch.tensor(0.0)).detach().cpu()),
         "point_valid_ratio": float(out.get("point_valid_ratio", torch.tensor(0.0)).detach().cpu()),
         "actual_m_points": float(out.get("actual_m_points", torch.tensor(float(batch["obs_points"].shape[1]))).detach().cpu()),
+        "density_attention_entropy": float(out.get("density_attention_entropy", torch.tensor(0.0)).detach().cpu()),
+        "object_token_norm": float(out.get("object_token_norm", torch.tensor(0.0)).detach().cpu()),
     }
 
 
@@ -227,6 +232,9 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
         "effective_batch_size": int(args.batch_size) * grad_accum,
         "point_dropout": float(args.point_dropout),
         "density_aware_pooling": str(args.density_aware_pooling),
+        "density_inducing_tokens": int(args.density_inducing_tokens),
+        "density_motion_topk": int(args.density_motion_topk),
+        "density_token_dropout": float(args.density_token_dropout),
         "device": str(device),
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
         "setproctitle_status": SETPROCTITLE_STATUS,
@@ -273,7 +281,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cpu", action="store_true")
     p.add_argument("--grad-accum-steps", type=int, default=1)
     p.add_argument("--point-dropout", type=float, default=0.0)
-    p.add_argument("--density-aware-pooling", choices=("none", "valid_weighted", "local_attention"), default="none")
+    p.add_argument(
+        "--density-aware-pooling",
+        choices=("none", "mean", "valid_weighted", "local_attention", "moments", "induced_attention", "motion_topk", "hybrid_moments_attention"),
+        default="mean",
+    )
+    p.add_argument("--density-inducing-tokens", type=int, default=16)
+    p.add_argument("--density-motion-topk", type=int, default=128)
+    p.add_argument("--density-token-dropout", type=float, default=0.0)
     return p.parse_args()
 
 

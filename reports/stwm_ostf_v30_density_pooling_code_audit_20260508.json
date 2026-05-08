@@ -1,0 +1,514 @@
+{
+  "arguments_present": {
+    "density_aware_pooling": true,
+    "density_inducing_tokens": true,
+    "density_motion_topk": true,
+    "density_token_dropout": true,
+    "point_dropout": true
+  },
+  "audit_name": "stwm_ostf_v30_density_pooling_code_audit",
+  "code_audit_passed": true,
+  "default_mode_reproduces_old_mean_behavior": true,
+  "forward_smoke": [
+    {
+      "H": 32,
+      "M": 128,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "mean",
+      "object_token_norm": 1.3359756469726562,
+      "point_hypotheses_shape": [
+        2,
+        128,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        128,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        128,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 512,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "mean",
+      "object_token_norm": 1.062512993812561,
+      "point_hypotheses_shape": [
+        2,
+        512,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        512,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        512,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 1024,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "mean",
+      "object_token_norm": 1.5804674625396729,
+      "point_hypotheses_shape": [
+        2,
+        1024,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        1024,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        1024,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 128,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "moments",
+      "object_token_norm": 3.489062786102295,
+      "point_hypotheses_shape": [
+        2,
+        128,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        128,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        128,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 512,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "moments",
+      "object_token_norm": 4.338020324707031,
+      "point_hypotheses_shape": [
+        2,
+        512,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        512,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        512,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 1024,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "moments",
+      "object_token_norm": 4.803686141967773,
+      "point_hypotheses_shape": [
+        2,
+        1024,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        1024,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        1024,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 128,
+      "density_attention_entropy": 4.852030277252197,
+      "finite": true,
+      "mode": "induced_attention",
+      "object_token_norm": 4.722036361694336,
+      "point_hypotheses_shape": [
+        2,
+        128,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        128,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        128,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 512,
+      "density_attention_entropy": 6.2383246421813965,
+      "finite": true,
+      "mode": "induced_attention",
+      "object_token_norm": 4.288707733154297,
+      "point_hypotheses_shape": [
+        2,
+        512,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        512,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        512,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 1024,
+      "density_attention_entropy": 6.931472301483154,
+      "finite": true,
+      "mode": "induced_attention",
+      "object_token_norm": 4.804034233093262,
+      "point_hypotheses_shape": [
+        2,
+        1024,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        1024,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        1024,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 128,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "motion_topk",
+      "object_token_norm": 4.4051361083984375,
+      "point_hypotheses_shape": [
+        2,
+        128,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        128,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        128,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 512,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "motion_topk",
+      "object_token_norm": 4.179788589477539,
+      "point_hypotheses_shape": [
+        2,
+        512,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        512,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        512,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 1024,
+      "density_attention_entropy": 0.0,
+      "finite": true,
+      "mode": "motion_topk",
+      "object_token_norm": 5.108465671539307,
+      "point_hypotheses_shape": [
+        2,
+        1024,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        1024,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        1024,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 128,
+      "density_attention_entropy": 4.852030277252197,
+      "finite": true,
+      "mode": "hybrid_moments_attention",
+      "object_token_norm": 5.105647087097168,
+      "point_hypotheses_shape": [
+        2,
+        128,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        128,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        128,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 512,
+      "density_attention_entropy": 6.2383246421813965,
+      "finite": true,
+      "mode": "hybrid_moments_attention",
+      "object_token_norm": 4.274727821350098,
+      "point_hypotheses_shape": [
+        2,
+        512,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        512,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        512,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 1024,
+      "density_attention_entropy": 6.931472301483154,
+      "finite": true,
+      "mode": "hybrid_moments_attention",
+      "object_token_norm": 4.346963882446289,
+      "point_hypotheses_shape": [
+        2,
+        1024,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        1024,
+        32,
+        32
+      ],
+      "visibility_logits_shape": [
+        2,
+        1024,
+        32
+      ]
+    }
+  ],
+  "full_mxm_self_attention_used": false,
+  "generated_at_utc": "2026-05-08T09:31:52.178365+00:00",
+  "induced_attention_complexity": "O(M*K)",
+  "logging_present": {
+    "actual_m_points": true,
+    "density_attention_entropy": true,
+    "object_token_norm": true,
+    "point_encoder_activation_norm": true,
+    "point_valid_ratio": true,
+    "train_loss_decreased": true
+  },
+  "pooling_modes_supported": [
+    "mean",
+    "moments",
+    "induced_attention",
+    "motion_topk",
+    "hybrid_moments_attention"
+  ],
+  "py_compile_ok": true,
+  "py_compile_stderr": ""
+}
