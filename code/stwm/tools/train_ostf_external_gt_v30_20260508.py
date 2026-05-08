@@ -113,6 +113,7 @@ def evaluate(model: OSTFExternalGTWorldModelV30, loader: DataLoader, device: tor
                         dataset=str(batch["dataset"][i]),
                         horizon=fut.shape[2],
                         m_points=fut.shape[1],
+                        cache_path=str(batch["cache_path"][i]),
                         fut_points=fut[i],
                         fut_vis=fut_vis[i],
                         pred=top1[i],

@@ -50,6 +50,7 @@ def _rows_for(entries: list[dict[str, Any]], gamma: float) -> dict[str, list[dic
                 dataset=sample.dataset,
                 horizon=sample.fut_points.shape[1],
                 m_points=sample.obs_points.shape[0],
+                cache_path=str(entry["cache_path"]),
                 fut_points=sample.fut_points,
                 fut_vis=sample.fut_vis,
                 pred=preds[name],

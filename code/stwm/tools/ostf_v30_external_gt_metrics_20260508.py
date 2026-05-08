@@ -82,6 +82,7 @@ def item_row(
     dataset: str,
     horizon: int,
     m_points: int,
+    cache_path: str | None = None,
     fut_points: np.ndarray,
     fut_vis: np.ndarray,
     pred: np.ndarray,
@@ -89,7 +90,15 @@ def item_row(
     visibility_logits: np.ndarray | None = None,
     tags: list[str] | None = None,
 ) -> dict[str, Any]:
-    row: dict[str, Any] = {"uid": uid, "dataset": dataset, "H": int(horizon), "M": int(m_points)}
+    item_key = f"{uid}|H{int(horizon)}|M{int(m_points)}|{cache_path or ''}"
+    row: dict[str, Any] = {
+        "uid": uid,
+        "item_key": item_key,
+        "cache_path": cache_path,
+        "dataset": dataset,
+        "H": int(horizon),
+        "M": int(m_points),
+    }
     row.update(point_error_metrics(fut_points, fut_vis, pred))
     row["relative_deformation_layout_error"] = relative_layout_error(fut_points, fut_vis, pred)
     if modes is not None:
@@ -171,8 +180,20 @@ def paired_bootstrap(
     subset_key: str | None = None,
     n_boot: int = 1000,
 ) -> dict[str, Any]:
-    amap = {r["uid"]: r for r in rows_a}
-    bmap = {r["uid"]: r for r in rows_b}
+    def keys_for(r: dict[str, Any]) -> list[str]:
+        legacy = f"{r.get('uid')}|H{r.get('H')}|M{r.get('M')}"
+        full = str(r.get("item_key") or f"{legacy}|{r.get('cache_path','')}")
+        return [full, legacy] if full != legacy else [legacy]
+
+    def build_map(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+        out: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            for key in keys_for(row):
+                out.setdefault(key, row)
+        return out
+
+    amap = build_map(rows_a)
+    bmap = build_map(rows_b)
     vals = []
     for key in sorted(set(amap) & set(bmap)):
         if subset_key and (not amap[key].get(subset_key, False) or not bmap[key].get(subset_key, False)):

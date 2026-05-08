@@ -1,0 +1,70 @@
+{
+  "audit_name": "stwm_ostf_v30_round2_prelaunch_code_audit",
+  "bootstrap_pairing_rule": "item_key=uid+H+M+cache_path when present; legacy uid+H+M fallback only for old seed42 rows",
+  "compile_status": {
+    "code/stwm/datasets/ostf_v30_external_gt_dataset_20260508.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/modules/ostf_external_gt_world_model_v30.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/tools/aggregate_ostf_external_gt_v30_20260508.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/tools/audit_ostf_v30_round1_claim_boundary_20260508.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/tools/eval_ostf_external_gt_v30_20260508.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/tools/eval_ostf_v30_external_gt_prior_suite_20260508.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/tools/ostf_v30_external_gt_metrics_20260508.py": {
+      "py_compile_passed": true
+    },
+    "code/stwm/tools/train_ostf_external_gt_v30_20260508.py": {
+      "py_compile_passed": true
+    }
+  },
+  "fatal_issue_found": false,
+  "fatal_issues": [],
+  "generated_at_utc": "2026-05-08T06:14:12.334720+00:00",
+  "item_uid_uniqueness": {
+    "h32_seed42": {
+      "item_key_present_ratio": 0.0,
+      "item_key_unique": true,
+      "row_count": 169,
+      "uid_h_m_unique": true
+    },
+    "h64_seed42": {
+      "item_key_present_ratio": 0.0,
+      "item_key_unique": true,
+      "row_count": 202,
+      "uid_h_m_unique": true
+    }
+  },
+  "missrate32_saturation": {
+    "h32_motion": "saturated_or_non_discriminative",
+    "h64_motion": "saturated_or_non_discriminative"
+  },
+  "ready_to_launch_round2": true,
+  "seed42_eval_validation": {
+    "h32_eval_item_row_count": 169,
+    "h32_train_loss_decreased": true,
+    "h64_eval_item_row_count": 202,
+    "h64_train_loss_decreased": true
+  },
+  "semantic_status": {
+    "semantic_id_valid_ratio": 0.0,
+    "semantic_load_bearing": "not_tested",
+    "semantic_not_tested_not_failed": true
+  },
+  "strongest_prior_naming": {
+    "h32": "last_observed_copy",
+    "h64": "last_observed_copy",
+    "report_name_if_tie": "last_observed_copy_or_last_visible_copy_tie",
+    "tie_status": "last_observed_copy_or_last_visible_copy_tie"
+  },
+  "threshold_auc_metric_key": "threshold_auc_endpoint_16_32_64_128"
+}

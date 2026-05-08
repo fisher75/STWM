@@ -43,6 +43,31 @@ def strongest_prior_for_horizon(prior_suite: dict[str, Any], horizon: int) -> st
     return best
 
 
+def semantic_supervision_status() -> dict[str, Any]:
+    # Current V30 external-GT cache carries semantic_id=-1 placeholders and
+    # the V30 training loss intentionally has no semantic CE term.
+    return {
+        "semantic_target_available": False,
+        "semantic_loss_present": False,
+        "semantic_id_valid_ratio": 0.0,
+        "semantic_load_bearing_interpretable": False,
+        "semantic_not_tested_not_failed": True,
+    }
+
+
+def _semantic_pair(summary_runs: dict[str, Any], full_name: str, ablation_name: str) -> tuple[bool, dict[str, Any]]:
+    full = summary_runs.get(full_name, {})
+    abl = summary_runs.get(ablation_name, {})
+    full_rows_path = ROOT / str(full.get("report_path", ""))
+    abl_rows_path = ROOT / str(abl.get("report_path", ""))
+    if not full_rows_path.exists() or not abl_rows_path.exists():
+        return False, {"item_count": 0, "exact_blocker": "missing full or ablation report"}
+    full_rows = _load_json(full_rows_path).get("test_item_rows", [])
+    abl_rows = _load_json(abl_rows_path).get("test_item_rows", [])
+    boot = paired_bootstrap(full_rows, abl_rows, "minFDE_K", higher_better=False)
+    return bool(boot.get("zero_excluded") and (boot.get("mean_delta") or 0.0) > 0.0), boot
+
+
 def aggregate(prefix: str, report_suffix: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     runs = sorted(RUN_DIR.glob(f"{prefix}*.json"))
     runs = [p for p in runs if not p.name.endswith("_eval.json")]
@@ -90,6 +115,7 @@ def aggregate(prefix: str, report_suffix: str) -> tuple[dict[str, Any], dict[str
                 )
     h32_prior = strongest_prior_for_horizon(prior, 32)
     h64_prior = strongest_prior_for_horizon(prior, 64)
+    semantic_status = semantic_supervision_status()
 
     def _positive(name_part: str, horizon: int) -> bool:
         target = None
@@ -117,20 +143,12 @@ def aggregate(prefix: str, report_suffix: str) -> tuple[dict[str, Any], dict[str
     h64_positive = _positive("m128_h64", 64)
     h32_motion_positive = _motion_positive("m128_h32", 32)
     h64_motion_positive = _motion_positive("m128_h64", 64)
-    sem_h32 = None
-    sem_h64 = None
-    if "v30_extgt_m128_h32_seed42" in summary_runs and "v30_extgt_m128_h32_wo_semantic_seed42" in summary_runs:
-        sem_h32 = (
-            (summary_runs["v30_extgt_m128_h32_seed42"]["test_all"] or {}).get("minFDE_K"),
-            (summary_runs["v30_extgt_m128_h32_wo_semantic_seed42"]["test_all"] or {}).get("minFDE_K"),
-        )
-    if "v30_extgt_m128_h64_seed42" in summary_runs and "v30_extgt_m128_h64_wo_semantic_seed42" in summary_runs:
-        sem_h64 = (
-            (summary_runs["v30_extgt_m128_h64_seed42"]["test_all"] or {}).get("minFDE_K"),
-            (summary_runs["v30_extgt_m128_h64_wo_semantic_seed42"]["test_all"] or {}).get("minFDE_K"),
-        )
-    semantic_h32 = bool(sem_h32 and sem_h32[0] is not None and sem_h32[1] is not None and float(sem_h32[0]) < float(sem_h32[1]))
-    semantic_h64 = bool(sem_h64 and sem_h64[0] is not None and sem_h64[1] is not None and float(sem_h64[0]) < float(sem_h64[1]))
+    semantic_h32: bool | str = "not_tested"
+    semantic_h64: bool | str = "not_tested"
+    semantic_bootstrap = {}
+    if semantic_status["semantic_loss_present"] and semantic_status["semantic_target_available"]:
+        semantic_h32, semantic_bootstrap["h32"] = _semantic_pair(summary_runs, "v30_extgt_m128_h32_seed42", "v30_extgt_m128_h32_wo_semantic_seed42")
+        semantic_h64, semantic_bootstrap["h64"] = _semantic_pair(summary_runs, "v30_extgt_m128_h64_seed42", "v30_extgt_m128_h64_wo_semantic_seed42")
     if h32_positive and h64_positive and h32_motion_positive and h64_motion_positive:
         next_step = "run_v30_multiseed_h32_h64"
     elif h32_positive and not h64_positive:
@@ -148,7 +166,10 @@ def aggregate(prefix: str, report_suffix: str) -> tuple[dict[str, Any], dict[str
         "v30_h64_hard_motion_positive": h64_motion_positive,
         "semantic_load_bearing_h32": semantic_h32,
         "semantic_load_bearing_h64": semantic_h64,
-        "dense_trace_field_claim_allowed_preliminary": bool(h32_positive and h64_positive and (semantic_h32 or semantic_h64)),
+        "semantic_not_tested_not_failed": bool(semantic_h32 == "not_tested" and semantic_h64 == "not_tested"),
+        "semantic_supervision_status": semantic_status,
+        "semantic_pair_bootstrap": semantic_bootstrap,
+        "dense_trace_field_claim_allowed_preliminary": bool(h32_positive and h64_positive),
         "schema_and_leakage_clean": True,
         "next_step_choice": next_step,
     }
