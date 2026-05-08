@@ -181,6 +181,8 @@ def paired_bootstrap(
     n_boot: int = 1000,
 ) -> dict[str, Any]:
     def keys_for(r: dict[str, Any]) -> list[str]:
+        if r.get("bootstrap_pair_key"):
+            return [str(r["bootstrap_pair_key"])]
         legacy = f"{r.get('uid')}|H{r.get('H')}|M{r.get('M')}"
         full = str(r.get("item_key") or f"{legacy}|{r.get('cache_path','')}")
         return [full, legacy] if full != legacy else [legacy]

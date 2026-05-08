@@ -1,0 +1,83 @@
+{
+  "decision_name": "stwm_ostf_v30_external_gt_round2_multiseed_decision_v2",
+  "generated_at_utc": "2026-05-08T07:21:18.695274+00:00",
+  "h32_item_bootstrap_positive": true,
+  "h32_motion_bootstrap_positive": true,
+  "h32_positive_seed_count": 5,
+  "h32_seed_mean_delta_minFDE": 19.46065085823014,
+  "h32_seed_std_delta_minFDE": 1.1770122271668022,
+  "h64_item_bootstrap_positive": true,
+  "h64_motion_bootstrap_positive": true,
+  "h64_positive_seed_count": 5,
+  "h64_seed_mean_delta_minFDE": 22.403731650173075,
+  "h64_seed_std_delta_minFDE": 3.707146303108291,
+  "next_step_choice": "run_v30_h96_seed42_then_multiseed",
+  "result_is_pointodyssey_only": true,
+  "seed_level_mean_delta_CI": {
+    "H32_delta_minFDE": {
+      "ci95": [
+        18.420482430091273,
+        20.17131191908255
+      ],
+      "mean_delta": 19.46065085823014,
+      "seed_count": 5,
+      "zero_excluded": true
+    },
+    "H32_motion_delta_minFDE": {
+      "ci95": [
+        25.97110955980089,
+        28.67944481026413
+      ],
+      "mean_delta": 27.573154361431413,
+      "seed_count": 5,
+      "zero_excluded": true
+    },
+    "H64_delta_minFDE": {
+      "ci95": [
+        19.0084479473605,
+        24.628035192206355
+      ],
+      "mean_delta": 22.403731650173075,
+      "seed_count": 5,
+      "zero_excluded": true
+    },
+    "H64_motion_delta_minFDE": {
+      "ci95": [
+        25.507334441626632,
+        32.60087710642974
+      ],
+      "mean_delta": 29.775069035779712,
+      "seed_count": 5,
+      "zero_excluded": true
+    }
+  },
+  "seed_level_sign_test": {
+    "H32_all_minFDE": {
+      "all_positive": true,
+      "positive_count": 5,
+      "total_count": 5,
+      "two_sided_p_under_0p5": 0.0625
+    },
+    "H32_motion_minFDE": {
+      "all_positive": true,
+      "positive_count": 5,
+      "total_count": 5,
+      "two_sided_p_under_0p5": 0.0625
+    },
+    "H64_all_minFDE": {
+      "all_positive": true,
+      "positive_count": 5,
+      "total_count": 5,
+      "two_sided_p_under_0p5": 0.0625
+    },
+    "H64_motion_minFDE": {
+      "all_positive": true,
+      "positive_count": 5,
+      "total_count": 5,
+      "two_sided_p_under_0p5": 0.0625
+    }
+  },
+  "semantic_not_tested_not_failed": true,
+  "semantic_trace_field_claim_allowed": false,
+  "trajectory_world_model_claim_preliminary": true
+}

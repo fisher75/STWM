@@ -18,10 +18,10 @@ from stwm.tools.ostf_v30_external_gt_schema_20260508 import utc_now
 SEEDS = [42, 123, 456, 789, 2026]
 HORIZONS = [32, 64]
 RUN_DIR = ROOT / "reports/stwm_ostf_v30_external_gt_runs"
-SUMMARY_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_round2_multiseed_summary_20260508.json"
-BOOT_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_round2_multiseed_bootstrap_20260508.json"
-DECISION_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_round2_multiseed_decision_20260508.json"
-DOC_PATH = ROOT / "docs/STWM_OSTF_V30_EXTERNAL_GT_ROUND2_MULTISEED_DECISION_20260508.md"
+SUMMARY_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_round2_multiseed_summary_v2_20260508.json"
+BOOT_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_round2_multiseed_bootstrap_v2_20260508.json"
+DECISION_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_round2_multiseed_decision_v2_20260508.json"
+DOC_PATH = ROOT / "docs/STWM_OSTF_V30_EXTERNAL_GT_ROUND2_MULTISEED_DECISION_V2_20260508.md"
 
 
 def read_json(path: Path | str) -> dict[str, Any]:
@@ -53,6 +53,53 @@ def std(vals: list[float]) -> float:
 def mean(vals: list[float]) -> float | None:
     vals = [float(v) for v in vals if v is not None and math.isfinite(float(v))]
     return float(statistics.mean(vals)) if vals else None
+
+
+def base_pair_key(row: dict[str, Any]) -> str:
+    # The prior-suite rows were generated before cache_path/item_key was added,
+    # so pooled seed-aware pairing must use the UID/H/M key shared by both sides.
+    return f"{row.get('uid')}|H{row.get('H')}|M{row.get('M')}"
+
+
+def seed_aware_rows(rows: list[dict[str, Any]], seed: int) -> list[dict[str, Any]]:
+    out = []
+    for row in rows:
+        new_row = dict(row)
+        new_row["seed"] = int(seed)
+        new_row["bootstrap_pair_key"] = f"seed{int(seed)}|{base_pair_key(row)}"
+        out.append(new_row)
+    return out
+
+
+def seed_level_ci(vals: list[float], n_boot: int = 2000) -> dict[str, Any]:
+    vals = [float(v) for v in vals if v is not None and math.isfinite(float(v))]
+    if not vals:
+        return {"seed_count": 0, "mean_delta": None, "ci95": [None, None], "zero_excluded": False}
+    import numpy as np
+
+    arr = np.asarray(vals, dtype=np.float64)
+    rng = np.random.default_rng(123)
+    means = [float(arr[rng.integers(0, arr.size, size=arr.size)].mean()) for _ in range(n_boot)]
+    lo, hi = np.percentile(np.asarray(means), [2.5, 97.5]).tolist()
+    return {
+        "seed_count": int(arr.size),
+        "mean_delta": float(arr.mean()),
+        "ci95": [float(lo), float(hi)],
+        "zero_excluded": bool(lo > 0 or hi < 0),
+    }
+
+
+def sign_test(positive_count: int, total_count: int) -> dict[str, Any]:
+    if total_count <= 0:
+        return {"positive_count": 0, "total_count": 0, "two_sided_p_under_0p5": None}
+    tail = sum(math.comb(total_count, i) for i in range(positive_count, total_count + 1)) / (2**total_count)
+    p = min(1.0, 2.0 * min(tail, 1.0 - tail + math.comb(total_count, positive_count) / (2**total_count)))
+    return {
+        "positive_count": int(positive_count),
+        "total_count": int(total_count),
+        "two_sided_p_under_0p5": float(p),
+        "all_positive": bool(positive_count == total_count),
+    }
 
 
 def main() -> int:
@@ -123,8 +170,8 @@ def main() -> int:
                     "train_loss_decreased": bool(payload.get("train_loss_decreased")),
                 }
             )
-            pooled_model_rows[hkey].extend(rows)
-            pooled_prior_rows[hkey].extend(prior_h_rows)
+            pooled_model_rows[hkey].extend(seed_aware_rows(rows, seed))
+            pooled_prior_rows[hkey].extend(seed_aware_rows(prior_h_rows, seed))
 
     pooled = {}
     for horizon in HORIZONS:
@@ -143,6 +190,7 @@ def main() -> int:
             higher_better=True,
         )
         pooled[f"{hkey}_strongest_prior"] = prior_name
+        pooled[f"{hkey}_pairing_mode"] = "seed|uid|H|M"
 
     h32_seed_count = sum(seed_positive["H32"])
     h64_seed_count = sum(seed_positive["H64"])
@@ -152,11 +200,25 @@ def main() -> int:
     h64_motion_positive = bool(pooled["H64_motion_bootstrap_minFDE_K"].get("zero_excluded") and (pooled["H64_motion_bootstrap_minFDE_K"].get("mean_delta") or 0) > 0)
     robust = bool(h32_seed_count >= 4 and h64_seed_count >= 4 and h32_item_positive and h64_item_positive and h32_motion_positive and h64_motion_positive)
     next_step = "run_v30_h96_seed42_then_multiseed" if robust else ("improve_v30_residual_modes" if h32_seed_count >= 4 else "fix_external_gt_dataset_or_metrics")
+    seed_sign_tests = {
+        "H32_all_minFDE": sign_test(int(h32_seed_count), len(seed_positive["H32"])),
+        "H64_all_minFDE": sign_test(int(h64_seed_count), len(seed_positive["H64"])),
+        "H32_motion_minFDE": sign_test(int(sum(v > 0 for v in seed_motion_delta["H32"])), len(seed_motion_delta["H32"])),
+        "H64_motion_minFDE": sign_test(int(sum(v > 0 for v in seed_motion_delta["H64"])), len(seed_motion_delta["H64"])),
+    }
+    seed_mean_ci = {
+        "H32_delta_minFDE": seed_level_ci(seed_delta["H32"]),
+        "H64_delta_minFDE": seed_level_ci(seed_delta["H64"]),
+        "H32_motion_delta_minFDE": seed_level_ci(seed_motion_delta["H32"]),
+        "H64_motion_delta_minFDE": seed_level_ci(seed_motion_delta["H64"]),
+    }
 
     summary = {
-        "summary_name": "stwm_ostf_v30_external_gt_round2_multiseed_summary",
+        "summary_name": "stwm_ostf_v30_external_gt_round2_multiseed_summary_v2",
         "generated_at_utc": utc_now(),
         "seeds": SEEDS,
+        "expected_run_count": len(SEEDS) * len(HORIZONS),
+        "completed_run_count": int(sum(1 for r in runs.values() if r.get("completed"))),
         "runs": runs,
         "per_seed": seed_rows,
         "seed_level_mean_std": {
@@ -169,6 +231,8 @@ def main() -> int:
             "H64_motion_delta_minFDE_mean": mean(seed_motion_delta["H64"]),
             "H64_motion_delta_minFDE_std": std(seed_motion_delta["H64"]),
         },
+        "seed_level_mean_delta_CI": seed_mean_ci,
+        "seed_level_sign_test": seed_sign_tests,
         "train_loss_decreased_rate": {
             "H32": float(sum(train_loss_decreased["H32"]) / max(len(train_loss_decreased["H32"]), 1)),
             "H64": float(sum(train_loss_decreased["H64"]) / max(len(train_loss_decreased["H64"]), 1)),
@@ -177,7 +241,7 @@ def main() -> int:
         "semantic_status": "not_tested_due_absent_semantic_target_loss",
     }
     decision = {
-        "decision_name": "stwm_ostf_v30_external_gt_round2_multiseed_decision",
+        "decision_name": "stwm_ostf_v30_external_gt_round2_multiseed_decision_v2",
         "generated_at_utc": utc_now(),
         "h32_positive_seed_count": int(h32_seed_count),
         "h64_positive_seed_count": int(h64_seed_count),
@@ -189,6 +253,8 @@ def main() -> int:
         "h64_item_bootstrap_positive": h64_item_positive,
         "h32_motion_bootstrap_positive": h32_motion_positive,
         "h64_motion_bootstrap_positive": h64_motion_positive,
+        "seed_level_sign_test": seed_sign_tests,
+        "seed_level_mean_delta_CI": seed_mean_ci,
         "trajectory_world_model_claim_preliminary": robust,
         "semantic_trace_field_claim_allowed": False,
         "semantic_not_tested_not_failed": True,
@@ -196,7 +262,18 @@ def main() -> int:
         "next_step_choice": next_step,
     }
     dump_json(SUMMARY_PATH, summary)
-    dump_json(BOOT_PATH, {"bootstrap_name": "stwm_ostf_v30_external_gt_round2_multiseed_bootstrap", "generated_at_utc": utc_now(), "per_seed": boot, "pooled": pooled})
+    dump_json(
+        BOOT_PATH,
+        {
+            "bootstrap_name": "stwm_ostf_v30_external_gt_round2_multiseed_bootstrap_v2",
+            "generated_at_utc": utc_now(),
+            "pairing_fix": "pooled bootstraps pair by seed|uid|H|M because prior-suite rows lack cache_path/item_key; repeated test items across seeds are no longer collapsed",
+            "per_seed_item_bootstrap": boot,
+            "pooled_seed_item_bootstrap": pooled,
+            "seed_level_sign_test": seed_sign_tests,
+            "seed_level_mean_delta_CI": seed_mean_ci,
+        },
+    )
     dump_json(DECISION_PATH, decision)
     write_doc(
         DOC_PATH,

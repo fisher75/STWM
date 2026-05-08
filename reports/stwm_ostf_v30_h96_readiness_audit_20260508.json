@@ -1,0 +1,84 @@
+{
+  "audit_name": "stwm_ostf_v30_h96_readiness_audit",
+  "exact_blocker": null,
+  "expected_gpu_memory": {
+    "amp": true,
+    "batch_size_recommended": 4,
+    "notes": "H96 uses same V30 M128 architecture with longer decoder horizon."
+  },
+  "generated_at_utc": "2026-05-08T07:21:20.253094+00:00",
+  "h96_m128_ready": true,
+  "missrate_saturation": {
+    "fixed_affine": {
+      "item_count": 231,
+      "motion_MissRate@128": 0.735632183908046,
+      "motion_MissRate@32": 1.0,
+      "motion_MissRate@64": 0.9712643678160919,
+      "motion_item_count": 174,
+      "motion_threshold_auc_endpoint_16_32_64_128": 0.07327586206896551
+    },
+    "last_observed_copy": {
+      "item_count": 231,
+      "motion_MissRate@128": 0.6494252873563219,
+      "motion_MissRate@32": 1.0,
+      "motion_MissRate@64": 1.0,
+      "motion_item_count": 174,
+      "motion_threshold_auc_endpoint_16_32_64_128": 0.08764367816091954
+    },
+    "last_visible_copy": {
+      "item_count": 231,
+      "motion_MissRate@128": 0.6494252873563219,
+      "motion_MissRate@32": 1.0,
+      "motion_MissRate@64": 1.0,
+      "motion_item_count": 174,
+      "motion_threshold_auc_endpoint_16_32_64_128": 0.08764367816091954
+    },
+    "missrate32_saturated": true,
+    "threshold_auc_endpoint_16_32_64_128_required": true,
+    "visibility_aware_cv": {
+      "item_count": 231,
+      "motion_MissRate@128": 0.896551724137931,
+      "motion_MissRate@32": 1.0,
+      "motion_MissRate@64": 0.9770114942528736,
+      "motion_item_count": 174,
+      "motion_threshold_auc_endpoint_16_32_64_128": 0.031609195402298854
+    },
+    "visibility_aware_damped": {
+      "item_count": 231,
+      "motion_MissRate@128": 0.6494252873563219,
+      "motion_MissRate@32": 1.0,
+      "motion_MissRate@64": 1.0,
+      "motion_item_count": 174,
+      "motion_threshold_auc_endpoint_16_32_64_128": 0.08764367816091954
+    }
+  },
+  "per_split_dataset_counts": {
+    "test": {
+      "pointodyssey": 231
+    },
+    "train": {
+      "pointodyssey": 187
+    },
+    "val": {
+      "pointodyssey": 108
+    }
+  },
+  "shape_bug_risk": "low: OSTFExternalGTWorldModelV30 is horizon-parametric and dataset construction succeeded",
+  "split_counts_H96_M128": {
+    "test": 231,
+    "train": 187,
+    "val": 108
+  },
+  "strongest_prior_H96": "last_observed_copy",
+  "strongest_prior_H96_val_minFDE": 127.08821850126574,
+  "test_h96_motion_item_count": 174,
+  "threshold_auc_endpoint_16_32_64_128_required": true,
+  "train_val_test_video_level_leakage_check": {
+    "overlap_counts": {
+      "train_test": 0,
+      "train_val": 0,
+      "val_test": 0
+    },
+    "passed": true
+  }
+}
