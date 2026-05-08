@@ -26,6 +26,7 @@ from stwm.tools.ostf_v30_external_gt_schema_20260508 import (
 
 REPORT_PATH = ROOT / "reports/stwm_ostf_v30_external_gt_antiprior_manifest_20260508.json"
 DOC_PATH = ROOT / "docs/STWM_OSTF_V30_EXTERNAL_GT_ANTIPRIOR_PROTOCOL_20260508.md"
+MAIN_READY_DATASETS = {"pointodyssey"}
 
 
 def _entry(path: Path) -> dict[str, Any]:
@@ -76,6 +77,8 @@ def _thresholds(entries: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _tag(e: dict[str, Any], thr: dict[str, Any]) -> tuple[bool, list[str], str | None]:
+    if e["dataset"] not in MAIN_READY_DATASETS:
+        return False, [], "excluded_partial_or_diagnostic_external_gt_source"
     if e["valid_future_point_ratio"] < 0.4:
         return False, [], "valid_future_point_ratio_lt_0.4"
     if not thr.get("valid"):
@@ -166,8 +169,10 @@ def main() -> int:
         "h64_external_gt_main_ready": bool(h64_ready),
         "h96_external_gt_main_ready": bool(h96_ready),
         "single_source_only": bool(single_source),
+        "main_ready_datasets": sorted(MAIN_READY_DATASETS),
+        "excluded_partial_sources_are_diagnostic_only": True,
         "cross_domain_main_ready": bool((h32_ready or h64_ready) and not single_source),
-        "pointodyssey_only_diagnostic": bool(single_source and (h32_ready or h64_ready or h96_ready)),
+        "pointodyssey_only_diagnostic": False,
         "missrate32_saturation_handling": "Use threshold_auc_endpoint_16_32_64_128 plus MissRate@64/128 when MissRate@32 is non-discriminative.",
     }
     dump_json(REPORT_PATH, payload)

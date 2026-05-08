@@ -1,0 +1,245 @@
+{
+  "H32_H64_H96_split_counts": {
+    "H32_motion_test": 352,
+    "H64_motion_test": 450,
+    "H96_motion_test": 523
+  },
+  "M128_M512_M1024_availability": {
+    "M1024_H32": {
+      "test": 238,
+      "train": 191,
+      "val": 113
+    },
+    "M1024_H64": {
+      "test": 234,
+      "train": 189,
+      "val": 111
+    },
+    "M1024_H96": {
+      "test": 232,
+      "train": 185,
+      "val": 107
+    },
+    "M128_H32": {
+      "test": 241,
+      "train": 190,
+      "val": 117
+    },
+    "M128_H64": {
+      "test": 236,
+      "train": 190,
+      "val": 114
+    },
+    "M128_H96": {
+      "test": 234,
+      "train": 187,
+      "val": 110
+    },
+    "M512_H32": {
+      "test": 239,
+      "train": 191,
+      "val": 117
+    },
+    "M512_H64": {
+      "test": 236,
+      "train": 190,
+      "val": 112
+    },
+    "M512_H96": {
+      "test": 235,
+      "train": 187,
+      "val": 110
+    }
+  },
+  "PointOdyssey_cache_path": "outputs/cache/stwm_ostf_v30_external_gt/pointodyssey",
+  "V30_new_model_training_required": true,
+  "audit_name": "stwm_ostf_v30_training_readiness_audit",
+  "dataset_summaries": {
+    "M128_H32": {
+      "test": {
+        "by_dataset": {
+          "pointodyssey": 169
+        },
+        "item_count": 169
+      },
+      "train": {
+        "by_dataset": {
+          "pointodyssey": 128
+        },
+        "item_count": 128
+      },
+      "val": {
+        "by_dataset": {
+          "pointodyssey": 75
+        },
+        "item_count": 75
+      }
+    },
+    "M128_H64": {
+      "test": {
+        "by_dataset": {
+          "pointodyssey": 202
+        },
+        "item_count": 202
+      },
+      "train": {
+        "by_dataset": {
+          "pointodyssey": 151
+        },
+        "item_count": 151
+      },
+      "val": {
+        "by_dataset": {
+          "pointodyssey": 98
+        },
+        "item_count": 98
+      }
+    }
+  },
+  "exact_training_combos_recommended": [
+    "M128_H32_seed42",
+    "M128_H64_seed42",
+    "M128_H32_wo_semantic_seed42",
+    "M128_H64_wo_semantic_seed42",
+    "M512_H32_seed42_optional",
+    "M512_H64_seed42_optional"
+  ],
+  "existing_V28_incompatibility_reason": "V28 consumes TraceAnything-derived object trace state with semantic memory; external GT cache schema has PointOdyssey/TAPVid point-field GT and lacks the trained V28 input semantic/context tensors. Evaluation is therefore restricted to analytic priors until a V30 model adapter is trained.",
+  "existing_V28_incompatible": true,
+  "external_GT_benchmark_main_ready": true,
+  "fields_sample": {
+    "fut_points_shape": [
+      128,
+      32,
+      2
+    ],
+    "fut_vis_shape": [
+      128,
+      32
+    ],
+    "has_2d": true,
+    "has_3d": false,
+    "has_visibility": true,
+    "keys": [
+      "M",
+      "coordinate_system",
+      "dataset",
+      "extrinsics",
+      "frame_paths",
+      "fut_conf",
+      "fut_points",
+      "fut_vis",
+      "horizon",
+      "instance_id",
+      "intrinsics",
+      "no_future_leakage",
+      "object_id",
+      "obs_conf",
+      "obs_len",
+      "obs_points",
+      "obs_vis",
+      "point_id",
+      "point_sampling_method",
+      "semantic_id",
+      "source_gt_not_teacher",
+      "source_path",
+      "split",
+      "valid_future_point_ratio",
+      "video_uid"
+    ],
+    "no_future_leakage": true,
+    "obs_points_shape": [
+      128,
+      8,
+      2
+    ],
+    "obs_vis_shape": [
+      128,
+      8
+    ],
+    "path": "outputs/cache/stwm_ostf_v30_external_gt/pointodyssey/M128_H32/train/pointodyssey_train_ani5_new_f_001235_M128_H32.npz",
+    "source_gt_not_teacher": true
+  },
+  "files_checked": {
+    "code/stwm/tools/audit_ostf_v30_external_gt_data_roots_20260508.py": {
+      "exists": true,
+      "size_bytes": 2426
+    },
+    "code/stwm/tools/build_ostf_v30_external_gt_antiprior_benchmark_20260508.py": {
+      "exists": true,
+      "size_bytes": 8876
+    },
+    "code/stwm/tools/build_ostf_v30_pointodyssey_gt_cache_20260508.py": {
+      "exists": true,
+      "size_bytes": 7269
+    },
+    "code/stwm/tools/build_ostf_v30_tapvid3d_gt_cache_20260508.py": {
+      "exists": true,
+      "size_bytes": 6269
+    },
+    "code/stwm/tools/build_ostf_v30_tapvid_gt_cache_20260508.py": {
+      "exists": true,
+      "size_bytes": 5079
+    },
+    "code/stwm/tools/eval_ostf_v30_external_gt_priors_and_existing_20260508.py": {
+      "exists": true,
+      "size_bytes": 5220
+    },
+    "code/stwm/tools/ostf_v30_external_gt_schema_20260508.py": {
+      "exists": true,
+      "size_bytes": 22137
+    },
+    "code/stwm/tools/write_ostf_v30_external_gt_decision_20260508.py": {
+      "exists": true,
+      "size_bytes": 4897
+    },
+    "reports/stwm_ostf_v30_external_gt_antiprior_manifest_20260508.json": {
+      "exists": true,
+      "size_bytes": 3658
+    },
+    "reports/stwm_ostf_v30_external_gt_cache_build_20260508.json": {
+      "exists": true,
+      "size_bytes": 97943
+    },
+    "reports/stwm_ostf_v30_external_gt_data_root_audit_20260508.json": {
+      "exists": true,
+      "size_bytes": 18094
+    },
+    "reports/stwm_ostf_v30_external_gt_decision_20260508.json": {
+      "exists": true,
+      "size_bytes": 782
+    },
+    "reports/stwm_ostf_v30_external_gt_existing_bootstrap_20260508.json": {
+      "exists": true,
+      "size_bytes": 5878
+    },
+    "reports/stwm_ostf_v30_external_gt_existing_eval_20260508.json": {
+      "exists": true,
+      "size_bytes": 41754
+    },
+    "reports/stwm_ostf_v30_v29_bugfix_audit_20260508.json": {
+      "exists": true,
+      "size_bytes": 4354
+    },
+    "scripts/run_ostf_v30_external_gt_preflight_20260508.sh": {
+      "exists": true,
+      "size_bytes": 1361
+    },
+    "scripts/start_ostf_v30_external_gt_preflight_tmux_20260508.sh": {
+      "exists": true,
+      "size_bytes": 525
+    }
+  },
+  "generated_at_utc": "2026-05-08T05:01:51.444876+00:00",
+  "missing_or_empty_files": [],
+  "obs_fut_visibility_fields_available": true,
+  "readiness_passed": true,
+  "three_d_fields_available": false,
+  "total_raw_cache_items": 6809,
+  "train_val_test_video_level_leakage_check": {
+    "checked_video_uid_count": 1284,
+    "leakage_detected": false,
+    "leakage_examples": []
+  },
+  "two_d_fields_available": true
+}

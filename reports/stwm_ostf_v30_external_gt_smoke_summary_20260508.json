@@ -1,0 +1,33 @@
+{
+  "checkpoint_save_load_path_exists": true,
+  "dataset_loads": true,
+  "eval_writes_item_rows": true,
+  "generated_at_utc": "2026-05-08T04:48:28.964463+00:00",
+  "no_future_leakage": true,
+  "no_nan": true,
+  "prior_suite_compatible": true,
+  "runs": {
+    "v30_extgt_m128_h32_seed42_smoke": {
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_v30_external_gt/v30_extgt_m128_h32_seed42_smoke_best.pt",
+      "completed": true,
+      "item_row_count": 169,
+      "schema_and_leakage_clean": true,
+      "test_minFDE_K": 98.85932533557599,
+      "train_loss_decreased": true,
+      "val_minFDE_K": 107.15320852915445
+    },
+    "v30_extgt_m128_h64_seed42_smoke": {
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_v30_external_gt/v30_extgt_m128_h64_seed42_smoke_best.pt",
+      "completed": true,
+      "item_row_count": 202,
+      "schema_and_leakage_clean": true,
+      "test_minFDE_K": 103.73159022850565,
+      "train_loss_decreased": true,
+      "val_minFDE_K": 121.44486390327921
+    }
+  },
+  "smoke_passed": true,
+  "summary_name": "stwm_ostf_v30_external_gt_smoke_summary",
+  "visualization_note": "Smoke exports item rows/checkpoints only; no paper visualization is claimed in V30 round 1.",
+  "visualization_sample_exported": false
+}
