@@ -1,0 +1,7 @@
+# STWM OSTF V30 Density M1024 Smoke Summary
+
+- m1024_smoke_passed: `True`
+- passed_run_count: `3`
+- expected_run_count: `3`
+- per_run: `[{'experiment_name': 'v30_extgt_m1024_h32_seed42_smoke', 'completed': True, 'report_path': 'reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m1024_h32_seed42_smoke.json', 'steps': 1000, 'batch_size': 1, 'grad_accum_steps': 8, 'effective_batch_size': 8, 'train_loss_decreased': False, 'test_item_row_count': 167, 'minFDE_K': 102.77710634791208, 'point_valid_ratio_last': 1.0, 'point_encoder_activation_norm_last': 1.906752109527588, 'smoke_passed': True}, {'experiment_name': 'v30_extgt_m1024_h64_seed42_smoke', 'completed': True, 'report_path': 'reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m1024_h64_seed42_smoke.json', 'steps': 1000, 'batch_size': 1, 'grad_accum_steps': 8, 'effective_batch_size': 8, 'train_loss_decreased': False, 'test_item_row_count': 202, 'minFDE_K': 119.94317335657554, 'point_valid_ratio_last': 1.0, 'point_encoder_activation_norm_last': 1.9382028579711914, 'smoke_passed': True}, {'experiment_name': 'v30_extgt_m1024_h96_seed42_smoke', 'completed': True, 'report_path': 'reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m1024_h96_seed42_smoke.json', 'steps': 1000, 'batch_size': 1, 'grad_accum_steps': 8, 'effective_batch_size': 8, 'train_loss_decreased': False, 'test_item_row_count': 229, 'minFDE_K': 136.32075943306543, 'point_valid_ratio_last': 1.0, 'point_encoder_activation_norm_last': 1.5799517631530762, 'smoke_passed': True}]`
+- semantic_not_tested_not_failed: `True`

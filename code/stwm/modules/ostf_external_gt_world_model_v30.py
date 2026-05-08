@@ -21,6 +21,8 @@ class OSTFExternalGTConfigV30:
     semantic_buckets: int = 8192
     semantic_dim: int = 32
     predict_logvar: bool = True
+    point_dropout: float = 0.0
+    density_aware_pooling: str = "none"
 
 
 def _last_visible(obs_points: torch.Tensor, obs_vis: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -151,7 +153,17 @@ class OSTFExternalGTWorldModelV30(nn.Module):
         )
         flat = torch.cat([norm_obs, obs_vis_f[..., None], obs_conf[..., None]], dim=-1).flatten(2)
         point_token = self.point_encoder(torch.cat([flat, anchor_feat], dim=-1))
-        pooled = point_token.mean(dim=1)
+        valid_point = obs_vis.any(dim=-1).float()
+        if self.training and self.cfg.point_dropout > 0:
+            keep = (torch.rand_like(valid_point) >= float(self.cfg.point_dropout)).float()
+            keep = torch.maximum(keep, valid_point * 0.0 + (keep.sum(dim=1, keepdim=True) <= 0).float())
+            valid_point = valid_point * keep
+            point_token = point_token * keep[..., None]
+        if self.cfg.density_aware_pooling in {"valid_weighted", "local_attention"}:
+            denom = valid_point.sum(dim=1, keepdim=True).clamp_min(1.0)
+            pooled = (point_token * valid_point[..., None]).sum(dim=1) / denom
+        else:
+            pooled = point_token.mean(dim=1)
         if semantic_id is None:
             semantic_id = torch.full((obs_points.shape[0],), -1, device=obs_points.device, dtype=torch.long)
         sem_idx = semantic_id.clamp_min(0) % self.cfg.semantic_buckets
@@ -192,6 +204,9 @@ class OSTFExternalGTWorldModelV30(nn.Module):
             "semantic_logits": semantic_logits,
             "prior_names": k_prior,
             "num_prior_modes": torch.tensor(len(k_prior), device=obs_points.device),
+            "point_encoder_activation_norm": point_token.detach().norm(dim=-1).mean(),
+            "point_valid_ratio": valid_point.detach().mean(),
+            "actual_m_points": torch.tensor(obs_points.shape[1], device=obs_points.device),
         }
         if self.cfg.predict_logvar:
             out["mode_logvar"] = self.logvar_head(step_hidden).squeeze(-1)

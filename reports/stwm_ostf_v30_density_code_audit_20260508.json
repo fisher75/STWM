@@ -1,0 +1,44 @@
+{
+  "audit_name": "stwm_ostf_v30_density_code_audit",
+  "default_behavior_preserves_previous_runs": true,
+  "fatal_issue_found": false,
+  "files": {
+    "code/stwm/datasets/ostf_v30_external_gt_dataset_20260508.py": {
+      "exists": true,
+      "size_bytes": 5747
+    },
+    "code/stwm/modules/ostf_external_gt_world_model_v30.py": {
+      "exists": true,
+      "size_bytes": 10931
+    },
+    "code/stwm/tools/eval_ostf_external_gt_v30_20260508.py": {
+      "exists": true,
+      "size_bytes": 3097
+    },
+    "code/stwm/tools/train_ostf_external_gt_v30_20260508.py": {
+      "exists": true,
+      "size_bytes": 12523
+    },
+    "diagnostic_features": {
+      "density_aware_pooling_flag": true,
+      "local_attention_not_overengineered": true,
+      "logs_actual_M_per_batch": true,
+      "logs_effective_batch_size": true,
+      "logs_gradient_accumulation": true,
+      "logs_point_encoder_activation_norm": true,
+      "logs_point_valid_ratio": true,
+      "point_dropout_flag": true,
+      "setproctitle_python_for_gpu_process": true,
+      "valid_weighted_pooling_available": true
+    }
+  },
+  "generated_at_utc": "2026-05-08T08:26:40.882699+00:00",
+  "notes": [
+    "New diagnostics are only emitted by future runs.",
+    "density_aware_pooling defaults to none for fair comparison.",
+    "local_attention flag currently uses the valid-weighted lightweight path rather than adding new architecture parameters."
+  ],
+  "py_compile_ok": true,
+  "py_compile_stderr": "",
+  "py_compile_stdout": ""
+}

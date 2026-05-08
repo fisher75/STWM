@@ -44,6 +44,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-eval-items", type=int, default=None)
     p.add_argument("--wo-semantic", action="store_true")
     p.add_argument("--cpu", action="store_true")
+    p.add_argument("--point-dropout", type=float, default=0.0)
+    p.add_argument("--density-aware-pooling", choices=("none", "valid_weighted", "local_attention"), default="none")
     return p.parse_args()
 
 

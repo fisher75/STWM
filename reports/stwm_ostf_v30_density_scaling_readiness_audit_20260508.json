@@ -1,0 +1,331 @@
+{
+  "audit_name": "stwm_ostf_v30_density_scaling_readiness_audit",
+  "cache_item_counts_by_M_H_split": {
+    "M1024_H32": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 167,
+        "motion_count": 117
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 131,
+        "motion_count": 90
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 75,
+        "motion_count": 60
+      }
+    },
+    "M1024_H64": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 202,
+        "motion_count": 149
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 148,
+        "motion_count": 110
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 92,
+        "motion_count": 77
+      }
+    },
+    "M1024_H96": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 229,
+        "motion_count": 172
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 185,
+        "motion_count": 140
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 106,
+        "motion_count": 80
+      }
+    },
+    "M128_H32": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 169,
+        "motion_count": 117
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 128,
+        "motion_count": 89
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 75,
+        "motion_count": 60
+      }
+    },
+    "M128_H64": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 202,
+        "motion_count": 149
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 151,
+        "motion_count": 109
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 98,
+        "motion_count": 81
+      }
+    },
+    "M128_H96": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 231,
+        "motion_count": 174
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 187,
+        "motion_count": 141
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 108,
+        "motion_count": 80
+      }
+    },
+    "M512_H32": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 166,
+        "motion_count": 118
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 129,
+        "motion_count": 91
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 78,
+        "motion_count": 63
+      }
+    },
+    "M512_H64": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 205,
+        "motion_count": 152
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 150,
+        "motion_count": 109
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 92,
+        "motion_count": 78
+      }
+    },
+    "M512_H96": {
+      "test": {
+        "cache_path_exists_sample": true,
+        "item_count": 233,
+        "motion_count": 177
+      },
+      "train": {
+        "cache_path_exists_sample": true,
+        "item_count": 187,
+        "motion_count": 141
+      },
+      "val": {
+        "cache_path_exists_sample": true,
+        "item_count": 108,
+        "motion_count": 82
+      }
+    }
+  },
+  "density_scaling_ready": true,
+  "exact_blocker": null,
+  "existing_m512_protocol_audit": {
+    "H32": {
+      "existing_m512_batch_size": 8,
+      "existing_m512_report_found": true,
+      "existing_m512_same_protocol_as_m128_seed42": false,
+      "existing_m512_steps": 4000,
+      "reason": "missing or not 4000-step/current batch/eval protocol",
+      "rerun_seed42_recommended": true
+    },
+    "H64": {
+      "existing_m512_batch_size": null,
+      "existing_m512_report_found": true,
+      "existing_m512_same_protocol_as_m128_seed42": false,
+      "existing_m512_steps": 2500,
+      "reason": "missing or not 4000-step/current batch/eval protocol",
+      "rerun_seed42_recommended": true
+    },
+    "H96": {
+      "existing_m512_batch_size": null,
+      "existing_m512_report_found": false,
+      "existing_m512_same_protocol_as_m128_seed42": false,
+      "existing_m512_steps": null,
+      "reason": "missing or not 4000-step/current batch/eval protocol",
+      "rerun_seed42_recommended": true
+    }
+  },
+  "existing_m512_seed42_vs_m128_seed42": {
+    "H32": {
+      "m128": {
+        "MissRate@128": 0.31952662721893493,
+        "MissRate@64": 0.6923076923076923,
+        "batch_size": null,
+        "completed": true,
+        "duration_seconds": 125.04191946983337,
+        "effective_batch_size": null,
+        "eval_interval": null,
+        "grad_accum_steps": null,
+        "minFDE_K": 97.40924714443952,
+        "motion_minFDE_K": 123.49698053669725,
+        "motion_threshold_auc_endpoint_16_32_64_128": 0.2222222222222222,
+        "relative_deformation_layout_error": 42.64064091707982,
+        "report_path": "reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m128_h32_seed42.json",
+        "steps": 4000,
+        "threshold_auc_endpoint_16_32_64_128": 0.3328402366863905,
+        "train_loss_decreased": true,
+        "visibility_F1": 0.8528920244532568
+      },
+      "m512": {
+        "MissRate@128": 0.3192771084337349,
+        "MissRate@64": 0.7048192771084337,
+        "batch_size": 8,
+        "completed": true,
+        "duration_seconds": 202.85955595970154,
+        "effective_batch_size": 8,
+        "eval_interval": 1000,
+        "grad_accum_steps": 1,
+        "minFDE_K": 94.65101939511587,
+        "motion_minFDE_K": 117.9749592764903,
+        "motion_threshold_auc_endpoint_16_32_64_128": 0.2288135593220339,
+        "relative_deformation_layout_error": 43.37251973293542,
+        "report_path": "reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m512_h32_seed42.json",
+        "steps": 4000,
+        "threshold_auc_endpoint_16_32_64_128": 0.3328313253012048,
+        "train_loss_decreased": true,
+        "visibility_F1": 0.8536208043436807
+      },
+      "m512_beats_m128_minFDE_K": true,
+      "m512_minus_m128_MissRate@128": -0.00024951878520002024,
+      "m512_minus_m128_MissRate@64": 0.012511584800741438,
+      "m512_minus_m128_minFDE_K": -2.758227749323652,
+      "m512_minus_m128_motion_minFDE_K": -5.522021260206955,
+      "m512_minus_m128_relative_deformation_layout_error": 0.7318788158556018,
+      "m512_minus_m128_threshold_auc_endpoint_16_32_64_128": -8.911385185716991e-06,
+      "m512_minus_m128_visibility_F1": 0.0007287798904238585,
+      "same_protocol": false
+    },
+    "H64": {
+      "m128": {
+        "MissRate@128": 0.36633663366336633,
+        "MissRate@64": 0.7376237623762376,
+        "batch_size": null,
+        "completed": true,
+        "duration_seconds": 154.57193183898926,
+        "effective_batch_size": null,
+        "eval_interval": null,
+        "grad_accum_steps": null,
+        "minFDE_K": 103.76228536945759,
+        "motion_minFDE_K": 126.51686990981133,
+        "motion_threshold_auc_endpoint_16_32_64_128": 0.18624161073825504,
+        "relative_deformation_layout_error": 51.46739329809163,
+        "report_path": "reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m128_h64_seed42.json",
+        "steps": 4000,
+        "threshold_auc_endpoint_16_32_64_128": 0.29207920792079206,
+        "train_loss_decreased": true,
+        "visibility_F1": 0.831315102402682
+      },
+      "m512": {
+        "MissRate@128": 0.3853658536585366,
+        "MissRate@64": 0.7365853658536585,
+        "batch_size": null,
+        "completed": true,
+        "duration_seconds": 103.75355267524719,
+        "effective_batch_size": null,
+        "eval_interval": null,
+        "grad_accum_steps": null,
+        "minFDE_K": 114.0323757450755,
+        "motion_minFDE_K": 139.7079673817283,
+        "motion_threshold_auc_endpoint_16_32_64_128": 0.17105263157894737,
+        "relative_deformation_layout_error": 51.80123840717687,
+        "report_path": "reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m512_h64_seed42.json",
+        "steps": 2500,
+        "threshold_auc_endpoint_16_32_64_128": 0.27926829268292686,
+        "train_loss_decreased": true,
+        "visibility_F1": 0.8309067755915606
+      },
+      "m512_beats_m128_minFDE_K": false,
+      "m512_minus_m128_MissRate@128": 0.019029219995170266,
+      "m512_minus_m128_MissRate@64": -0.001038396522579088,
+      "m512_minus_m128_minFDE_K": 10.270090375617912,
+      "m512_minus_m128_motion_minFDE_K": 13.191097471916976,
+      "m512_minus_m128_relative_deformation_layout_error": 0.3338451090852388,
+      "m512_minus_m128_threshold_auc_endpoint_16_32_64_128": -0.012810915237865206,
+      "m512_minus_m128_visibility_F1": -0.0004083268111214622,
+      "same_protocol": false
+    },
+    "H96": {
+      "m128": {
+        "MissRate@128": 0.48917748917748916,
+        "MissRate@64": 0.7532467532467533,
+        "batch_size": null,
+        "completed": true,
+        "duration_seconds": 369.55699467658997,
+        "effective_batch_size": null,
+        "eval_interval": null,
+        "grad_accum_steps": null,
+        "minFDE_K": 128.03502755454093,
+        "motion_minFDE_K": 159.88784864579125,
+        "motion_threshold_auc_endpoint_16_32_64_128": 0.12931034482758622,
+        "relative_deformation_layout_error": 58.95265561101619,
+        "report_path": "reports/stwm_ostf_v30_external_gt_runs/v30_extgt_m128_h96_seed42.json",
+        "steps": 4000,
+        "threshold_auc_endpoint_16_32_64_128": 0.2683982683982684,
+        "train_loss_decreased": false,
+        "visibility_F1": 0.8223289633080099
+      },
+      "m512": null,
+      "same_protocol": false
+    }
+  },
+  "generated_at_utc": "2026-05-08T08:26:39.643355+00:00",
+  "m1024_memory_batch_feasibility_estimate": {
+    "M1024_cache_ready": true,
+    "expected_risk": "moderate: point encoder is per-point MLP but hypotheses tensor scales linearly with M*H*modes",
+    "recommended_batch_size": {
+      "H32": 1,
+      "H64": 1,
+      "H96": 1
+    },
+    "recommended_grad_accum_steps": {
+      "H32": 8,
+      "H64": 8,
+      "H96": 8
+    }
+  },
+  "possible_m512_failure_modes_to_monitor": [
+    "smaller effective batch",
+    "insufficient steps",
+    "GPU memory constraints",
+    "point encoder mean-pooling bottleneck",
+    "metric insensitivity to density"
+  ]
+}

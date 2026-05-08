@@ -71,6 +71,8 @@ def build_model(args: argparse.Namespace) -> OSTFExternalGTWorldModelV30:
         learned_modes=int(args.learned_modes),
         damped_gamma=float(args.damped_gamma),
         use_semantic=not bool(args.wo_semantic),
+        point_dropout=float(getattr(args, "point_dropout", 0.0)),
+        density_aware_pooling=str(getattr(args, "density_aware_pooling", "none")),
     )
     return OSTFExternalGTWorldModelV30(cfg)
 
@@ -100,6 +102,9 @@ def loss_fn(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor]) -> tup
         "mode_ce": float(mode_ce.detach().cpu()),
         "visibility": float(vis_loss.detach().cpu()),
         "diversity": float(diversity.detach().cpu()),
+        "point_encoder_activation_norm": float(out.get("point_encoder_activation_norm", torch.tensor(0.0)).detach().cpu()),
+        "point_valid_ratio": float(out.get("point_valid_ratio", torch.tensor(0.0)).detach().cpu()),
+        "actual_m_points": float(out.get("actual_m_points", torch.tensor(float(batch["obs_points"].shape[1]))).detach().cpu()),
     }
 
 
@@ -168,6 +173,8 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
     losses = []
     start = time.time()
     it = iter(train_loader)
+    grad_accum = max(1, int(args.grad_accum_steps))
+    opt.zero_grad(set_to_none=True)
     for step in range(1, int(args.steps) + 1):
         try:
             batch = next(it)
@@ -175,7 +182,6 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
             it = iter(train_loader)
             batch = next(it)
         batch_d = move_batch(batch, device)
-        opt.zero_grad(set_to_none=True)
         with autocast("cuda", enabled=(device.type == "cuda" and args.amp)):
             out = model(
                 obs_points=batch_d["obs_points"],
@@ -184,11 +190,14 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
                 semantic_id=batch_d["semantic_id"],
             )
             loss, comps = loss_fn(out, batch_d)
+            loss = loss / grad_accum
         scaler.scale(loss).backward()
-        scaler.unscale_(opt)
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        scaler.step(opt)
-        scaler.update()
+        if step % grad_accum == 0 or step == int(args.steps):
+            scaler.unscale_(opt)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            scaler.step(opt)
+            scaler.update()
+            opt.zero_grad(set_to_none=True)
         losses.append({"step": step, **comps})
         if step % int(args.eval_interval) == 0 or step == int(args.steps):
             val_metrics, _ = evaluate(model, val_loader, device)
@@ -212,6 +221,12 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
         "point_dim": int(args.point_dim),
         "wo_semantic": bool(args.wo_semantic),
         "steps": int(args.steps),
+        "batch_size": int(args.batch_size),
+        "eval_interval": int(args.eval_interval),
+        "grad_accum_steps": grad_accum,
+        "effective_batch_size": int(args.batch_size) * grad_accum,
+        "point_dropout": float(args.point_dropout),
+        "density_aware_pooling": str(args.density_aware_pooling),
         "device": str(device),
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
         "setproctitle_status": SETPROCTITLE_STATUS,
@@ -256,6 +271,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--smoke", action="store_true")
     p.add_argument("--amp", action="store_true")
     p.add_argument("--cpu", action="store_true")
+    p.add_argument("--grad-accum-steps", type=int, default=1)
+    p.add_argument("--point-dropout", type=float, default=0.0)
+    p.add_argument("--density-aware-pooling", choices=("none", "valid_weighted", "local_attention"), default="none")
     return p.parse_args()
 
 
