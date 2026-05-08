@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -369,19 +370,44 @@ def dump_manifest(path: Path, entries: list[dict[str, Any]]) -> None:
 
 
 def available_external_dataset_preflight() -> dict[str, Any]:
+    base_roots = [
+        ROOT / "data",
+        Path("/home/chen034/workspace/stwm/data"),
+        Path("/raid/chen034/workspace/data"),
+        Path("/home/chen034/workspace/data"),
+        Path("/raid/chen034/data"),
+        Path("/home/chen034/data"),
+    ]
+    env_roots = [Path(x) for x in os.environ.get("STWM_DATA_ROOTS", "").split(":") if x.strip()]
+    roots: list[Path] = []
+    seen: set[str] = set()
+    for root in [*base_roots, *env_roots]:
+        key = str(root)
+        if key not in seen:
+            seen.add(key)
+            roots.append(root)
+
+    def candidates_for(*names: str) -> list[Path]:
+        out: list[Path] = []
+        for root in roots:
+            for name in names:
+                out.append(root / name)
+        return out
+
     candidates = {
-        "PointOdyssey": [ROOT / "data/PointOdyssey", ROOT / "data/pointodyssey", Path("/raid/chen034/data/PointOdyssey")],
-        "TAP-Vid": [ROOT / "data/tapvid", ROOT / "data/TAP-Vid", Path("/raid/chen034/data/tapvid")],
-        "TAPVid-3D": [ROOT / "data/tapvid3d", ROOT / "data/TAPVid-3D", Path("/raid/chen034/data/tapvid3d")],
-        "Kubric": [ROOT / "data/kubric", ROOT / "data/Kubric", Path("/raid/chen034/data/kubric")],
-        "MatrixCity": [ROOT / "data/MatrixCity", ROOT / "data/matrixcity", Path("/raid/chen034/data/MatrixCity")],
-        "Spring": [ROOT / "data/Spring", ROOT / "data/spring", Path("/raid/chen034/data/Spring")],
+        "PointOdyssey": candidates_for("PointOdyssey", "pointodyssey", "point_odyssey"),
+        "TAP-Vid": candidates_for("tapvid", "TAP-Vid", "tap_vid"),
+        "TAPVid-3D": candidates_for("tapvid3d", "TAPVid-3D", "tapvid_3d"),
+        "Kubric": candidates_for("kubric", "Kubric"),
+        "MatrixCity": candidates_for("MatrixCity", "matrixcity", "matrix_city"),
+        "Spring": candidates_for("Spring", "spring"),
     }
     out = {}
     for name, paths in candidates.items():
         existing = [str(p) for p in paths if p.exists()]
         out[name] = {
             "available": bool(existing),
+            "searched_data_roots": [str(r) for r in roots],
             "existing_paths": existing,
             "exact_access_blocker": None if existing else f"no official local {name} data directory found under checked roots",
         }
@@ -401,4 +427,3 @@ def finite_bool(value: Any) -> bool:
         return bool(value) and math.isfinite(float(value))
     except Exception:
         return bool(value)
-

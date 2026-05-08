@@ -12,7 +12,8 @@ from stwm.tools.ostf_v17_common_20260502 import dump_json, write_doc
 from stwm.tools.ostf_v29_benchmark_utils_20260508 import ROOT, load_json, utc_now
 
 
-REPORT_PATH = ROOT / "reports/stwm_ostf_v29_prefight_from_v28_20260508.json"
+LEGACY_REPORT_PATH = ROOT / "reports/stwm_ostf_v29_prefight_from_v28_20260508.json"
+REPORT_PATH = ROOT / "reports/stwm_ostf_v29_preflight_from_v28_20260508.json"
 DOC_PATH = ROOT / "docs/STWM_OSTF_V29_PREFLIGHT_FROM_V28_20260508.md"
 
 REQUIRED = [
@@ -92,6 +93,7 @@ def main() -> int:
         ),
     }
     dump_json(REPORT_PATH, payload)
+    dump_json(LEGACY_REPORT_PATH, payload)
     write_doc(
         DOC_PATH,
         "STWM OSTF V29 Preflight From V28",

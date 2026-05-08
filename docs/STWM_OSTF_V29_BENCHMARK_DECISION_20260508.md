@@ -3,6 +3,10 @@
 - v29_benchmark_main_ready: `False`
 - h32_main_ready: `False`
 - h64_main_ready: `False`
+- h32_benchmark_main_ready: `False`
+- h64_benchmark_main_ready: `False`
+- v29_traceanything_benchmark_main_ready: `False`
+- v29_external_gt_benchmark_main_ready: `False`
 - h64_stress_only: `True`
 - last_visible_prior_dominates_after_fix: `True`
 - missrate32_saturated: `True`

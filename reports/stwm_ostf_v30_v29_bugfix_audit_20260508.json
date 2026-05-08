@@ -1,0 +1,125 @@
+{
+  "audit_name": "stwm_ostf_v30_v29_bugfix_audit",
+  "bugfix_audit_passed": true,
+  "correct_preflight_report_exists": true,
+  "decision_logic_fixed_fields": [
+    "h32_benchmark_main_ready",
+    "h64_benchmark_main_ready",
+    "v29_traceanything_benchmark_main_ready",
+    "v29_external_gt_benchmark_main_ready"
+  ],
+  "external_dataset_preflight_roots": [
+    "/raid/chen034/workspace/stwm/data",
+    "/home/chen034/workspace/stwm/data",
+    "/raid/chen034/workspace/data",
+    "/home/chen034/workspace/data",
+    "/raid/chen034/data",
+    "/home/chen034/data"
+  ],
+  "external_dataset_preflight_sample": {
+    "Kubric": {
+      "available": true,
+      "exact_access_blocker": null,
+      "existing_paths": [
+        "/raid/chen034/workspace/data/kubric",
+        "/home/chen034/workspace/data/kubric"
+      ],
+      "searched_data_roots": [
+        "/raid/chen034/workspace/stwm/data",
+        "/home/chen034/workspace/stwm/data",
+        "/raid/chen034/workspace/data",
+        "/home/chen034/workspace/data",
+        "/raid/chen034/data",
+        "/home/chen034/data"
+      ]
+    },
+    "MatrixCity": {
+      "available": false,
+      "exact_access_blocker": "no official local MatrixCity data directory found under checked roots",
+      "existing_paths": [],
+      "searched_data_roots": [
+        "/raid/chen034/workspace/stwm/data",
+        "/home/chen034/workspace/stwm/data",
+        "/raid/chen034/workspace/data",
+        "/home/chen034/workspace/data",
+        "/raid/chen034/data",
+        "/home/chen034/data"
+      ]
+    },
+    "PointOdyssey": {
+      "available": true,
+      "exact_access_blocker": null,
+      "existing_paths": [
+        "/raid/chen034/workspace/data/pointodyssey",
+        "/home/chen034/workspace/data/pointodyssey"
+      ],
+      "searched_data_roots": [
+        "/raid/chen034/workspace/stwm/data",
+        "/home/chen034/workspace/stwm/data",
+        "/raid/chen034/workspace/data",
+        "/home/chen034/workspace/data",
+        "/raid/chen034/data",
+        "/home/chen034/data"
+      ]
+    },
+    "Spring": {
+      "available": false,
+      "exact_access_blocker": "no official local Spring data directory found under checked roots",
+      "existing_paths": [],
+      "searched_data_roots": [
+        "/raid/chen034/workspace/stwm/data",
+        "/home/chen034/workspace/stwm/data",
+        "/raid/chen034/workspace/data",
+        "/home/chen034/workspace/data",
+        "/raid/chen034/data",
+        "/home/chen034/data"
+      ]
+    },
+    "TAP-Vid": {
+      "available": true,
+      "exact_access_blocker": null,
+      "existing_paths": [
+        "/raid/chen034/workspace/data/tapvid",
+        "/home/chen034/workspace/data/tapvid"
+      ],
+      "searched_data_roots": [
+        "/raid/chen034/workspace/stwm/data",
+        "/home/chen034/workspace/stwm/data",
+        "/raid/chen034/workspace/data",
+        "/home/chen034/workspace/data",
+        "/raid/chen034/data",
+        "/home/chen034/data"
+      ]
+    },
+    "TAPVid-3D": {
+      "available": true,
+      "exact_access_blocker": null,
+      "existing_paths": [
+        "/raid/chen034/workspace/data/tapvid3d",
+        "/home/chen034/workspace/data/tapvid3d"
+      ],
+      "searched_data_roots": [
+        "/raid/chen034/workspace/stwm/data",
+        "/home/chen034/workspace/stwm/data",
+        "/raid/chen034/workspace/data",
+        "/home/chen034/workspace/data",
+        "/raid/chen034/data",
+        "/home/chen034/data"
+      ]
+    }
+  },
+  "external_gt_cache_discovery_rule": "outputs/cache/stwm_ostf_v30_external_gt/<dataset>/<M_H>/<split>/*.npz via recursive rglob",
+  "external_gt_recursive_cache_discovery_fixed": true,
+  "generated_at_utc": "2026-05-07T17:25:22.745838+00:00",
+  "legacy_prefight_report_preserved": true,
+  "missrate32_saturation_rule": "hard subset last_visible and V28 both 0 or both 1 implies saturated; threshold_auc_needed=true",
+  "threshold_auc_metric_key": "threshold_auc_endpoint_16_32_64_128",
+  "v29_decision_report_exists": true,
+  "v29_files_checked": [
+    "code/stwm/tools/ostf_v29_benchmark_utils_20260508.py",
+    "code/stwm/tools/write_ostf_v29_benchmark_decision_20260508.py",
+    "code/stwm/tools/diagnose_ostf_v29_prior_dominance_20260508.py",
+    "code/stwm/tools/build_ostf_v29_antiprior_hardbench_20260508.py",
+    "code/stwm/tools/eval_ostf_v29_antiprior_existing_models_20260508.py"
+  ]
+}

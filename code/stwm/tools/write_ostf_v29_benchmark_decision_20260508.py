@@ -17,7 +17,8 @@ MANIFEST_PATH = ROOT / "reports/stwm_ostf_v29_antiprior_hardbench_manifest_20260
 EVAL_PATH = ROOT / "reports/stwm_ostf_v29_antiprior_existing_eval_20260508.json"
 BOOT_PATH = ROOT / "reports/stwm_ostf_v29_antiprior_existing_bootstrap_20260508.json"
 DIAG_PATH = ROOT / "reports/stwm_ostf_v29_prior_dominance_diagnosis_20260508.json"
-PREFLIGHT_PATH = ROOT / "reports/stwm_ostf_v29_prefight_from_v28_20260508.json"
+PREFLIGHT_PATH = ROOT / "reports/stwm_ostf_v29_preflight_from_v28_20260508.json"
+LEGACY_PREFLIGHT_PATH = ROOT / "reports/stwm_ostf_v29_prefight_from_v28_20260508.json"
 
 
 def _positive(boot: dict[str, Any]) -> bool:
@@ -46,7 +47,7 @@ def main() -> int:
     eval_payload = load_json(EVAL_PATH)
     boot = load_json(BOOT_PATH)
     diag = load_json(DIAG_PATH)
-    preflight = load_json(PREFLIGHT_PATH)
+    preflight = load_json(PREFLIGHT_PATH) or load_json(LEGACY_PREFLIGHT_PATH)
     h32_main_ready = bool(manifest.get("h32_main_ready", False))
     h64_main_ready = bool(manifest.get("h64_main_ready", False))
     h64_stress_only = bool(manifest.get("h64_stress_only", not h64_main_ready))
@@ -67,14 +68,20 @@ def main() -> int:
         (best_h32 == "last_visible_copy" and not h32_v28_beats_last_visible)
         or (best_h64 == "last_visible_copy" and not h64_v28_beats_last_visible)
     )
-    miss32_saturated = bool(
-        diag.get("answers", {}).get("MissRate32_saturated_threshold_auc_needed", False)
-        or (
-            (_metric(eval_payload, "M128_H64", "last_visible_copy", "last_visible_hard", "MissRate_32px") in {0.0, 1.0})
-            if _metric(eval_payload, "M128_H64", "last_visible_copy", "last_visible_hard", "MissRate_32px") is not None
-            else False
-        )
+    lv_miss32 = _metric(eval_payload, "M128_H64", "last_visible_copy", "last_visible_hard", "MissRate_32px")
+    v28_h64 = eval_payload.get("existing_v28_models", {}).get("V28_H64_best_available", {})
+    v28_h64_miss32 = (
+        v28_h64.get("subset_metrics", {}).get("last_visible_hard", {}).get("MissRate_32px")
+        if not v28_h64.get("missing")
+        else None
     )
+    miss32_same_saturated = (
+        lv_miss32 is not None
+        and v28_h64_miss32 is not None
+        and float(lv_miss32) in {0.0, 1.0}
+        and float(v28_h64_miss32) == float(lv_miss32)
+    )
+    miss32_saturated = bool(diag.get("answers", {}).get("MissRate32_saturated_threshold_auc_needed", False) or miss32_same_saturated)
     threshold_auc_needed = bool(miss32_saturated or manifest.get("threshold_auc_metrics_defined"))
     extraction_artifact_flag = bool(
         diag.get("answers", {}).get("last_visible_win_interpretation", "").lower().find("extraction") >= 0
@@ -95,13 +102,20 @@ def main() -> int:
     else:
         recommended = "pause_OSTF_return_to_FSTF_backup"
 
+    h32_benchmark_main_ready = bool(h32_main_ready)
+    h64_benchmark_main_ready = bool(h64_main_ready)
+    v29_traceanything_benchmark_main_ready = bool(h32_benchmark_main_ready)
     payload = {
         "decision_name": "stwm_ostf_v29_benchmark_decision",
         "generated_at_utc": utc_now(),
         "v28_prefight_complete": bool(preflight.get("required_artifacts_complete")),
-        "v29_benchmark_main_ready": bool(manifest.get("v29_benchmark_main_ready", False) and not h64_main_ready is False),
+        "v29_benchmark_main_ready": v29_traceanything_benchmark_main_ready,
         "h32_main_ready": h32_main_ready,
         "h64_main_ready": h64_main_ready,
+        "h32_benchmark_main_ready": h32_benchmark_main_ready,
+        "h64_benchmark_main_ready": h64_benchmark_main_ready,
+        "v29_traceanything_benchmark_main_ready": v29_traceanything_benchmark_main_ready,
+        "v29_external_gt_benchmark_main_ready": False,
         "h64_stress_only": h64_stress_only,
         "h64_vipseg_zero": h64_vipseg_zero,
         "last_visible_prior_dominates_after_fix": last_visible_prior_dominates_after_fix,
@@ -130,6 +144,10 @@ def main() -> int:
             "v29_benchmark_main_ready",
             "h32_main_ready",
             "h64_main_ready",
+            "h32_benchmark_main_ready",
+            "h64_benchmark_main_ready",
+            "v29_traceanything_benchmark_main_ready",
+            "v29_external_gt_benchmark_main_ready",
             "h64_stress_only",
             "last_visible_prior_dominates_after_fix",
             "missrate32_saturated",

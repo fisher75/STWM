@@ -1,0 +1,94 @@
+{
+  "cache_ready": false,
+  "combo_counts": {
+    "M1024_H32": {
+      "test": 0,
+      "train": 0,
+      "val": 0
+    },
+    "M1024_H64": {
+      "test": 0,
+      "train": 0,
+      "val": 0
+    },
+    "M1024_H96": {
+      "test": 0,
+      "train": 0,
+      "val": 0
+    },
+    "M128_H32": {
+      "test": 130,
+      "train": 335,
+      "val": 108
+    },
+    "M128_H64": {
+      "test": 117,
+      "train": 296,
+      "val": 111
+    },
+    "M128_H96": {
+      "test": 103,
+      "train": 289,
+      "val": 106
+    },
+    "M512_H32": {
+      "test": 26,
+      "train": 64,
+      "val": 34
+    },
+    "M512_H64": {
+      "test": 26,
+      "train": 62,
+      "val": 34
+    },
+    "M512_H96": {
+      "test": 25,
+      "train": 70,
+      "val": 37
+    }
+  },
+  "dataset": "tapvid3d",
+  "exact_blocker": "TAPVid-3D local data is diagnostic/minival; no full official train/val/test main benchmark certified.",
+  "examples": [
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H32/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00000_M128_H32.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H32/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00130_M128_H32.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H64/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00000_M128_H64.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H64/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00114_M128_H64.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H64/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00228_M128_H64.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H96/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00000_M128_H96.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H96/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00098_M128_H96.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H96/train/tapvid3d_adt_Apartment_release_clean_seq140_3_00196_M128_H96.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M128_H32/train/tapvid3d_adt_Apartment_release_clean_seq145_7_00000_M128_H32.npz",
+    "outputs/cache/stwm_ostf_v30_external_gt/tapvid3d/M512_H32/train/tapvid3d_adt_Apartment_release_clean_seq145_7_00000_M512_H32.npz"
+  ],
+  "generated_at_utc": "2026-05-07T17:18:12.672776+00:00",
+  "no_future_leakage": true,
+  "partial_cache_ready": true,
+  "ready_combos": {
+    "M1024_H32": false,
+    "M1024_H64": false,
+    "M1024_H96": false,
+    "M128_H32": true,
+    "M128_H64": true,
+    "M128_H96": true,
+    "M512_H32": true,
+    "M512_H64": true,
+    "M512_H96": true
+  },
+  "skipped": {
+    "H32_insufficient_frames": 16,
+    "H64_insufficient_frames": 34,
+    "H96_insufficient_frames": 43,
+    "M1024_insufficient_points": 2009,
+    "M128_H32_valid_future_ratio_lt_0.4": 5,
+    "M128_H64_valid_future_ratio_lt_0.4": 13,
+    "M128_H96_valid_future_ratio_lt_0.4": 17,
+    "M128_insufficient_points": 379,
+    "M512_H64_valid_future_ratio_lt_0.4": 2,
+    "M512_H96_valid_future_ratio_lt_0.4": 2,
+    "M512_insufficient_points": 1627,
+    "missing_tracks_XYZ": 12
+  },
+  "source_gt_not_teacher": true,
+  "written_or_existing_cache_count": 1973
+}
