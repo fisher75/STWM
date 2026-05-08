@@ -1,0 +1,147 @@
+{
+  "audited_files": [
+    "code/stwm/modules/ostf_field_preserving_world_model_v31.py",
+    "code/stwm/tools/train_ostf_field_preserving_v31_20260508.py",
+    "code/stwm/tools/eval_ostf_field_preserving_v31_20260508.py",
+    "code/stwm/tools/audit_ostf_v31_v30_field_compression_20260508.py"
+  ],
+  "does_not_call_density_pooler": true,
+  "does_not_pool_to_main_object_token": false,
+  "generated_at_utc": "2026-05-08T14:49:31.518128+00:00",
+  "global_token_context_only": true,
+  "main_rollout_state_shape": "[B,M,H,D]",
+  "output_contract_shapes": [
+    {
+      "H": 32,
+      "M": 128,
+      "hypothesis_logits_shape": [
+        2,
+        128,
+        9
+      ],
+      "main_rollout_state_is_field": true,
+      "point_hypotheses_shape": [
+        2,
+        128,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        128,
+        32,
+        32
+      ],
+      "top1_point_pred_shape": [
+        2,
+        128,
+        32,
+        2
+      ],
+      "uses_object_token_only_shortcut": false,
+      "visibility_logits_shape": [
+        2,
+        128,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 512,
+      "hypothesis_logits_shape": [
+        2,
+        512,
+        9
+      ],
+      "main_rollout_state_is_field": true,
+      "point_hypotheses_shape": [
+        2,
+        512,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        512,
+        32,
+        32
+      ],
+      "top1_point_pred_shape": [
+        2,
+        512,
+        32,
+        2
+      ],
+      "uses_object_token_only_shortcut": false,
+      "visibility_logits_shape": [
+        2,
+        512,
+        32
+      ]
+    },
+    {
+      "H": 32,
+      "M": 1024,
+      "hypothesis_logits_shape": [
+        2,
+        1024,
+        9
+      ],
+      "main_rollout_state_is_field": true,
+      "point_hypotheses_shape": [
+        2,
+        1024,
+        32,
+        9,
+        2
+      ],
+      "point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "semantic_logits_shape": [
+        2,
+        1024,
+        32,
+        32
+      ],
+      "top1_point_pred_shape": [
+        2,
+        1024,
+        32,
+        2
+      ],
+      "uses_object_token_only_shortcut": false,
+      "visibility_logits_shape": [
+        2,
+        1024,
+        32
+      ]
+    }
+  ],
+  "preserves_point_tokens_before_rollout": true,
+  "py_compile": {
+    "ok": true,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "semantic_token_context_only": true,
+  "semantic_training_status": "not_tested_not_failed",
+  "supports_M128_M512_M1024_forward": true
+}

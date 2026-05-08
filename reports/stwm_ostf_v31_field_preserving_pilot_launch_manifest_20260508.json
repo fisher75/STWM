@@ -1,0 +1,42 @@
+{
+  "generated_at_unix": 1778252208.8469555,
+  "session": "stwm_ostf_v31_field_preserving_pilot_20260508",
+  "runs": [
+    {
+      "experiment_name": "v31_field_m128_h32_seed42",
+      "gpu": "1",
+      "log_path": "logs/stwm_ostf_v31_field_preserving_pilot_20260508/v31_field_m128_h32_seed42.log",
+      "command": "CUDA_VISIBLE_DEVICES=1 '/home/chen034/miniconda3/envs/stwm/bin/python' code/stwm/tools/train_ostf_field_preserving_v31_20260508.py --experiment-name v31_field_m128_h32_seed42 --horizon 32 --m-points 128 --seed 42 --steps 4000 --eval-interval 1000 --batch-size 64 --hidden-dim 192 --field-layers 2 --temporal-layers 2 --heads 6 --num-workers 4 --amp"
+    },
+    {
+      "experiment_name": "v31_field_m128_h64_seed42",
+      "gpu": "4",
+      "log_path": "logs/stwm_ostf_v31_field_preserving_pilot_20260508/v31_field_m128_h64_seed42.log",
+      "command": "CUDA_VISIBLE_DEVICES=4 '/home/chen034/miniconda3/envs/stwm/bin/python' code/stwm/tools/train_ostf_field_preserving_v31_20260508.py --experiment-name v31_field_m128_h64_seed42 --horizon 64 --m-points 128 --seed 42 --steps 4000 --eval-interval 1000 --batch-size 48 --hidden-dim 192 --field-layers 2 --temporal-layers 2 --heads 6 --num-workers 4 --amp"
+    },
+    {
+      "experiment_name": "v31_field_m128_h96_seed42",
+      "gpu": "2",
+      "log_path": "logs/stwm_ostf_v31_field_preserving_pilot_20260508/v31_field_m128_h96_seed42.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 '/home/chen034/miniconda3/envs/stwm/bin/python' code/stwm/tools/train_ostf_field_preserving_v31_20260508.py --experiment-name v31_field_m128_h96_seed42 --horizon 96 --m-points 128 --seed 42 --steps 4000 --eval-interval 1000 --batch-size 40 --hidden-dim 192 --field-layers 2 --temporal-layers 2 --heads 6 --num-workers 4 --amp"
+    },
+    {
+      "experiment_name": "v31_field_m512_h32_seed42",
+      "gpu": "5",
+      "log_path": "logs/stwm_ostf_v31_field_preserving_pilot_20260508/v31_field_m512_h32_seed42.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 '/home/chen034/miniconda3/envs/stwm/bin/python' code/stwm/tools/train_ostf_field_preserving_v31_20260508.py --experiment-name v31_field_m512_h32_seed42 --horizon 32 --m-points 512 --seed 42 --steps 4000 --eval-interval 1000 --batch-size 24 --hidden-dim 192 --field-layers 2 --temporal-layers 2 --heads 6 --num-workers 4 --amp"
+    },
+    {
+      "experiment_name": "v31_field_m512_h64_seed42",
+      "gpu": "6",
+      "log_path": "logs/stwm_ostf_v31_field_preserving_pilot_20260508/v31_field_m512_h64_seed42.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 '/home/chen034/miniconda3/envs/stwm/bin/python' code/stwm/tools/train_ostf_field_preserving_v31_20260508.py --experiment-name v31_field_m512_h64_seed42 --horizon 64 --m-points 512 --seed 42 --steps 4000 --eval-interval 1000 --batch-size 16 --hidden-dim 192 --field-layers 2 --temporal-layers 2 --heads 6 --num-workers 4 --amp"
+    },
+    {
+      "experiment_name": "v31_field_m512_h96_seed42",
+      "gpu": "7",
+      "log_path": "logs/stwm_ostf_v31_field_preserving_pilot_20260508/v31_field_m512_h96_seed42.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 '/home/chen034/miniconda3/envs/stwm/bin/python' code/stwm/tools/train_ostf_field_preserving_v31_20260508.py --experiment-name v31_field_m512_h96_seed42 --horizon 96 --m-points 512 --seed 42 --steps 4000 --eval-interval 1000 --batch-size 12 --hidden-dim 192 --field-layers 2 --temporal-layers 2 --heads 6 --num-workers 4 --amp"
+    }
+  ]
+}

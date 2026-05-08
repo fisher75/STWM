@@ -1,0 +1,18 @@
+{
+  "current_pointodyssey_semantic_class_labels_available": false,
+  "current_semantic_training_started": false,
+  "future_semantic_logits_contract": "[B,M,H,C]",
+  "generated_at_utc": "2026-05-08T14:49:31.117697+00:00",
+  "no_future_semantic_leakage_rule": "future semantic targets may supervise loss but must not enter observed model input",
+  "recommended_future_targets": [
+    "instance identity labels when available",
+    "teacher crop embeddings bound to object/point tokens",
+    "FSTF semantic prototype targets transferred to OSTF objects",
+    "reacquisition/false-confuser identity utility on semantic hard cases"
+  ],
+  "semantic_broadcasting_design": true,
+  "semantic_identity_compresses_physical_field": false,
+  "semantic_identity_role": "context/broadcast/rendering signal for each point token, not a replacement for point-field state",
+  "semantic_status": "not_tested_not_failed",
+  "why_no_training_this_round": "V31 first validates field-preserving physical rollout; semantic field requires verified per-point/object semantic targets."
+}
