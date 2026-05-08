@@ -5,6 +5,19 @@ import argparse
 import sys
 from pathlib import Path
 
+SETPROCTITLE_STATUS: dict[str, object] = {
+    "requested_title": "python",
+    "setproctitle_ok": False,
+    "exact_error": None,
+}
+try:
+    import setproctitle  # type: ignore
+
+    setproctitle.setproctitle("python")
+    SETPROCTITLE_STATUS["setproctitle_ok"] = True
+except Exception as exc:  # pragma: no cover - environment dependent.
+    SETPROCTITLE_STATUS["exact_error"] = f"{type(exc).__name__}: {exc}"
+
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "code"))
@@ -46,6 +59,7 @@ def main() -> int:
         "eval_name": args.experiment_name,
         "generated_at_utc": utc_now(),
         "checkpoint": args.checkpoint,
+        "setproctitle_status": SETPROCTITLE_STATUS,
         "test_metrics": metrics,
         "test_item_rows": rows,
     }

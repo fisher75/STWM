@@ -12,6 +12,20 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+
+SETPROCTITLE_STATUS: dict[str, Any] = {
+    "requested_title": "python",
+    "setproctitle_ok": False,
+    "exact_error": None,
+}
+try:
+    import setproctitle  # type: ignore
+
+    setproctitle.setproctitle("python")
+    SETPROCTITLE_STATUS["setproctitle_ok"] = True
+except Exception as exc:  # pragma: no cover - environment dependent.
+    SETPROCTITLE_STATUS["exact_error"] = f"{type(exc).__name__}: {exc}"
+
 import torch
 import torch.nn.functional as F
 from torch.amp import GradScaler, autocast
@@ -200,6 +214,7 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
         "steps": int(args.steps),
         "device": str(device),
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
+        "setproctitle_status": SETPROCTITLE_STATUS,
         "duration_seconds": float(time.time() - start),
         "checkpoint_path": str(best_path.relative_to(ROOT)),
         "best_val_score": float(best_score),
