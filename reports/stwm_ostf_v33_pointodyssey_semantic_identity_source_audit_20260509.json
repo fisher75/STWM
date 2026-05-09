@@ -1,0 +1,275 @@
+{
+  "anno_count": 161,
+  "anno_keys": [
+    "trajs_2d",
+    "trajs_3d",
+    "valids",
+    "visibs",
+    "intrinsics",
+    "extrinsics"
+  ],
+  "cache_keys": [
+    "video_uid",
+    "dataset",
+    "split",
+    "frame_paths",
+    "obs_points",
+    "fut_points",
+    "obs_vis",
+    "fut_vis",
+    "obs_conf",
+    "fut_conf",
+    "point_id",
+    "object_id",
+    "semantic_id",
+    "instance_id",
+    "point_sampling_method",
+    "no_future_leakage",
+    "source_gt_not_teacher",
+    "source_path",
+    "coordinate_system",
+    "M",
+    "obs_len",
+    "horizon",
+    "valid_future_point_ratio",
+    "intrinsics",
+    "extrinsics"
+  ],
+  "class_semantic_available": false,
+  "current_v30_cache_enough_for_instance_mapping": false,
+  "current_v30_cache_enough_for_point_identity": true,
+  "fields": {
+    "depth": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "depths/depth_XXXXX.png",
+      "example_shape": null,
+      "path": "/raid/chen034/workspace/data/pointodyssey/test/ani12_new_f/depths/depth_00003.png",
+      "reliability_status": "available"
+    },
+    "future_labels": {
+      "available": true,
+      "count": 548,
+      "exact_blocker": null,
+      "example_schema": "future point validity and future mask ids are supervision only",
+      "example_shape": {
+        "fut_vis": [
+          128,
+          32
+        ]
+      },
+      "path": "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v30_external_gt/pointodyssey/M128_H32/test/pointodyssey_test_ani12_new_f_000000_M128_H32.npz",
+      "reliability_status": "available_supervision_only"
+    },
+    "instance_segmentation": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "per-frame indexed PNG masks",
+      "example_shape": null,
+      "path": "/raid/chen034/workspace/data/pointodyssey/sample/r4_new_f/masks",
+      "reliability_status": "usable_for_mask_lookup"
+    },
+    "intrinsics_extrinsics": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "anno.npz intrinsics/extrinsics",
+      "example_shape": {
+        "extrinsics": [
+          849,
+          4,
+          4
+        ],
+        "intrinsics": [
+          849,
+          3,
+          3
+        ]
+      },
+      "path": "/raid/chen034/workspace/data/pointodyssey/sample/r4_new_f/anno.npz",
+      "reliability_status": "available"
+    },
+    "object_or_instance_ids": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "mask id at point coordinate; V30 scalar ids are -1",
+      "example_shape": {
+        "instance_id": -1,
+        "object_id": -1,
+        "semantic_id": -1
+      },
+      "path": "/raid/chen034/workspace/data/pointodyssey/test/ani12_new_f/masks/mask_00003.png",
+      "reliability_status": "mask_lookup_available_cache_scalar_missing"
+    },
+    "per_frame_masks": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "mask_XXXXX.png",
+      "example_shape": null,
+      "path": "/raid/chen034/workspace/data/pointodyssey/sample/r4_new_f/masks",
+      "reliability_status": "available"
+    },
+    "point_persistent_id": {
+      "available": true,
+      "count": 548,
+      "exact_blocker": null,
+      "example_schema": "V30 cache point_id [M]",
+      "example_shape": [
+        128
+      ],
+      "path": "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v30_external_gt/pointodyssey/M128_H32/test/pointodyssey_test_ani12_new_f_000000_M128_H32.npz",
+      "reliability_status": "high"
+    },
+    "point_to_object_or_instance_mapping": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "query/future coordinate mask lookup",
+      "example_shape": null,
+      "path": "/raid/chen034/workspace/data/pointodyssey/test/ani12_new_f/masks/mask_00003.png",
+      "reliability_status": "derived_reliable_if_coordinate_inside_mask"
+    },
+    "rgb_frame_paths": {
+      "available": true,
+      "count": 161,
+      "exact_blocker": null,
+      "example_schema": "rgbs/rgb_XXXXX.jpg",
+      "example_shape": null,
+      "path": "/raid/chen034/workspace/data/pointodyssey/sample/r4_new_f/rgbs",
+      "reliability_status": "available"
+    },
+    "sampled_point_index_traceback": {
+      "available": true,
+      "count": 548,
+      "exact_blocker": null,
+      "example_schema": "point_id indexes PointOdyssey anno trajs_* point dimension",
+      "example_shape": {
+        "anno_trajs_2d": [
+          849,
+          11721,
+          2
+        ],
+        "cache_point_id": [
+          128
+        ]
+      },
+      "path": "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v30_external_gt/pointodyssey/M128_H32/test/pointodyssey_test_ani12_new_f_000000_M128_H32.npz",
+      "reliability_status": "high"
+    },
+    "semantic_class_category_label": {
+      "available": false,
+      "count": 126,
+      "exact_blocker": "PointOdyssey local anno/cache has no point-level class semantic ids",
+      "example_schema": "scene_info assets names only, no per-point class id",
+      "example_shape": null,
+      "path": "/raid/chen034/workspace/data/pointodyssey/sample/r4_new_f/scene_info.json",
+      "reliability_status": "not_available_as_class_target"
+    },
+    "v30_cache_metadata_sufficient": {
+      "available": true,
+      "count": 548,
+      "exact_blocker": null,
+      "example_schema": [
+        "video_uid",
+        "dataset",
+        "split",
+        "frame_paths",
+        "obs_points",
+        "fut_points",
+        "obs_vis",
+        "fut_vis",
+        "obs_conf",
+        "fut_conf",
+        "point_id",
+        "object_id",
+        "semantic_id",
+        "instance_id",
+        "point_sampling_method",
+        "no_future_leakage",
+        "source_gt_not_teacher",
+        "source_path",
+        "coordinate_system",
+        "M",
+        "obs_len",
+        "horizon",
+        "valid_future_point_ratio",
+        "intrinsics",
+        "extrinsics"
+      ],
+      "example_shape": {
+        "M": [],
+        "coordinate_system": [],
+        "dataset": [],
+        "extrinsics": [
+          40,
+          4,
+          4
+        ],
+        "frame_paths": [
+          40
+        ],
+        "fut_conf": [
+          128,
+          32
+        ],
+        "fut_points": [
+          128,
+          32,
+          2
+        ],
+        "fut_vis": [
+          128,
+          32
+        ],
+        "horizon": [],
+        "instance_id": [],
+        "intrinsics": [
+          40,
+          3,
+          3
+        ],
+        "no_future_leakage": [],
+        "object_id": [],
+        "obs_conf": [
+          128,
+          8
+        ],
+        "obs_len": [],
+        "obs_points": [
+          128,
+          8,
+          2
+        ],
+        "obs_vis": [
+          128,
+          8
+        ],
+        "point_id": [
+          128
+        ],
+        "point_sampling_method": [],
+        "semantic_id": [],
+        "source_gt_not_teacher": [],
+        "source_path": [],
+        "split": [],
+        "valid_future_point_ratio": [],
+        "video_uid": []
+      },
+      "path": "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v30_external_gt/pointodyssey/M128_H32/test/pointodyssey_test_ani12_new_f_000000_M128_H32.npz",
+      "reliability_status": "sufficient_for_point_identity_needs_sidecar_for_mask_instance"
+    }
+  },
+  "future_labels_enter_model_input": false,
+  "future_labels_supervision_only": true,
+  "generated_at_utc": "2026-05-09T08:10:33.293347+00:00",
+  "identity_available": true,
+  "instance_identity_available": true,
+  "pointodyssey_root": "/raid/chen034/workspace/data/pointodyssey",
+  "sidecar_needed": true,
+  "v30_m128_h32_cache_count": 548,
+  "visual_teacher_semantic_needed": true
+}
