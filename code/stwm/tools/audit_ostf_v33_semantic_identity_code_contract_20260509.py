@@ -22,15 +22,20 @@ def main() -> int:
     payload = {
         "generated_at_utc": utc_now(),
         "dataset_can_load_semantic_identity_sidecar_now": contains(dataset, "semantic_identity") or contains(dataset, "sidecar"),
+        "dataset_sidecar_integration_missing": not (contains(dataset, "semantic_identity") or contains(dataset, "sidecar")),
         "batch_can_include_point_id": contains(dataset, "point_id"),
         "batch_can_include_point_to_instance_id": contains(dataset, "point_to_instance_id"),
         "batch_can_include_fut_same_instance_as_obs": contains(dataset, "fut_same_instance_as_obs"),
         "batch_can_include_teacher_embedding": contains(dataset, "teacher_embedding"),
         "model_has_semantic_logits": contains(model, "semantic_logits"),
         "train_has_semantic_or_identity_loss": contains(train, "semantic_loss") or contains(train, "identity") or contains(train, "same_instance"),
+        "v33_head_trainer_loads_v30_checkpoint": contains("code/stwm/tools/train_ostf_v33_semantic_identity_head_20260509.py", "torch.load(args.v30_checkpoint"),
+        "v33_head_trainer_is_standalone_observed_point_classifier": True,
+        "v33_eval_is_stub": not contains("code/stwm/tools/eval_ostf_v33_semantic_identity_field_20260509.py", "model.load_state_dict"),
         "should_add_identity_embedding_head": True,
         "should_freeze_trajectory_backbone_first": True,
         "needs_trajectory_preservation_loss": True,
+        "default_reproduces_old_v30_when_targets_absent": True,
         "minimal_change_plan": [
             "keep V30_M128 trajectory backbone selected",
             "load V33 semantic_identity sidecar in a dedicated head dataset rather than mutating V30 cache",
@@ -42,8 +47,12 @@ def main() -> int:
     dump_json(REPORT, payload)
     write_doc(DOC, "STWM OSTF V33 Semantic Identity Code Contract Audit", payload, [
         "dataset_can_load_semantic_identity_sidecar_now",
+        "dataset_sidecar_integration_missing",
         "model_has_semantic_logits",
         "train_has_semantic_or_identity_loss",
+        "v33_head_trainer_loads_v30_checkpoint",
+        "v33_head_trainer_is_standalone_observed_point_classifier",
+        "v33_eval_is_stub",
         "should_add_identity_embedding_head",
         "should_freeze_trajectory_backbone_first",
         "needs_trajectory_preservation_loss",

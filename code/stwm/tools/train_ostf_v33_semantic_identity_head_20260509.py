@@ -52,8 +52,10 @@ class SidecarDataset(Dataset):
             "obs_points": torch.from_numpy(np.asarray(z["obs_points"], dtype=np.float32)),
             "obs_vis": torch.from_numpy(np.asarray(z["obs_vis"]).astype(bool)),
             "obs_conf": torch.from_numpy(np.asarray(z["obs_conf"], dtype=np.float32)),
-            "fut_same_point_valid": torch.from_numpy(np.asarray(s["fut_same_point_valid"]).astype(bool)),
+            "fut_point_visible_target": torch.from_numpy(np.asarray(s["fut_point_visible_target"] if "fut_point_visible_target" in s.files else s["fut_same_point_valid"]).astype(bool)),
+            "fut_point_visible_mask": torch.from_numpy(np.asarray(s["fut_point_visible_mask"] if "fut_point_visible_mask" in s.files else np.ones_like(s["fut_same_point_valid"])).astype(bool)),
             "fut_same_instance_as_obs": torch.from_numpy(np.asarray(s["fut_same_instance_as_obs"]).astype(bool)),
+            "fut_instance_available_mask": torch.from_numpy(np.asarray(s["fut_instance_available_mask"] if "fut_instance_available_mask" in s.files else s["fut_same_instance_as_obs"]).astype(bool)),
             "point_to_instance_id": torch.from_numpy(np.asarray(s["point_to_instance_id"], dtype=np.int64)),
             "instance_available": torch.from_numpy((np.asarray(s["point_to_instance_id"]) >= 0).astype(bool)),
             "sample_uid": str(np.asarray(s["sample_uid"]).item()),
@@ -62,7 +64,17 @@ class SidecarDataset(Dataset):
 
 def collate(batch: list[dict[str, Any]]) -> dict[str, Any]:
     out: dict[str, Any] = {}
-    for key in ["obs_points", "obs_vis", "obs_conf", "fut_same_point_valid", "fut_same_instance_as_obs", "point_to_instance_id", "instance_available"]:
+    for key in [
+        "obs_points",
+        "obs_vis",
+        "obs_conf",
+        "fut_point_visible_target",
+        "fut_point_visible_mask",
+        "fut_same_instance_as_obs",
+        "fut_instance_available_mask",
+        "point_to_instance_id",
+        "instance_available",
+    ]:
         out[key] = torch.stack([b[key] for b in batch], dim=0)
     out["sample_uid"] = [b["sample_uid"] for b in batch]
     return out
@@ -90,11 +102,11 @@ def evaluate(model: OSTFSemanticIdentityHeadV33, loader: DataLoader, device: tor
     with torch.no_grad():
         for batch in loader:
             bd = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
-            h = bd["fut_same_point_valid"].shape[-1]
+            h = bd["fut_point_visible_target"].shape[-1]
             out = model(obs_points=bd["obs_points"], obs_vis=bd["obs_vis"], obs_conf=bd["obs_conf"], point_to_instance_id=bd["point_to_instance_id"], horizon=h)
-            vm = torch.ones_like(bd["fut_same_point_valid"], dtype=torch.bool)
-            im = bd["instance_available"][:, :, None].expand_as(bd["fut_same_instance_as_obs"])
-            vmet = metrics_from_logits(out["point_persistence_logits"], bd["fut_same_point_valid"], vm)
+            vm = bd["fut_point_visible_mask"].bool()
+            im = bd["instance_available"][:, :, None].expand_as(bd["fut_same_instance_as_obs"]) & bd["fut_instance_available_mask"].bool()
+            vmet = metrics_from_logits(out["point_persistence_logits"], bd["fut_point_visible_target"], vm)
             imet = metrics_from_logits(out["same_instance_logits"], bd["fut_same_instance_as_obs"], im)
             valid_acc.append(vmet["accuracy"])
             same_acc.append(imet["accuracy"])
@@ -117,11 +129,28 @@ def main() -> int:
     p.add_argument("--batch-size", type=int, default=32)
     p.add_argument("--max-train-items", type=int, default=256)
     p.add_argument("--v30-checkpoint", default=str(ROOT / "outputs/checkpoints/stwm_ostf_v30_external_gt/v30_extgt_m128_h32_seed42_best.pt"))
+    p.add_argument(
+        "--smoke-level",
+        default="head_only",
+        choices=["head_only", "head_only_plus_frozen_v30_checkpoint_dryrun"],
+        help="The second option loads the V30 checkpoint as a dryrun but does not claim integrated backbone training.",
+    )
     args = p.parse_args()
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    v30_checkpoint_consumed = False
+    v30_checkpoint_error = None
+    v30_checkpoint_key_count = 0
+    if args.smoke_level == "head_only_plus_frozen_v30_checkpoint_dryrun":
+        try:
+            ck = torch.load(args.v30_checkpoint, map_location="cpu")
+            if isinstance(ck, dict):
+                v30_checkpoint_key_count = len(ck)
+            v30_checkpoint_consumed = True
+        except Exception as exc:
+            v30_checkpoint_error = f"{type(exc).__name__}: {exc}"
     train = DataLoader(SidecarDataset("train", m_points=args.m_points, horizon=args.horizon, max_items=args.max_train_items), batch_size=args.batch_size, shuffle=True, num_workers=2, collate_fn=collate)
     val = DataLoader(SidecarDataset("val", m_points=args.m_points, horizon=args.horizon, max_items=128), batch_size=args.batch_size, shuffle=False, num_workers=2, collate_fn=collate)
     test = DataLoader(SidecarDataset("test", m_points=args.m_points, horizon=args.horizon, max_items=128), batch_size=args.batch_size, shuffle=False, num_workers=2, collate_fn=collate)
@@ -136,10 +165,15 @@ def main() -> int:
             it = iter(train)
             batch = next(it)
         bd = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
-        h = bd["fut_same_point_valid"].shape[-1]
+        h = bd["fut_point_visible_target"].shape[-1]
         out = model(obs_points=bd["obs_points"], obs_vis=bd["obs_vis"], obs_conf=bd["obs_conf"], point_to_instance_id=bd["point_to_instance_id"], horizon=h)
-        loss_valid = F.binary_cross_entropy_with_logits(out["point_persistence_logits"], bd["fut_same_point_valid"].float())
-        imask = bd["instance_available"][:, :, None].expand_as(bd["fut_same_instance_as_obs"]).float()
+        raw_valid = F.binary_cross_entropy_with_logits(out["point_persistence_logits"], bd["fut_point_visible_target"].float(), reduction="none")
+        vmask = bd["fut_point_visible_mask"].float()
+        loss_valid = (raw_valid * vmask).sum() / vmask.sum().clamp_min(1.0)
+        imask = (
+            bd["instance_available"][:, :, None].expand_as(bd["fut_same_instance_as_obs"])
+            & bd["fut_instance_available_mask"].bool()
+        ).float()
         raw_same = F.binary_cross_entropy_with_logits(out["same_instance_logits"], bd["fut_same_instance_as_obs"].float(), reduction="none")
         loss_same = (raw_same * imask).sum() / imask.sum().clamp_min(1.0)
         loss = loss_valid + loss_same
@@ -155,35 +189,47 @@ def main() -> int:
     summary = {
         "generated_at_utc": utc_now(),
         "smoke_passed": True,
+        "smoke_level": args.smoke_level,
+        "integrated_v30_backbone_used": False,
+        "frozen_v30_checkpoint_dryrun": args.smoke_level == "head_only_plus_frozen_v30_checkpoint_dryrun",
+        "v30_checkpoint_consumed_in_smoke": v30_checkpoint_consumed,
+        "v30_checkpoint_load_error": v30_checkpoint_error,
+        "v30_checkpoint_key_count": v30_checkpoint_key_count,
         "M": args.m_points,
         "H": args.horizon,
         "seed": args.seed,
         "steps": args.steps,
         "v30_checkpoint_path": args.v30_checkpoint,
         "v30_checkpoint_exists": Path(args.v30_checkpoint).exists(),
-        "trajectory_backbone_frozen": True,
-        "trajectory_minFDE_delta_vs_frozen_V30": 0.0,
-        "whether_trajectory_degraded": False,
+        "trajectory_backbone_frozen": False,
+        "trajectory_minFDE_delta_vs_frozen_V30": None,
+        "whether_trajectory_degraded": "not_applicable",
         "train_loss_first": losses[0],
         "train_loss_last": losses[-1],
         "train_loss_decreased": losses[-1] < losses[0],
         "val_metrics": val_metrics,
         "test_metrics": test_metrics,
         "identity_target_coverage": 1.0,
-        "qualitative_visualization_manifest": {"type": "identity_color_manifest_only", "examples": []},
+        "qualitative_visualization_manifest": {"type": "identity_color_manifest_only", "examples": test.dataset.paths[:8] if hasattr(test, "dataset") else []},
         "checkpoint_path": str(ckpt.relative_to(ROOT)),
     }
+    next_step = "integrate_sidecar_into_v30_dataset_and_trainer"
+    if not summary["smoke_passed"]:
+        next_step = "run_head_only_target_learnability_fix"
     decision = {
         "generated_at_utc": utc_now(),
         "smoke_passed": True,
-        "trajectory_degraded": False,
+        "smoke_level": args.smoke_level,
+        "integrated_v30_backbone_used": False,
+        "v30_checkpoint_consumed_in_smoke": v30_checkpoint_consumed,
+        "trajectory_degraded": "not_applicable",
         "same_instance_accuracy": test_metrics["same_instance_accuracy"],
         "identity_AUROC": test_metrics["identity_AUROC"],
-        "recommended_next_step": "run_v33_identity_seed42_pilot",
+        "recommended_next_step": next_step,
     }
     dump_json(SUMMARY, summary)
     dump_json(DECISION, decision)
-    write_doc(DOC, "STWM OSTF V33 Semantic Identity Smoke Decision", decision, ["smoke_passed", "trajectory_degraded", "same_instance_accuracy", "identity_AUROC", "recommended_next_step"])
+    write_doc(DOC, "STWM OSTF V33 Semantic Identity Smoke Decision", decision, ["smoke_passed", "smoke_level", "integrated_v30_backbone_used", "v30_checkpoint_consumed_in_smoke", "trajectory_degraded", "same_instance_accuracy", "identity_AUROC", "recommended_next_step"])
     print(SUMMARY.relative_to(ROOT))
     return 0
 

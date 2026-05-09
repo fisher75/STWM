@@ -33,13 +33,19 @@ SEMANTIC_IDENTITY_SCHEMA: dict[str, Any] = {
     "frame_paths": "[Tobs + H] str",
     "level_1_point_persistence": {
         "point_id": "[M] int64, persistent source point id from PointOdyssey/V30 cache",
-        "fut_same_point_valid": "[M,H] bool, future supervision mask for same sampled physical point",
+        "fut_same_point_valid": "[M,H] bool, compatibility alias for future point visibility supervision mask",
+        "fut_point_visible_target": "[M,H] bool, future visibility target for the same sampled physical point",
+        "fut_point_visible_mask": "[M,H] bool, mask specifying where future visibility target is supervised",
     },
     "level_2_instance_identity": {
-        "point_to_instance_id": "[M] int64, query-frame mask id if available else -1",
+        "point_to_instance_id": "[M] int64, last-visible observed mask id if available; consensus fallback; else -1",
         "obs_instance_id": "[M,Tobs] int64 optional mask-id lookup",
         "fut_instance_id": "[M,H] int64 optional future mask-id lookup",
+        "obs_instance_available_mask": "[M,Tobs] bool",
+        "fut_instance_available_mask": "[M,H] bool",
         "fut_same_instance_as_obs": "[M,H] bool, target only; never model input",
+        "point_to_instance_assignment_frame": "[M] int64 observed frame used for assignment; -1 if unavailable",
+        "point_to_instance_assignment_method": "[M] str in {last_visible, consensus, unavailable}",
     },
     "level_3_semantic_class": {
         "semantic_class_id": "[M,H] int64 optional, -1 if unavailable",

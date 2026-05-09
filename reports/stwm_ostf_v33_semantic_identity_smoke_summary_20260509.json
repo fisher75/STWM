@@ -1,0 +1,51 @@
+{
+  "H": 32,
+  "M": 128,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v33_semantic_identity/v33_semantic_identity_m128_h32_seed42_smoke.pt",
+  "frozen_v30_checkpoint_dryrun": true,
+  "generated_at_utc": "2026-05-09T08:48:37.962462+00:00",
+  "identity_target_coverage": 1.0,
+  "integrated_v30_backbone_used": false,
+  "qualitative_visualization_manifest": {
+    "examples": [
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000000_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000067_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000135_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000202_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000270_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000337_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000405_M128_H32.npz",
+      "/raid/chen034/workspace/stwm/outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey/test/pointodyssey_test_ani12_new_f_000472_M128_H32.npz"
+    ],
+    "type": "identity_color_manifest_only"
+  },
+  "seed": 42,
+  "smoke_level": "head_only_plus_frozen_v30_checkpoint_dryrun",
+  "smoke_passed": true,
+  "steps": 200,
+  "test_metrics": {
+    "future_visibility_F1": 0.7618083953857422,
+    "identity_AUROC": 0.9999619126319885,
+    "prototype_retrieval_top1": null,
+    "same_instance_accuracy": 0.9193878471851349,
+    "semantic_top1": null
+  },
+  "train_loss_decreased": true,
+  "train_loss_first": 1.361494541168213,
+  "train_loss_last": 0.6255750060081482,
+  "trajectory_backbone_frozen": false,
+  "trajectory_minFDE_delta_vs_frozen_V30": null,
+  "v30_checkpoint_consumed_in_smoke": true,
+  "v30_checkpoint_exists": true,
+  "v30_checkpoint_key_count": 4,
+  "v30_checkpoint_load_error": null,
+  "v30_checkpoint_path": "outputs/checkpoints/stwm_ostf_v30_external_gt/v30_extgt_m128_h32_seed42_best.pt",
+  "val_metrics": {
+    "future_visibility_F1": 0.7994631230831146,
+    "identity_AUROC": 1.0,
+    "prototype_retrieval_top1": null,
+    "same_instance_accuracy": 0.9429812431335449,
+    "semantic_top1": null
+  },
+  "whether_trajectory_degraded": "not_applicable"
+}

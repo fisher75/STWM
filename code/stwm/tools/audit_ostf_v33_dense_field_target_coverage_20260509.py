@@ -23,6 +23,7 @@ def combo_stats(m: int) -> dict[str, Any]:
     total = 0
     point_ok = 0
     inst_ratios = []
+    assignment_conf = []
     teacher_crop_feasible = 0
     for p in paths:
         z = np.load(p, allow_pickle=True)
@@ -36,6 +37,8 @@ def combo_stats(m: int) -> dict[str, Any]:
             s = np.load(sc, allow_pickle=True)
             ids = np.asarray(s["point_to_instance_id"])
             inst_ratios.append(float((ids >= 0).mean()))
+            if "point_assignment_confidence" in s.files:
+                assignment_conf.append(float(np.asarray(s["point_assignment_confidence"]).mean()))
         frames = np.asarray(z["frame_paths"], dtype=object) if "frame_paths" in z.files else []
         if len(frames) and Path(str(frames[-1])).exists():
             teacher_crop_feasible += 1
@@ -43,6 +46,8 @@ def combo_stats(m: int) -> dict[str, Any]:
         "sample_count": total,
         "point_identity_coverage": point_ok / max(total, 1),
         "instance_assignment_coverage_mean": float(np.mean(inst_ratios)) if inst_ratios else 0.0,
+        "assignment_confidence_mean": float(np.mean(assignment_conf)) if assignment_conf else 0.0,
+        "assignment_confidence_p10": float(np.quantile(assignment_conf, 0.10)) if assignment_conf else 0.0,
         "teacher_crop_feasibility": teacher_crop_feasible / max(total, 1),
     }
 
