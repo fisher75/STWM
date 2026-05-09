@@ -10,6 +10,8 @@ from stwm.tools.ostf_v30_external_gt_schema_20260508 import utc_now
 
 REPORT = ROOT / "reports/stwm_ostf_v33_semantic_identity_target_construction_decision_20260509.json"
 DOC = ROOT / "docs/STWM_OSTF_V33_SEMANTIC_IDENTITY_TARGET_CONSTRUCTION_DECISION_20260509.md"
+CLAIM_FIX_REPORT = ROOT / "reports/stwm_ostf_v33_claim_boundary_fix_20260509.json"
+CLAIM_FIX_DOC = ROOT / "docs/STWM_OSTF_V33_CLAIM_BOUNDARY_FIX_20260509.md"
 
 
 def load(rel: str) -> dict[str, Any]:
@@ -36,7 +38,11 @@ def main() -> int:
     trajectory_degraded = smoke.get("whether_trajectory_degraded") if smoke else "not_run"
     v30_consumed = bool(smoke.get("v30_checkpoint_consumed_in_smoke"))
     real_frozen_v30_head = bool(smoke.get("integrated_v30_backbone_used")) and trajectory_degraded is False
-    if inst_ok and leakage_safe and smoke_passed is True and real_frozen_v30_head:
+    head_only_passed = bool(smoke_passed is True and not real_frozen_v30_head)
+    integrated_passed = bool(smoke_passed is True and real_frozen_v30_head and trajectory_degraded is False)
+    identity_world_model_claim_allowed = integrated_passed
+    semantic_world_model_claim_allowed = False
+    if inst_ok and leakage_safe and integrated_passed:
         next_step = "run_v33_identity_seed42_pilot"
     elif smoke_passed is True and not real_frozen_v30_head:
         next_step = "integrate_sidecar_into_v30_dataset_and_trainer"
@@ -77,13 +83,29 @@ def main() -> int:
         "smoke_level": smoke_level,
         "trajectory_degraded": trajectory_degraded if smoke else "not_run",
         "semantic_identity_code_ready": not bool(contract.get("v33_eval_is_stub", True)) and bool(contract.get("v33_head_trainer_loads_v30_checkpoint")),
-        "semantic_identity_field_claim_preliminary": bool(inst_ok and smoke_passed is True and leakage_safe),
+        "head_only_target_learnability_passed": head_only_passed,
+        "integrated_v30_semantic_identity_passed": integrated_passed,
+        "identity_world_model_claim_allowed": identity_world_model_claim_allowed,
+        "semantic_world_model_claim_allowed": semantic_world_model_claim_allowed,
+        "semantic_identity_field_claim_preliminary": bool(identity_world_model_claim_allowed and semantic_world_model_claim_allowed),
         "recommended_next_step": next_step,
         "source_audit_path": "reports/stwm_ostf_v33_pointodyssey_semantic_identity_source_audit_20260509.json",
         "target_build_path": "reports/stwm_ostf_v33_pointodyssey_identity_target_build_20260509.json",
         "smoke_summary_path": "reports/stwm_ostf_v33_semantic_identity_smoke_summary_20260509.json" if smoke else None,
     }
     dump_json(REPORT, payload)
+    claim_payload = {
+        "generated_at_utc": utc_now(),
+        "head_only_target_learnability_passed": head_only_passed,
+        "integrated_v30_semantic_identity_passed": integrated_passed,
+        "identity_world_model_claim_allowed": identity_world_model_claim_allowed,
+        "semantic_world_model_claim_allowed": semantic_world_model_claim_allowed,
+        "semantic_identity_field_claim_preliminary": bool(identity_world_model_claim_allowed and semantic_world_model_claim_allowed),
+        "integrated_v30_backbone_used": bool(smoke.get("integrated_v30_backbone_used", False)) if smoke else False,
+        "trajectory_degraded": trajectory_degraded if smoke else "not_run",
+        "exact_reason": "Head-only target learnability is not an integrated V30 world-model claim; class/visual semantic targets are still absent.",
+    }
+    dump_json(CLAIM_FIX_REPORT, claim_payload)
     write_doc(DOC, "STWM OSTF V33 Semantic Identity Target Construction Decision", payload, [
         "trajectory_backbone_frozen_as_v30_m128",
         "v33_existing_code_was_partial",
@@ -100,6 +122,16 @@ def main() -> int:
         "trajectory_degraded",
         "semantic_identity_field_claim_preliminary",
         "recommended_next_step",
+    ])
+    write_doc(CLAIM_FIX_DOC, "STWM OSTF V33 Claim Boundary Fix", claim_payload, [
+        "head_only_target_learnability_passed",
+        "integrated_v30_semantic_identity_passed",
+        "identity_world_model_claim_allowed",
+        "semantic_world_model_claim_allowed",
+        "semantic_identity_field_claim_preliminary",
+        "integrated_v30_backbone_used",
+        "trajectory_degraded",
+        "exact_reason",
     ])
     print(REPORT.relative_to(ROOT))
     return 0

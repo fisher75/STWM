@@ -13,5 +13,5 @@
 - identity_smoke_passed: `True`
 - smoke_level: `head_only_plus_frozen_v30_checkpoint_dryrun`
 - trajectory_degraded: `not_applicable`
-- semantic_identity_field_claim_preliminary: `True`
+- semantic_identity_field_claim_preliminary: `False`
 - recommended_next_step: `integrate_sidecar_into_v30_dataset_and_trainer`
