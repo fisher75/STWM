@@ -1,0 +1,21 @@
+# STWM OSTF V33.4 Protocol Rerun Decision
+
+- result_forensics_done: `True`
+- separated_hard_subset_built: `True`
+- manifest_loaded: `True`
+- manifest_sample_match_ok: `True`
+- identity_hard_balanced: `True`
+- semantic_hard_nonempty: `True`
+- split_shift_suspected: `True`
+- hard_identity_ROC_AUC: `0.6764221869549538`
+- hard_identity_balanced_accuracy: `0.6291898493689781`
+- identity_strict_retrieval_top1: `0.5703125`
+- identity_instance_pooled_retrieval_top1: `0.815185546875`
+- semantic_proto_top1: `0.24397374498049074`
+- semantic_proto_top5: `0.6140125359755196`
+- semantic_top1_copy_beaten: `False`
+- semantic_top5_copy_beaten: `True`
+- trajectory_degraded: `False`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_split_shift_or_data_protocol`

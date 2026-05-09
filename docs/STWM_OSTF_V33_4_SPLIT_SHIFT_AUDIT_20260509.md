@@ -1,0 +1,8 @@
+# STWM OSTF V33.4 Split Shift Audit
+
+- split_shift_suspected: `True`
+- split_shift_reason: `['occlusion/reappearance counts differ materially']`
+- which_split_is_easier: `test`
+- whether_test_hard_subset_is_easier_than_val: `False`
+- recommended_eval_protocol_fix: `Use separated identity/semantic masks, report val/test separately, and do not promote claims until validation and test agree.`
+- splits: `{'train': {'sample_count': 128, 'instance_count_mean': 16.390625, 'identity_positive_ratio': 0.9532026106385668, 'identity_negative_ratio': 0.046797389361433225, 'future_visibility_ratio': 1.0002336888742636, 'semantic_prototype_entropy': 0.755063455561425, 'teacher_embedding_coverage': 0.9695167541503906, 'crop_failure_ratio': 0.030483245849609375, 'assignment_confidence_mean': 0.9994323730552424, 'occlusion_reappearance_count': 104800}, 'val': {'sample_count': 117, 'instance_count_mean': 15.752136752136753, 'identity_positive_ratio': 0.94198129950075, 'identity_negative_ratio': 0.05801870049924996, 'future_visibility_ratio': 1.0004870731309217, 'semantic_prototype_entropy': 0.74603270839054, 'teacher_embedding_coverage': 0.9833030700683594, 'crop_failure_ratio': 0.016696929931640625, 'assignment_confidence_mean': 0.9988642939859922, 'occlusion_reappearance_count': 93069}, 'test': {'sample_count': 128, 'instance_count_mean': 16.5625, 'identity_positive_ratio': 0.9198994773824111, 'identity_negative_ratio': 0.08010052261758896, 'future_visibility_ratio': 1.0001575354454753, 'semantic_prototype_entropy': 0.8271863206292094, 'teacher_embedding_coverage': 0.9831771850585938, 'crop_failure_ratio': 0.01682281494140625, 'assignment_confidence_mean': 0.9996406191967253, 'occlusion_reappearance_count': 124279}}`

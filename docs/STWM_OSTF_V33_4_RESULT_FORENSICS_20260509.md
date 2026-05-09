@@ -1,0 +1,21 @@
+# STWM OSTF V33.4 Result Forensics
+
+- smoke_completed: `True`
+- smoke_passed: `False`
+- train_loss_decreased: `True`
+- val_identity_ROC_AUC: `0.5028141025797123`
+- test_identity_ROC_AUC: `0.6624504173940766`
+- val_test_gap: `0.18916360097727236`
+- split_shift_suspected: `True`
+- hard_identity_ROC_AUC: `0.6688903009520691`
+- hard_identity_balanced_accuracy: `0.6264442290825931`
+- identity_embedding_retrieval_top1: `0.88916015625`
+- identity_retrieval_prior_top1: `0.3134765625`
+- semantic_proto_top1: `0.24397374498049074`
+- semantic_proto_copy_top1: `0.4003321692242939`
+- semantic_proto_top5: `0.6140125359755196`
+- semantic_proto_copy_top5: `0.4003321692242939`
+- semantic_top1_copy_beaten: `False`
+- semantic_top5_copy_beaten: `True`
+- trajectory_degraded: `False`
+- exact_protocol_risks: `['V33.3 semantic_copy_baseline_beaten mixed top1/top5; V33.4 splits semantic_top1_copy_beaten and semantic_top5_copy_beaten.', 'V33.3 hard identity mask mixed identity negatives with semantic prototype changes.', 'V33.3 raw identity retrieval can be inflated by same point / adjacent horizon near-duplicates.', 'V33.3 validation identity metrics were near chance while test was positive.']`
