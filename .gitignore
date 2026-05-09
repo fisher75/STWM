@@ -72,17 +72,73 @@ outputs/**
 !outputs/.gitkeep
 !outputs/README.md
 
-.tar.gz
+# ------------------------------
+# Heavy local artifacts: never commit to GitHub
+# ------------------------------
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.npz
+*.npy
 
 archives/
-archives/**
-
 assets/
-assets/**
 artifacts/
-artifacts/**
+baselines/
+data/
+figures/
+models/checkpoints/
+outputs/
 
-reports/*_export_*.json
+# ------------------------------
+# Reports policy
+#
+# Git should keep only compact final evidence:
+#   - reports/final/**
+#   - small *summary*.json / *decision*.json / *bootstrap*.json / *status*.json
+#   - markdown docs if intentionally placed under reports
+#
+# Git should not keep raw experiment outputs, item rows, per-run JSON,
+# candidate payloads, feature dumps, dataset exports, or cache manifests.
+# Already tracked files remain tracked until explicitly git-rm --cached.
+# ------------------------------
+reports/**
+!reports/
+!reports/**/
+!reports/final/**
+!reports/**/*.md
+!reports/**/*summary*.json
+!reports/**/*decision*.json
+!reports/**/*bootstrap*.json
+!reports/**/*status*.json
+!reports/**/*audit*.json
+
+reports/raw/**
+reports/runs/**
+reports/**/raw/**
+reports/**/runs/**
+reports/**/*_runs/**
+reports/**/*runs/**
+reports/**/*_item_rows*.json
+reports/**/*_item_scores*.json
+reports/**/*_item_manifest*.json
+reports/**/*_payload*.json
+reports/**/*_features*.json
+reports/**/*_feature*.json
+reports/**/*_dataset*.json
+reports/**/*_export_*.json
+reports/**/*_cache*.json
+reports/**/*cache*.json
+reports/**/*.jsonl
+
+# Historical large report files known to be raw payloads/datasets.
 reports/stwm_external_candidate_scoring_v*_export_*.json
 reports/stwm_external_hardcase_candidate_expanded_manifest_v2_20260428.json
 reports/stwm_external_hardcase_semantic_state_manifest_v1_20260428.json
@@ -92,15 +148,35 @@ reports/stwm_semantic_state_alignment_v6_score_table_20260428.json
 reports/stwm_semantic_state_alignment_v7_score_table_20260428.json
 reports/stwm_external_candidate_frozen_measurement_features_v7_20260428.json
 reports/stwm_semantic_state_alignment_v6_pointwise_aux/
-outputs/
-baselines/
-models/checkpoints/
-data/
 
+# ------------------------------
+# Manifests policy
+#
+# Keep protocol/schema/checksum/example/mini manifests in Git.
+# Do not keep full train/val/test split manifests or dense item manifests.
+# Already tracked files remain tracked until explicitly git-rm --cached.
+# ------------------------------
+manifests/**
+!manifests/
+!manifests/**/
+!manifests/**/*.md
+!manifests/**/README*
+!manifests/**/*protocol*.json
+!manifests/**/*schema*.json
+!manifests/**/*checksum*.json
+!manifests/**/*example*.json
+!manifests/**/*mini*.json
+!manifests/minisplits/**
 
-baselines/
-
-figures/
+manifests/**/train*.json
+manifests/**/val*.json
+manifests/**/test*.json
+manifests/**/*_train_*.json
+manifests/**/*_val_*.json
+manifests/**/*_test_*.json
+manifests/**/*item*.json
+manifests/**/*dense*.json
+manifests/**/*cache*.json
 
 # Lightweight experiment summaries/tables
 !outputs/**/comparison*.json
