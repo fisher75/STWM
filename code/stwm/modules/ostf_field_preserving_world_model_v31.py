@@ -24,6 +24,9 @@ class OSTFFieldPreservingConfigV31:
     predict_logvar: bool = True
     point_dropout: float = 0.0
     field_attention_mode: str = "full"
+    disable_global_context: bool = False
+    disable_semantic_context: bool = False
+    object_token_fallback: bool = False
 
 
 def _last_visible(obs_points: torch.Tensor, obs_vis: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -200,17 +203,26 @@ class OSTFFieldPreservingWorldModelV31(nn.Module):
             semantic_id = torch.full((b,), -1, device=obs_points.device, dtype=torch.long)
         sem_idx = semantic_id.clamp_min(0) % self.cfg.semantic_buckets
         sem = self.semantic_proj(self.semantic_embed(sem_idx))
-        if not self.cfg.use_semantic:
+        if not self.cfg.use_semantic or self.cfg.disable_semantic_context:
             sem = torch.zeros_like(sem)
         valid = valid_point.float()
         denom = valid.sum(dim=1, keepdim=True).clamp_min(1.0)
         global_seed = self.global_token.expand(b, -1, -1) + (point_token * valid[..., None]).sum(dim=1, keepdim=True) / denom[..., None]
+        if self.cfg.disable_global_context:
+            global_seed = torch.zeros_like(global_seed)
         sem_token = sem[:, None, :]
         field_in = torch.cat([global_seed, sem_token, point_token], dim=1)
         field_out = self.field_interaction(field_in)
         global_ctx = self.global_context_proj(field_out[:, 0])
         semantic_ctx = self.semantic_context_proj(field_out[:, 1])
+        if self.cfg.disable_global_context:
+            global_ctx = torch.zeros_like(global_ctx)
+        if self.cfg.disable_semantic_context:
+            semantic_ctx = torch.zeros_like(semantic_ctx)
         field_token = field_out[:, 2:]
+        if self.cfg.object_token_fallback:
+            pooled_field = (field_token * valid[..., None]).sum(dim=1, keepdim=True) / denom[..., None]
+            field_token = pooled_field.expand(-1, m, -1)
         time = self.time_embed[None, None, :, :]
         step_seed = field_token[:, :, None, :] + time + global_ctx[:, None, None, :] + semantic_ctx[:, None, None, :]
         # The rollout state is [B,M,H,D]. Temporal attention is applied per point, not over a pooled object token.
@@ -264,7 +276,10 @@ class OSTFFieldPreservingWorldModelV31(nn.Module):
             "global_context_norm": global_ctx.detach().norm(dim=-1).mean(),
             "semantic_context_norm": semantic_ctx.detach().norm(dim=-1).mean(),
             "main_rollout_state_is_field": torch.tensor(True, device=obs_points.device),
-            "uses_object_token_only_shortcut": torch.tensor(False, device=obs_points.device),
+            "uses_object_token_only_shortcut": torch.tensor(bool(self.cfg.object_token_fallback), device=obs_points.device),
+            "disable_global_context": torch.tensor(bool(self.cfg.disable_global_context), device=obs_points.device),
+            "disable_semantic_context": torch.tensor(bool(self.cfg.disable_semantic_context), device=obs_points.device),
+            "disable_field_interaction": torch.tensor(self.cfg.field_layers <= 0, device=obs_points.device),
         }
         if self.cfg.predict_logvar:
             out["mode_logvar"] = self.logvar_head(step_hidden).squeeze(-1)

@@ -55,19 +55,28 @@ def move_batch(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
 
 
 def build_model(args: argparse.Namespace) -> OSTFFieldPreservingWorldModelV31:
+    field_layers_raw = getattr(args, "field_interaction_layers", None)
+    temporal_layers_raw = getattr(args, "temporal_rollout_layers", None)
+    field_layers = int(getattr(args, "field_layers", 2) if field_layers_raw is None else field_layers_raw)
+    temporal_layers = int(getattr(args, "temporal_layers", 2) if temporal_layers_raw is None else temporal_layers_raw)
+    if bool(getattr(args, "disable_field_interaction", False)):
+        field_layers = 0
     cfg = OSTFFieldPreservingConfigV31(
         horizon=int(args.horizon),
         point_dim=int(args.point_dim),
         hidden_dim=int(args.hidden_dim),
         point_token_dim=max(64, int(args.hidden_dim) // 2),
-        field_layers=int(args.field_layers),
-        temporal_layers=int(args.temporal_layers),
+        field_layers=field_layers,
+        temporal_layers=temporal_layers,
         num_heads=int(args.heads),
         learned_modes=int(args.learned_modes),
         damped_gamma=float(args.damped_gamma),
         use_semantic=not bool(args.wo_semantic),
         point_dropout=float(args.point_dropout),
         field_attention_mode=str(args.field_attention_mode),
+        disable_global_context=bool(getattr(args, "disable_global_context", False)),
+        disable_semantic_context=bool(getattr(args, "disable_semantic_context", False)),
+        object_token_fallback=bool(getattr(args, "object_token_fallback", False)),
     )
     return OSTFFieldPreservingWorldModelV31(cfg)
 
@@ -118,6 +127,10 @@ def loss_fn(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor]) -> tup
         "actual_m_points": float(out.get("actual_m_points", torch.tensor(float(batch["obs_points"].shape[1]))).detach().cpu()),
         "global_context_norm": float(out.get("global_context_norm", torch.tensor(0.0)).detach().cpu()),
         "semantic_context_norm": float(out.get("semantic_context_norm", torch.tensor(0.0)).detach().cpu()),
+        "disable_field_interaction": float(out.get("disable_field_interaction", torch.tensor(0.0)).detach().cpu()),
+        "disable_global_context": float(out.get("disable_global_context", torch.tensor(0.0)).detach().cpu()),
+        "disable_semantic_context": float(out.get("disable_semantic_context", torch.tensor(0.0)).detach().cpu()),
+        "object_token_only_shortcut": float(out.get("uses_object_token_only_shortcut", torch.tensor(0.0)).detach().cpu()),
     }
 
 
@@ -319,8 +332,12 @@ def train_one(args: argparse.Namespace) -> dict[str, Any]:
         "train_loss_first": losses[0] if losses else None,
         "train_loss_last": losses[-1] if losses else None,
         "train_loss_decreased": bool(losses and losses[-1]["loss"] <= losses[0]["loss"]),
-        "field_layers": int(args.field_layers),
-        "temporal_layers": int(args.temporal_layers),
+        "field_layers": int(0 if args.disable_field_interaction else (args.field_layers if args.field_interaction_layers is None else args.field_interaction_layers)),
+        "temporal_layers": int(args.temporal_layers if args.temporal_rollout_layers is None else args.temporal_rollout_layers),
+        "disable_field_interaction": bool(args.disable_field_interaction),
+        "disable_global_context": bool(args.disable_global_context),
+        "disable_semantic_context": bool(args.disable_semantic_context),
+        "object_token_fallback": bool(args.object_token_fallback),
         "hidden_dim": int(args.hidden_dim),
         "heads": int(args.heads),
         "learned_modes": int(args.learned_modes),
@@ -355,7 +372,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--lr", type=float, default=2e-4)
     p.add_argument("--hidden-dim", type=int, default=192)
     p.add_argument("--field-layers", type=int, default=2)
+    p.add_argument("--field-interaction-layers", type=int, default=None)
     p.add_argument("--temporal-layers", type=int, default=2)
+    p.add_argument("--temporal-rollout-layers", type=int, default=None)
+    p.add_argument("--disable-field-interaction", action="store_true")
+    p.add_argument("--disable-global-context", action="store_true")
+    p.add_argument("--disable-semantic-context", action="store_true")
+    p.add_argument("--object-token-fallback", action="store_true")
     p.add_argument("--heads", type=int, default=6)
     p.add_argument("--learned-modes", type=int, default=4)
     p.add_argument("--damped-gamma", type=float, default=0.0)
