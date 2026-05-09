@@ -1,0 +1,20 @@
+{
+  "candidate_future_semantic_targets": [
+    "PointOdyssey instance identity if reliable and split-safe",
+    "crop teacher embeddings from observed/video-derived object crops",
+    "SAM2/DINO/CLIP teacher per object or per point",
+    "FSTF/TUSB semantic prototype transfer as observed semantic object token and future prototype target when aligned"
+  ],
+  "generated_at_utc": "2026-05-09T05:33:58.236828+00:00",
+  "no_future_leakage_rule": "future semantic target may be used only as supervision, never as model input",
+  "recommended_semantic_next_step": "construct explicit semantic/identity targets after trajectory field dynamics are validated",
+  "semantic_broadcasting_contract": {
+    "future_semantic_logits_shape": "[B,M,H,C]",
+    "semantic_is_context_only": true,
+    "semantic_loss_disabled_until_targets_exist": true,
+    "semantic_must_not_compress_physical_field": true
+  },
+  "semantic_field_target_available_now": false,
+  "semantic_status": "not_tested_not_failed",
+  "semantic_training_run_this_round": false
+}

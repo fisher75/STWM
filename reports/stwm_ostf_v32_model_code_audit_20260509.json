@@ -1,0 +1,74 @@
+{
+  "compile_rows": [
+    {
+      "error": null,
+      "exists": true,
+      "path": "code/stwm/modules/ostf_recurrent_field_world_model_v32.py",
+      "py_compile_ok": true
+    },
+    {
+      "error": null,
+      "exists": true,
+      "path": "code/stwm/tools/train_ostf_recurrent_field_v32_20260509.py",
+      "py_compile_ok": true
+    },
+    {
+      "error": null,
+      "exists": true,
+      "path": "code/stwm/tools/eval_ostf_recurrent_field_v32_20260509.py",
+      "py_compile_ok": true
+    },
+    {
+      "error": null,
+      "exists": true,
+      "path": "code/stwm/tools/aggregate_ostf_recurrent_field_v32_pilot_20260509.py",
+      "py_compile_ok": true
+    }
+  ],
+  "feeds_predicted_position_forward": true,
+  "forward_error": null,
+  "forward_shape_report": {
+    "global_motion_prior_active": true,
+    "main_rollout_state_is_field": true,
+    "point_hypotheses_shape": [
+      2,
+      16,
+      4,
+      7,
+      2
+    ],
+    "point_pred_shape": [
+      2,
+      16,
+      4,
+      2
+    ],
+    "recurrent_loop_steps": 4,
+    "semantic_logits_shape": [
+      2,
+      16,
+      4,
+      32
+    ],
+    "top1_point_pred_shape": [
+      2,
+      16,
+      4,
+      2
+    ],
+    "visibility_logits_shape": [
+      2,
+      16,
+      4
+    ]
+  },
+  "forward_smoke_ok": true,
+  "generated_at_utc": "2026-05-09T06:44:17.853133+00:00",
+  "has_global_motion_prior_branch": true,
+  "has_recurrent_loop": true,
+  "has_semantic_broadcast_context": true,
+  "preserves_point_state": true,
+  "py_compile_all_ok": true,
+  "semantic_loss_disabled_unless_target_exists": true,
+  "supports_m128_m512_h32_h64_h96": true
+}

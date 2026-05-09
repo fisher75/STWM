@@ -1,0 +1,23 @@
+# STWM OSTF V32 Recurrent Field Pilot Decision
+
+- generated_at_utc: `2026-05-09T06:43:56.938364+00:00`
+- v32_smoke_passed: `True`
+- v32_m128_beats_v30_m128_h32: `False`
+- v32_m128_beats_v30_m128_h64: `False`
+- v32_m128_beats_v30_m128_h96: `False`
+- v32_m128_beats_v31_m128_h32: `False`
+- v32_m128_beats_v31_m128_h64: `False`
+- v32_m128_beats_v31_m128_h96: `False`
+- v32_m512_beats_v30_m512_h32: `False`
+- v32_m512_beats_v30_m512_h64: `False`
+- v32_m512_beats_v30_m512_h96: `False`
+- v32_m512_beats_v31_m512_h32: `False`
+- v32_m512_beats_v31_m512_h64: `True`
+- v32_m512_beats_v31_m512_h96: `False`
+- v32_m512_beats_v32_m128: `{'H32': -3.620401750059969, 'H64': 3.623507369275657, 'H96': 1.410410630605071}`
+- recurrent_field_dynamics_positive: `False`
+- v32_m128_matches_v30_for_multiseed_gate: `False`
+- global_motion_prior_needed: `not_ablation_tested_in_v32_seed42_pilot`
+- density_scaling_recovered_with_v32: `True`
+- semantic_not_tested_not_failed: `True`
+- recommended_next_step: `keep_v30_m128_main_move_to_semantic_identity_targets`
