@@ -1,0 +1,22 @@
+# STWM OSTF V33.14 Decision
+
+- v33_13_target_failure_audit_done: `True`
+- stronger_teacher_forward_dryrun_passed: `True`
+- available_teachers: `['dinov2_base', 'dinov2_large', 'siglip_base', 'clip_vit_l14']`
+- teacher_feature_cache_built: `True`
+- teacher_prototype_vocab_sweep_done: `True`
+- teacher_semantic_targets_built: `True`
+- target_space_probe_sweep_done: `True`
+- best_teacher_by_val: `dinov2_base`
+- best_aggregation_by_val: `point_local_crop`
+- best_K_by_val: `64`
+- target_space_learnability_passed: `False`
+- changed_signal_positive: `False`
+- semantic_hard_signal_positive: `True`
+- clip_b32_k256_beaten: `True`
+- ready_for_model_training: `False`
+- v33_14_model_training_ran: `False`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `build_teacher_ensemble_targets`
