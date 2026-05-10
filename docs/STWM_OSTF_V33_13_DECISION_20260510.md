@@ -1,0 +1,22 @@
+# STWM OSTF V33.13 Decision
+
+- gate_protocol_repaired: `True`
+- double_sigmoid_bug_fixed: `True`
+- train_eval_gate_consistent: `True`
+- target_space_probe_done: `True`
+- target_space_learnability_passed: `False`
+- stronger_teacher_preflight_done: `True`
+- only_clip_b32_available: `True`
+- hard_identity_ROC_AUC_val: `{'mean': 0.6300356978843699, 'std': 0.0007511250855438749, 'worst': 0.6289765276866192}`
+- hard_identity_ROC_AUC_test: `{'mean': 0.5911789769824708, 'std': 0.0010343258734479904, 'worst': 0.5897285138888524}`
+- stable_preservation_not_degraded_top5: `False`
+- changed_top5_beats_strongest_baseline: `False`
+- semantic_hard_top5_beats_strongest_baseline: `False`
+- semantic_change_AUROC: `{'test': {'mean': 0.5691369169430244, 'std': 0.0, 'worst': 0.5691369169430244}, 'val': {'mean': 0.5611082091126416, 'std': 0.0, 'worst': 0.5611082091126416}}`
+- gate_collapse_detected: `False`
+- identity_regressed_vs_v33_9: `False`
+- trajectory_degraded: `False`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `build_real_stronger_teacher_targets`
