@@ -1,0 +1,70 @@
+{
+  "candidate": "v33_11_no_identity_freeze",
+  "changed_top5_beats_strongest_baseline": false,
+  "changed_update_gate_recall": {
+    "test": {
+      "mean": 0.3544390806595612,
+      "std": 0.0,
+      "worst": 0.3544390806595612
+    },
+    "val": {
+      "mean": 0.3448348291006302,
+      "std": 5.551115123125783e-17,
+      "worst": 0.3448348291006301
+    }
+  },
+  "future_teacher_leakage_detected": false,
+  "gate_collapse_detected": false,
+  "generated_at_utc": "2026-05-10T12:29:10.237557+00:00",
+  "hard_identity_ROC_AUC_test": {
+    "mean": 0.5843974440665124,
+    "std": 0.0010367366803819018,
+    "worst": 0.5829556220059938
+  },
+  "hard_identity_ROC_AUC_val": {
+    "mean": 0.639065872055132,
+    "std": 0.000351286473249667,
+    "worst": 0.6387849745078041
+  },
+  "identity_path_frozen_or_distilled": true,
+  "identity_regressed_vs_v33_10": false,
+  "identity_regressed_vs_v33_9": true,
+  "pass_gate": false,
+  "semantic_change_AUROC": {
+    "test": {
+      "mean": 0.5943614339050557,
+      "std": 0.0,
+      "worst": 0.5943614339050557
+    },
+    "val": {
+      "mean": 0.5577418706972237,
+      "std": 0.0,
+      "worst": 0.5577418706972237
+    }
+  },
+  "semantic_hard_top5_beats_strongest_baseline": false,
+  "stable_preservation_not_degraded_top5": false,
+  "stable_wrong_update_rate": {
+    "test": {
+      "mean": 0.23236604136970782,
+      "std": 2.7755575615628914e-17,
+      "worst": 0.2323660413697078
+    },
+    "val": {
+      "mean": 0.27057896598668624,
+      "std": 0.0,
+      "worst": 0.27057896598668624
+    }
+  },
+  "trajectory_degraded": false,
+  "val_calibrated_balanced_accuracy_test": {
+    "mean": 0.5507176999560301,
+    "std": 0.0007291042481378093,
+    "worst": 0.5497000127654142
+  },
+  "val_calibrated_balanced_accuracy_val": {
+    "mean": 0.6039030595166365,
+    "std": 0.0003584472206424369,
+    "worst": 0.6034344245832497
+  }
+}

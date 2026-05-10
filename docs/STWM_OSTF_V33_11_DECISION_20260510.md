@@ -1,0 +1,23 @@
+# STWM OSTF V33.11 Decision
+
+- semantic_hard_seed_locked_fixed: `True`
+- nontrivial_baseline_mismatch_fixed: `True`
+- baseline_selected_on_val: `True`
+- oracle_gate_upper_bound_done: `True`
+- fresh_training_completed: `True`
+- identity_path_frozen_or_distilled: `True`
+- complete_train_sample_count: `128`
+- hard_identity_ROC_AUC_val: `{'mean': 0.6300356978843699, 'std': 0.0007511250855438749, 'worst': 0.6289765276866192}`
+- hard_identity_ROC_AUC_test: `{'mean': 0.5911789769824708, 'std': 0.0010343258734479904, 'worst': 0.5897285138888524}`
+- identity_regressed_vs_v33_9: `False`
+- stable_preservation_not_degraded_top5: `False`
+- changed_top5_beats_strongest_baseline: `False`
+- semantic_hard_top5_beats_strongest_baseline: `False`
+- semantic_change_AUROC: `{'test': {'mean': 0.6145668613308223, 'std': 0.0, 'worst': 0.6145668613308223}, 'val': {'mean': 0.5255276248198221, 'std': 0.0, 'worst': 0.5255276248198221}}`
+- changed_update_gate_recall: `{'test': {'mean': 0.5191397577605891, 'std': 0.0, 'worst': 0.5191397577605891}, 'val': {'mean': 0.49576093183120107, 'std': 0.0, 'worst': 0.49576093183120107}}`
+- gate_collapse_detected: `False`
+- trajectory_degraded: `False`
+- case_mined_visualizations_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_semantic_copy_residual_loss`
