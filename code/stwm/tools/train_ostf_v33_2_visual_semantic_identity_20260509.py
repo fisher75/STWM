@@ -49,6 +49,9 @@ class VisualSidecarDataset(Dataset):
             semantic_identity_sidecar_root=args.semantic_identity_sidecar_root,
             require_semantic_identity_sidecar=True,
             use_observed_instance_context=args.use_observed_instance_context,
+            enable_global_identity_labels=bool(getattr(args, "enable_global_identity_labels", False)),
+            global_identity_label_root=getattr(args, "global_identity_label_root", None),
+            require_global_identity_labels=bool(getattr(args, "require_global_identity_labels", False)),
         )
         self.teacher_root = Path(args.visual_teacher_root)
         if not self.teacher_root.is_absolute():

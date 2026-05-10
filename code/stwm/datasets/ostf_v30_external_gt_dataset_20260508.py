@@ -13,6 +13,7 @@ from torch.utils.data import Dataset
 ROOT = Path("/raid/chen034/workspace/stwm")
 MANIFEST_DIR = ROOT / "manifests/ostf_v30_external_gt"
 DEFAULT_V33_SIDECAR_ROOT = ROOT / "outputs/cache/stwm_ostf_v33_semantic_identity_targets/pointodyssey"
+DEFAULT_V33_GLOBAL_IDENTITY_ROOT = ROOT / "outputs/cache/stwm_ostf_v33_6_global_identity_labels/pointodyssey"
 
 
 @dataclass
@@ -105,6 +106,50 @@ def _load_semantic_identity_sidecar(
     }
 
 
+def _global_identity_sidecar_path(uid: str, split: str, root: str | Path | None = None) -> Path:
+    sidecar_root = Path(root) if root is not None else DEFAULT_V33_GLOBAL_IDENTITY_ROOT
+    if not sidecar_root.is_absolute():
+        sidecar_root = ROOT / sidecar_root
+    return sidecar_root / split / f"{uid}.npz"
+
+
+def _load_global_identity_sidecar(
+    *,
+    uid: str,
+    split: str,
+    m_points: int,
+    horizon: int,
+    root: str | Path | None,
+    require: bool,
+) -> dict[str, Any]:
+    path = _global_identity_sidecar_path(uid, split, root)
+    if not path.exists():
+        if require:
+            raise FileNotFoundError(f"Missing global identity label sidecar: {path}")
+        return {
+            "global_identity_label_available": torch.tensor(False, dtype=torch.bool),
+            "global_identity_label_path": None,
+        }
+    s = np.load(path, allow_pickle=True)
+
+    def arr(name: str, default: np.ndarray, dtype: Any | None = None) -> np.ndarray:
+        val = np.asarray(s[name] if name in s.files else default)
+        if dtype is not None:
+            val = val.astype(dtype)
+        return val
+
+    return {
+        "global_identity_label_available": torch.tensor(True, dtype=torch.bool),
+        "global_identity_label_path": str(path.relative_to(ROOT)),
+        "fut_global_instance_id": torch.from_numpy(arr("fut_global_instance_id", np.full((m_points, horizon), -1), np.int64)).long(),
+        "fut_global_instance_available_mask": torch.from_numpy(arr("fut_global_instance_available_mask", np.zeros((m_points, horizon), dtype=bool), bool)).bool(),
+        "obs_global_instance_id": torch.from_numpy(arr("obs_global_instance_id", np.full((m_points, 8), -1), np.int64)).long(),
+        "point_global_instance_id": torch.from_numpy(arr("point_global_instance_id", np.full((m_points,), -1), np.int64)).long(),
+        "global_identity_leakage_safe": torch.tensor(bool(_scalar(s, "leakage_safe", True)), dtype=torch.bool),
+        "future_global_labels_supervision_only": torch.tensor(bool(_scalar(s, "future_global_labels_supervision_only", True)), dtype=torch.bool),
+    }
+
+
 def load_external_gt_item(cache_path: str | Path, tags: list[str] | None = None) -> OSTFExternalGTItem:
     path = Path(cache_path)
     if not path.is_absolute():
@@ -150,6 +195,9 @@ class OSTFExternalGTDataset(Dataset):
         semantic_identity_sidecar_root: str | Path | None = None,
         require_semantic_identity_sidecar: bool = False,
         use_observed_instance_context: bool = False,
+        enable_global_identity_labels: bool = False,
+        global_identity_label_root: str | Path | None = None,
+        require_global_identity_labels: bool = False,
     ) -> None:
         super().__init__()
         manifest = manifest_name or split
@@ -169,6 +217,9 @@ class OSTFExternalGTDataset(Dataset):
         self.semantic_identity_sidecar_root = semantic_identity_sidecar_root
         self.require_semantic_identity_sidecar = bool(require_semantic_identity_sidecar)
         self.use_observed_instance_context = bool(use_observed_instance_context)
+        self.enable_global_identity_labels = bool(enable_global_identity_labels)
+        self.global_identity_label_root = global_identity_label_root
+        self.require_global_identity_labels = bool(require_global_identity_labels)
         if not self.entries:
             raise RuntimeError(f"No V30 external-GT entries for manifest={manifest} H{horizon} M{m_points}")
 
@@ -208,6 +259,17 @@ class OSTFExternalGTDataset(Dataset):
                     require=self.require_semantic_identity_sidecar,
                 )
             )
+        if self.enable_global_identity_labels:
+            out.update(
+                _load_global_identity_sidecar(
+                    uid=item.uid,
+                    split=item.split,
+                    m_points=item.m_points,
+                    horizon=item.horizon,
+                    root=self.global_identity_label_root,
+                    require=self.require_global_identity_labels,
+                )
+            )
         return out
 
 
@@ -230,11 +292,18 @@ def collate_external_gt(batch: list[dict[str, Any]]) -> dict[str, Any]:
         "leakage_safe",
         "input_uses_observed_only",
         "future_targets_supervision_only",
+        "global_identity_label_available",
+        "fut_global_instance_id",
+        "fut_global_instance_available_mask",
+        "obs_global_instance_id",
+        "point_global_instance_id",
+        "global_identity_leakage_safe",
+        "future_global_labels_supervision_only",
     ]
     tensor_keys.extend([k for k in optional_tensor_keys if k in batch[0]])
     for key in tensor_keys:
         out[key] = torch.stack([b[key] for b in batch], dim=0)
-    for key in ["uid", "dataset", "split", "cache_path", "coordinate_system", "v30_subset_tags", "semantic_identity_sidecar_path", "point_to_instance_assignment_method"]:
+    for key in ["uid", "dataset", "split", "cache_path", "coordinate_system", "v30_subset_tags", "semantic_identity_sidecar_path", "global_identity_label_path", "point_to_instance_assignment_method"]:
         if key not in batch[0]:
             continue
         out[key] = [b[key] for b in batch]
