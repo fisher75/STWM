@@ -61,10 +61,14 @@ class StructuredSidecarDataset(VisualSidecarDataset):
                 keep.append(entry)
         self.base.entries = keep[:max_items] if max_items is not None else keep
         self.proto_root = root
+        self._item_cache: dict[int, dict[str, Any]] = {}
         if not self.base.entries:
             raise RuntimeError(f"No semantic prototype target sidecars for split={split} under {root}")
 
     def __getitem__(self, idx: int) -> dict[str, Any]:
+        cached = self._item_cache.get(idx)
+        if cached is not None:
+            return dict(cached)
         item = super().__getitem__(idx)
         uid = item["uid"]
         z = np.load(self.proto_root / self.split / f"{uid}.npz", allow_pickle=True)
@@ -73,6 +77,10 @@ class StructuredSidecarDataset(VisualSidecarDataset):
         item["obs_semantic_prototype_id"] = torch.from_numpy(np.asarray(z["obs_semantic_prototype_id"], dtype=np.int64)).long()
         item["obs_semantic_prototype_available_mask"] = torch.from_numpy(np.asarray(z["obs_semantic_prototype_available_mask"]).astype(bool)).bool()
         item["future_prototypes_input_allowed"] = torch.tensor(bool(np.asarray(z["future_prototypes_input_allowed"]).item()), dtype=torch.bool)
+        # H32/M128 semantic-identity smokes repeatedly iterate a small full-reachable
+        # set. Cache decoded npz tensors in-memory so training exercises the loss
+        # instead of saturating filesystem I/O.
+        self._item_cache[idx] = dict(item)
         return item
 
 
