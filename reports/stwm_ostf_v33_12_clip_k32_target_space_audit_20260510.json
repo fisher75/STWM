@@ -1,0 +1,81 @@
+{
+  "K32_too_coarse_suspected": false,
+  "by_split": {
+    "test": {
+      "changed_ratio": 0.24329290913878973,
+      "cluster_counts_min_median_max": [
+        0,
+        2625.0,
+        126027
+      ],
+      "copy_baseline_top1": 0.7536425481534936,
+      "copy_baseline_top5": 0.8196819280725228,
+      "dominant_cluster_ratio": 0.24225106827133228,
+      "empty_cluster_count": 7,
+      "observed_frequency_baseline_top1": 0.7625278716384679,
+      "observed_frequency_baseline_top5": 0.8423389450610319,
+      "prototype_entropy": 0.7114398088289718,
+      "sample_frequency_baseline_top1": 0.45717428066824867,
+      "sample_frequency_baseline_top5": 0.8926748367528443,
+      "stable_ratio": 0.7565321692395522
+    },
+    "train": {
+      "changed_ratio": 0.1522898294459804,
+      "cluster_counts_min_median_max": [
+        1576,
+        11539.5,
+        27285
+      ],
+      "copy_baseline_top1": 0.8413825911297291,
+      "copy_baseline_top5": 0.8788219550677037,
+      "dominant_cluster_ratio": 0.06814418545408228,
+      "empty_cluster_count": 0,
+      "observed_frequency_baseline_top1": 0.8465982137151427,
+      "observed_frequency_baseline_top5": 0.8959580071808214,
+      "prototype_entropy": 0.9494613144537379,
+      "sample_frequency_baseline_top1": 0.45311293000039843,
+      "sample_frequency_baseline_top5": 0.8595407780750663,
+      "stable_ratio": 0.8477101705540196
+    },
+    "val": {
+      "changed_ratio": 0.21903610728879558,
+      "cluster_counts_min_median_max": [
+        0,
+        3647.5,
+        48404
+      ],
+      "copy_baseline_top1": 0.7784874736982967,
+      "copy_baseline_top5": 0.8307044372238866,
+      "dominant_cluster_ratio": 0.2024484196526038,
+      "empty_cluster_count": 9,
+      "observed_frequency_baseline_top1": 0.7815928862139562,
+      "observed_frequency_baseline_top5": 0.8492306079240325,
+      "prototype_entropy": 0.7514925456976187,
+      "sample_frequency_baseline_top1": 0.4502506204883245,
+      "sample_frequency_baseline_top5": 0.8686700341915813,
+      "stable_ratio": 0.7803407042447917
+    }
+  },
+  "changed_ratio_by_split": {
+    "test": 0.24329290913878973,
+    "train": 0.1522898294459804,
+    "val": 0.21903610728879558
+  },
+  "clip_b32_target_space_sufficient": false,
+  "current_prototype_K": 32,
+  "current_teacher_name": "clip_vit_b32_local",
+  "dominant_cluster_ratio": 0.14973696395789698,
+  "empty_cluster_count": 0,
+  "generated_at_utc": "2026-05-10T13:19:06.501366+00:00",
+  "prototype_entropy": 0.8597005364394612,
+  "recommended_target_repair": "evaluate_larger_K_and_stronger_teacher_or_smooth_instance_temporal_targets",
+  "same_instance_temporal_consistency": 0.8725347940260352,
+  "same_point_temporal_consistency": 0.9645090215233986,
+  "sample_frequency_baseline_too_strong": true,
+  "stable_ratio_by_split": {
+    "test": 0.7565321692395522,
+    "train": 0.8477101705540196,
+    "val": 0.7803407042447917
+  },
+  "teacher_jitter_suspected": false
+}

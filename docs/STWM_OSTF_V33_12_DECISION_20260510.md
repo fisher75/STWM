@@ -1,0 +1,24 @@
+# STWM OSTF V33.12 Decision
+
+- v33_11_oracle_not_actually_run: `False`
+- v33_12_true_v33_11_oracle_done: `True`
+- clip_k32_target_space_sufficient: `False`
+- teacher_jitter_suspected: `False`
+- K32_too_coarse_suspected: `False`
+- sample_frequency_baseline_too_strong: `True`
+- stronger_teacher_candidates_built: `True`
+- best_teacher_by_val: `clip_vit_b32_local`
+- best_aggregation_by_val: `point_local_crop_cached`
+- best_K_by_val: `256`
+- target_space_oracle_passes: `True`
+- target_space_ready_for_training: `True`
+- v33_12_training_ran: `True`
+- stable_preservation_not_degraded_top5: `False`
+- changed_top5_beats_strongest_baseline: `False`
+- semantic_hard_top5_beats_strongest_baseline: `False`
+- identity_regressed_vs_v33_9: `False`
+- trajectory_degraded: `False`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_copy_conservative_loss`
