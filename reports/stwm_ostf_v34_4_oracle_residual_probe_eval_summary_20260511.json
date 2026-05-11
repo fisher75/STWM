@@ -1,0 +1,172 @@
+{
+  "decision": {
+    "changed_semantic_signal": {
+      "test": true,
+      "val": true
+    },
+    "effective_units": {
+      "test": 9.072525978088379,
+      "val": 8.32788372039795
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-11T15:10:35.888421+00:00",
+    "hard_identity_ROC_AUC_test": 0.9668819840740001,
+    "hard_identity_ROC_AUC_val": 0.9532929760215955,
+    "oracle_residual_probe_passed": false,
+    "oracle_residual_probe_ran": true,
+    "pointwise_baseline_dominates": false,
+    "recommended_next_step": "fix_unit_residual_content",
+    "residual_does_not_degrade_stable": true,
+    "residual_improves_over_pointwise_on_hard": true,
+    "residual_utility_subset_gain": {
+      "test": 0.006715059280395508,
+      "val": 0.004239678382873535
+    },
+    "semantic_hard_signal": {
+      "test": false,
+      "val": false
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6749526956301745,
+      "val": 0.6977537487344441
+    },
+    "unit_semantic_purity": {
+      "test": 0.6104961754002913,
+      "val": 0.6398301204298578
+    },
+    "v30_backbone_frozen": true
+  },
+  "generated_at_utc": "2026-05-11T15:10:35.888450+00:00",
+  "per_split": {
+    "test": {
+      "assignment_entropy": 0.3869064748287201,
+      "changed_gain_vs_pointwise": 0.00955095887184143,
+      "changed_semantic_signal": true,
+      "effective_units": 9.072525978088379,
+      "hard_identity_ROC_AUC": 0.9668819840740001,
+      "identity_auc_delta_vs_pointwise": 0.44522430400631485,
+      "pointwise_baseline_dominates": false,
+      "pointwise_hard_identity_ROC_AUC": 0.5216576800676852,
+      "residual_utility_subset_count": 338228,
+      "residual_utility_subset_gain": 0.006715059280395508,
+      "semantic_hard_gain_vs_pointwise": 0.002680271863937378,
+      "semantic_hard_signal": false,
+      "stable_preservation": true,
+      "stable_suppress_subset_count": 1098,
+      "stable_suppress_subset_delta": 0.0,
+      "teacher_agreement_weighted_top5": 0.3238042901829976,
+      "teacher_top5_delta_vs_pointwise_report": -0.017688742688934833,
+      "unit_dominant_instance_purity": 0.6749526956301745,
+      "unit_semantic_purity": 0.6104961754002913,
+      "unit_usage_histogram": [
+        0.1741412729024887,
+        0.051284387707710266,
+        0.026096409186720848,
+        0.08917064964771271,
+        0.06540455669164658,
+        0.030558740720152855,
+        0.03376583382487297,
+        0.04310344532132149,
+        0.03146757557988167,
+        0.03932663053274155,
+        0.04036391153931618,
+        0.021281642839312553,
+        0.025382893159985542,
+        0.04553752765059471,
+        0.038753144443035126,
+        0.2443612515926361
+      ]
+    },
+    "val": {
+      "assignment_entropy": 0.362154096364975,
+      "changed_gain_vs_pointwise": 0.008035838603973389,
+      "changed_semantic_signal": true,
+      "effective_units": 8.32788372039795,
+      "hard_identity_ROC_AUC": 0.9532929760215955,
+      "identity_auc_delta_vs_pointwise": 0.4192320808922546,
+      "pointwise_baseline_dominates": false,
+      "pointwise_hard_identity_ROC_AUC": 0.5340608951293409,
+      "residual_utility_subset_count": 147707,
+      "residual_utility_subset_gain": 0.004239678382873535,
+      "semantic_hard_gain_vs_pointwise": -0.004283159971237183,
+      "semantic_hard_signal": false,
+      "stable_preservation": true,
+      "stable_suppress_subset_count": 594,
+      "stable_suppress_subset_delta": 0.0,
+      "teacher_agreement_weighted_top5": 0.3261244915279038,
+      "teacher_top5_delta_vs_pointwise_report": -0.012362195178033164,
+      "unit_dominant_instance_purity": 0.6977537487344441,
+      "unit_semantic_purity": 0.6398301204298578,
+      "unit_usage_histogram": [
+        0.24343617260456085,
+        0.03995849937200546,
+        0.025668712332844734,
+        0.06600779294967651,
+        0.06723155081272125,
+        0.028047259896993637,
+        0.024563392624258995,
+        0.050740230828523636,
+        0.034904275089502335,
+        0.025741009041666985,
+        0.04378034546971321,
+        0.027197198942303658,
+        0.03134928271174431,
+        0.04011156037449837,
+        0.03794184327125549,
+        0.21332088112831116
+      ]
+    }
+  },
+  "pointwise_baseline": {
+    "fresh_training_completed": true,
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-11T08:52:51.241682+00:00",
+    "per_split": {
+      "test": {
+        "changed_copy_cosine": 0.3497981131076813,
+        "changed_model_cosine": 0.3003581762313843,
+        "changed_semantic_signal": false,
+        "hard_identity_ROC_AUC": 0.5216576800676852,
+        "semantic_belief_consistency": 0.9994074106216431,
+        "semantic_hard_copy_cosine": 0.5209877490997314,
+        "semantic_hard_model_cosine": 0.3373298943042755,
+        "semantic_hard_signal": false,
+        "semantic_uncertainty_quality": -0.10945738978013998,
+        "stable_copy_cosine": 0.8961519002914429,
+        "stable_model_cosine": 0.37049049139022827,
+        "stable_preservation": false,
+        "teacher_agreement_weighted_top5": 0.34149303287193244,
+        "trajectory_degraded": false,
+        "val_calibrated_balanced_accuracy": 0.5109357048636228,
+        "visibility_AUROC": 0.5735278933927341,
+        "visibility_F1": 0.8583454003898842
+      },
+      "val": {
+        "changed_copy_cosine": 0.34274667501449585,
+        "changed_model_cosine": 0.3220486044883728,
+        "changed_semantic_signal": false,
+        "hard_identity_ROC_AUC": 0.5340608951293409,
+        "semantic_belief_consistency": 0.9994032382965088,
+        "semantic_hard_copy_cosine": 0.5267162919044495,
+        "semantic_hard_model_cosine": 0.3693912923336029,
+        "semantic_hard_signal": false,
+        "semantic_uncertainty_quality": -0.03147145498260214,
+        "stable_copy_cosine": 0.9000649452209473,
+        "stable_model_cosine": 0.44062376022338867,
+        "stable_preservation": false,
+        "teacher_agreement_weighted_top5": 0.33848668670593696,
+        "trajectory_degraded": false,
+        "val_calibrated_balanced_accuracy": 0.5177746535448885,
+        "visibility_AUROC": 0.596204658626712,
+        "visibility_F1": 0.8755469903861464
+      }
+    },
+    "real_pointwise_no_unit_baseline_built": true,
+    "v30_backbone_frozen": true
+  }
+}

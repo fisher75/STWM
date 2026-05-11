@@ -1,0 +1,28 @@
+# STWM OSTF V34.4 Decision
+
+- v34_3_residual_failure_audit_done: `True`
+- residual_utility_targets_built: `True`
+- residual_utility_target_ready: `True`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- supervised_residual_gate_training_ran: `False`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- hard_identity_ROC_AUC_val: `0.9532929760215955`
+- hard_identity_ROC_AUC_test: `0.9668819840740001`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': True, 'val': True}`
+- stable_preservation: `{'test': True, 'val': True}`
+- pointwise_baseline_dominates: `False`
+- residual_improves_over_pointwise_on_hard: `True`
+- residual_does_not_degrade_stable: `True`
+- semantic_gate_order_ok: `False`
+- residual_utility_subset_gain: `{'test': 0.006715059280395508, 'val': 0.004239678382873535}`
+- effective_units: `{'test': 9.072525978088379, 'val': 8.32788372039795}`
+- unit_dominant_instance_purity: `{'test': 0.6749526956301745, 'val': 0.6977537487344441}`
+- unit_semantic_purity: `{'test': 0.6104961754002913, 'val': 0.6398301204298578}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_unit_residual_content`

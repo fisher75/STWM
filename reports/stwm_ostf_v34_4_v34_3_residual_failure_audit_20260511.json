@@ -1,0 +1,90 @@
+{
+  "changed_gate_reward_too_weak": true,
+  "checked_files": [
+    "code/stwm/modules/ostf_v34_3_pointwise_unit_residual_world_model.py",
+    "code/stwm/tools/train_ostf_v34_3_pointwise_unit_residual_20260511.py",
+    "code/stwm/tools/eval_ostf_v34_3_pointwise_unit_residual_20260511.py",
+    "reports/stwm_ostf_v34_3_pointwise_unit_residual_train_summary_20260511.json",
+    "reports/stwm_ostf_v34_3_pointwise_unit_residual_eval_summary_20260511.json",
+    "reports/stwm_ostf_v34_3_pointwise_unit_residual_eval_decision_20260511.json",
+    "reports/stwm_ostf_v34_3_decision_20260511.json",
+    "reports/stwm_ostf_v34_2_pointwise_no_unit_eval_summary_20260511.json",
+    "reports/stwm_ostf_v34_2_dual_source_semantic_trace_units_eval_summary_20260511.json"
+  ],
+  "direct_residual_supervision_missing": true,
+  "exact_code_locations": {
+    "final_residual_mixture": "code/stwm/modules/ostf_v34_3_pointwise_unit_residual_world_model.py: final_sem = normalize(pointwise + gate * residual)",
+    "missing_residual_target": "train script has no residual_semantic_utility_mask or residual_gate_target loader",
+    "weak_gate_reward": "code/stwm/tools/train_ostf_v34_3_pointwise_unit_residual_20260511.py: 0.2 * changed_gate_reward / hard_gate_reward"
+  },
+  "force_gate_one_hurts": true,
+  "force_gate_one_metric_delta": {
+    "test": {
+      "identity_output_delta_vs_normal": 2.6100122928619385,
+      "metric_delta_vs_normal": {
+        "identity_auc": 0.0013559921086734317,
+        "semantic_hard_model_cosine": -0.06813964247703552,
+        "teacher_top5": -0.04614329303440906
+      },
+      "semantic_output_delta_vs_normal": 0.2380450814962387
+    },
+    "val": {
+      "identity_output_delta_vs_normal": 2.495849847793579,
+      "metric_delta_vs_normal": {
+        "identity_auc": 0.00037066034175570195,
+        "semantic_hard_model_cosine": -0.0811554491519928,
+        "teacher_top5": -0.046417806243389315
+      },
+      "semantic_output_delta_vs_normal": 0.23589889705181122
+    }
+  },
+  "force_gate_zero_metric_delta": {
+    "test": {
+      "identity_output_delta_vs_normal": 7.181186199188232,
+      "metric_delta_vs_normal": {
+        "identity_auc": 0.004535956415595344,
+        "semantic_hard_model_cosine": -2.086162567138672e-07,
+        "teacher_top5": -0.0001614006502140275
+      },
+      "semantic_output_delta_vs_normal": -3.1590998705866014e-09
+    },
+    "val": {
+      "identity_output_delta_vs_normal": 7.165060043334961,
+      "metric_delta_vs_normal": {
+        "identity_auc": -0.000467655613261897,
+        "semantic_hard_model_cosine": -2.9802322387695312e-08,
+        "teacher_top5": -7.943243435326597e-05
+      },
+      "semantic_output_delta_vs_normal": -3.905191903186278e-08
+    }
+  },
+  "gate_collapse_rational_given_harmful_residual_content": true,
+  "gate_collapsed": true,
+  "gate_order_wrong": true,
+  "generated_at_utc": "2026-05-11T14:17:18.795442+00:00",
+  "hard_gate_reward_too_weak": true,
+  "pointwise_base_dominates": true,
+  "pointwise_baseline_dominates": true,
+  "recommended_fix": "build_residual_utility_targets_and_train_oracle_residual_probe",
+  "residual_branch_has_direct_residual_target_supervision": false,
+  "residual_content_harmful_when_gate_opens": true,
+  "residual_content_not_proven": true,
+  "residual_does_not_degrade_stable": false,
+  "residual_improves_over_pointwise_on_hard": false,
+  "semantic_gate_order_ok": false,
+  "semantic_measurements_load_bearing": true,
+  "semantic_residual_gate_mean_changed": {
+    "test": 1.2099844752810895e-05,
+    "val": 8.451043868262786e-06
+  },
+  "semantic_residual_gate_mean_full": 1.060635804606136e-05,
+  "semantic_residual_gate_mean_hard": {
+    "test": 1.3622136066260282e-05,
+    "val": 5.733866601076443e-06
+  },
+  "semantic_residual_gate_mean_stable": {
+    "test": 1.8701155568123795e-05,
+    "val": 6.19423281023046e-06
+  },
+  "units_load_bearing_v34_3_final": false
+}
