@@ -1,0 +1,28 @@
+{
+  "checked_files": [
+    "code/stwm/tools/train_ostf_v34_4_oracle_residual_probe_20260511.py",
+    "code/stwm/tools/eval_ostf_v34_4_oracle_residual_probe_20260511.py",
+    "code/stwm/modules/ostf_v34_3_pointwise_unit_residual_world_model.py",
+    "reports/stwm_ostf_v34_4_oracle_residual_probe_train_summary_20260511.json",
+    "reports/stwm_ostf_v34_4_oracle_residual_probe_eval_summary_20260511.json",
+    "reports/stwm_ostf_v34_4_oracle_residual_probe_decision_20260511.json",
+    "reports/stwm_ostf_v34_4_decision_20260511.json",
+    "reports/stwm_ostf_v34_4_residual_utility_target_build_20260511.json"
+  ],
+  "delta_residual_objective_missing": true,
+  "final_semantic_is_pointwise_plus_residual": true,
+  "force_gate_one_hurts_because_residual_content_harmful": true,
+  "force_gate_one_hurts_due_residual_content": true,
+  "generated_at_utc": "2026-05-11T16:08:37.975215+00:00",
+  "identity_auc_is_oracle_only_not_final_claim": true,
+  "identity_auc_oracle_only": true,
+  "oracle_fail_is_borderline": true,
+  "oracle_residual_failed_due_val_gain_slightly_below_threshold": true,
+  "recommended_fix": "Train unit_semantic_residual as an orthogonal delta correction over frozen pointwise_semantic_belief, and narrow residual utility positives with split-specific confidence/error quantiles.",
+  "residual_direct_loss_aligned_with_final_composition": false,
+  "residual_positive_ratio_too_broad": true,
+  "residual_supervised_as_standalone_target": true,
+  "residual_utility_target_positive_ratio_too_broad": true,
+  "semantic_hard_signal_failed_despite_changed_signal_positive": true,
+  "unit_semantic_residual_supervised_as_target_embedding": true
+}

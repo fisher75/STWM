@@ -1,0 +1,162 @@
+{
+  "decision": {
+    "changed_semantic_signal": {
+      "test": false,
+      "val": false
+    },
+    "delta_objective_beats_standalone_objective": false,
+    "delta_residual_probe_passed": false,
+    "delta_residual_probe_ran": true,
+    "delta_vs_standalone_gain": {
+      "test": -0.012585967779159546,
+      "val": 0.0020354464650154114
+    },
+    "effective_units": {
+      "test": 9.238524436950684,
+      "val": 8.731688499450684
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-11T17:21:11.005073+00:00",
+    "pointwise_baseline_dominates": false,
+    "recommended_next_step": "fix_delta_residual_objective",
+    "residual_does_not_degrade_stable": true,
+    "residual_improves_over_pointwise_on_hard": false,
+    "semantic_hard_signal": {
+      "test": false,
+      "val": false
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "strict_residual_subset_gain": {
+      "test": -0.005870908498764038,
+      "val": 0.0062751248478889465
+    },
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6542441020887944,
+      "val": 0.6761903319136162
+    },
+    "unit_semantic_purity": {
+      "test": 0.6074750231577231,
+      "val": 0.6253111926588906
+    },
+    "v30_backbone_frozen": true
+  },
+  "generated_at_utc": "2026-05-11T17:21:11.005108+00:00",
+  "per_split": {
+    "test": {
+      "assignment_entropy": 0.3647284507751465,
+      "changed_gain": -0.0008918046951293945,
+      "changed_semantic_signal": false,
+      "effective_units": 9.238524436950684,
+      "pointwise_baseline_dominates": true,
+      "semantic_hard_gain": -0.0011894702911376953,
+      "semantic_hard_signal": false,
+      "stable_delta": 0.0,
+      "stable_preservation": true,
+      "stable_suppress_count": 33914,
+      "strict_residual_subset_count": 72296,
+      "strict_residual_subset_gain": -0.005870908498764038,
+      "teacher_agreement_weighted_top5": 0.3456049065797665,
+      "unit_dominant_instance_purity": 0.6542441020887944,
+      "unit_semantic_purity": 0.6074750231577231,
+      "unit_usage_histogram": [
+        0.1882927268743515,
+        0.045990798622369766,
+        0.05775709077715874,
+        0.09517867118120193,
+        0.04198804125189781,
+        0.025411782786250114,
+        0.04983456805348396,
+        0.03828530013561249,
+        0.04747868701815605,
+        0.038700543344020844,
+        0.038300834596157074,
+        0.034179821610450745,
+        0.02392241731286049,
+        0.06008203327655792,
+        0.031556207686662674,
+        0.18304042518138885
+      ]
+    },
+    "val": {
+      "assignment_entropy": 0.3431083559989929,
+      "changed_gain": 0.0016541779041290283,
+      "changed_semantic_signal": false,
+      "effective_units": 8.731688499450684,
+      "pointwise_baseline_dominates": false,
+      "semantic_hard_gain": 0.00011432170867919922,
+      "semantic_hard_signal": false,
+      "stable_delta": 0.0,
+      "stable_preservation": true,
+      "stable_suppress_count": 16945,
+      "strict_residual_subset_count": 26490,
+      "strict_residual_subset_gain": 0.0062751248478889465,
+      "teacher_agreement_weighted_top5": 0.3414842159391631,
+      "unit_dominant_instance_purity": 0.6761903319136162,
+      "unit_semantic_purity": 0.6253111926588906,
+      "unit_usage_histogram": [
+        0.2642669081687927,
+        0.04970753565430641,
+        0.04986567795276642,
+        0.07610232383012772,
+        0.05026745796203613,
+        0.024995753541588783,
+        0.034310102462768555,
+        0.0404365211725235,
+        0.028313955292105675,
+        0.03797601908445358,
+        0.04594685509800911,
+        0.03402990475296974,
+        0.028454676270484924,
+        0.04122985526919365,
+        0.03521071374416351,
+        0.1588856726884842
+      ]
+    }
+  },
+  "standalone_v34_4": {
+    "changed_semantic_signal": {
+      "test": true,
+      "val": true
+    },
+    "effective_units": {
+      "test": 9.072525978088379,
+      "val": 8.32788372039795
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-11T15:10:35.888421+00:00",
+    "hard_identity_ROC_AUC_test": 0.9668819840740001,
+    "hard_identity_ROC_AUC_val": 0.9532929760215955,
+    "oracle_residual_probe_passed": false,
+    "oracle_residual_probe_ran": true,
+    "pointwise_baseline_dominates": false,
+    "recommended_next_step": "fix_unit_residual_content",
+    "residual_does_not_degrade_stable": true,
+    "residual_improves_over_pointwise_on_hard": true,
+    "residual_utility_subset_gain": {
+      "test": 0.006715059280395508,
+      "val": 0.004239678382873535
+    },
+    "semantic_hard_signal": {
+      "test": false,
+      "val": false
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6749526956301745,
+      "val": 0.6977537487344441
+    },
+    "unit_semantic_purity": {
+      "test": 0.6104961754002913,
+      "val": 0.6398301204298578
+    },
+    "v30_backbone_frozen": true
+  }
+}

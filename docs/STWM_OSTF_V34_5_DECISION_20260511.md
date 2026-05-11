@@ -1,0 +1,28 @@
+# STWM OSTF V34.5 Decision
+
+- v34_4_residual_objective_audit_done: `True`
+- strict_residual_utility_targets_built: `True`
+- strict_residual_utility_target_ready: `True`
+- delta_residual_probe_ran: `True`
+- delta_residual_probe_passed: `False`
+- delta_objective_beats_standalone_objective: `False`
+- learned_gate_training_ran: `False`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- pointwise_baseline_dominates: `False`
+- residual_improves_over_pointwise_on_hard: `False`
+- residual_does_not_degrade_stable: `True`
+- semantic_gate_order_ok: `not_run`
+- strict_residual_subset_gain: `{'test': -0.005870908498764038, 'val': 0.0062751248478889465}`
+- delta_vs_standalone_gain: `{'test': -0.012585967779159546, 'val': 0.0020354464650154114}`
+- effective_units: `{'test': 9.238524436950684, 'val': 8.731688499450684}`
+- unit_dominant_instance_purity: `{'test': 0.6542441020887944, 'val': 0.6761903319136162}`
+- unit_semantic_purity: `{'test': 0.6074750231577231, 'val': 0.6253111926588906}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_delta_residual_objective`
