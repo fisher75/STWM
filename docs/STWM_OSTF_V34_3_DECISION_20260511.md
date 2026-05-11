@@ -1,0 +1,27 @@
+# STWM OSTF V34.3 Decision
+
+- v34_2_bottleneck_diagnosis_done: `True`
+- pointwise_unit_residual_model_built: `True`
+- fresh_training_completed: `True`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- hard_identity_ROC_AUC_val: `0.5260333811730094`
+- hard_identity_ROC_AUC_test: `0.5260328860177895`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': False, 'val': False}`
+- pointwise_baseline_dominates: `True`
+- residual_improves_over_pointwise_on_hard: `False`
+- residual_does_not_degrade_stable: `False`
+- semantic_residual_gate_mean_stable: `{'test': 1.8701155568123795e-05, 'val': 6.19423281023046e-06}`
+- semantic_residual_gate_mean_changed: `{'test': 1.2099844752810895e-05, 'val': 8.451043868262786e-06}`
+- semantic_residual_gate_mean_hard: `{'test': 1.3622136066260282e-05, 'val': 5.733866601076443e-06}`
+- effective_units: `{'test': 7.608475685119629, 'val': 7.500634670257568}`
+- unit_dominant_instance_purity: `{'test': 0.6702462181778621, 'val': 0.6932998848760031}`
+- unit_semantic_purity: `{'test': 0.6012305219048527, 'val': 0.6216647779451004}`
+- trace_units_better_than_pointwise: `False`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_residual_gate`
