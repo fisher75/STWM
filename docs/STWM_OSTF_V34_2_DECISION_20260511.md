@@ -1,0 +1,28 @@
+# STWM OSTF V34.2 Decision
+
+- v34_1_failure_attribution_done: `True`
+- dual_source_model_built: `True`
+- permutation_aware_binding_active: `True`
+- real_pointwise_no_unit_baseline_built: `True`
+- fresh_training_completed: `True`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- z_dyn_source_is_trace_dynamics: `True`
+- z_sem_source_is_semantic_measurement: `True`
+- z_dyn_z_sem_factorization_real: `True`
+- hard_identity_ROC_AUC_val: `0.5331091797304722`
+- hard_identity_ROC_AUC_test: `0.5187139376210373`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': False, 'val': False}`
+- effective_units: `{'test': 7.585440635681152, 'val': 7.115945816040039}`
+- unit_dominant_instance_purity: `{'test': 0.6751347717227039, 'val': 0.6846722219878725}`
+- unit_semantic_purity: `{'test': 0.6122333158157164, 'val': 0.6356799926985212}`
+- units_load_bearing: `True`
+- semantic_measurements_load_bearing: `True`
+- trace_units_better_than_pointwise: `False`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_dual_source_unit_architecture`

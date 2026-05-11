@@ -1,0 +1,24 @@
+# STWM OSTF V34.2 Dual-Source Semantic Trace Units Eval Decision
+
+- fresh_training_completed: `True`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- z_dyn_source_is_trace_dynamics: `True`
+- z_sem_source_is_semantic_measurement: `True`
+- z_dyn_z_sem_factorization_real: `True`
+- permutation_aware_binding_active: `True`
+- real_pointwise_no_unit_baseline_built: `True`
+- hard_identity_ROC_AUC_val: `0.5331091797304722`
+- hard_identity_ROC_AUC_test: `0.5187139376210373`
+- semantic_hard_signal: `{'val': False, 'test': False}`
+- changed_semantic_signal: `{'val': False, 'test': False}`
+- stable_preservation: `{'val': False, 'test': False}`
+- effective_units: `{'val': 7.115945816040039, 'test': 7.585440635681152}`
+- unit_dominant_instance_purity: `{'val': 0.6846722219878725, 'test': 0.6751347717227039}`
+- unit_semantic_purity: `{'val': 0.6356799926985212, 'test': 0.6122333158157164}`
+- units_load_bearing: `True`
+- semantic_measurements_load_bearing: `True`
+- trace_units_better_than_pointwise: `False`
+- trajectory_degraded: `False`
+- pass_gate: `False`
+- exact_blocker: `unit_architecture`

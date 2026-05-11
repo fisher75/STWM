@@ -1,0 +1,231 @@
+{
+  "changed_semantic_signal": {
+    "test": false,
+    "val": false
+  },
+  "effective_units": {
+    "test": 7.585440635681152,
+    "val": 7.115945816040039
+  },
+  "exact_blocker": "unit_architecture",
+  "fresh_training_completed": true,
+  "future_leakage_detected": false,
+  "generated_at_utc": "2026-05-11T09:16:30.933886+00:00",
+  "hard_identity_ROC_AUC_test": 0.5187139376210373,
+  "hard_identity_ROC_AUC_val": 0.5331091797304722,
+  "intervention_summary": {
+    "test": {
+      "drop_identity_key": {
+        "identity_output_delta_vs_normal": 2.789289951324463,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.0037216558686329337,
+          "teacher_top5": -5.956452567423831e-05
+        },
+        "semantic_output_delta_vs_normal": 0.002796800807118416
+      },
+      "drop_unit_confidence": {
+        "identity_output_delta_vs_normal": 0.0,
+        "metric_delta_vs_normal": {
+          "identity_auc": 0.0,
+          "teacher_top5": 0.0
+        },
+        "semantic_output_delta_vs_normal": -4.166303213537503e-08
+      },
+      "drop_z_dyn": {
+        "identity_output_delta_vs_normal": 0.15113428235054016,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.00012087812332695069,
+          "teacher_top5": -3.842872624143512e-06
+        },
+        "semantic_output_delta_vs_normal": 0.0021354148630052805
+      },
+      "drop_z_sem": {
+        "identity_output_delta_vs_normal": 3.9353604316711426,
+        "metric_delta_vs_normal": {
+          "identity_auc": 0.00012918207933565462,
+          "teacher_top5": -0.04673701685483933
+        },
+        "semantic_output_delta_vs_normal": 0.3853381276130676
+      },
+      "permute_unit_assignment": {
+        "identity_output_delta_vs_normal": 4.809267044067383,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.01685933878536483,
+          "teacher_top5": -0.0697135522745963
+        },
+        "semantic_output_delta_vs_normal": 0.22114111483097076
+      },
+      "randomize_units": {
+        "identity_output_delta_vs_normal": 5.724383354187012,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.013942885324485066,
+          "teacher_top5": -0.07936492687013397
+        },
+        "semantic_output_delta_vs_normal": 0.7097620368003845
+      },
+      "shuffle_observed_semantic_measurements_across_points": {
+        "identity_output_delta_vs_normal": 3.654845714569092,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.008629518160284233,
+          "teacher_top5": -0.060740444697220064
+        },
+        "semantic_output_delta_vs_normal": 0.13542333245277405
+      },
+      "shuffle_observed_semantic_measurements_across_samples": {
+        "identity_output_delta_vs_normal": 5.313961982727051,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.004952401054229116,
+          "teacher_top5": -0.05559868112611538
+        },
+        "semantic_output_delta_vs_normal": 0.3829163610935211
+      },
+      "uniform_unit_assignment": {
+        "identity_output_delta_vs_normal": 4.569741725921631,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.009593108853401144,
+          "teacher_top5": -0.057666146597904866
+        },
+        "semantic_output_delta_vs_normal": 0.13054968416690826
+      },
+      "zero_observed_semantic_measurements": {
+        "identity_output_delta_vs_normal": 5.65403938293457,
+        "metric_delta_vs_normal": {
+          "identity_auc": 0.0017319456257558485,
+          "teacher_top5": -0.03759098000937661
+        },
+        "semantic_output_delta_vs_normal": 0.5149896144866943
+      }
+    },
+    "val": {
+      "drop_identity_key": {
+        "identity_output_delta_vs_normal": 2.748511791229248,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.003223511747039054,
+          "teacher_top5": -0.002830303055640332
+        },
+        "semantic_output_delta_vs_normal": 0.0029483656398952007
+      },
+      "drop_unit_confidence": {
+        "identity_output_delta_vs_normal": 0.0,
+        "metric_delta_vs_normal": {
+          "identity_auc": 0.0,
+          "teacher_top5": 0.0
+        },
+        "semantic_output_delta_vs_normal": -4.179394608172515e-08
+      },
+      "drop_z_dyn": {
+        "identity_output_delta_vs_normal": 0.15910497307777405,
+        "metric_delta_vs_normal": {
+          "identity_auc": 0.00013502068084314534,
+          "teacher_top5": -0.0004264267528438781
+        },
+        "semantic_output_delta_vs_normal": 0.0022472278214991093
+      },
+      "drop_z_sem": {
+        "identity_output_delta_vs_normal": 4.252246856689453,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.01757732614222829,
+          "teacher_top5": -0.04854157869872949
+        },
+        "semantic_output_delta_vs_normal": 0.37411004304885864
+      },
+      "permute_unit_assignment": {
+        "identity_output_delta_vs_normal": 5.37966251373291,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.02655066164862141,
+          "teacher_top5": -0.08516411159002829
+        },
+        "semantic_output_delta_vs_normal": 0.25943347811698914
+      },
+      "randomize_units": {
+        "identity_output_delta_vs_normal": 6.080435276031494,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.03120537020252645,
+          "teacher_top5": -0.08894760385790791
+        },
+        "semantic_output_delta_vs_normal": 0.7139792442321777
+      },
+      "shuffle_observed_semantic_measurements_across_points": {
+        "identity_output_delta_vs_normal": 3.716320037841797,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.02191496355837763,
+          "teacher_top5": -0.07109202874617992
+        },
+        "semantic_output_delta_vs_normal": 0.15385350584983826
+      },
+      "shuffle_observed_semantic_measurements_across_samples": {
+        "identity_output_delta_vs_normal": 5.478915691375732,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.02386847862493091,
+          "teacher_top5": -0.06184024047124337
+        },
+        "semantic_output_delta_vs_normal": 0.42116886377334595
+      },
+      "uniform_unit_assignment": {
+        "identity_output_delta_vs_normal": 4.760676860809326,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.02706834550552062,
+          "teacher_top5": -0.06280179099236194
+        },
+        "semantic_output_delta_vs_normal": 0.15904679894447327
+      },
+      "zero_observed_semantic_measurements": {
+        "identity_output_delta_vs_normal": 5.596773147583008,
+        "metric_delta_vs_normal": {
+          "identity_auc": -0.02697625803967485,
+          "teacher_top5": -0.04245454583460495
+        },
+        "semantic_output_delta_vs_normal": 0.5210517644882202
+      }
+    }
+  },
+  "pass_gate": false,
+  "permutation_aware_binding_active": true,
+  "pointwise_comparison": {
+    "pointwise_no_unit_baseline_dominates": true,
+    "test": {
+      "changed_semantic_signal_pointwise": false,
+      "changed_semantic_signal_v34_2": false,
+      "identity_auc_delta": -0.0029437424466478568,
+      "semantic_hard_signal_pointwise": false,
+      "semantic_hard_signal_v34_2": false,
+      "teacher_top5_delta": -0.15482357371782557
+    },
+    "trace_units_better_than_pointwise": false,
+    "val": {
+      "changed_semantic_signal_pointwise": false,
+      "changed_semantic_signal_v34_2": false,
+      "identity_auc_delta": -0.0009517153988686244,
+      "semantic_hard_signal_pointwise": false,
+      "semantic_hard_signal_v34_2": false,
+      "teacher_top5_delta": -0.15025690121531626
+    }
+  },
+  "pointwise_no_unit_baseline_dominates": true,
+  "real_pointwise_no_unit_baseline_built": true,
+  "semantic_hard_signal": {
+    "test": false,
+    "val": false
+  },
+  "semantic_measurements_load_bearing": true,
+  "stable_preservation": {
+    "test": false,
+    "val": false
+  },
+  "teacher_as_method": false,
+  "trace_units_better_than_pointwise": false,
+  "trajectory_degraded": false,
+  "unit_dominant_instance_purity": {
+    "test": 0.6751347717227039,
+    "val": 0.6846722219878725
+  },
+  "unit_semantic_purity": {
+    "test": 0.6122333158157164,
+    "val": 0.6356799926985212
+  },
+  "units_load_bearing": true,
+  "v30_backbone_frozen": true,
+  "z_dyn_source_is_trace_dynamics": true,
+  "z_dyn_z_sem_factorization_real": true,
+  "z_sem_source_is_semantic_measurement": true
+}
