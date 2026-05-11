@@ -1,0 +1,231 @@
+{
+  "decision": {
+    "beats_v34_identity_or_semantic": true,
+    "changed_semantic_signal": {
+      "test": false,
+      "val": false
+    },
+    "effective_units": {
+      "test": 8.853569030761719,
+      "val": 8.181489944458008
+    },
+    "fresh_training_completed": true,
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-11T07:03:57.371723+00:00",
+    "hard_identity_ROC_AUC_test": 0.505021509703979,
+    "hard_identity_ROC_AUC_val": 0.5312977960604519,
+    "outputs_future_semantic_field": true,
+    "outputs_future_trace_field": true,
+    "pass_gate": true,
+    "pointwise_no_unit_baseline_dominates": false,
+    "semantic_hard_signal": {
+      "test": false,
+      "val": false
+    },
+    "semantic_measurements_load_bearing": true,
+    "stable_preservation": {
+      "test": false,
+      "val": false
+    },
+    "teacher_as_method": false,
+    "trace_conditioned_semantic_units_active": true,
+    "trace_units_better_than_pointwise": false,
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6269956498515774,
+      "val": 0.6526509972727901
+    },
+    "unit_intervention_delta": {
+      "test": {
+        "drop_z_sem": {
+          "semantic_output_delta_vs_normal": 0.45626041293144226
+        },
+        "permute_unit_assignment": {
+          "semantic_output_delta_vs_normal": 0.07802582532167435
+        },
+        "uniform_unit_assignment": {
+          "semantic_output_delta_vs_normal": 0.06624019891023636
+        },
+        "zero_observed_semantic_measurements": {
+          "semantic_output_delta_vs_normal": 0.4151245653629303
+        }
+      },
+      "val": {
+        "drop_z_sem": {
+          "semantic_output_delta_vs_normal": 0.540503978729248
+        },
+        "permute_unit_assignment": {
+          "semantic_output_delta_vs_normal": 0.13304489850997925
+        },
+        "uniform_unit_assignment": {
+          "semantic_output_delta_vs_normal": 0.11534896492958069
+        },
+        "zero_observed_semantic_measurements": {
+          "semantic_output_delta_vs_normal": 0.510238766670227
+        }
+      }
+    },
+    "unit_semantic_purity": {
+      "test": 0.5460408933407416,
+      "val": 0.5857040077034978
+    },
+    "units_load_bearing": true,
+    "v30_backbone_frozen": true
+  },
+  "generated_at_utc": "2026-05-11T07:03:57.371755+00:00",
+  "interventions": {
+    "test": {
+      "drop_z_sem": {
+        "semantic_output_delta_vs_normal": 0.45626041293144226
+      },
+      "permute_unit_assignment": {
+        "semantic_output_delta_vs_normal": 0.07802582532167435
+      },
+      "uniform_unit_assignment": {
+        "semantic_output_delta_vs_normal": 0.06624019891023636
+      },
+      "zero_observed_semantic_measurements": {
+        "semantic_output_delta_vs_normal": 0.4151245653629303
+      }
+    },
+    "val": {
+      "drop_z_sem": {
+        "semantic_output_delta_vs_normal": 0.540503978729248
+      },
+      "permute_unit_assignment": {
+        "semantic_output_delta_vs_normal": 0.13304489850997925
+      },
+      "uniform_unit_assignment": {
+        "semantic_output_delta_vs_normal": 0.11534896492958069
+      },
+      "zero_observed_semantic_measurements": {
+        "semantic_output_delta_vs_normal": 0.510238766670227
+      }
+    }
+  },
+  "old_v34_decision": {
+    "changed_semantic_signal": {
+      "test": false,
+      "val": false
+    },
+    "fresh_training_completed": true,
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-10T19:15:49.910064+00:00",
+    "hard_identity_ROC_AUC_test": 0.5064541532790253,
+    "hard_identity_ROC_AUC_val": 0.5231244351177312,
+    "integrated_identity_field_claim_allowed": false,
+    "integrated_semantic_field_claim_allowed": false,
+    "outputs_future_semantic_field": true,
+    "outputs_future_trace_field": true,
+    "recommended_next_step": "fix_semantic_trace_unit_losses",
+    "semantic_belief_consistency": {
+      "test": 0.9986651539802551,
+      "val": 0.9988549947738647
+    },
+    "semantic_measurement_bank_built": true,
+    "semantic_uncertainty_quality": {
+      "test": 0.01596854579990764,
+      "val": -0.08276372610716996
+    },
+    "stable_preservation": {
+      "test": false,
+      "val": false
+    },
+    "teacher_as_method": false,
+    "teacher_target_route_diagnostic_only": true,
+    "trace_conditioned_semantic_units_built": true,
+    "trajectory_degraded": false,
+    "v30_backbone_frozen": true,
+    "visualization_ready": true
+  },
+  "per_split": {
+    "test": {
+      "assignment_entropy": 0.7108733654022217,
+      "changed_copy_cosine": 0.3497981131076813,
+      "changed_model_cosine": 0.26959893107414246,
+      "changed_semantic_signal": false,
+      "effective_units": 8.853569030761719,
+      "hard_identity_ROC_AUC": 0.505021509703979,
+      "identity_retrieval_exclude_same_point_top1": 0.7305034474937192,
+      "identity_retrieval_instance_pooled_top1": 0.0,
+      "identity_retrieval_same_frame_top1": 0.7284139991119364,
+      "semantic_belief_consistency": 0.9631966948509216,
+      "semantic_hard_copy_cosine": 0.5209877490997314,
+      "semantic_hard_model_cosine": 0.2880987226963043,
+      "semantic_hard_signal": false,
+      "semantic_uncertainty_quality": 0.2440329023097722,
+      "stable_copy_cosine": 0.8961519002914429,
+      "stable_model_cosine": 0.28137335181236267,
+      "stable_preservation": false,
+      "teacher_agreement_weighted_top5": 0.18397368400826986,
+      "trajectory_degraded": false,
+      "unit_dominant_instance_purity": 0.6269956498515774,
+      "unit_semantic_purity": 0.5460408933407416,
+      "unit_usage_histogram": [
+        0.39878565073013306,
+        0.12892310321331024,
+        0.0582822747528553,
+        0.05006958171725273,
+        0.047084741294384,
+        0.047553323209285736,
+        0.04760138317942619,
+        0.03826840966939926,
+        0.03506716713309288,
+        0.03367157280445099,
+        0.027265867218375206,
+        0.023264072835445404,
+        0.01998640038073063,
+        0.01619725301861763,
+        0.015090929344296455,
+        0.012888346798717976
+      ],
+      "val_calibrated_balanced_accuracy": 0.5011488872813923,
+      "visibility_AUROC": 0.5866848871534883,
+      "visibility_F1": 0.8583454003898842
+    },
+    "val": {
+      "assignment_entropy": 0.6646386384963989,
+      "changed_copy_cosine": 0.34274667501449585,
+      "changed_model_cosine": 0.2826416790485382,
+      "changed_semantic_signal": false,
+      "effective_units": 8.181489944458008,
+      "hard_identity_ROC_AUC": 0.5312977960604519,
+      "identity_retrieval_exclude_same_point_top1": 0.7833479022807025,
+      "identity_retrieval_instance_pooled_top1": 0.0,
+      "identity_retrieval_same_frame_top1": 0.7813384861830851,
+      "semantic_belief_consistency": 0.9662138819694519,
+      "semantic_hard_copy_cosine": 0.5267162919044495,
+      "semantic_hard_model_cosine": 0.31347477436065674,
+      "semantic_hard_signal": false,
+      "semantic_uncertainty_quality": 0.30189847260591535,
+      "stable_copy_cosine": 0.9000649452209473,
+      "stable_model_cosine": 0.3448939919471741,
+      "stable_preservation": false,
+      "teacher_agreement_weighted_top5": 0.17157405820307112,
+      "trajectory_degraded": false,
+      "unit_dominant_instance_purity": 0.6526509972727901,
+      "unit_semantic_purity": 0.5857040077034978,
+      "unit_usage_histogram": [
+        0.4270164966583252,
+        0.13426919281482697,
+        0.05423266068100929,
+        0.047441355884075165,
+        0.042912233620882034,
+        0.04401971027255058,
+        0.04252946749329567,
+        0.033809635788202286,
+        0.03117259033024311,
+        0.030107907950878143,
+        0.02423112466931343,
+        0.023532213643193245,
+        0.01949918456375599,
+        0.017896147444844246,
+        0.014910767786204815,
+        0.012419257313013077
+      ],
+      "val_calibrated_balanced_accuracy": 0.5046528754100555,
+      "visibility_AUROC": 0.5976159586025418,
+      "visibility_F1": 0.8755469903861464
+    }
+  }
+}

@@ -1,0 +1,24 @@
+# STWM OSTF V34.1 Decision
+
+- v34_forensics_done: `True`
+- units_load_bearing: `True`
+- semantic_measurements_load_bearing: `True`
+- trace_units_better_than_pointwise: `False`
+- unit_identity_binding_targets_built: `True`
+- identity_bound_model_built: `True`
+- fresh_training_completed: `True`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- hard_identity_ROC_AUC_val: `0.5312977960604519`
+- hard_identity_ROC_AUC_test: `0.505021509703979`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': False, 'val': False}`
+- effective_units: `{'test': 8.853569030761719, 'val': 8.181489944458008}`
+- unit_dominant_instance_purity: `{'test': 0.6269956498515774, 'val': 0.6526509972727901}`
+- unit_semantic_purity: `{'test': 0.5460408933407416, 'val': 0.5857040077034978}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_semantic_trace_unit_losses`
