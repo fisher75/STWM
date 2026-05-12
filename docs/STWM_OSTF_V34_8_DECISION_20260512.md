@@ -1,0 +1,31 @@
+# V34.8 final decision 中文报告
+
+- 中文结论: `V34.8 完成 artifact、causal target、causal assignment-bound residual oracle probe、gate 跳过/评估、可视化与最终决策；不声明 semantic field success。`
+- artifact_packaging_truly_fixed: `True`
+- causal_assignment_targets_built: `True`
+- causal_assignment_target_ready: `True`
+- causal_assignment_model_built: `True`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- pointwise_baseline_dominates: `False`
+- causal_assignment_subset_gain: `{'test': 0.00384720336898126, 'val': 0.043090869534747264}`
+- strict_residual_subset_gain: `{'test': 6.0504733777434026e-05, 'val': 0.000901182881838063}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- semantic_gate_order_ok: `not_run`
+- effective_units: `{'test': 12.49112426035503, 'val': 11.226666666666667}`
+- unit_dominant_instance_purity: `{'test': 0.6534637459031047, 'val': 0.6776405521928814}`
+- unit_semantic_purity: `{'test': 0.8428012268673659, 'val': 0.8587648262337755}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_semantic_measurement_bank`

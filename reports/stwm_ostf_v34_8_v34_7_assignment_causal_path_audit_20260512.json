@@ -1,0 +1,46 @@
+{
+  "artifact_packaging_truly_fixed": true,
+  "assignment_delta_by_split": {
+    "test": -0.00010579824447631836,
+    "val": 0.00506514310836792
+  },
+  "assignment_path_causally_load_bearing": false,
+  "assignment_path_formally_present": true,
+  "assignment_shortcut_suspected": true,
+  "assignment_target_json_missing": false,
+  "checked_files": [
+    "reports/stwm_ostf_v34_7_decision_20260511.json",
+    "reports/stwm_ostf_v34_7_assignment_oracle_residual_probe_decision_20260511.json",
+    "reports/stwm_ostf_v34_7_assignment_oracle_residual_probe_eval_summary_20260511.json",
+    "reports/stwm_ostf_v34_7_v34_6_assignment_and_artifact_audit_20260511.json",
+    "docs/STWM_OSTF_V34_7_ASSIGNMENT_AWARE_RESIDUAL_TARGET_BUILD_20260511.md",
+    "docs/STWM_OSTF_V34_7_ASSIGNMENT_RESIDUAL_VISUALIZATION_20260511.md",
+    "code/stwm/modules/ostf_v34_7_assignment_bound_residual_memory.py",
+    "code/stwm/tools/build_ostf_v34_7_assignment_aware_residual_targets_20260511.py",
+    "code/stwm/tools/eval_ostf_v34_7_assignment_oracle_residual_probe_20260511.py"
+  ],
+  "exact_code_locations": {
+    "eval_interventions": "code/stwm/tools/eval_ostf_v34_7_assignment_oracle_residual_probe_20260511.py: shuffled_assignment / zero_semantic_measurements",
+    "formal_assignment_path": "code/stwm/modules/ostf_v34_7_assignment_bound_residual_memory.py: assignment_bound_residual = torch.einsum(\"bmu,buhd->bmhd\", assign, unit_residual_memory)",
+    "target_too_broad": "code/stwm/tools/build_ostf_v34_7_assignment_aware_residual_targets_20260511.py: point_pos = strict & point_ok[:, None]"
+  },
+  "generated_at_utc": "2026-05-12T11:43:04.857664+00:00",
+  "recommended_fix": "\u6784\u5efa\u66f4\u4e25\u683c\u7684 causal assignment residual targets\uff0c\u5e76\u91cd\u5199 residual memory\uff0c\u7981\u6b62 pointwise/global shortcut\uff1b\u5148\u8dd1 oracle probe\uff0c\u4e0d\u5141\u8bb8\u5148\u8bad\u7ec3 learned gate\u3002",
+  "semantic_measurement_causally_load_bearing": false,
+  "semantic_shortcut_suspected": true,
+  "target_distribution_mismatch": true,
+  "target_positive_ratio_by_split": {
+    "test": 0.446871196193427,
+    "train": 0.914088491166895,
+    "val": 0.5454133635334089
+  },
+  "target_positive_ratio_too_broad": true,
+  "visualization_json_missing": false,
+  "why_assignment_load_bearing_false": "shuffle assignment \u5728 test \u4e0a\u6ca1\u6709\u6b63\u5411\u7834\u574f residual gain\uff0c\u8bf4\u660e assignment \u4e0d\u662f\u7a33\u5b9a\u56e0\u679c\u74f6\u9888\u3002",
+  "why_semantic_measurement_load_bearing_false": "zero/shuffle semantic measurement \u5bf9 V34.7 residual metric \u7684\u5f71\u54cd\u4e0d\u7a33\u5b9a\uff0ctest \u672a\u8fbe\u9608\u503c\u3002",
+  "zero_semantic_measurement_delta_by_split": {
+    "test": 0.00026883184909820557,
+    "val": 0.0015687346458435059
+  },
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.7 \u7684 assignment \u5f62\u5f0f\u8def\u5f84\u5b58\u5728\uff0c\u4f46\u56e0\u679c load-bearing \u672a\u6210\u7acb\uff1btarget \u6b63\u6837\u672c\u8fc7\u5bbd\uff0csemantic measurement \u4e0e assignment intervention \u5728 test \u4e0a\u4e0d\u8db3\u3002"
+}

@@ -1,0 +1,21 @@
+# V34.8 causal assignment oracle residual probe 决策中文报告
+
+- 中文结论: `V34.8 oracle residual probe 已评估；仅当 assignment 与 semantic measurement 都 causally load-bearing 且 val/test 增益超过 V34.7 才允许 learned gate。`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'val': False, 'test': False}`
+- changed_semantic_signal: `{'val': False, 'test': False}`
+- stable_preservation: `{'val': True, 'test': True}`
+- causal_assignment_subset_gain: `{'val': 0.043090869534747264, 'test': 0.00384720336898126}`
+- strict_residual_subset_gain: `{'val': 0.000901182881838063, 'test': 6.0504733777434026e-05}`
+- v34_7_assignment_aware_subset_gain: `{'val': 0.016128763556480408, 'test': 0.0048899054527282715}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- effective_units: `{'val': 11.226666666666667, 'test': 12.49112426035503}`
+- unit_dominant_instance_purity: `{'val': 0.6776405521928814, 'test': 0.6534637459031047}`
+- unit_semantic_purity: `{'val': 0.8587648262337755, 'test': 0.8428012268673659}`
+- recommended_next_step: `fix_assignment_bound_residual_model`
