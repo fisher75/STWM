@@ -1,0 +1,31 @@
+# V34.9 final decision 中文报告
+
+- 中文结论: `V34.9 修复了 measurement bank 的 trace state contract，并重跑最小 causal residual probe；不声明 semantic field success。`
+- state_contract_audit_done: `True`
+- obs_points_zero_detected: `True`
+- trace_state_contract_repaired: `True`
+- trace_preserving_measurement_bank_built: `True`
+- causal_assignment_targets_built: `True`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- trace_state_contract_passed: `True`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- causal_assignment_subset_gain: `{'test': 0.013288085043926444, 'val': 0.027934987087304408}`
+- strict_residual_subset_gain: `{'test': 0.0007728833440949699, 'val': 0.002208224131323878}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `False`
+- effective_units: `{'test': 12.14792899408284, 'val': 11.2}`
+- unit_dominant_instance_purity: `{'test': 0.6637957940056851, 'val': 0.6813151390975711}`
+- unit_semantic_purity: `{'test': 0.8420098765821902, 'val': 0.856091326819002}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_semantic_measurement_bank`

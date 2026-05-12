@@ -1,0 +1,21 @@
+# V34.9 trace-fixed oracle residual probe 决策中文报告
+
+- 中文结论: `V34.9 trace-fixed oracle residual probe 已评估；只有 trace contract、semantic measurement 与 assignment 均通过才允许 learned gate。`
+- trace_state_contract_passed: `True`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- causal_assignment_subset_gain: `{'test': 0.013288085043926444, 'val': 0.027934987087304408}`
+- strict_residual_subset_gain: `{'test': 0.0007728833440949699, 'val': 0.002208224131323878}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `False`
+- effective_units: `{'test': 12.14792899408284, 'val': 11.2}`
+- unit_dominant_instance_purity: `{'test': 0.6637957940056851, 'val': 0.6813151390975711}`
+- unit_semantic_purity: `{'test': 0.8420098765821902, 'val': 0.856091326819002}`
+- recommended_next_step: `fix_assignment_bound_residual_model`
