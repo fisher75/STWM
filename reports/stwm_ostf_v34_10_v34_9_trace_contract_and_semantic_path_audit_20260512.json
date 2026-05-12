@@ -1,0 +1,42 @@
+{
+  "assignment_contrast_loss_inactive": true,
+  "assignment_contrastive_loss_stats": {
+    "first": -0.0,
+    "inactive": true,
+    "last": 0.0,
+    "mean": 0.0
+  },
+  "checked_files": {
+    "model": "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py",
+    "v34_8_eval": "code/stwm/tools/eval_ostf_v34_8_causal_assignment_oracle_residual_probe_20260512.py",
+    "v34_8_train": "code/stwm/tools/train_ostf_v34_8_causal_assignment_oracle_residual_probe_20260512.py",
+    "v34_9_bank_builder": "code/stwm/tools/build_ostf_v34_9_trace_preserving_semantic_measurement_bank_20260512.py",
+    "v34_9_eval": "code/stwm/tools/eval_ostf_v34_9_trace_fixed_causal_assignment_oracle_residual_probe_20260512.py",
+    "v34_9_target_builder": "code/stwm/tools/build_ostf_v34_9_causal_assignment_residual_targets_20260512.py",
+    "v34_9_train": "code/stwm/tools/train_ostf_v34_9_trace_fixed_causal_assignment_oracle_residual_probe_20260512.py"
+  },
+  "exact_code_locations": {
+    "bad_dataset_substitution": "code/stwm/tools/train_ostf_v34_8_causal_assignment_oracle_residual_probe_20260512.py: obs_conf = np.asarray(zm['obs_measurement_confidence'])",
+    "normal_cos_detached": "code/stwm/tools/train_ostf_v34_8_causal_assignment_oracle_residual_probe_20260512.py: normal_cos = ...detach()",
+    "real_obs_conf_saved": "code/stwm/tools/build_ostf_v34_9_trace_preserving_semantic_measurement_bank_20260512.py: obs_conf=np.asarray(tr['obs_conf'])",
+    "v34_9_reuses_v34_8_dataset": "code/stwm/tools/train_ostf_v34_9_trace_fixed_causal_assignment_oracle_residual_probe_20260512.py imports train_ostf_v34_8... as v348"
+  },
+  "generated_at_utc": "2026-05-12T16:10:01.612352+00:00",
+  "measurement_bank_obs_conf_real": true,
+  "measurement_bank_obs_points_real": true,
+  "measurement_bank_obs_vis_real": true,
+  "obs_conf_semantic_confidence_substitution_detected": true,
+  "recommended_fix": "\u65b0\u589e V34.10 dataset\uff0c\u660e\u786e\u8bfb\u53d6 zm['obs_conf'] \u4e3a trace_obs_conf\uff1b\u4fdd\u7559 semantic_measurement_confidence \u72ec\u7acb\u5b57\u6bb5\uff1busage/assignment contrast loss \u53ea detach \u5bf9\u7167\u5206\u652f\uff0c\u4e0d detach normal path\u3002",
+  "semantic_measurement_usage_loss_stats": {
+    "first": -0.0,
+    "inactive": true,
+    "last": 0.0,
+    "mean": 0.0
+  },
+  "semantic_usage_loss_inactive": true,
+  "trace_state_contract_fully_passed": false,
+  "train_dataset_uses_real_obs_conf": false,
+  "v34_9_measurement_report_json_missing": false,
+  "v34_9_target_report_json_missing": false,
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.9 bank \u5df2\u4fdd\u5b58\u771f\u5b9e trace state\uff0c\u4f46 V34.9 probe \u4ecd\u590d\u7528 V34.8 dataset\uff0c\u5b9e\u9645\u8bad\u7ec3\u628a semantic confidence \u5f53\u6210 obs_conf\uff0c\u4e14 usage/assignment contrast loss \u672a\u6fc0\u6d3b\u3002"
+}

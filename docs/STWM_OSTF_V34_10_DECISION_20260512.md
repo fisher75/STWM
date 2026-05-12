@@ -1,0 +1,30 @@
+# V34.10 final decision 中文报告
+
+- 中文结论: `V34.10 完成 trace-state contract 二次修复和 usage/assignment loss 激活后重跑 oracle probe；不声明 semantic field success。`
+- trace_contract_audit_done: `True`
+- trace_state_contract_fully_passed: `True`
+- train_dataset_uses_real_obs_conf: `True`
+- semantic_usage_loss_active: `True`
+- assignment_contrast_loss_active: `True`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- causal_assignment_subset_gain: `{'test': 0.005760931203254763, 'val': 0.01452489363771455}`
+- strict_residual_subset_gain: `{'test': 0.0003350765466083266, 'val': 0.0011481737181482426}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `False`
+- effective_units: `{'test': 12.106508875739644, 'val': 11.12}`
+- unit_dominant_instance_purity: `{'test': 0.6624995859912506, 'val': 0.6716332117018896}`
+- unit_semantic_purity: `{'test': 0.8417169669004548, 'val': 0.8513259448416346}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_semantic_measurement_bank`
