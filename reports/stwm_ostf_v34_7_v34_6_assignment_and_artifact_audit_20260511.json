@@ -1,0 +1,50 @@
+{
+  "ablation_json_missing": false,
+  "artifact_packaging_fixed_required": false,
+  "assignment_load_bearing_on_residual_from_v34_6": false,
+  "assignment_not_load_bearing_confirmed": true,
+  "assignment_vs_normal_residual_gain_delta": {
+    "normal": {
+      "test": 0.016661137342453003,
+      "val": 0.027522452175617218
+    },
+    "shuffled_assignment": {
+      "test": 0.016260474920272827,
+      "val": 0.0260453000664711
+    }
+  },
+  "checked_files": [
+    "reports/stwm_ostf_v34_6_decision_20260511.json",
+    "reports/stwm_ostf_v34_6_residual_parameterization_decision_20260511.json",
+    "reports/stwm_ostf_v34_6_residual_parameterization_eval_summary_20260511.json",
+    "reports/stwm_ostf_v34_6_residual_parameterization_train_summary_20260511.json",
+    "docs/STWM_OSTF_V34_6_REAL_RESIDUAL_CONTENT_ABLATION_20260511.md",
+    "docs/STWM_OSTF_V34_6_RESIDUAL_PARAMETERIZATION_VISUALIZATION_20260511.md",
+    "code/stwm/tools/eval_ostf_v34_6_real_residual_content_ablation_20260511.py",
+    "code/stwm/tools/render_ostf_v34_6_residual_parameterization_visualizations_20260511.py"
+  ],
+  "current_residual_effectively_global_or_pointwise_suspected": true,
+  "decision_depends_on_missing_ablation_json": false,
+  "exact_code_locations": {
+    "ablation_assignment_intervention": "code/stwm/tools/eval_ostf_v34_6_real_residual_content_ablation_20260511.py: residual_with_shuffled_unit_assignment",
+    "v34_6_decision_assignment_field": "reports/stwm_ostf_v34_6_decision_20260511.json: assignment_load_bearing_on_residual",
+    "v34_6_model_point_residual": "code/stwm/modules/ostf_v34_3_pointwise_unit_residual_world_model.py: semantic_residual_head(unit_hidden)"
+  },
+  "exact_evidence": {
+    "assignment_vs_shuffled_test": 0.0004006624221801758,
+    "assignment_vs_shuffled_val": 0.0014771521091461182,
+    "normal_test": 0.016661137342453003,
+    "normal_val": 0.027522452175617218,
+    "shuffled_test": 0.016260474920272827,
+    "shuffled_val": 0.0260453000664711
+  },
+  "generated_at_utc": "2026-05-12T08:54:32.839991+00:00",
+  "recommended_fix": "Build assignment-aware residual targets and force residual readout through unit memories mixed by point_to_unit_assignment before any learned gate training.",
+  "shuffled_assignment_delta": {
+    "test": 0.0004006624221801758,
+    "val": 0.0014771521091461182
+  },
+  "unit_memory_gain_could_be_produced_without_meaningful_assignment": true,
+  "unit_memory_not_assignment_bound_suspected": true,
+  "visualization_json_missing": false
+}

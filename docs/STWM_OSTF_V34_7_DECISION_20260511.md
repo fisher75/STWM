@@ -1,0 +1,26 @@
+# STWM OSTF V34.7 Decision
+
+- artifact_packaging_fixed: `True`
+- assignment_aware_targets_built: `True`
+- assignment_aware_target_ready: `True`
+- assignment_bound_model_built: `True`
+- assignment_oracle_residual_probe_ran: `True`
+- assignment_oracle_residual_probe_passed: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- assignment_aware_subset_gain: `{'test': 0.0048899054527282715, 'val': 0.016128763556480408}`
+- strict_residual_subset_gain: `{'test': 0.0021851658821105957, 'val': 0.008796833455562592}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `False`
+- semantic_gate_order_ok: `not_run`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_assignment_bound_residual_model`
