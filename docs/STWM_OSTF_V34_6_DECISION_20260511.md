@@ -1,0 +1,28 @@
+# STWM OSTF V34.6 Decision
+
+- v34_5_residual_math_audit_done: `True`
+- best_residual_parameterization: `standalone_target_residual`
+- best_residual_init: `init_from_v34_4_standalone_residual_checkpoint`
+- residual_parameterization_passed: `True`
+- real_residual_content_ablation_done: `True`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `True`
+- assignment_load_bearing_on_residual: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': True}`
+- stable_preservation: `{'test': True, 'val': True}`
+- pointwise_baseline_dominates: `False`
+- residual_improves_over_pointwise_on_hard: `True`
+- residual_does_not_degrade_stable: `True`
+- strict_residual_subset_gain: `{'test': 0.016661137342453003, 'val': 0.027522452175617218}`
+- delta_vs_v34_4_standalone_gain: `{'test': 0.009946078062057495, 'val': 0.023282773792743683}`
+- semantic_gate_order_ok: `not_run`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_unit_memory_residual_content`

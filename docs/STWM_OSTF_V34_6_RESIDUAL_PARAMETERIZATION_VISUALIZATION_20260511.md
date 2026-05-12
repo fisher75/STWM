@@ -1,0 +1,10 @@
+# STWM OSTF V34.6 Residual Parameterization Visualization
+
+- real_images_rendered: `True`
+- case_mining_used: `True`
+- placeholder_only: `False`
+- png_count: `7`
+- visualization_ready: `True`
+- best_residual_parameterization: `standalone_target_residual`
+- best_residual_init: `init_from_v34_4_standalone_residual_checkpoint`
+- examples: `[{'category': 'true_vector_or_best_residual_success', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/00_true_vector_or_best_residual_success.png', 'case_selection_reason': 'mined_gain=0.4312; best_variant=standalone_target_residual'}, {'category': 'pointwise_wrong_best_residual_correct', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/01_pointwise_wrong_best_residual_correct.png', 'case_selection_reason': 'mined_gain=0.4312; best_variant=standalone_target_residual'}, {'category': 'pointwise_wrong_all_residuals_wrong', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/02_pointwise_wrong_all_residuals_wrong.png', 'case_selection_reason': 'mined_gain=-0.1833; best_variant=standalone_target_residual'}, {'category': 'stable_suppress_success', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/03_stable_suppress_success.png', 'case_selection_reason': 'mined_gain=0.0000; best_variant=standalone_target_residual'}, {'category': 'semantic_hard_success', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/04_semantic_hard_success.png', 'case_selection_reason': 'mined_gain=0.4139; best_variant=standalone_target_residual'}, {'category': 'semantic_hard_failure', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/05_semantic_hard_failure.png', 'case_selection_reason': 'mined_gain=-0.1664; best_variant=standalone_target_residual'}, {'category': 'm128_future_trace_residual_overlay', 'path': 'outputs/figures/stwm_ostf_v34_6_residual_parameterization/06_m128_future_trace_residual_overlay.png', 'case_selection_reason': 'mined_gain=0.4312; best_variant=standalone_target_residual'}]`

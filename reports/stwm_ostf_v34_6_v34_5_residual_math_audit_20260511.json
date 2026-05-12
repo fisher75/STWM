@@ -1,0 +1,42 @@
+{
+  "anti_base_correction_allowed": false,
+  "checked_files": [
+    "code/stwm/tools/train_ostf_v34_5_delta_residual_probe_20260511.py",
+    "code/stwm/tools/eval_ostf_v34_5_delta_residual_probe_20260511.py",
+    "code/stwm/tools/eval_ostf_v34_5_residual_content_ablation_20260511.py",
+    "code/stwm/modules/ostf_v34_3_pointwise_unit_residual_world_model.py",
+    "reports/stwm_ostf_v34_5_delta_residual_probe_decision_20260511.json",
+    "reports/stwm_ostf_v34_5_delta_residual_probe_eval_summary_20260511.json",
+    "reports/stwm_ostf_v34_5_decision_20260511.json",
+    "reports/stwm_ostf_v34_4_oracle_residual_probe_decision_20260511.json",
+    "docs/STWM_OSTF_V34_5_STRICT_RESIDUAL_UTILITY_TARGET_BUILD_20260511.md"
+  ],
+  "current_delta_can_subtract_wrong_base_component": false,
+  "current_delta_is_orthogonal_only": true,
+  "current_delta_target_type": "orthogonal_projection_only",
+  "exact_code_locations": {
+    "ablation_truth": "code/stwm/tools/eval_ostf_v34_5_residual_content_ablation_20260511.py",
+    "composition": "code/stwm/modules/ostf_v34_3_pointwise_unit_residual_world_model.py: final_sem = normalize(pointwise_semantic_belief + gate * unit_semantic_residual)",
+    "orthogonal_delta": "code/stwm/tools/train_ostf_v34_5_delta_residual_probe_20260511.py: delta = target_n - alpha * base_n",
+    "orthogonality": "code/stwm/tools/train_ostf_v34_5_delta_residual_probe_20260511.py: residual_orthogonality"
+  },
+  "generated_at_utc": "2026-05-12T05:35:23.982238+00:00",
+  "orthogonality_regularization_misaligned": true,
+  "orthogonality_regularization_prevents_anti_base_correction": true,
+  "recommended_fix": "Run a residual parameterization/capacity sweep, including true_vector_delta and v34_4 residual initialization, before any learned gate training.",
+  "recommended_residual_parameterizations": [
+    "standalone_target_residual",
+    "orthogonal_delta_residual",
+    "true_vector_delta_residual",
+    "scaled_tangent_delta_residual",
+    "mixture_residual"
+  ],
+  "residual_composition": "normalize(base + gate * residual)",
+  "residual_content_ablation_actually_ran_random_no_memory_shuffled": false,
+  "residual_content_ablation_not_real": true,
+  "strict_residual_target_json_missing_but_md_exists": false,
+  "true_vector_delta_missing": true,
+  "v34_4_residual_init_not_used": true,
+  "v34_5_starts_from_pointwise_init": true,
+  "v34_5_starts_from_v34_4_residual_init": false
+}
