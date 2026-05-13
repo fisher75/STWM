@@ -1,0 +1,97 @@
+{
+  "artifact_packaging_fixed": true,
+  "artifact_truth_audit_done": true,
+  "assignment_load_bearing_on_residual": false,
+  "audit_flags": {
+    "forward_gate_zero_by_default_v34_12": true,
+    "measurement_teacher_name_inconsistent": true,
+    "nonoracle_selector_json_missing": false,
+    "selector_is_fixed_heuristic_v34_12": true
+  },
+  "causal_assignment_subset_gain": {
+    "test": null,
+    "val": null
+  },
+  "changed_semantic_signal": {
+    "test": false,
+    "val": false
+  },
+  "effective_units": {
+    "test": null,
+    "val": null
+  },
+  "future_leakage_detected": false,
+  "generated_at_utc": "2026-05-13T07:46:06.399472+00:00",
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "learned_gate_passed": "not_run",
+  "learned_gate_training_ran": false,
+  "nonoracle_selector_built": true,
+  "nonoracle_selector_passed": false,
+  "oracle_residual_probe_passed": false,
+  "oracle_residual_probe_ran": false,
+  "pointwise_baseline_dominates": false,
+  "recommended_next_step": "fix_nonoracle_measurement_selector",
+  "selector_ablation_delta": {
+    "test": null,
+    "val": null
+  },
+  "selector_conditioned_encoder_built": true,
+  "selector_decision": {
+    "oracle_gap_to_selector_changed": {
+      "test": 0.2389155737474489,
+      "val": 0.20594463908048166
+    },
+    "oracle_gap_to_selector_hard": {
+      "test": 0.29993541381084626,
+      "val": 0.27253198629120323
+    },
+    "selector_beats_pointwise_on_changed": {
+      "test": false,
+      "val": false
+    },
+    "selector_beats_pointwise_on_hard": {
+      "test": false,
+      "val": false
+    },
+    "selector_beats_random": {
+      "test": true,
+      "val": true
+    },
+    "selector_was_trained": true
+  },
+  "semantic_hard_signal": {
+    "test": false,
+    "val": false
+  },
+  "semantic_measurements_load_bearing_on_residual": false,
+  "shuffle_semantic_measurements_metric_delta": {
+    "test": null,
+    "val": null
+  },
+  "stable_preservation": {
+    "test": null,
+    "val": null
+  },
+  "strict_residual_subset_gain": {
+    "test": null,
+    "val": null
+  },
+  "trajectory_degraded": false,
+  "unit_dominant_instance_purity": {
+    "test": null,
+    "val": null
+  },
+  "unit_memory_load_bearing_on_residual": false,
+  "unit_semantic_purity": {
+    "test": null,
+    "val": null
+  },
+  "v30_backbone_frozen": true,
+  "visualization_ready": true,
+  "zero_semantic_measurements_metric_delta": {
+    "test": null,
+    "val": null
+  },
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.13 \u5b8c\u6210 artifact/source truth \u5ba1\u8ba1\u3001\u8bad\u7ec3\u5f0f non-oracle selector\u3001selector-conditioned local evidence oracle probe \u4e0e\u53ef\u89c6\u5316\uff1b\u4ecd\u4e0d\u58f0\u660e semantic field success\u3002"
+}

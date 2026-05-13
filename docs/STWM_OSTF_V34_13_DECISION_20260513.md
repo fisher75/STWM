@@ -1,0 +1,27 @@
+# V34.13 final decision 中文报告
+
+- 中文结论: `V34.13 完成 artifact/source truth 审计、训练式 non-oracle selector、selector-conditioned local evidence oracle probe 与可视化；仍不声明 semantic field success。`
+- artifact_truth_audit_done: `True`
+- artifact_packaging_fixed: `True`
+- nonoracle_selector_built: `True`
+- nonoracle_selector_passed: `False`
+- selector_conditioned_encoder_built: `True`
+- oracle_residual_probe_ran: `False`
+- oracle_residual_probe_passed: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'val': False, 'test': False}`
+- changed_semantic_signal: `{'val': False, 'test': False}`
+- stable_preservation: `{'val': None, 'test': None}`
+- causal_assignment_subset_gain: `{'val': None, 'test': None}`
+- strict_residual_subset_gain: `{'val': None, 'test': None}`
+- unit_memory_load_bearing_on_residual: `False`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `False`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_nonoracle_measurement_selector`

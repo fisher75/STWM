@@ -1,0 +1,255 @@
+{
+  "artifact_rematerialization_json_missing": false,
+  "docs_present": {
+    "artifact_rematerialization_doc": true,
+    "nonoracle_selector_doc": true,
+    "visualization_doc": true
+  },
+  "exact_code_locations": {
+    "decision_dependencies": [
+      {
+        "code": "ART = ROOT / \"reports/stwm_ostf_v34_12_artifact_rematerialization_20260513.json\"",
+        "line": 16,
+        "path": "code/stwm/tools/write_ostf_v34_12_decision_20260513.py",
+        "pattern": "ART"
+      },
+      {
+        "code": "SELECTOR = ROOT / \"reports/stwm_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.json\"",
+        "line": 17,
+        "path": "code/stwm/tools/write_ostf_v34_12_decision_20260513.py",
+        "pattern": "SELECTOR"
+      },
+      {
+        "code": "VIS = ROOT / \"reports/stwm_ostf_v34_12_local_evidence_visualization_manifest_20260513.json\"",
+        "line": 20,
+        "path": "code/stwm/tools/write_ostf_v34_12_decision_20260513.py",
+        "pattern": "VIS"
+      },
+      {
+        "code": "art = load(ART)",
+        "line": 31,
+        "path": "code/stwm/tools/write_ostf_v34_12_decision_20260513.py",
+        "pattern": "ART"
+      },
+      {
+        "code": "selector = load(SELECTOR)",
+        "line": 32,
+        "path": "code/stwm/tools/write_ostf_v34_12_decision_20260513.py",
+        "pattern": "SELECTOR"
+      },
+      {
+        "code": "vis = load(VIS)",
+        "line": 35,
+        "path": "code/stwm/tools/write_ostf_v34_12_decision_20260513.py",
+        "pattern": "VIS"
+      }
+    ],
+    "forward_gate_zero": [
+      {
+        "code": "gate = torch.zeros_like(base[\"pointwise_identity_belief\"])",
+        "line": 140,
+        "path": "code/stwm/modules/ostf_v34_12_measurement_causal_residual_memory.py",
+        "pattern": "gate = torch\\.zeros_like"
+      },
+      {
+        "code": "if intervention == \"force_gate_one\":",
+        "line": 141,
+        "path": "code/stwm/modules/ostf_v34_12_measurement_causal_residual_memory.py",
+        "pattern": "force_gate_one"
+      }
+    ],
+    "oracle_mask_compose": [
+      {
+        "code": "def compose(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor]) -> torch.Tensor:",
+        "line": 93,
+        "path": "code/stwm/tools/train_ostf_v34_12_local_evidence_oracle_residual_probe_20260513.py",
+        "pattern": "def compose"
+      },
+      {
+        "code": "gate = batch[\"causal_assignment_residual_semantic_mask\"].float() * out[\"semantic_measurement_usage_score\"].float().clamp(0.0, 1.0)",
+        "line": 94,
+        "path": "code/stwm/tools/train_ostf_v34_12_local_evidence_oracle_residual_probe_20260513.py",
+        "pattern": "causal_assignment_residual_semantic_mask"
+      },
+      {
+        "code": "pos = batch[\"causal_assignment_residual_semantic_mask\"].bool() & valid",
+        "line": 115,
+        "path": "code/stwm/tools/train_ostf_v34_12_local_evidence_oracle_residual_probe_20260513.py",
+        "pattern": "causal_assignment_residual_semantic_mask"
+      }
+    ],
+    "selector_fixed_heuristic": [
+      {
+        "code": "\"fixed_mean_pooling\": mean,",
+        "line": 96,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_last_observed\": last_obs(obs, mask),",
+        "line": 97,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_max_confidence_pooling\": max_conf_obs(obs, mask, conf),",
+        "line": 98,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_teacher_agreement_weighted_pooling\": weighted_obs(obs, mask, conf, agree),",
+        "line": 99,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_instance_pooled_measurement\": instance_pool(mean, inst),",
+        "line": 100,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_unit_pooled_measurement\": unit_pool(mean, assign),",
+        "line": 101,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "def observed_only_selector(variants: dict[str, np.ndarray], feat: dict[str, np.ndarray], weights: dict[str, float]) -> np.ndarray:",
+        "line": 113,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "def observed_only_selector"
+      },
+      {
+        "code": "out = variants[\"fixed_mean_pooling\"].copy()",
+        "line": 115,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "high = score > np.quantile(score, 0.66) if score.size else np.zeros_like(score, dtype=bool)",
+        "line": 116,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "quantile"
+      },
+      {
+        "code": "out[high] = variants[\"fixed_teacher_agreement_weighted_pooling\"][high]",
+        "line": 118,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "out[low_stab] = variants[\"fixed_max_confidence_pooling\"][low_stab]",
+        "line": 119,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_mean_pooling\",",
+        "line": 146,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_last_observed\",",
+        "line": 147,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_max_confidence_pooling\",",
+        "line": 148,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_teacher_agreement_weighted_pooling\",",
+        "line": 149,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_instance_pooled_measurement\",",
+        "line": 150,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "\"fixed_unit_pooled_measurement\",",
+        "line": 151,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "fixed_cos = {k: cos_future(v, fut) for k, v in variants.items()}",
+        "line": 173,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "fixed_stack = np.stack([v for k, v in fixed_cos.items() if k != \"random_shuffled_measurement\"], axis=0)",
+        "line": 174,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "fixed_cos[\"oracle_best_measurement\"] = fixed_stack.max(axis=0)",
+        "line": 175,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "fixed_cos[\"pointwise_base\"] = pointwise",
+        "line": 176,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "acc.add(f\"{name}:{subset}\", fixed_cos[name], mask)",
+        "line": 180,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "acc.add(f\"{name}_minus_pointwise:{subset}\", fixed_cos[name] - pointwise, mask)",
+        "line": 182,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      },
+      {
+        "code": "acc.add(f\"{name}_minus_random:{subset}\", fixed_cos[name] - fixed_cos[\"random_shuffled_measurement\"], mask)",
+        "line": 183,
+        "path": "code/stwm/tools/eval_ostf_v34_12_nonoracle_measurement_selector_probe_20260513.py",
+        "pattern": "fixed_"
+      }
+    ]
+  },
+  "final_decision_depends_on_missing_selector_json": false,
+  "forward_gate_zero_by_default": true,
+  "generated_at_utc": "2026-05-13T07:09:23.462809+00:00",
+  "local_probe_is_oracle_masked": true,
+  "measurement_teacher_name_inconsistent": true,
+  "nonoracle_selector_json_missing": false,
+  "recommended_fix": "\u628a V34.12 \u56fa\u5b9a\u89c4\u5219 selector \u66ff\u6362\u6210 V34.13 \u8bad\u7ec3\u5f0f non-oracle selector\u3002",
+  "selector_is_fixed_heuristic": true,
+  "selector_was_trained": false,
+  "v34_12_decision_snapshot": {
+    "measurement_quality_overestimated_by_oracle": true,
+    "measurement_selector_nonoracle_passed": false,
+    "oracle_residual_probe_passed": false,
+    "semantic_measurements_load_bearing_on_residual": false
+  },
+  "v34_12_local_decision_snapshot": {
+    "shuffle_semantic_measurements_metric_delta": {
+      "test": -0.004759416824005165,
+      "val": 0.007359029228844412
+    },
+    "zero_semantic_measurements_metric_delta": {
+      "test": -0.005572160132291344,
+      "val": 0.00889990505083698
+    }
+  },
+  "visualization_manifest_json_missing": false,
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.12 artifact/source truth \u4e8c\u6b21\u5ba1\u8ba1\u5b8c\u6210\uff1a\u91cd\u70b9\u6838\u9a8c\u7f3a\u5931 JSON\u3001selector \u662f\u5426\u8bad\u7ec3\u3001forward gate \u662f\u5426\u9ed8\u8ba4\u5173\u95ed\uff0c\u4ee5\u53ca local evidence \u662f\u5426\u4ecd\u9760 oracle mask compose\u3002"
+}
