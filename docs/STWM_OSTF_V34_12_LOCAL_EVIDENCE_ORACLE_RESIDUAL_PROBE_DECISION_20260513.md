@@ -1,0 +1,23 @@
+# V34.12 local evidence oracle residual probe 决策中文报告
+
+- 中文结论: `V34.12 local evidence oracle residual probe 已评估；只有 semantic measurement 干预在 val/test 都伤害 residual 且 hard/changed 有正信号时才允许 learned gate。`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'val': False, 'test': False}`
+- changed_semantic_signal: `{'val': False, 'test': False}`
+- stable_preservation: `{'val': True, 'test': True}`
+- causal_assignment_subset_gain: `{'val': 0.037019516472146984, 'test': 0.016377025750531026}`
+- strict_residual_subset_gain: `{'val': 0.0029263443477021474, 'test': 0.0009525474146481728}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- zero_semantic_measurements_metric_delta: `{'val': 0.00889990505083698, 'test': -0.005572160132291344}`
+- shuffle_semantic_measurements_metric_delta: `{'val': 0.007359029228844412, 'test': -0.004759416824005165}`
+- attention_uses_nontrivial_timesteps: `True`
+- effective_units: `{'val': 11.08, 'test': 12.112426035502958}`
+- unit_dominant_instance_purity: `{'val': 0.6799417622142752, 'test': 0.6594735912050659}`
+- unit_semantic_purity: `{'val': 0.854133051728215, 'test': 0.8402807711383061}`
+- recommended_next_step: `fix_local_semantic_evidence_encoder`

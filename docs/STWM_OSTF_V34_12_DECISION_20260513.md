@@ -1,0 +1,28 @@
+# V34.12 final decision 中文报告
+
+- 中文结论: `V34.12 完成 artifact/source truth、non-oracle selector 与 local evidence oracle probe；不声明 semantic field success，不训练 learned gate 除非 oracle 通过。`
+- measurement_truth_audit_done: `True`
+- artifact_packaging_fixed: `True`
+- nonoracle_measurement_selector_probe_done: `True`
+- measurement_quality_overestimated_by_oracle: `True`
+- local_evidence_encoder_built: `True`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- learned_gate_training_ran: `False`
+- learned_gate_passed: `not_run`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- causal_assignment_subset_gain: `{'test': 0.016377025750531026, 'val': 0.037019516472146984}`
+- strict_residual_subset_gain: `{'test': 0.0009525474146481728, 'val': 0.0029263443477021474}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- attention_uses_nontrivial_timesteps: `True`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_nonoracle_measurement_selector`

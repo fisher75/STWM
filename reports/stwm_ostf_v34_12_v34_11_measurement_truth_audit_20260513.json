@@ -1,0 +1,62 @@
+{
+  "docs_checked": [
+    "docs/STWM_OSTF_V34_11_SEMANTIC_MEASUREMENT_QUALITY_PROBE_20260513.md",
+    "docs/STWM_OSTF_V34_11_SEMANTIC_MEASUREMENT_CAUSALITY_VISUALIZATION_20260513.md"
+  ],
+  "exact_code_locations": {
+    "local_eval": [
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:28: local_compose,",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:163: pred = out[\"pointwise_semantic_belief\"] if mode == \"pointwise\" else local_compose(out, bd, use_usage_score=True)",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:168: \"zero_semantic_measurements_metric_delta\": None if normal[\"causal_gain\"] is None or per_mode[\"zero_semantic_measurements\"][\"causal_gain\"] is None else float(normal[\"causal_gain\"] - per_mode[\"zero_semantic_measurements\"][\"causal_gain\"]),",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:202: min(per[\"val\"][\"zero_semantic_measurements_metric_delta\"] or 0.0, per[\"val\"][\"shuffle_semantic_measurements_metric_delta\"] or 0.0) > 0.002",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:203: and min(per[\"test\"][\"zero_semantic_measurements_metric_delta\"] or 0.0, per[\"test\"][\"shuffle_semantic_measurements_metric_delta\"] or 0.0) > 0.002",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:227: \"semantic_measurements_load_bearing_on_residual\": sem_lb,",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:229: \"zero_semantic_measurements_metric_delta\": {\"val\": per[\"val\"][\"zero_semantic_measurements_metric_delta\"], \"test\": per[\"test\"][\"zero_semantic_measurements_metric_delta\"]},",
+      "code/stwm/tools/eval_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:262: \"semantic_measurements_load_bearing_on_residual\","
+    ],
+    "local_oracle_mask_compose": [
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:111: def local_compose(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], *, use_usage_score: bool = True) -> torch.Tensor:",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:112: gate = batch[\"causal_assignment_residual_semantic_mask\"].float()",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:113: if use_usage_score and \"semantic_measurement_usage_score\" in out:",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:114: unit_usage = out[\"semantic_measurement_usage_score\"].float()",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:139: final = local_compose(out, batch, use_usage_score=True)",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:140: zero_final = local_compose(zero, batch, use_usage_score=True)",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:141: shuf_sem_final = local_compose(shuf_sem, batch, use_usage_score=True)",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:142: shuf_assign_final = local_compose(shuf_assign, batch, use_usage_score=True)",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:144: pos = batch[\"causal_assignment_residual_semantic_mask\"].bool() & valid",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:269: \"semantic_measurement_usage_score_used_in_residual_magnitude\": True,",
+      "code/stwm/tools/train_ostf_v34_11_local_semantic_usage_oracle_probe_20260513.py:292: \"semantic_measurement_usage_score_used_in_residual_magnitude\","
+    ],
+    "model_gate_zero": [
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:144: semantic_measurement_usage_score = torch.sigmoid(self.semantic_measurement_usage_head(tok[\"semantic_unit_features\"])).squeeze(-1)",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:146: gate = torch.zeros_like(base[\"pointwise_identity_belief\"])",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:149: final_sem = F.normalize(base[\"pointwise_semantic_belief\"] + gate[..., None] * assignment_bound_residual, dim=-1)",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:178: \"semantic_measurement_usage_score\": semantic_measurement_usage_score,"
+    ],
+    "quality_oracle_best": [
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:144: fut = np.asarray(z[\"fut_teacher_embedding\"], dtype=np.float32)",
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:171: best_cos = np.maximum.reduce([_cos_point_future(v, fut) for k, v in variants.items() if k != \"random_shuffled_measurement\"])",
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:173: acc.add(\"best_measurement_minus_random:valid\", best_cos - rand_cos, valid)",
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:174: acc.add(\"best_measurement_minus_pointwise:semantic_hard\", best_cos - pointwise, hard)",
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:175: acc.add(\"best_measurement_minus_pointwise:changed\", best_cos - pointwise, changed)",
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:176: acc.add(\"best_measurement_minus_pointwise:strict_residual\", best_cos - pointwise, strict)",
+      "code/stwm/tools/eval_ostf_v34_11_semantic_measurement_quality_probe_20260513.py:184: margin_vals.append(float((best_cos - rand_cos)[valid].mean()))"
+    ]
+  },
+  "final_decision_best_measurement_bank": "v34_9_trace_preserving_clip_vit_b32_local",
+  "final_decision_depends_on_missing_quality_json": false,
+  "generated_at_utc": "2026-05-13T05:56:05.592369+00:00",
+  "local_probe_is_oracle_masked_residual": true,
+  "local_probe_passed": false,
+  "measurement_teacher_name": "dinov2_base",
+  "measurement_teacher_name_inconsistent": true,
+  "model_forward_gate_zero_by_default": true,
+  "quality_probe_json_missing": false,
+  "quality_probe_may_overestimate_measurement_quality": true,
+  "quality_probe_passed": true,
+  "quality_probe_uses_oracle_best_measurement": true,
+  "recommended_fix": "\u5148\u7528 non-oracle selector \u91cd\u4f30 measurement quality\uff1b\u518d\u5b9e\u73b0 raw temporal semantic evidence encoder\uff0c\u907f\u514d pooled-vector repeat \u548c oracle best \u8fc7\u4e50\u89c2\u3002",
+  "semantic_usage_score_only_indirectly_used": false,
+  "visualization_json_missing": false,
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.12 truth audit \u786e\u8ba4\uff1aV34.11 quality/visual JSON \u5728\u5f53\u524d repo \u5b58\u5728\uff1bquality probe \u4f7f\u7528 future target \u505a\u9010 token oracle best \u4e0a\u754c\uff0c\u4e14 teacher source \u540d\u79f0\u4e0e final decision \u7684 best_measurement_bank \u4e0d\u4e00\u81f4\u3002"
+}
