@@ -1,0 +1,97 @@
+{
+  "assignment_not_load_bearing_confirmed": true,
+  "exact_code_locations": {
+    "global_usage_loss": [
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:183: def masked_cos(pred: torch.Tensor, target: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:",
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:211: normal_cos = masked_cos(final, batch[\"fut_teacher_embedding\"], pos)",
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:212: zero_cos = masked_cos(compose(zero, batch), batch[\"fut_teacher_embedding\"], pos).detach()",
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:213: shuf_sem_cos = masked_cos(compose(shuf_sem, batch), batch[\"fut_teacher_embedding\"], pos).detach()",
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:214: shuf_assign_cos = masked_cos(compose(shuf_assign, batch), batch[\"fut_teacher_embedding\"], pos).detach()",
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:215: sem_usage = F.softplus(args.usage_margin - (normal_cos - torch.maximum(zero_cos, shuf_sem_cos)))",
+      "code/stwm/tools/train_ostf_v34_10_trace_contract_oracle_residual_probe_20260512.py:216: assign_contrast = F.softplus(args.assignment_contrast_margin - (normal_cos - shuf_assign_cos))"
+    ],
+    "mean_semantic_pooling": [
+      "code/stwm/modules/ostf_v34_2_dual_source_semantic_trace_units.py:47: sem_pooled = (torch.nan_to_num(obs_sem.float()) * sem_mask[..., None]).sum(dim=2) / sem_mask.sum(dim=2, keepdim=True).clamp_min(1.0)"
+    ],
+    "teacher_agreement_in_train": [],
+    "usage_scores_computed_not_applied": [
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:143: assignment_usage_score = torch.sigmoid(self.assignment_usage_head(memory_input)).squeeze(-1)",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:144: semantic_measurement_usage_score = torch.sigmoid(self.semantic_measurement_usage_head(tok[\"semantic_unit_features\"])).squeeze(-1)",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:149: final_sem = F.normalize(base[\"pointwise_semantic_belief\"] + gate[..., None] * assignment_bound_residual, dim=-1)",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:178: \"semantic_measurement_usage_score\": semantic_measurement_usage_score,",
+      "code/stwm/modules/ostf_v34_8_causal_assignment_bound_residual_memory.py:179: \"assignment_usage_score\": assignment_usage_score,"
+    ]
+  },
+  "generated_at_utc": "2026-05-13T04:55:40.418236+00:00",
+  "intervention_deltas": {
+    "shuffle_assignment_metric_delta": {
+      "test": -0.0010902523852698723,
+      "val": 0.009874626012108046
+    },
+    "shuffle_semantic_measurements_metric_delta": {
+      "test": -0.002348615893569202,
+      "val": -0.0006502380571483772
+    },
+    "zero_semantic_measurements_metric_delta": {
+      "test": -0.0021426994933809876,
+      "val": -0.0011220982559772465
+    }
+  },
+  "measurement_confidence_degenerate": false,
+  "recommended_fix": "\u5148\u8fd0\u884c semantic measurement quality probe\uff1b\u82e5 measurement \u672c\u8eab\u6709 hard/changed \u9884\u6d4b\u529b\uff0c\u5219\u628a usage loss \u6539\u4e3a\u5c40\u90e8\u9010\u70b9\u9010 horizon\uff0c\u5e76\u628a usage score \u63a5\u5165 residual magnitude\uff1b\u5426\u5219\u91cd\u5efa measurement bank\u3002",
+  "semantic_measurement_bank_teacher_name": "dinov2_base",
+  "semantic_measurement_not_load_bearing_confirmed": true,
+  "semantic_measurement_stats": {
+    "by_split": {
+      "test": {
+        "coverage": 0.832000732421875,
+        "mean_feature_variance": 0.0009534936634736368,
+        "nan_ratio": 0.0,
+        "sample_count_checked": 64
+      },
+      "train": {
+        "coverage": 0.896759033203125,
+        "mean_feature_variance": 0.0009081967709789751,
+        "nan_ratio": 0.0,
+        "sample_count_checked": 64
+      },
+      "val": {
+        "coverage": 0.86309814453125,
+        "mean_feature_variance": 0.000942349137403653,
+        "nan_ratio": 0.0,
+        "sample_count_checked": 64
+      }
+    },
+    "confidence": {
+      "all_one": false,
+      "max": 1.0,
+      "mean": 0.86395263671875,
+      "min": 0.0,
+      "std": 0.342838853597641
+    },
+    "embedding_dims": [
+      768
+    ],
+    "measurement_confidence_degenerate": false,
+    "semantic_measurements_have_variance": true,
+    "teacher_name": "dinov2_base"
+  },
+  "semantic_measurements_have_variance": true,
+  "semantic_pooling_too_global": true,
+  "semantic_usage_score_not_used_in_residual": true,
+  "source_docs_checked": [
+    "docs/STWM_OSTF_V34_9_TRACE_PRESERVING_SEMANTIC_MEASUREMENT_BANK_20260512.md",
+    "docs/STWM_OSTF_V34_9_CAUSAL_ASSIGNMENT_RESIDUAL_TARGET_BUILD_20260512.md"
+  ],
+  "teacher_agreement_used_in_training": false,
+  "train_summary_loss": {
+    "assignment_contrastive_loss_first": 0.5070382356643677,
+    "assignment_contrastive_loss_last": 0.48332706093788147,
+    "assignment_contrastive_loss_mean": 0.5099710740826346,
+    "semantic_measurement_usage_loss_first": 0.5843991041183472,
+    "semantic_measurement_usage_loss_last": 0.5642380714416504,
+    "semantic_measurement_usage_loss_mean": 0.5738595236431469
+  },
+  "usage_loss_too_global": true,
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.10 \u5df2\u4fee\u590d trace contract \u5e76\u6fc0\u6d3b usage/assignment loss\uff0c\u4f46\u8bed\u4e49 measurement \u4ecd\u4e0d\u662f\u56e0\u679c\u5fc5\u8981\u8def\u5f84\uff1b\u5f53\u524d tokenizer \u7684\u65f6\u95f4\u5747\u503c pooling \u548c\u5168\u5c40 scalar usage loss \u662f\u4e3b\u8981\u53ef\u7591\u70b9\u3002"
+}

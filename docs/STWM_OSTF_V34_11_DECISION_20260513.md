@@ -1,0 +1,31 @@
+# V34.11 final decision 中文报告
+
+- 中文结论: `V34.11 完成 semantic measurement 因果失败审计和 measurement quality probe；measurement 本身有信息量，但 local usage oracle 仍未形成可通过 gate 的 semantic field claim。`
+- semantic_measurement_failure_audit_done: `True`
+- semantic_measurement_quality_probe_done: `True`
+- semantic_measurement_quality_passed: `True`
+- measurement_beats_random: `True`
+- measurement_beats_pointwise_on_hard: `True`
+- measurement_beats_pointwise_on_changed: `True`
+- local_semantic_usage_probe_ran: `True`
+- local_semantic_usage_probe_passed: `False`
+- semantic_measurement_bank_repair_ran: `False`
+- best_measurement_bank: `v34_9_trace_preserving_clip_vit_b32_local`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'test': False, 'val': False}`
+- changed_semantic_signal: `{'test': False, 'val': False}`
+- stable_preservation: `{'test': True, 'val': True}`
+- causal_assignment_subset_gain: `{'test': 0.010376201089865813, 'val': 0.023302597894823425}`
+- strict_residual_subset_gain: `{'test': 0.0006035175341426423, 'val': 0.0018420397627799184}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- effective_units: `{'test': 12.124260355029586, 'val': 11.266666666666667}`
+- unit_dominant_instance_purity: `{'test': 0.6594522224083478, 'val': 0.6885270195134354}`
+- unit_semantic_purity: `{'test': 0.8418677800505389, 'val': 0.857883055815599}`
+- visualization_ready: `True`
+- integrated_identity_field_claim_allowed: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_local_semantic_usage_loss`

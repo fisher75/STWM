@@ -1,0 +1,23 @@
+# V34.11 local semantic usage oracle probe 决策中文报告
+
+- 中文结论: `V34.11 local semantic usage oracle probe 已评估；只有 semantic measurement 介入会伤害 val/test residual 指标且 hard/changed 有正信号时才允许后续 learned gate。`
+- local_semantic_usage_probe_ran: `True`
+- local_semantic_usage_probe_passed: `False`
+- pooling_variant: `teacher_agreement_weighted_pooling`
+- local_semantic_usage_loss_active: `True`
+- local_assignment_contrast_loss_active: `True`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'val': False, 'test': False}`
+- changed_semantic_signal: `{'val': False, 'test': False}`
+- stable_preservation: `{'val': True, 'test': True}`
+- causal_assignment_subset_gain: `{'val': 0.023302597894823425, 'test': 0.010376201089865813}`
+- strict_residual_subset_gain: `{'val': 0.0018420397627799184, 'test': 0.0006035175341426423}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- effective_units: `{'val': 11.266666666666667, 'test': 12.124260355029586}`
+- unit_dominant_instance_purity: `{'val': 0.6885270195134354, 'test': 0.6594522224083478}`
+- unit_semantic_purity: `{'val': 0.857883055815599, 'test': 0.8418677800505389}`
+- recommended_next_step: `fix_local_semantic_usage_loss`
