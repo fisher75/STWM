@@ -1,0 +1,26 @@
+# V34.20 hard/changed aligned top-k residual probe 决策中文报告
+
+- 中文结论: `V34.20 hard/changed-aligned top-k residual probe 已评估；仍是 oracle mask residual 内容验证，不是 learned gate，也不是 semantic field success。`
+- oracle_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `True`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'val': True, 'test': True}`
+- changed_semantic_signal: `{'val': True, 'test': True}`
+- stable_preservation: `{'val': True, 'test': True}`
+- hard_changed_aligned_gain: `{'val': 0.09356264119420064, 'test': 0.08759761724612401}`
+- causal_assignment_subset_gain: `{'val': 0.09455211752351399, 'test': 0.1004356196037229}`
+- strict_residual_subset_gain: `{'val': 0.09356264119420064, 'test': 0.08759761724612401}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `True`
+- assignment_load_bearing_on_residual: `True`
+- selector_load_bearing_on_residual: `True`
+- zero_semantic_measurements_metric_delta: `{'val': 0.0339777645861351, 'test': 0.03131825319496789}`
+- shuffle_semantic_measurements_metric_delta: `{'val': 0.008559663397449513, 'test': 0.00829807883859196}`
+- selector_ablation_delta: `{'val': 0.023905013398702935, 'test': 0.023391868419927936}`
+- topk_uses_multi_evidence: `True`
+- effective_units: `{'val': 12.52, 'test': 12.437869822485206}`
+- unit_dominant_instance_purity: `{'val': 0.6977688814996708, 'test': 0.6788937673446083}`
+- unit_semantic_purity: `{'val': 0.8653514758428367, 'test': 0.8565265488845318}`
+- recommended_next_step: `build_observed_only_hard_changed_gate_target`

@@ -1,0 +1,57 @@
+{
+  "future_teacher_embedding_input_allowed": false,
+  "generated_at_utc": "2026-05-13T10:25:13.842001+00:00",
+  "horizon_timestep_supervised_selector_built": true,
+  "measurement_selector_nonoracle_passed": false,
+  "measurement_weight_shape": "B,M,H,Tobs",
+  "oracle_gap_to_selector_changed": {
+    "test": 0.17127097666162744,
+    "val": 0.1409466121520368
+  },
+  "oracle_gap_to_selector_hard": {
+    "test": 0.25480853776522094,
+    "val": 0.22524312900545398
+  },
+  "oracle_timestep_gap_to_selector_changed": {
+    "test": 0.20078531327387575,
+    "val": 0.17411193173157533
+  },
+  "oracle_timestep_gap_to_selector_hard": {
+    "test": 0.2720805963082637,
+    "val": 0.2441544869848852
+  },
+  "oracle_timestep_top1_changed": {
+    "test": 0.21052861247616747,
+    "val": 0.2165917231918299
+  },
+  "oracle_timestep_top1_hard": {
+    "test": 0.21126026120140004,
+    "val": 0.23566927630322704
+  },
+  "recommended_next_step": "fix_nonoracle_measurement_selector",
+  "selected_evidence_shape": "B,M,H,D",
+  "selector_beats_pointwise_on_changed": {
+    "test": false,
+    "val": false
+  },
+  "selector_beats_pointwise_on_hard": {
+    "test": true,
+    "val": true
+  },
+  "selector_beats_random": {
+    "test": true,
+    "val": true
+  },
+  "selector_beats_v34_14_on_oracle_gap": false,
+  "selector_entropy": {
+    "test": 0.8165468672911326,
+    "val": 0.8392158548037211
+  },
+  "selector_max_weight": {
+    "test": 0.3081910014152527,
+    "val": 0.29688774545987445
+  },
+  "selector_was_trained": true,
+  "v30_backbone_frozen": true,
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.15 timestep-supervised selector \u5df2\u8bc4\u4f30\uff1b\u8be5\u8f6e\u6d4b\u8bd5\u7528 future target \u53ea\u751f\u6210\u8bad\u7ec3\u76d1\u7763\u7684 observed timestep label\uff0cforward \u4ecd\u4e0d\u8bfb future target\u3002"
+}

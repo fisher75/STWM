@@ -1,0 +1,26 @@
+# V34.18 top-k evidence oracle residual probe 决策中文报告
+
+- 中文结论: `V34.18 top-k evidence residual probe 已评估；这是 oracle residual 内容验证，不是 learned gate，也不是 semantic field success。`
+- topk_evidence_residual_probe_ran: `True`
+- oracle_residual_probe_passed: `False`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- semantic_hard_signal: `{'val': False, 'test': False}`
+- changed_semantic_signal: `{'val': False, 'test': False}`
+- stable_preservation: `{'val': True, 'test': True}`
+- causal_assignment_subset_gain: `{'val': 0.09364904168683684, 'test': 0.08738482460539065}`
+- strict_residual_subset_gain: `{'val': 0.00740283492287405, 'test': 0.005082621740083905}`
+- unit_memory_load_bearing_on_residual: `True`
+- semantic_measurements_load_bearing_on_residual: `False`
+- assignment_load_bearing_on_residual: `True`
+- selector_load_bearing_on_residual: `True`
+- zero_semantic_measurements_metric_delta: `{'val': 0.0441850882660466, 'test': 0.03453580661279267}`
+- shuffle_semantic_measurements_metric_delta: `{'val': 0.00848504898085864, 'test': 0.0010103378794848045}`
+- selector_ablation_delta: `{'val': 0.026669617937993412, 'test': 0.023386554287106467}`
+- topk_uses_multi_evidence: `True`
+- effective_units: `{'val': 11.933333333333334, 'test': 11.95266272189349}`
+- unit_dominant_instance_purity: `{'val': 0.6960470682164414, 'test': 0.6889212508354365}`
+- unit_semantic_purity: `{'val': 0.8687022317374887, 'test': 0.860003871471408}`
+- integrated_semantic_field_claim_allowed: `False`
+- recommended_next_step: `fix_topk_evidence_residual_content`

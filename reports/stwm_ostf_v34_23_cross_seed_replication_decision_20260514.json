@@ -1,0 +1,98 @@
+{
+  "all_required_seeds_passed": true,
+  "changed_semantic_signal": {
+    "seed123": {
+      "test": true,
+      "val": true
+    },
+    "seed456": {
+      "test": true,
+      "val": true
+    }
+  },
+  "gate_over_open_and_stable_update": {
+    "seed123": {
+      "test_gate_order_ok": true,
+      "test_stable_gate_mean": 0.5827061920196386,
+      "test_stable_over_open_rate": 0.9589550038332252,
+      "test_stable_over_update_rate": 0.00044229521731438344,
+      "val_gate_order_ok": true,
+      "val_stable_gate_mean": 0.4829382614176264,
+      "val_stable_over_open_rate": 0.9246385364414281,
+      "val_stable_over_update_rate": 0.00029507229271171436
+    },
+    "seed456": {
+      "test_gate_order_ok": true,
+      "test_stable_gate_mean": 0.5696893329432517,
+      "test_stable_over_open_rate": 0.964144601049714,
+      "test_stable_over_update_rate": 0.00044229521731438344,
+      "val_gate_order_ok": true,
+      "val_stable_gate_mean": 0.4754994103957081,
+      "val_stable_over_open_rate": 0.9316022425494246,
+      "val_stable_over_update_rate": 0.00029507229271171436
+    }
+  },
+  "generated_at_utc": "2026-05-13T17:17:26.370659+00:00",
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "intervention_delta": {
+    "seed123": {
+      "test": {
+        "shuffle_assignment_delta": 0.010938949968199038,
+        "shuffle_semantic_measurements_delta": 0.017109913644339544,
+        "zero_semantic_measurements_delta": 0.06358644551017938,
+        "zero_unit_memory_delta": 0.1283807137732116
+      },
+      "val": {
+        "shuffle_assignment_delta": 0.01138819611394662,
+        "shuffle_semantic_measurements_delta": 0.017268203207526783,
+        "zero_semantic_measurements_delta": 0.06458909182427698,
+        "zero_unit_memory_delta": 0.13736590049612876
+      }
+    },
+    "seed456": {
+      "test": {
+        "shuffle_assignment_delta": 0.011190871098709101,
+        "shuffle_semantic_measurements_delta": 0.01673341476075106,
+        "zero_semantic_measurements_delta": 0.06171658246094264,
+        "zero_unit_memory_delta": 0.1272145604539638
+      },
+      "val": {
+        "shuffle_assignment_delta": 0.013006553052289163,
+        "shuffle_semantic_measurements_delta": 0.017737810449537053,
+        "zero_semantic_measurements_delta": 0.06345170941241042,
+        "zero_unit_memory_delta": 0.1367530822752139
+      }
+    }
+  },
+  "recommended_next_step": "stop_and_analyze_claim_boundary",
+  "required_seeds_done": true,
+  "seed42_reference_passed": true,
+  "seed_replication_pass": {
+    "seed123": true,
+    "seed456": true
+  },
+  "semantic_hard_signal": {
+    "seed123": {
+      "test": true,
+      "val": true
+    },
+    "seed456": {
+      "test": true,
+      "val": true
+    }
+  },
+  "stable_preservation": {
+    "seed123": {
+      "test": true,
+      "val": true
+    },
+    "seed456": {
+      "test": true,
+      "val": true
+    }
+  },
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.23 seed42/123/456 \u590d\u73b0\u51b3\u7b56\u5df2\u6c47\u603b\uff1b\u5373\u4f7f\u591a seed \u901a\u8fc7\uff0c\u4e5f\u4ecd\u4e0d\u80fd\u58f0\u660e semantic field success\uff0c\u56e0\u4e3a stable gate over-open \u98ce\u9669\u4ecd\u9700\u5355\u72ec\u5904\u7406\u3002",
+  "\u8bba\u6587\u76f8\u5173\u95ee\u9898\u89e3\u51b3\u65b9\u6848\u53c2\u8003": "\u5efa\u8bae\u7ee7\u7eed\u6cbf\u7528 residual main-path preservation\u3001counterfactual intervention\u3001slot/object-memory assignment ablation \u7684\u8bc4\u4f30\u6846\u67b6\uff1b\u82e5\u8fdb\u5165\u4e0b\u4e00\u8f6e\u4fee\u590d\uff0c\u5e94\u4f18\u5148\u505a gate calibration / sparse gate regularization\uff0c\u800c\u4e0d\u662f\u6269\u5927\u6a21\u578b\u6216\u6539 trajectory backbone\u3002",
+  "\u9636\u6bb5\u6027\u5206\u6790": "seed123 \u4e0e seed456 \u662f\u590d\u73b0\u5b9e\u9a8c\uff0c\u4e0d\u662f\u7ee7\u7eed\u4fee bug\uff1b\u5f53\u524d\u590d\u73b0\u91cd\u70b9\u662f\u9a8c\u8bc1 activation-state gate probe \u7684\u8de8 seed \u7a33\u5b9a\u6027\u548c\u5e72\u9884\u56e0\u679c\u6027\uff0c\u540c\u65f6\u660e\u786e gate \u8fc7\u5f00\u98ce\u9669\u3002"
+}

@@ -1,0 +1,1220 @@
+{
+  "decision": {
+    "assignment_load_bearing_on_residual": true,
+    "causal_assignment_subset_gain": {
+      "test": 0.1004356196037229,
+      "val": 0.09455211752351399
+    },
+    "changed_semantic_signal": {
+      "test": true,
+      "val": true
+    },
+    "effective_units": {
+      "test": 12.437869822485206,
+      "val": 12.52
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-13T14:13:43.462349+00:00",
+    "hard_changed_aligned_gain": {
+      "test": 0.08759761724612401,
+      "val": 0.09356264119420064
+    },
+    "integrated_identity_field_claim_allowed": false,
+    "integrated_semantic_field_claim_allowed": false,
+    "learned_gate_training_allowed": false,
+    "learned_gate_training_ran": false,
+    "oracle_residual_probe_passed": true,
+    "oracle_residual_probe_ran": true,
+    "recommended_next_step": "build_observed_only_hard_changed_gate_target",
+    "selector_ablation_delta": {
+      "test": 0.023391868419927936,
+      "val": 0.023905013398702935
+    },
+    "selector_load_bearing_on_residual": true,
+    "semantic_hard_signal": {
+      "test": true,
+      "val": true
+    },
+    "semantic_measurements_load_bearing_on_residual": true,
+    "shuffle_assignment_metric_delta": {
+      "test": 0.00672867684102077,
+      "val": 0.009406946109528358
+    },
+    "shuffle_semantic_measurements_metric_delta": {
+      "test": 0.00829807883859196,
+      "val": 0.008559663397449513
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "strict_residual_subset_gain": {
+      "test": 0.08759761724612401,
+      "val": 0.09356264119420064
+    },
+    "topk_uses_multi_evidence": true,
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6788937673446083,
+      "val": 0.6977688814996708
+    },
+    "unit_memory_load_bearing_on_residual": true,
+    "unit_semantic_purity": {
+      "test": 0.8565265488845318,
+      "val": 0.8653514758428367
+    },
+    "v30_backbone_frozen": true,
+    "zero_semantic_measurements_metric_delta": {
+      "test": 0.03131825319496789,
+      "val": 0.0339777645861351
+    },
+    "zero_unit_memory_metric_delta": {
+      "test": 0.0875976172498566,
+      "val": 0.09356264119451706
+    },
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.20 hard/changed-aligned top-k residual probe \u5df2\u8bc4\u4f30\uff1b\u4ecd\u662f oracle mask residual \u5185\u5bb9\u9a8c\u8bc1\uff0c\u4e0d\u662f learned gate\uff0c\u4e5f\u4e0d\u662f semantic field success\u3002"
+  },
+  "generated_at_utc": "2026-05-13T14:13:43.462497+00:00",
+  "per_split": {
+    "test": {
+      "modes": {
+        "normal": {
+          "aligned_gain": 0.08759761724612401,
+          "causal_gain": 0.1004356196037229,
+          "changed_gain": 0.020253994740241036,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.01831409005127557,
+          "hard_gain": 0.014240432919008419,
+          "semantic_hard_signal": true,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.08759761724612401,
+          "valid_gain": 0.012168373954460939
+        },
+        "pointwise": {
+          "aligned_gain": 0.0,
+          "causal_gain": 0.0,
+          "changed_gain": 0.0,
+          "changed_semantic_signal": false,
+          "hard_changed_gain": 0.0,
+          "hard_gain": 0.0,
+          "semantic_hard_signal": false,
+          "stable_gain": 0.0,
+          "stable_preservation": true,
+          "strict_gain": 0.0,
+          "valid_gain": 0.0
+        },
+        "selector_ablation": {
+          "aligned_gain": 0.06420574882619608,
+          "causal_gain": 0.07219302532363873,
+          "changed_gain": 0.014869752121412163,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.013423536715431127,
+          "hard_gain": 0.01041293996602304,
+          "semantic_hard_signal": true,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.06420574882619608,
+          "valid_gain": 0.00891895917067176
+        },
+        "shuffle_assignment": {
+          "aligned_gain": 0.08086894040510324,
+          "causal_gain": 0.09231767745137073,
+          "changed_gain": 0.018707648265784024,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.016907321544476193,
+          "hard_gain": 0.013194240627965897,
+          "semantic_hard_signal": true,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.08086894040510324,
+          "valid_gain": 0.011233679392206762
+        },
+        "shuffle_semantic_measurements": {
+          "aligned_gain": 0.07929953840753205,
+          "causal_gain": 0.09366763859951822,
+          "changed_gain": 0.018389354859365454,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.016579205223616566,
+          "hard_gain": 0.012903046695186705,
+          "semantic_hard_signal": true,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.07929953840753205,
+          "valid_gain": 0.01101567013686571
+        },
+        "zero_semantic_measurements": {
+          "aligned_gain": 0.05627936405115612,
+          "causal_gain": 0.06145017535451193,
+          "changed_gain": 0.013010998904671434,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.011766362512300614,
+          "hard_gain": 0.009012404496995896,
+          "semantic_hard_signal": true,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.05627936405115612,
+          "valid_gain": 0.007817887797017276
+        },
+        "zero_unit_memory": {
+          "aligned_gain": -3.732581553541481e-12,
+          "causal_gain": -3.1007172519897026e-11,
+          "changed_gain": -3.512248290033601e-12,
+          "changed_semantic_signal": false,
+          "hard_changed_gain": -3.80154198581754e-12,
+          "hard_gain": -1.701588425126448e-12,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": -3.732581553541481e-12,
+          "valid_gain": -2.28247793023273e-12
+        }
+      },
+      "normal": {
+        "aligned_gain": 0.08759761724612401,
+        "causal_gain": 0.1004356196037229,
+        "changed_gain": 0.020253994740241036,
+        "changed_semantic_signal": true,
+        "effective_units": 12.437869822485206,
+        "hard_changed_gain": 0.01831409005127557,
+        "hard_gain": 0.014240432919008419,
+        "semantic_hard_signal": true,
+        "stable_gain": -8.718963184537785e-13,
+        "stable_preservation": true,
+        "strict_gain": 0.08759761724612401,
+        "topk_attention_entropy": 0.3693390488624573,
+        "topk_attention_max_weight": 0.7048635482788086,
+        "topk_uses_multi_evidence": true,
+        "unit_dominant_instance_purity": 0.6788937673446083,
+        "unit_semantic_purity": 0.8565265488845318,
+        "valid_gain": 0.012168373954460939
+      },
+      "selector_ablation_delta": 0.023391868419927936,
+      "shuffle_assignment_metric_delta": 0.00672867684102077,
+      "shuffle_semantic_measurements_metric_delta": 0.00829807883859196,
+      "zero_semantic_measurements_metric_delta": 0.03131825319496789,
+      "zero_unit_memory_metric_delta": 0.0875976172498566
+    },
+    "val": {
+      "modes": {
+        "normal": {
+          "aligned_gain": 0.09356264119420064,
+          "causal_gain": 0.09455211752351399,
+          "changed_gain": 0.01812818800655319,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.01628689469630354,
+          "hard_gain": 0.012010336514076523,
+          "semantic_hard_signal": true,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.09356264119420064,
+          "valid_gain": 0.010361558477541843
+        },
+        "pointwise": {
+          "aligned_gain": 0.0,
+          "causal_gain": 0.0,
+          "changed_gain": 0.0,
+          "changed_semantic_signal": false,
+          "hard_changed_gain": 0.0,
+          "hard_gain": 0.0,
+          "semantic_hard_signal": false,
+          "stable_gain": 0.0,
+          "stable_preservation": true,
+          "strict_gain": 0.0,
+          "valid_gain": 0.0
+        },
+        "selector_ablation": {
+          "aligned_gain": 0.06965762779549771,
+          "causal_gain": 0.06632572782529232,
+          "changed_gain": 0.013464314998827023,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.012125635533136796,
+          "hard_gain": 0.009285129461894855,
+          "semantic_hard_signal": true,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.06965762779549771,
+          "valid_gain": 0.007714207471145887
+        },
+        "shuffle_assignment": {
+          "aligned_gain": 0.08415569508467229,
+          "causal_gain": 0.08849045790824417,
+          "changed_gain": 0.01636146095938167,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.014649382250227019,
+          "hard_gain": 0.010424170968458355,
+          "semantic_hard_signal": true,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.08415569508467229,
+          "valid_gain": 0.009319789642903895
+        },
+        "shuffle_semantic_measurements": {
+          "aligned_gain": 0.08500297779675113,
+          "causal_gain": 0.08732645787163473,
+          "changed_gain": 0.016491907150423223,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.01479687258066934,
+          "hard_gain": 0.010885239594397437,
+          "semantic_hard_signal": true,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.08500297779675113,
+          "valid_gain": 0.00941362163652832
+        },
+        "zero_semantic_measurements": {
+          "aligned_gain": 0.059584876608065544,
+          "causal_gain": 0.05759660926680396,
+          "changed_gain": 0.011577420888464222,
+          "changed_semantic_signal": true,
+          "hard_changed_gain": 0.010372222829800075,
+          "hard_gain": 0.007653905764003053,
+          "semantic_hard_signal": true,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.059584876608065544,
+          "valid_gain": 0.006598703802399166
+        },
+        "zero_unit_memory": {
+          "aligned_gain": -3.1641763576969823e-13,
+          "causal_gain": 1.3898677390990308e-11,
+          "changed_gain": -5.841616331899541e-12,
+          "changed_semantic_signal": false,
+          "hard_changed_gain": -2.965157366478284e-12,
+          "hard_gain": -3.4455556393307038e-12,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": -3.1641763576969823e-13,
+          "valid_gain": 1.597310549943771e-12
+        }
+      },
+      "normal": {
+        "aligned_gain": 0.09356264119420064,
+        "causal_gain": 0.09455211752351399,
+        "changed_gain": 0.01812818800655319,
+        "changed_semantic_signal": true,
+        "effective_units": 12.52,
+        "hard_changed_gain": 0.01628689469630354,
+        "hard_gain": 0.012010336514076523,
+        "semantic_hard_signal": true,
+        "stable_gain": -1.580143052239304e-12,
+        "stable_preservation": true,
+        "strict_gain": 0.09356264119420064,
+        "topk_attention_entropy": 0.41749489307403564,
+        "topk_attention_max_weight": 0.6692428787549337,
+        "topk_uses_multi_evidence": true,
+        "unit_dominant_instance_purity": 0.6977688814996708,
+        "unit_semantic_purity": 0.8653514758428367,
+        "valid_gain": 0.010361558477541843
+      },
+      "selector_ablation_delta": 0.023905013398702935,
+      "shuffle_assignment_metric_delta": 0.009406946109528358,
+      "shuffle_semantic_measurements_metric_delta": 0.008559663397449513,
+      "zero_semantic_measurements_metric_delta": 0.0339777645861351,
+      "zero_unit_memory_metric_delta": 0.09356264119451706
+    }
+  },
+  "train_summary": {
+    "aligned_final_semantic_target_loss": {
+      "active": true,
+      "first": 0.7670769691467285,
+      "last": 0.6505212783813477,
+      "mean": 0.6782805973833258
+    },
+    "assignment_contrast_loss": {
+      "active": true,
+      "first": 0.6789289712905884,
+      "last": 0.6505157351493835,
+      "mean": 0.6624686284498735
+    },
+    "checkpoint_path": "outputs/checkpoints/stwm_ostf_v34_20_hard_changed_aligned_topk_residual_probe_h32_m128/v34_20_hard_changed_aligned_topk_residual_probe_m128_h32_seed42_best.pt",
+    "duration_seconds": 695.97563123703,
+    "fresh_training_completed": true,
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-13T14:13:03.585379+00:00",
+    "init_checkpoint": {
+      "residual_init_source": "outputs/checkpoints/stwm_ostf_v34_18_topk_evidence_oracle_residual_probe_h32_m128/v34_18_topk_evidence_oracle_residual_probe_m128_h32_seed42_best.pt",
+      "selector_frozen": true,
+      "selector_init_source": "inherited_from_v34_18"
+    },
+    "loss_trace": [
+      {
+        "aligned_final_semantic_target_loss": 0.7670769691467285,
+        "assignment_contrast_loss": 0.6789289712905884,
+        "causal_final_semantic_target_loss": 0.6098844408988953,
+        "different_instance_unit_separation": 0.09087187796831131,
+        "hard_changed_loss": 0.7670769691467285,
+        "loss": 3.110546112060547,
+        "point_assignment_entropy": 0.2750948369503021,
+        "same_instance_pair_attraction": 0.19874194264411926,
+        "semantic_measurement_causal_contrast_loss": 0.6863149404525757,
+        "stable_preservation_loss": -3.292972650115189e-08,
+        "step": 1.0,
+        "topk_raw_evidence_loss": 0.7592450976371765,
+        "unit_anti_collapse": 0.3442949056625366,
+        "unit_memory_target_loss": 0.363931804895401,
+        "unit_usage_entropy": 0.6557050943374634
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.7364966869354248,
+        "assignment_contrast_loss": 0.679375410079956,
+        "causal_final_semantic_target_loss": 0.6149649620056152,
+        "different_instance_unit_separation": 0.07313917577266693,
+        "hard_changed_loss": 0.7364966869354248,
+        "loss": 3.0595602989196777,
+        "point_assignment_entropy": 0.33524593710899353,
+        "same_instance_pair_attraction": 0.36496609449386597,
+        "semantic_measurement_causal_contrast_loss": 0.6820407509803772,
+        "stable_preservation_loss": -3.428506190061853e-08,
+        "step": 100.0,
+        "topk_raw_evidence_loss": 0.753469705581665,
+        "unit_anti_collapse": 0.23209619522094727,
+        "unit_memory_target_loss": 0.35671401023864746,
+        "unit_usage_entropy": 0.7679038047790527
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.7002602219581604,
+        "assignment_contrast_loss": 0.685378909111023,
+        "causal_final_semantic_target_loss": 0.5599599480628967,
+        "different_instance_unit_separation": 0.08997942507266998,
+        "hard_changed_loss": 0.7002602219581604,
+        "loss": 2.984008550643921,
+        "point_assignment_entropy": 0.29075244069099426,
+        "same_instance_pair_attraction": 0.21878118813037872,
+        "semantic_measurement_causal_contrast_loss": 0.672357439994812,
+        "stable_preservation_loss": -3.417716243347968e-08,
+        "step": 200.0,
+        "topk_raw_evidence_loss": 0.7969791889190674,
+        "unit_anti_collapse": 0.29460054636001587,
+        "unit_memory_target_loss": 0.3748070299625397,
+        "unit_usage_entropy": 0.7053994536399841
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6742891669273376,
+        "assignment_contrast_loss": 0.6605445742607117,
+        "causal_final_semantic_target_loss": 0.5643918514251709,
+        "different_instance_unit_separation": 0.08072390407323837,
+        "hard_changed_loss": 0.6742891669273376,
+        "loss": 2.894409418106079,
+        "point_assignment_entropy": 0.2835313379764557,
+        "same_instance_pair_attraction": 0.25394243001937866,
+        "semantic_measurement_causal_contrast_loss": 0.6671578884124756,
+        "stable_preservation_loss": -3.277452265137981e-08,
+        "step": 300.0,
+        "topk_raw_evidence_loss": 0.7641060948371887,
+        "unit_anti_collapse": 0.2767336964607239,
+        "unit_memory_target_loss": 0.34644025564193726,
+        "unit_usage_entropy": 0.7232663035392761
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6944054365158081,
+        "assignment_contrast_loss": 0.6557690501213074,
+        "causal_final_semantic_target_loss": 0.6178749203681946,
+        "different_instance_unit_separation": 0.08546492457389832,
+        "hard_changed_loss": 0.6944054365158081,
+        "loss": 2.9941627979278564,
+        "point_assignment_entropy": 0.2635096311569214,
+        "same_instance_pair_attraction": 0.23435930907726288,
+        "semantic_measurement_causal_contrast_loss": 0.6703139543533325,
+        "stable_preservation_loss": -3.338697496246823e-08,
+        "step": 400.0,
+        "topk_raw_evidence_loss": 0.7653692364692688,
+        "unit_anti_collapse": 0.3057634234428406,
+        "unit_memory_target_loss": 0.39232873916625977,
+        "unit_usage_entropy": 0.6942365765571594
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6293945908546448,
+        "assignment_contrast_loss": 0.6495217084884644,
+        "causal_final_semantic_target_loss": 0.5204625129699707,
+        "different_instance_unit_separation": 0.0846959576010704,
+        "hard_changed_loss": 0.6293945908546448,
+        "loss": 2.78285551071167,
+        "point_assignment_entropy": 0.27884355187416077,
+        "same_instance_pair_attraction": 0.27822378277778625,
+        "semantic_measurement_causal_contrast_loss": 0.6558306217193604,
+        "stable_preservation_loss": -3.343443211178965e-08,
+        "step": 500.0,
+        "topk_raw_evidence_loss": 0.7427912950515747,
+        "unit_anti_collapse": 0.3093221187591553,
+        "unit_memory_target_loss": 0.33871567249298096,
+        "unit_usage_entropy": 0.6906778812408447
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.679353654384613,
+        "assignment_contrast_loss": 0.657140851020813,
+        "causal_final_semantic_target_loss": 0.6092367768287659,
+        "different_instance_unit_separation": 0.09634283185005188,
+        "hard_changed_loss": 0.679353654384613,
+        "loss": 2.928067207336426,
+        "point_assignment_entropy": 0.27067890763282776,
+        "same_instance_pair_attraction": 0.3171178996562958,
+        "semantic_measurement_causal_contrast_loss": 0.6673994064331055,
+        "stable_preservation_loss": -3.5015556676398774e-08,
+        "step": 600.0,
+        "topk_raw_evidence_loss": 0.7373133301734924,
+        "unit_anti_collapse": 0.2821342349052429,
+        "unit_memory_target_loss": 0.34273308515548706,
+        "unit_usage_entropy": 0.7178657650947571
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6664013862609863,
+        "assignment_contrast_loss": 0.6589400172233582,
+        "causal_final_semantic_target_loss": 0.5528494119644165,
+        "different_instance_unit_separation": 0.08894242346286774,
+        "hard_changed_loss": 0.6664013862609863,
+        "loss": 2.8985373973846436,
+        "point_assignment_entropy": 0.24134385585784912,
+        "same_instance_pair_attraction": 0.1754760891199112,
+        "semantic_measurement_causal_contrast_loss": 0.6676076650619507,
+        "stable_preservation_loss": -3.305049034452168e-08,
+        "step": 700.0,
+        "topk_raw_evidence_loss": 0.7737289071083069,
+        "unit_anti_collapse": 0.33469921350479126,
+        "unit_memory_target_loss": 0.3749200999736786,
+        "unit_usage_entropy": 0.6653007864952087
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6142130494117737,
+        "assignment_contrast_loss": 0.650736927986145,
+        "causal_final_semantic_target_loss": 0.515450656414032,
+        "different_instance_unit_separation": 0.11399388313293457,
+        "hard_changed_loss": 0.6142130494117737,
+        "loss": 2.77825927734375,
+        "point_assignment_entropy": 0.24422761797904968,
+        "same_instance_pair_attraction": 0.231398344039917,
+        "semantic_measurement_causal_contrast_loss": 0.6662808656692505,
+        "stable_preservation_loss": -3.3922965769761504e-08,
+        "step": 800.0,
+        "topk_raw_evidence_loss": 0.7718023657798767,
+        "unit_anti_collapse": 0.3236538767814636,
+        "unit_memory_target_loss": 0.3452897369861603,
+        "unit_usage_entropy": 0.6763461232185364
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6486741304397583,
+        "assignment_contrast_loss": 0.6603027582168579,
+        "causal_final_semantic_target_loss": 0.5719797015190125,
+        "different_instance_unit_separation": 0.07639971375465393,
+        "hard_changed_loss": 0.6486741304397583,
+        "loss": 2.858757734298706,
+        "point_assignment_entropy": 0.25171494483947754,
+        "same_instance_pair_attraction": 0.3139820396900177,
+        "semantic_measurement_causal_contrast_loss": 0.6570706963539124,
+        "stable_preservation_loss": -3.304435836071207e-08,
+        "step": 900.0,
+        "topk_raw_evidence_loss": 0.7716439962387085,
+        "unit_anti_collapse": 0.29431718587875366,
+        "unit_memory_target_loss": 0.338247686624527,
+        "unit_usage_entropy": 0.7056828141212463
+      },
+      {
+        "aligned_final_semantic_target_loss": 0.6505212783813477,
+        "assignment_contrast_loss": 0.6505157351493835,
+        "causal_final_semantic_target_loss": 0.5430148243904114,
+        "different_instance_unit_separation": 0.06791534274816513,
+        "hard_changed_loss": 0.6505212783813477,
+        "loss": 2.813420534133911,
+        "point_assignment_entropy": 0.267095685005188,
+        "same_instance_pair_attraction": 0.28361597657203674,
+        "semantic_measurement_causal_contrast_loss": 0.6591841578483582,
+        "stable_preservation_loss": -3.5031039402610986e-08,
+        "step": 1000.0,
+        "topk_raw_evidence_loss": 0.7572106719017029,
+        "unit_anti_collapse": 0.2818028926849365,
+        "unit_memory_target_loss": 0.31901660561561584,
+        "unit_usage_entropy": 0.7181971073150635
+      }
+    ],
+    "measurement_selector_frozen": true,
+    "oracle_residual_probe_ran": true,
+    "semantic_measurement_causal_contrast_loss": {
+      "active": true,
+      "first": 0.6863149404525757,
+      "last": 0.6591841578483582,
+      "mean": 0.6683234897526827
+    },
+    "steps": 1000,
+    "topk": 8,
+    "train_sample_count": 128,
+    "v30_backbone_frozen": true,
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.20 hard/changed-aligned top-k residual content \u8bad\u7ec3\u5b8c\u6210\uff1bV30 \u548c horizon selector \u51bb\u7ed3\uff0c\u672a\u8bad\u7ec3 learned gate\u3002"
+  },
+  "v34_18_reference_decision": {
+    "assignment_load_bearing_on_residual": true,
+    "causal_assignment_subset_gain": {
+      "test": 0.08738482460539065,
+      "val": 0.09364904168683684
+    },
+    "changed_semantic_signal": {
+      "test": false,
+      "val": false
+    },
+    "effective_units": {
+      "test": 11.95266272189349,
+      "val": 11.933333333333334
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-13T13:52:57.521631+00:00",
+    "integrated_identity_field_claim_allowed": false,
+    "integrated_semantic_field_claim_allowed": false,
+    "learned_gate_training_allowed": false,
+    "learned_gate_training_ran": false,
+    "oracle_residual_probe_passed": false,
+    "oracle_residual_probe_ran": true,
+    "pointwise_baseline_dominates": false,
+    "recommended_next_step": "fix_topk_evidence_residual_content",
+    "selector_ablation_delta": {
+      "test": 0.023386554287106467,
+      "val": 0.026669617937993412
+    },
+    "selector_load_bearing_on_residual": true,
+    "semantic_hard_signal": {
+      "test": false,
+      "val": false
+    },
+    "semantic_measurements_load_bearing_on_residual": false,
+    "shuffle_assignment_metric_delta": {
+      "test": 0.00350539551053404,
+      "val": 0.009210169372267124
+    },
+    "shuffle_semantic_measurements_metric_delta": {
+      "test": 0.0010103378794848045,
+      "val": 0.00848504898085864
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "strict_residual_subset_gain": {
+      "test": 0.005082621740083905,
+      "val": 0.00740283492287405
+    },
+    "topk": 8,
+    "topk_evidence_residual_probe_ran": true,
+    "topk_uses_multi_evidence": true,
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6889212508354365,
+      "val": 0.6960470682164414
+    },
+    "unit_memory_load_bearing_on_residual": true,
+    "unit_semantic_purity": {
+      "test": 0.860003871471408,
+      "val": 0.8687022317374887
+    },
+    "v30_backbone_frozen": true,
+    "zero_semantic_measurements_metric_delta": {
+      "test": 0.03453580661279267,
+      "val": 0.0441850882660466
+    },
+    "zero_unit_memory_metric_delta": {
+      "test": 0.08738482463639782,
+      "val": 0.09364904167293817
+    },
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.18 top-k evidence residual probe \u5df2\u8bc4\u4f30\uff1b\u8fd9\u662f oracle residual \u5185\u5bb9\u9a8c\u8bc1\uff0c\u4e0d\u662f learned gate\uff0c\u4e5f\u4e0d\u662f semantic field success\u3002"
+  },
+  "v34_19_reference": {
+    "decision": {
+      "aligned_mask_improves_global_hard_changed": true,
+      "assignment_load_bearing_on_aligned_residual": true,
+      "causal_only_changed_gain": {
+        "test": 0.0012221584457335589,
+        "val": 0.0014355292798869357
+      },
+      "causal_only_hard_gain": {
+        "test": 0.0010314113643443313,
+        "val": 0.0006596075935356486
+      },
+      "changed_gain": {
+        "test": 0.01767071809704397,
+        "val": 0.01655983521838203
+      },
+      "changed_semantic_signal": {
+        "test": true,
+        "val": true
+      },
+      "future_leakage_detected": false,
+      "generated_at_utc": "2026-05-13T13:57:40.095334+00:00",
+      "hard_gain": {
+        "test": 0.012494170185113795,
+        "val": 0.01065278270896983
+      },
+      "mask_ratios": {
+        "test": {
+          "aligned_over_changed": 0.24267568946534548,
+          "aligned_over_hard": 0.571198318703632,
+          "aligned_ratio_valid": 0.13891215961755732,
+          "causal_over_changed": 0.014114906415317275,
+          "causal_over_hard": 0.03322298509113606
+        },
+        "val": {
+          "aligned_over_changed": 0.20189009983995124,
+          "aligned_over_hard": 0.5058239450066833,
+          "aligned_ratio_valid": 0.11074461013633,
+          "causal_over_changed": 0.01595914945507202,
+          "causal_over_hard": 0.03998472407867099
+        }
+      },
+      "probe_ran": true,
+      "recommended_next_step": "train_hard_changed_aligned_topk_residual_content",
+      "selector_ablation_aligned_delta": {
+        "test": 0.019497181127408288,
+        "val": 0.020828715951184407
+      },
+      "selector_load_bearing_on_aligned_residual": true,
+      "semantic_hard_signal": {
+        "test": true,
+        "val": true
+      },
+      "semantic_measurements_load_bearing_on_aligned_residual": true,
+      "shuffle_assignment_aligned_delta": {
+        "test": 0.004763983223862234,
+        "val": 0.008276938600061345
+      },
+      "shuffle_semantic_measurements_aligned_delta": {
+        "test": 0.0053295069225227365,
+        "val": 0.00620537682630827
+      },
+      "stable_preservation": {
+        "test": true,
+        "val": true
+      },
+      "trajectory_degraded": false,
+      "unit_memory_load_bearing_on_aligned_residual": true,
+      "v30_backbone_frozen": true,
+      "zero_semantic_measurements_aligned_delta": {
+        "test": 0.02899817348225687,
+        "val": 0.0351758946108791
+      },
+      "zero_unit_memory_aligned_delta": {
+        "test": 0.07633359756834543,
+        "val": 0.08526610867340059
+      },
+      "\u4e2d\u6587\u7ed3\u8bba": "V34.19 \u53ea\u505a mask realignment \u8bca\u65ad\uff1a\u4e0d\u91cd\u65b0\u8bad\u7ec3\uff0c\u4e0d\u8bad\u7ec3 learned gate\uff0c\u7528 V34.18 top-k residual \u68c0\u67e5 hard/changed \u8986\u76d6\u9519\u4f4d\u662f\u5426\u662f\u4e3b\u8981\u74f6\u9888\u3002"
+    },
+    "generated_at_utc": "2026-05-13T13:57:40.095623+00:00",
+    "per_split": {
+      "test": {
+        "mask_counts": {
+          "aligned": 72296,
+          "causal": 4205,
+          "changed": 297912,
+          "hard": 126569,
+          "hard_changed": 345797,
+          "strict": 72296,
+          "valid": 520444
+        },
+        "mask_ratios": {
+          "aligned_over_changed": 0.24267568946534548,
+          "aligned_over_hard": 0.571198318703632,
+          "aligned_ratio_valid": 0.13891215961755732,
+          "causal_over_changed": 0.014114906415317275,
+          "causal_over_hard": 0.03322298509113606
+        },
+        "modes": {
+          "aligned_selector_ablation": {
+            "aligned_gain": 0.05683641643720456,
+            "causal_gain": 0.06399827031828419,
+            "changed_gain": 0.013175566587819714,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.01188282559037189,
+            "hard_gain": 0.009284675489100652,
+            "semantic_hard_signal": true,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": 0.05683641643720456,
+            "valid_gain": 0.007895269234939752
+          },
+          "aligned_shuffle_assignment": {
+            "aligned_gain": 0.07156961434075061,
+            "causal_gain": 0.08235165004072519,
+            "changed_gain": 0.016567512544372637,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.014963105407071834,
+            "hard_gain": 0.011660459205119836,
+            "semantic_hard_signal": true,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": 0.07156961434075061,
+            "valid_gain": 0.0099418899256197
+          },
+          "aligned_shuffle_semantic_measurements": {
+            "aligned_gain": 0.07100409064209011,
+            "causal_gain": 0.08466357118876454,
+            "changed_gain": 0.016487257415124894,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.014844870476104161,
+            "hard_gain": 0.011594233946017402,
+            "semantic_hard_signal": true,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": 0.07100409064209011,
+            "valid_gain": 0.00986333180732386
+          },
+          "aligned_zero_semantic_measurements": {
+            "aligned_gain": 0.04733542408235598,
+            "causal_gain": 0.05284901799259798,
+            "changed_gain": 0.010939776454064954,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.00989644704085835,
+            "hard_gain": 0.007626198743893986,
+            "semantic_hard_signal": true,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": 0.04733542408235598,
+            "valid_gain": 0.006575466044330583
+          },
+          "aligned_zero_unit_memory": {
+            "aligned_gain": -3.732581553541481e-12,
+            "causal_gain": -3.1007172519897026e-11,
+            "changed_gain": -3.512248290033601e-12,
+            "changed_semantic_signal": false,
+            "hard_changed_gain": -3.80154198581754e-12,
+            "hard_gain": -1.701588425126448e-12,
+            "semantic_hard_signal": false,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": -3.732581553541481e-12,
+            "valid_gain": -2.28247793023273e-12
+          },
+          "causal_only": {
+            "aligned_gain": 0.005082621740083905,
+            "causal_gain": 0.08738482460539065,
+            "changed_gain": 0.0012221584457335589,
+            "changed_semantic_signal": false,
+            "hard_changed_gain": 0.0010626268393321891,
+            "hard_gain": 0.0010314113643443313,
+            "semantic_hard_signal": false,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": 0.005082621740083905,
+            "valid_gain": 0.000706037893718285
+          },
+          "hard_changed_aligned": {
+            "aligned_gain": 0.07633359756461285,
+            "causal_gain": 0.08738482460539065,
+            "changed_gain": 0.01767071809704397,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.01595911389773796,
+            "hard_gain": 0.012494170185113795,
+            "semantic_hard_signal": true,
+            "stable_gain": -8.718963184537785e-13,
+            "stable_preservation": true,
+            "strict_gain": 0.07633359756461285,
+            "valid_gain": 0.010603664771802718
+          },
+          "pointwise": {
+            "aligned_gain": 0.0,
+            "causal_gain": 0.0,
+            "changed_gain": 0.0,
+            "changed_semantic_signal": false,
+            "hard_changed_gain": 0.0,
+            "hard_gain": 0.0,
+            "semantic_hard_signal": false,
+            "stable_gain": 0.0,
+            "stable_preservation": true,
+            "strict_gain": 0.0,
+            "valid_gain": 0.0
+          }
+        }
+      },
+      "val": {
+        "mask_counts": {
+          "aligned": 26490,
+          "causal": 2094,
+          "changed": 131210,
+          "hard": 52370,
+          "hard_changed": 152176,
+          "strict": 26490,
+          "valid": 239199
+        },
+        "mask_ratios": {
+          "aligned_over_changed": 0.20189009983995124,
+          "aligned_over_hard": 0.5058239450066833,
+          "aligned_ratio_valid": 0.11074461013633,
+          "causal_over_changed": 0.01595914945507202,
+          "causal_over_hard": 0.03998472407867099
+        },
+        "modes": {
+          "aligned_selector_ablation": {
+            "aligned_gain": 0.06443739272189977,
+            "causal_gain": 0.06697942374884343,
+            "changed_gain": 0.012494851016351411,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.011216923386099812,
+            "hard_gain": 0.008344063677814186,
+            "semantic_hard_signal": true,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": 0.06443739272189977,
+            "valid_gain": 0.007136093935188379
+          },
+          "aligned_shuffle_assignment": {
+            "aligned_gain": 0.07698917007302283,
+            "causal_gain": 0.07702506100892338,
+            "changed_gain": 0.014947022731034697,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.01340187096016701,
+            "hard_gain": 0.009660615860926461,
+            "semantic_hard_signal": true,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": 0.07698917007302283,
+            "valid_gain": 0.00852613562445652
+          },
+          "aligned_shuffle_semantic_measurements": {
+            "aligned_gain": 0.07906073184677591,
+            "causal_gain": 0.08617091429381567,
+            "changed_gain": 0.01535884048070007,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.013762477569531948,
+            "hard_gain": 0.009812356170543579,
+            "semantic_hard_signal": true,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": 0.07906073184677591,
+            "valid_gain": 0.008755550180628891
+          },
+          "aligned_zero_semantic_measurements": {
+            "aligned_gain": 0.050090214062205075,
+            "causal_gain": 0.04946395342079024,
+            "changed_gain": 0.009727267653520002,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.008719441968676996,
+            "hard_gain": 0.006397752250130904,
+            "semantic_hard_signal": true,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": 0.050090214062205075,
+            "valid_gain": 0.005547221355546598
+          },
+          "aligned_zero_unit_memory": {
+            "aligned_gain": -3.1641763576969823e-13,
+            "causal_gain": 1.3898677390990308e-11,
+            "changed_gain": -5.841616331899541e-12,
+            "changed_semantic_signal": false,
+            "hard_changed_gain": -2.965157366478284e-12,
+            "hard_gain": -3.4455556393307038e-12,
+            "semantic_hard_signal": false,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": -3.1641763576969823e-13,
+            "valid_gain": 1.597310549943771e-12
+          },
+          "causal_only": {
+            "aligned_gain": 0.00740283492287405,
+            "causal_gain": 0.09364904168683684,
+            "changed_gain": 0.0014355292798869357,
+            "changed_semantic_signal": false,
+            "hard_changed_gain": 0.0012886467046159108,
+            "hard_gain": 0.0006596075935356486,
+            "semantic_hard_signal": false,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": 0.00740283492287405,
+            "valid_gain": 0.0008198240993328907
+          },
+          "hard_changed_aligned": {
+            "aligned_gain": 0.08526610867308418,
+            "causal_gain": 0.09364904168683684,
+            "changed_gain": 0.01655983521838203,
+            "changed_semantic_signal": true,
+            "hard_changed_gain": 0.014842677023643676,
+            "hard_gain": 0.01065278270896983,
+            "semantic_hard_signal": true,
+            "stable_gain": -1.580143052239304e-12,
+            "stable_preservation": true,
+            "strict_gain": 0.08526610867308418,
+            "valid_gain": 0.009442762218007418
+          },
+          "pointwise": {
+            "aligned_gain": 0.0,
+            "causal_gain": 0.0,
+            "changed_gain": 0.0,
+            "changed_semantic_signal": false,
+            "hard_changed_gain": 0.0,
+            "hard_gain": 0.0,
+            "semantic_hard_signal": false,
+            "stable_gain": 0.0,
+            "stable_preservation": true,
+            "strict_gain": 0.0,
+            "valid_gain": 0.0
+          }
+        }
+      }
+    },
+    "train_summary": {
+      "assignment_contrast_loss": {
+        "active": true,
+        "first": 0.6961582899093628,
+        "last": 0.6455799341201782,
+        "mean": 0.6648685877973383
+      },
+      "checkpoint_path": "outputs/checkpoints/stwm_ostf_v34_18_topk_evidence_oracle_residual_probe_h32_m128/v34_18_topk_evidence_oracle_residual_probe_m128_h32_seed42_best.pt",
+      "duration_seconds": 1029.6980171203613,
+      "fresh_training_completed": true,
+      "future_leakage_detected": false,
+      "generated_at_utc": "2026-05-13T13:52:19.110053+00:00",
+      "init_checkpoint": {
+        "selector_frozen": true,
+        "selector_init_source": "outputs/checkpoints/stwm_ostf_v34_14_horizon_conditioned_measurement_selector_h32_m128/v34_14_horizon_conditioned_measurement_selector_m128_h32_seed42_best.pt"
+      },
+      "loss_trace": [
+        {
+          "assignment_contrast_loss": 0.6961582899093628,
+          "different_instance_unit_separation": 0.07612331956624985,
+          "final_semantic_target_loss": 0.9983692169189453,
+          "loss": 4.4590373039245605,
+          "point_assignment_entropy": 0.9308755397796631,
+          "same_instance_pair_attraction": 2.4902384281158447,
+          "semantic_measurement_causal_contrast_loss": 0.6963938474655151,
+          "stable_preservation_loss": -3.292972650115189e-08,
+          "step": 1.0,
+          "topk_raw_evidence_loss": 0.7739195227622986,
+          "unit_anti_collapse": 0.03787112236022949,
+          "unit_memory_target_loss": 1.0033118724822998,
+          "unit_usage_entropy": 0.9621288776397705
+        },
+        {
+          "assignment_contrast_loss": 0.6958062052726746,
+          "different_instance_unit_separation": 0.22716708481311798,
+          "final_semantic_target_loss": 0.8005297183990479,
+          "loss": 3.504565954208374,
+          "point_assignment_entropy": 0.4676433801651001,
+          "same_instance_pair_attraction": 0.49139338731765747,
+          "semantic_measurement_causal_contrast_loss": 0.6919445395469666,
+          "stable_preservation_loss": -4.270305353770709e-08,
+          "step": 150.0,
+          "topk_raw_evidence_loss": 0.8329369425773621,
+          "unit_anti_collapse": 0.3167528510093689,
+          "unit_memory_target_loss": 0.6703717708587646,
+          "unit_usage_entropy": 0.6832471489906311
+        },
+        {
+          "assignment_contrast_loss": 0.6883592009544373,
+          "different_instance_unit_separation": 0.15536530315876007,
+          "final_semantic_target_loss": 0.7302920818328857,
+          "loss": 3.2516849040985107,
+          "point_assignment_entropy": 0.4590628743171692,
+          "same_instance_pair_attraction": 0.43948766589164734,
+          "semantic_measurement_causal_contrast_loss": 0.6947021484375,
+          "stable_preservation_loss": -3.277452265137981e-08,
+          "step": 300.0,
+          "topk_raw_evidence_loss": 0.8150256872177124,
+          "unit_anti_collapse": 0.2840844988822937,
+          "unit_memory_target_loss": 0.5679139494895935,
+          "unit_usage_entropy": 0.7159155011177063
+        },
+        {
+          "assignment_contrast_loss": 0.6779717206954956,
+          "different_instance_unit_separation": 0.1924225389957428,
+          "final_semantic_target_loss": 0.727533221244812,
+          "loss": 3.2656195163726807,
+          "point_assignment_entropy": 0.3349294066429138,
+          "same_instance_pair_attraction": 0.3109877109527588,
+          "semantic_measurement_causal_contrast_loss": 0.688797116279602,
+          "stable_preservation_loss": -3.2722649478955645e-08,
+          "step": 450.0,
+          "topk_raw_evidence_loss": 0.8430833220481873,
+          "unit_anti_collapse": 0.36722683906555176,
+          "unit_memory_target_loss": 0.569894552230835,
+          "unit_usage_entropy": 0.6327731609344482
+        },
+        {
+          "assignment_contrast_loss": 0.6731059551239014,
+          "different_instance_unit_separation": 0.1303470879793167,
+          "final_semantic_target_loss": 0.7102246880531311,
+          "loss": 3.1235690116882324,
+          "point_assignment_entropy": 0.4077927768230438,
+          "same_instance_pair_attraction": 0.45829465985298157,
+          "semantic_measurement_causal_contrast_loss": 0.6845988631248474,
+          "stable_preservation_loss": -3.5015556676398774e-08,
+          "step": 600.0,
+          "topk_raw_evidence_loss": 0.817552387714386,
+          "unit_anti_collapse": 0.2698094844818115,
+          "unit_memory_target_loss": 0.485533207654953,
+          "unit_usage_entropy": 0.7301905155181885
+        },
+        {
+          "assignment_contrast_loss": 0.6529690623283386,
+          "different_instance_unit_separation": 0.1236715242266655,
+          "final_semantic_target_loss": 0.6337828040122986,
+          "loss": 2.958615779876709,
+          "point_assignment_entropy": 0.3427959084510803,
+          "same_instance_pair_attraction": 0.34779104590415955,
+          "semantic_measurement_causal_contrast_loss": 0.6745644211769104,
+          "stable_preservation_loss": -3.841986284669474e-08,
+          "step": 750.0,
+          "topk_raw_evidence_loss": 0.7626399993896484,
+          "unit_anti_collapse": 0.3150935769081116,
+          "unit_memory_target_loss": 0.47558268904685974,
+          "unit_usage_entropy": 0.6849064230918884
+        },
+        {
+          "assignment_contrast_loss": 0.659583568572998,
+          "different_instance_unit_separation": 0.12017073482275009,
+          "final_semantic_target_loss": 0.6368906497955322,
+          "loss": 2.946004867553711,
+          "point_assignment_entropy": 0.346204549074173,
+          "same_instance_pair_attraction": 0.3856149911880493,
+          "semantic_measurement_causal_contrast_loss": 0.6672243475914001,
+          "stable_preservation_loss": -3.304435836071207e-08,
+          "step": 900.0,
+          "topk_raw_evidence_loss": 0.8162781000137329,
+          "unit_anti_collapse": 0.29372483491897583,
+          "unit_memory_target_loss": 0.4232238531112671,
+          "unit_usage_entropy": 0.7062751650810242
+        },
+        {
+          "assignment_contrast_loss": 0.6625729203224182,
+          "different_instance_unit_separation": 0.13383285701274872,
+          "final_semantic_target_loss": 0.5857467651367188,
+          "loss": 2.8327555656433105,
+          "point_assignment_entropy": 0.3235737979412079,
+          "same_instance_pair_attraction": 0.2759020924568176,
+          "semantic_measurement_causal_contrast_loss": 0.6685386896133423,
+          "stable_preservation_loss": -3.138975657179799e-08,
+          "step": 1050.0,
+          "topk_raw_evidence_loss": 0.7986475825309753,
+          "unit_anti_collapse": 0.31833362579345703,
+          "unit_memory_target_loss": 0.4012194275856018,
+          "unit_usage_entropy": 0.681666374206543
+        },
+        {
+          "assignment_contrast_loss": 0.6507400870323181,
+          "different_instance_unit_separation": 0.11339437961578369,
+          "final_semantic_target_loss": 0.6755666136741638,
+          "loss": 2.9257991313934326,
+          "point_assignment_entropy": 0.34361642599105835,
+          "same_instance_pair_attraction": 0.3148275911808014,
+          "semantic_measurement_causal_contrast_loss": 0.6651034951210022,
+          "stable_preservation_loss": -3.609734733345249e-08,
+          "step": 1200.0,
+          "topk_raw_evidence_loss": 0.8144071698188782,
+          "unit_anti_collapse": 0.2656852602958679,
+          "unit_memory_target_loss": 0.3951856791973114,
+          "unit_usage_entropy": 0.7343147397041321
+        },
+        {
+          "assignment_contrast_loss": 0.6107075214385986,
+          "different_instance_unit_separation": 0.12226475030183792,
+          "final_semantic_target_loss": 0.5820720791816711,
+          "loss": 2.781569480895996,
+          "point_assignment_entropy": 0.2976040542125702,
+          "same_instance_pair_attraction": 0.25092336535453796,
+          "semantic_measurement_causal_contrast_loss": 0.6549891829490662,
+          "stable_preservation_loss": -3.698736961155191e-08,
+          "step": 1350.0,
+          "topk_raw_evidence_loss": 0.800677478313446,
+          "unit_anti_collapse": 0.3220459222793579,
+          "unit_memory_target_loss": 0.3989686667919159,
+          "unit_usage_entropy": 0.6779540777206421
+        },
+        {
+          "assignment_contrast_loss": 0.6455799341201782,
+          "different_instance_unit_separation": 0.10599055141210556,
+          "final_semantic_target_loss": 0.6194745898246765,
+          "loss": 2.8382861614227295,
+          "point_assignment_entropy": 0.2857576906681061,
+          "same_instance_pair_attraction": 0.2333381325006485,
+          "semantic_measurement_causal_contrast_loss": 0.6626847386360168,
+          "stable_preservation_loss": -3.804075277002994e-08,
+          "step": 1500.0,
+          "topk_raw_evidence_loss": 0.8339985013008118,
+          "unit_anti_collapse": 0.3196635842323303,
+          "unit_memory_target_loss": 0.37325477600097656,
+          "unit_usage_entropy": 0.6803364157676697
+        }
+      ],
+      "measurement_selector_frozen": true,
+      "oracle_residual_probe_ran": true,
+      "semantic_measurement_causal_contrast_loss": {
+        "active": true,
+        "first": 0.6963938474655151,
+        "last": 0.6626847386360168,
+        "mean": 0.6772310354492881
+      },
+      "steps": 1500,
+      "topk": 8,
+      "train_sample_count": 128,
+      "v30_backbone_frozen": true,
+      "\u4e2d\u6587\u7ed3\u8bba": "V34.18 top-k evidence-conditioned oracle residual probe \u5df2\u5b8c\u6210\u8bad\u7ec3\uff1bV30 \u4e0e V34.14 selector \u51bb\u7ed3\uff0cresidual \u8bfb\u53d6 top-k raw evidence set\uff0c\u672a\u8bad\u7ec3 learned gate\u3002"
+    },
+    "v34_18_reference_decision": {
+      "assignment_load_bearing_on_residual": true,
+      "causal_assignment_subset_gain": {
+        "test": 0.08738482460539065,
+        "val": 0.09364904168683684
+      },
+      "changed_semantic_signal": {
+        "test": false,
+        "val": false
+      },
+      "effective_units": {
+        "test": 11.95266272189349,
+        "val": 11.933333333333334
+      },
+      "future_leakage_detected": false,
+      "generated_at_utc": "2026-05-13T13:52:57.521631+00:00",
+      "integrated_identity_field_claim_allowed": false,
+      "integrated_semantic_field_claim_allowed": false,
+      "learned_gate_training_allowed": false,
+      "learned_gate_training_ran": false,
+      "oracle_residual_probe_passed": false,
+      "oracle_residual_probe_ran": true,
+      "pointwise_baseline_dominates": false,
+      "recommended_next_step": "fix_topk_evidence_residual_content",
+      "selector_ablation_delta": {
+        "test": 0.023386554287106467,
+        "val": 0.026669617937993412
+      },
+      "selector_load_bearing_on_residual": true,
+      "semantic_hard_signal": {
+        "test": false,
+        "val": false
+      },
+      "semantic_measurements_load_bearing_on_residual": false,
+      "shuffle_assignment_metric_delta": {
+        "test": 0.00350539551053404,
+        "val": 0.009210169372267124
+      },
+      "shuffle_semantic_measurements_metric_delta": {
+        "test": 0.0010103378794848045,
+        "val": 0.00848504898085864
+      },
+      "stable_preservation": {
+        "test": true,
+        "val": true
+      },
+      "strict_residual_subset_gain": {
+        "test": 0.005082621740083905,
+        "val": 0.00740283492287405
+      },
+      "topk": 8,
+      "topk_evidence_residual_probe_ran": true,
+      "topk_uses_multi_evidence": true,
+      "trajectory_degraded": false,
+      "unit_dominant_instance_purity": {
+        "test": 0.6889212508354365,
+        "val": 0.6960470682164414
+      },
+      "unit_memory_load_bearing_on_residual": true,
+      "unit_semantic_purity": {
+        "test": 0.860003871471408,
+        "val": 0.8687022317374887
+      },
+      "v30_backbone_frozen": true,
+      "zero_semantic_measurements_metric_delta": {
+        "test": 0.03453580661279267,
+        "val": 0.0441850882660466
+      },
+      "zero_unit_memory_metric_delta": {
+        "test": 0.08738482463639782,
+        "val": 0.09364904167293817
+      },
+      "\u4e2d\u6587\u7ed3\u8bba": "V34.18 top-k evidence residual probe \u5df2\u8bc4\u4f30\uff1b\u8fd9\u662f oracle residual \u5185\u5bb9\u9a8c\u8bc1\uff0c\u4e0d\u662f learned gate\uff0c\u4e5f\u4e0d\u662f semantic field success\u3002"
+    }
+  }
+}

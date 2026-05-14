@@ -1,0 +1,264 @@
+{
+  "codebook_report": {
+    "codebook_built": true,
+    "codebook_norm_max": 0.04807120934128761,
+    "codebook_norm_mean": 0.015871088951826096,
+    "generated_at_utc": "2026-05-14T17:12:45.994391+00:00",
+    "learnable_codebook": false,
+    "prototype_count": 64,
+    "prototype_count_max": 1023.0,
+    "prototype_count_min": 103.0,
+    "prototype_count_nonempty": 64,
+    "prototype_target_root": "outputs/cache/stwm_ostf_v34_38_cluster_regularized_unit_delta_targets/pointodyssey",
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.40 prototype codebook \u5df2\u4ece V34.38 train split \u7684 assignment-bound prototype target \u4e2d\u6784\u5efa\uff1b\u8bad\u7ec3 writer \u65f6 codebook \u9ed8\u8ba4\u51bb\u7ed3\uff0c\u53ea\u5b66\u4e60 observed-only prototype mixture \u4e0e\u5c0f\u5e45 residual\u3002"
+  },
+  "decision": {
+    "assignment_load_bearing_on_system": false,
+    "beats_copy_topk_baseline": false,
+    "best_copy_topk_baseline": {
+      "test": {
+        "hard_changed_gain_vs_pointwise": 0.4799978958679831,
+        "method": "copy_mean_observed"
+      },
+      "val": {
+        "hard_changed_gain_vs_pointwise": 0.4753341297786979,
+        "method": "copy_mean_observed"
+      }
+    },
+    "changed_semantic_signal": {
+      "test": true,
+      "val": true
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-14T17:21:34.315258+00:00",
+    "integrated_identity_field_claim_allowed": false,
+    "integrated_semantic_field_claim_allowed": false,
+    "intervention_delta": {
+      "test": {
+        "normal_hard_changed_gain_vs_anchor": -0.0002694069959474218,
+        "normal_hard_changed_gain_vs_pointwise": 0.4797284842098019,
+        "shuffle_assignment_delta": 0.0004184820541160983,
+        "zero_unit_memory_delta": -0.0002694109521581556
+      },
+      "val": {
+        "normal_hard_changed_gain_vs_anchor": -0.00017329632181130978,
+        "normal_hard_changed_gain_vs_pointwise": 0.4751608331877029,
+        "shuffle_assignment_delta": 0.00028788430522064257,
+        "zero_unit_memory_delta": -0.00017329659099496464
+      }
+    },
+    "learned_gate_training_ran": false,
+    "m512_dense_ready": false,
+    "predictability_filtered_targets_built": true,
+    "probe_passed": false,
+    "recommended_next_step": "fix_predictability_filtered_targets",
+    "scale_sweep": [
+      {
+        "gate_mode": "sparse_gate",
+        "scale": 0.25,
+        "stable": true,
+        "val_gain_anchor": -0.0014283193464123317,
+        "val_gain_pointwise": 0.47390581503386703
+      },
+      {
+        "gate_mode": "sparse_gate",
+        "scale": 0.5,
+        "stable": true,
+        "val_gain_anchor": -0.004093890162675417,
+        "val_gain_pointwise": 0.4712402468887793
+      },
+      {
+        "gate_mode": "sparse_gate",
+        "scale": 1.0,
+        "stable": true,
+        "val_gain_anchor": -0.013267876610321246,
+        "val_gain_pointwise": 0.4620662621426013
+      },
+      {
+        "gate_mode": "sparse_gate",
+        "scale": 2.0,
+        "stable": true,
+        "val_gain_anchor": -0.04568391111468356,
+        "val_gain_pointwise": 0.4296502201680743
+      },
+      {
+        "gate_mode": "predictable_oracle_mask",
+        "scale": 0.25,
+        "stable": true,
+        "val_gain_anchor": -0.00017329632181130978,
+        "val_gain_pointwise": 0.4751608331877029
+      },
+      {
+        "gate_mode": "predictable_oracle_mask",
+        "scale": 0.5,
+        "stable": true,
+        "val_gain_anchor": -0.0005988185153456469,
+        "val_gain_pointwise": 0.4747353133537606
+      },
+      {
+        "gate_mode": "predictable_oracle_mask",
+        "scale": 1.0,
+        "stable": true,
+        "val_gain_anchor": -0.0021822396738272764,
+        "val_gain_pointwise": 0.4731519031494577
+      },
+      {
+        "gate_mode": "predictable_oracle_mask",
+        "scale": 2.0,
+        "stable": true,
+        "val_gain_anchor": -0.007427235323226411,
+        "val_gain_pointwise": 0.4679068921429792
+      }
+    ],
+    "selected_config_by_val": {
+      "gate_mode": "predictable_oracle_mask",
+      "scale": 0.25,
+      "stable": true,
+      "val_gain_anchor": -0.00017329632181130978,
+      "val_gain_pointwise": 0.4751608331877029
+    },
+    "semantic_hard_signal": {
+      "test": true,
+      "val": true
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "target_report": {
+      "codebook_built": true,
+      "codebook_norm_max": 0.04807120934128761,
+      "codebook_norm_mean": 0.015871088951826096,
+      "generated_at_utc": "2026-05-14T17:12:45.994391+00:00",
+      "learnable_codebook": false,
+      "prototype_count": 64,
+      "prototype_count_max": 1023.0,
+      "prototype_count_min": 103.0,
+      "prototype_count_nonempty": 64,
+      "prototype_target_root": "outputs/cache/stwm_ostf_v34_38_cluster_regularized_unit_delta_targets/pointodyssey",
+      "\u4e2d\u6587\u7ed3\u8bba": "V34.40 prototype codebook \u5df2\u4ece V34.38 train split \u7684 assignment-bound prototype target \u4e2d\u6784\u5efa\uff1b\u8bad\u7ec3 writer \u65f6 codebook \u9ed8\u8ba4\u51bb\u7ed3\uff0c\u53ea\u5b66\u4e60 observed-only prototype mixture \u4e0e\u5c0f\u5e45 residual\u3002"
+    },
+    "trajectory_degraded": false,
+    "unit_memory_load_bearing_on_system": false,
+    "unit_residual_improves_evidence_anchor": false,
+    "v30_backbone_frozen": true,
+    "v34_36_metrics": {
+      "test": {
+        "aligned_cosine": 0.31728746438034344,
+        "aligned_gain_vs_anchor": -0.0012885864741199113,
+        "aligned_gain_vs_pointwise": 0.31695479445453767,
+        "aligned_gate_mean": 0.710620227951754,
+        "aligned_over_open_rate": 0.710620227951754,
+        "aligned_over_update_rate": 0.007676773265464203,
+        "changed_cosine": 0.43272035959798427,
+        "changed_gain_vs_anchor": -0.0002983329080527603,
+        "changed_gain_vs_pointwise": 0.4315022631161976,
+        "changed_gate_mean": 0.16510915975187304,
+        "changed_over_open_rate": 0.16510915975187304,
+        "changed_over_update_rate": 0.0023664706356239427,
+        "changed_semantic_signal": true,
+        "hard_changed_cosine": 0.48100643520733444,
+        "hard_changed_gain_vs_anchor": -0.0002694069959474218,
+        "hard_changed_gain_vs_pointwise": 0.4797284842098019,
+        "hard_changed_gate_mean": 0.14856982564915253,
+        "hard_changed_over_open_rate": 0.14856982564915253,
+        "hard_changed_over_update_rate": 0.0020387684103679326,
+        "hard_cosine": 0.5546501774569356,
+        "hard_gain_vs_anchor": -0.0001209565782039998,
+        "hard_gain_vs_pointwise": 0.553971620967522,
+        "hard_gate_mean": 0.11596836508149705,
+        "hard_over_open_rate": 0.11596836508149705,
+        "hard_over_update_rate": 0.001769785650514739,
+        "semantic_hard_signal": true,
+        "stable_cosine": 0.855191965495991,
+        "stable_gain_vs_anchor": -2.9596692163047065e-09,
+        "stable_gain_vs_pointwise": 0.8559437262503656,
+        "stable_gate_mean": 0.0,
+        "stable_over_open_rate": 0.0,
+        "stable_over_update_rate": 0.0,
+        "stable_overopen_controlled": true,
+        "stable_preservation": true,
+        "unit_residual_improves_anchor": false,
+        "valid_cosine": 0.5864019096555056,
+        "valid_gain_vs_anchor": -0.00017900233985728835,
+        "valid_gain_vs_pointwise": 0.585425387029062,
+        "valid_gate_mean": 0.098713790532699,
+        "valid_over_open_rate": 0.098713790532699,
+        "valid_over_update_rate": 0.00135461260001076
+      },
+      "val": {
+        "aligned_cosine": 0.30951095169199866,
+        "aligned_gain_vs_anchor": -0.0009955205954259726,
+        "aligned_gain_vs_pointwise": 0.3101557419497186,
+        "aligned_gate_mean": 0.7607776519441298,
+        "aligned_over_open_rate": 0.7607776519441298,
+        "aligned_over_update_rate": 0.013816534541336353,
+        "changed_cosine": 0.4286809264936695,
+        "changed_gain_vs_anchor": -0.00018870293056080868,
+        "changed_gain_vs_pointwise": 0.4252216988897807,
+        "changed_gate_mean": 0.14864720676777685,
+        "changed_over_open_rate": 0.14864720676777685,
+        "changed_over_update_rate": 0.0035363158295861597,
+        "changed_semantic_signal": true,
+        "hard_changed_cosine": 0.47785467766096085,
+        "hard_changed_gain_vs_anchor": -0.00017329632181130978,
+        "hard_changed_gain_vs_pointwise": 0.4751608331877029,
+        "hard_changed_gate_mean": 0.13243218378719376,
+        "hard_changed_over_open_rate": 0.13243218378719376,
+        "hard_changed_over_update_rate": 0.0030491010409000106,
+        "hard_cosine": 0.5544148312376181,
+        "hard_gain_vs_anchor": -0.00013173464632327942,
+        "hard_gain_vs_pointwise": 0.5513418597166198,
+        "hard_gate_mean": 0.09161733817070843,
+        "hard_over_open_rate": 0.09161733817070843,
+        "hard_over_update_rate": 0.0018140156578193623,
+        "semantic_hard_signal": true,
+        "stable_cosine": 0.903853182934772,
+        "stable_gain_vs_anchor": -4.221043005634036e-09,
+        "stable_gain_vs_pointwise": 0.8974495164832382,
+        "stable_gate_mean": 0.0,
+        "stable_over_open_rate": 0.0,
+        "stable_over_update_rate": 0.0,
+        "stable_overopen_controlled": true,
+        "stable_preservation": true,
+        "unit_residual_improves_anchor": false,
+        "valid_cosine": 0.5984848679701577,
+        "valid_gain_vs_anchor": -0.00011025041223605944,
+        "valid_gain_vs_pointwise": 0.5972800922296916,
+        "valid_gate_mean": 0.08425202446498523,
+        "valid_over_open_rate": 0.08425202446498523,
+        "valid_over_update_rate": 0.001939807440666558
+      }
+    },
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.36 predictability-filtered unit_delta writer \u5b8c\u6210\uff1b\u76ee\u6807\u4ece\u539f\u59cb sample-specific oracle delta \u6539\u6210 observed-predictable filtered component\uff0c\u4ecd\u4e0d\u8bad\u7ec3 learned gate\u3002"
+  },
+  "generated_at_utc": "2026-05-14T17:21:34.315554+00:00",
+  "train_summary": {
+    "checkpoint_path": "outputs/checkpoints/stwm_ostf_v34_40_prototype_conditioned_mixture_unit_delta_writer_h32_m128/v34_40_prototype_conditioned_mixture_unit_delta_writer_m128_h32_seed42.pt",
+    "codebook_report": {
+      "codebook_built": true,
+      "codebook_norm_max": 0.04807120934128761,
+      "codebook_norm_mean": 0.015871088951826096,
+      "generated_at_utc": "2026-05-14T17:12:45.994391+00:00",
+      "learnable_codebook": false,
+      "prototype_count": 64,
+      "prototype_count_max": 1023.0,
+      "prototype_count_min": 103.0,
+      "prototype_count_nonempty": 64,
+      "prototype_target_root": "outputs/cache/stwm_ostf_v34_38_cluster_regularized_unit_delta_targets/pointodyssey",
+      "\u4e2d\u6587\u7ed3\u8bba": "V34.40 prototype codebook \u5df2\u4ece V34.38 train split \u7684 assignment-bound prototype target \u4e2d\u6784\u5efa\uff1b\u8bad\u7ec3 writer \u65f6 codebook \u9ed8\u8ba4\u51bb\u7ed3\uff0c\u53ea\u5b66\u4e60 observed-only prototype mixture \u4e0e\u5c0f\u5e45 residual\u3002"
+    },
+    "eval_only_loaded_checkpoint": true,
+    "fresh_training_completed": false,
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-14T17:12:47.744296+00:00",
+    "learned_gate_training_ran": false,
+    "trajectory_degraded": false,
+    "v30_backbone_frozen": true,
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.40 prototype-conditioned mixture writer \u4ece\u5df2\u4fdd\u5b58 checkpoint \u8fdb\u5165 eval-only\uff1b\u6ca1\u6709\u91cd\u65b0\u8bad\u7ec3\u3002"
+  },
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.40 prototype-conditioned mixture writer \u8bad\u7ec3/\u8bc4\u4f30\u5b8c\u6210\uff1b\u8be5\u8f6e\u68c0\u9a8c\u5171\u4eab prototype correction mode \u662f\u5426\u80fd\u6539\u5584 V34.39 learned writer \u7684 val/test \u6cdb\u5316\u3002",
+  "\u6700\u4f73\u4e0b\u4e00\u6b65\u65b9\u6848": "fix_predictability_filtered_targets",
+  "\u8bba\u6587\u76f8\u5173\u95ee\u9898\u89e3\u51b3\u65b9\u6848\u53c2\u8003": "\u8be5\u8f6e\u5bf9\u5e94 VQ/codebook\u3001mixture-of-experts \u4e0e object-centric slot memory \u601d\u8def\uff1a\u5148\u9009\u62e9\u5171\u4eab correction mode\uff0c\u518d\u505a\u5c0f\u5e45\u8fde\u7eed\u4fee\u6b63\uff0c\u800c\u4e0d\u662f\u76f4\u63a5\u56de\u5f52\u4e0d\u53ef\u9884\u6d4b\u7684 sample-specific delta\u3002",
+  "\u9636\u6bb5\u6027\u5206\u6790": "V34.39 \u8bc1\u660e\u8fde\u7eed blended target \u53ef\u5728\u8bad\u7ec3\u96c6\u8fc7\u62df\u5408\u4f46 val/test \u4e0d\u6cdb\u5316\uff1bV34.40 \u6539\u6210 prototype mixture + \u5c0f residual\uff0c\u9650\u5236 writer \u8bb0\u5fc6\u6837\u672c\u566a\u58f0\uff0c\u8981\u6c42 val/test \u6b63\u589e\u76ca\u548c assignment delta \u540c\u65f6\u6210\u7acb\u3002"
+}

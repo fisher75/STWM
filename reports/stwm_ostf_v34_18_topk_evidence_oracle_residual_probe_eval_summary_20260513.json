@@ -1,0 +1,811 @@
+{
+  "decision": {
+    "assignment_load_bearing_on_residual": true,
+    "causal_assignment_subset_gain": {
+      "test": 0.08738482460539065,
+      "val": 0.09364904168683684
+    },
+    "changed_semantic_signal": {
+      "test": false,
+      "val": false
+    },
+    "effective_units": {
+      "test": 11.95266272189349,
+      "val": 11.933333333333334
+    },
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-13T13:52:57.521631+00:00",
+    "integrated_identity_field_claim_allowed": false,
+    "integrated_semantic_field_claim_allowed": false,
+    "learned_gate_training_allowed": false,
+    "learned_gate_training_ran": false,
+    "oracle_residual_probe_passed": false,
+    "oracle_residual_probe_ran": true,
+    "pointwise_baseline_dominates": false,
+    "recommended_next_step": "fix_topk_evidence_residual_content",
+    "selector_ablation_delta": {
+      "test": 0.023386554287106467,
+      "val": 0.026669617937993412
+    },
+    "selector_load_bearing_on_residual": true,
+    "semantic_hard_signal": {
+      "test": false,
+      "val": false
+    },
+    "semantic_measurements_load_bearing_on_residual": false,
+    "shuffle_assignment_metric_delta": {
+      "test": 0.00350539551053404,
+      "val": 0.009210169372267124
+    },
+    "shuffle_semantic_measurements_metric_delta": {
+      "test": 0.0010103378794848045,
+      "val": 0.00848504898085864
+    },
+    "stable_preservation": {
+      "test": true,
+      "val": true
+    },
+    "strict_residual_subset_gain": {
+      "test": 0.005082621740083905,
+      "val": 0.00740283492287405
+    },
+    "topk": 8,
+    "topk_evidence_residual_probe_ran": true,
+    "topk_uses_multi_evidence": true,
+    "trajectory_degraded": false,
+    "unit_dominant_instance_purity": {
+      "test": 0.6889212508354365,
+      "val": 0.6960470682164414
+    },
+    "unit_memory_load_bearing_on_residual": true,
+    "unit_semantic_purity": {
+      "test": 0.860003871471408,
+      "val": 0.8687022317374887
+    },
+    "v30_backbone_frozen": true,
+    "zero_semantic_measurements_metric_delta": {
+      "test": 0.03453580661279267,
+      "val": 0.0441850882660466
+    },
+    "zero_unit_memory_metric_delta": {
+      "test": 0.08738482463639782,
+      "val": 0.09364904167293817
+    },
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.18 top-k evidence residual probe \u5df2\u8bc4\u4f30\uff1b\u8fd9\u662f oracle residual \u5185\u5bb9\u9a8c\u8bc1\uff0c\u4e0d\u662f learned gate\uff0c\u4e5f\u4e0d\u662f semantic field success\u3002"
+  },
+  "generated_at_utc": "2026-05-13T13:52:57.521985+00:00",
+  "per_split": {
+    "test": {
+      "modes": {
+        "normal": {
+          "causal_assignment_subset_gain": 0.08738482460539065,
+          "causal_gain": 0.08738482460539065,
+          "changed_gain": 0.0012221584457335589,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0010314113643443313,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.005082621740083905,
+          "strict_residual_subset_gain": 0.005082621740083905,
+          "valid_gain": 0.000706037893718285
+        },
+        "pointwise": {
+          "causal_assignment_subset_gain": 0.0,
+          "causal_gain": 0.0,
+          "changed_gain": 0.0,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0,
+          "semantic_hard_signal": false,
+          "stable_gain": 0.0,
+          "stable_preservation": true,
+          "strict_gain": 0.0,
+          "strict_residual_subset_gain": 0.0,
+          "valid_gain": 0.0
+        },
+        "selector_ablation": {
+          "causal_assignment_subset_gain": 0.06399827031828419,
+          "causal_gain": 0.06399827031828419,
+          "changed_gain": 0.0008943589491908073,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0007107843778682097,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.003722373786536653,
+          "strict_residual_subset_gain": 0.003722373786536653,
+          "valid_gain": 0.0005170829751781051
+        },
+        "shuffle_assignment": {
+          "causal_assignment_subset_gain": 0.08387942909485661,
+          "causal_gain": 0.08387942909485661,
+          "changed_gain": 0.0011740716514821985,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0010176211133321317,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.0048787345846129085,
+          "strict_residual_subset_gain": 0.0048787345846129085,
+          "valid_gain": 0.0006777155628467188
+        },
+        "shuffle_semantic_measurements": {
+          "causal_assignment_subset_gain": 0.08637448672590585,
+          "causal_gain": 0.08637448672590585,
+          "changed_gain": 0.0012075369729209258,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0010047421170265806,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.005023856269610169,
+          "strict_residual_subset_gain": 0.005023856269610169,
+          "valid_gain": 0.0006978747276846028
+        },
+        "zero_semantic_measurements": {
+          "causal_assignment_subset_gain": 0.05284901799259798,
+          "causal_gain": 0.05284901799259798,
+          "changed_gain": 0.0007399625772308044,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0004953399477996662,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": 0.0030738923802132545,
+          "strict_residual_subset_gain": 0.0030738923802132545,
+          "valid_gain": 0.00042700102713495237
+        },
+        "zero_unit_memory": {
+          "causal_assignment_subset_gain": -3.1007172519897026e-11,
+          "causal_gain": -3.1007172519897026e-11,
+          "changed_gain": -3.512248290033601e-12,
+          "changed_semantic_signal": false,
+          "hard_gain": -1.701588425126448e-12,
+          "semantic_hard_signal": false,
+          "stable_gain": -8.718963184537785e-13,
+          "stable_preservation": true,
+          "strict_gain": -3.732581553541481e-12,
+          "strict_residual_subset_gain": -3.732581553541481e-12,
+          "valid_gain": -2.28247793023273e-12
+        }
+      },
+      "normal": {
+        "causal_assignment_subset_gain": 0.08738482460539065,
+        "causal_gain": 0.08738482460539065,
+        "changed_gain": 0.0012221584457335589,
+        "changed_semantic_signal": false,
+        "effective_units": 11.95266272189349,
+        "hard_gain": 0.0010314113643443313,
+        "semantic_hard_signal": false,
+        "semantic_measurement_usage_score_mean": 0.7243713438510895,
+        "stable_gain": -8.718963184537785e-13,
+        "stable_preservation": true,
+        "strict_gain": 0.005082621740083905,
+        "strict_residual_subset_gain": 0.005082621740083905,
+        "topk_attention_entropy": 0.4259958267211914,
+        "topk_attention_max_weight": 0.6644084453582764,
+        "topk_uses_multi_evidence": true,
+        "unit_dominant_instance_purity": 0.6889212508354365,
+        "unit_semantic_purity": 0.860003871471408,
+        "valid_gain": 0.000706037893718285
+      },
+      "selector_ablation_delta": 0.023386554287106467,
+      "shuffle_assignment_metric_delta": 0.00350539551053404,
+      "shuffle_semantic_measurements_metric_delta": 0.0010103378794848045,
+      "zero_semantic_measurements_metric_delta": 0.03453580661279267,
+      "zero_unit_memory_metric_delta": 0.08738482463639782
+    },
+    "val": {
+      "modes": {
+        "normal": {
+          "causal_assignment_subset_gain": 0.09364904168683684,
+          "causal_gain": 0.09364904168683684,
+          "changed_gain": 0.0014355292798869357,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0006596075935356486,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.00740283492287405,
+          "strict_residual_subset_gain": 0.00740283492287405,
+          "valid_gain": 0.0008198240993328907
+        },
+        "pointwise": {
+          "causal_assignment_subset_gain": 0.0,
+          "causal_gain": 0.0,
+          "changed_gain": 0.0,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0,
+          "semantic_hard_signal": false,
+          "stable_gain": 0.0,
+          "stable_preservation": true,
+          "strict_gain": 0.0,
+          "strict_residual_subset_gain": 0.0,
+          "valid_gain": 0.0
+        },
+        "selector_ablation": {
+          "causal_assignment_subset_gain": 0.06697942374884343,
+          "causal_gain": 0.06697942374884343,
+          "changed_gain": 0.0010254093772272413,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.00047469434561519104,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.005294636358806168,
+          "strict_residual_subset_gain": 0.005294636358806168,
+          "valid_gain": 0.0005863524234218292
+        },
+        "shuffle_assignment": {
+          "causal_assignment_subset_gain": 0.08443887231456972,
+          "causal_gain": 0.08443887231456972,
+          "changed_gain": 0.001295883740405558,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0005597725610184902,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.006674782741110295,
+          "strict_residual_subset_gain": 0.006674782741110295,
+          "valid_gain": 0.0007391962283567615
+        },
+        "shuffle_semantic_measurements": {
+          "causal_assignment_subset_gain": 0.0851639927059782,
+          "causal_gain": 0.0851639927059782,
+          "changed_gain": 0.0013072970145886723,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0005675080670685811,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.0067321027076752875,
+          "strict_residual_subset_gain": 0.0067321027076752875,
+          "valid_gain": 0.000745544105707029
+        },
+        "zero_semantic_measurements": {
+          "causal_assignment_subset_gain": 0.04946395342079024,
+          "causal_gain": 0.04946395342079024,
+          "changed_gain": 0.0007625226594354947,
+          "changed_semantic_signal": false,
+          "hard_gain": 0.0003470515940784384,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": 0.00391006109713608,
+          "strict_residual_subset_gain": 0.00391006109713608,
+          "valid_gain": 0.0004330181838376671
+        },
+        "zero_unit_memory": {
+          "causal_assignment_subset_gain": 1.3898677390990308e-11,
+          "causal_gain": 1.3898677390990308e-11,
+          "changed_gain": -5.841616331899541e-12,
+          "changed_semantic_signal": false,
+          "hard_gain": -3.4455556393307038e-12,
+          "semantic_hard_signal": false,
+          "stable_gain": -1.580143052239304e-12,
+          "stable_preservation": true,
+          "strict_gain": -3.1641763576969823e-13,
+          "strict_residual_subset_gain": -3.1641763576969823e-13,
+          "valid_gain": 1.597310549943771e-12
+        }
+      },
+      "normal": {
+        "causal_assignment_subset_gain": 0.09364904168683684,
+        "causal_gain": 0.09364904168683684,
+        "changed_gain": 0.0014355292798869357,
+        "changed_semantic_signal": false,
+        "effective_units": 11.933333333333334,
+        "hard_gain": 0.0006596075935356486,
+        "semantic_hard_signal": false,
+        "semantic_measurement_usage_score_mean": 0.7672382195790609,
+        "stable_gain": -1.580143052239304e-12,
+        "stable_preservation": true,
+        "strict_gain": 0.00740283492287405,
+        "strict_residual_subset_gain": 0.00740283492287405,
+        "topk_attention_entropy": 0.4532911578814189,
+        "topk_attention_max_weight": 0.6237649917602539,
+        "topk_uses_multi_evidence": true,
+        "unit_dominant_instance_purity": 0.6960470682164414,
+        "unit_semantic_purity": 0.8687022317374887,
+        "valid_gain": 0.0008198240993328907
+      },
+      "selector_ablation_delta": 0.026669617937993412,
+      "shuffle_assignment_metric_delta": 0.009210169372267124,
+      "shuffle_semantic_measurements_metric_delta": 0.00848504898085864,
+      "zero_semantic_measurements_metric_delta": 0.0441850882660466,
+      "zero_unit_memory_metric_delta": 0.09364904167293817
+    }
+  },
+  "train_summary": {
+    "assignment_contrast_loss": {
+      "active": true,
+      "first": 0.6961582899093628,
+      "last": 0.6455799341201782,
+      "mean": 0.6648685877973383
+    },
+    "checkpoint_path": "outputs/checkpoints/stwm_ostf_v34_18_topk_evidence_oracle_residual_probe_h32_m128/v34_18_topk_evidence_oracle_residual_probe_m128_h32_seed42_best.pt",
+    "duration_seconds": 1029.6980171203613,
+    "fresh_training_completed": true,
+    "future_leakage_detected": false,
+    "generated_at_utc": "2026-05-13T13:52:19.110053+00:00",
+    "init_checkpoint": {
+      "selector_frozen": true,
+      "selector_init_source": "outputs/checkpoints/stwm_ostf_v34_14_horizon_conditioned_measurement_selector_h32_m128/v34_14_horizon_conditioned_measurement_selector_m128_h32_seed42_best.pt"
+    },
+    "loss_trace": [
+      {
+        "assignment_contrast_loss": 0.6961582899093628,
+        "different_instance_unit_separation": 0.07612331956624985,
+        "final_semantic_target_loss": 0.9983692169189453,
+        "loss": 4.4590373039245605,
+        "point_assignment_entropy": 0.9308755397796631,
+        "same_instance_pair_attraction": 2.4902384281158447,
+        "semantic_measurement_causal_contrast_loss": 0.6963938474655151,
+        "stable_preservation_loss": -3.292972650115189e-08,
+        "step": 1.0,
+        "topk_raw_evidence_loss": 0.7739195227622986,
+        "unit_anti_collapse": 0.03787112236022949,
+        "unit_memory_target_loss": 1.0033118724822998,
+        "unit_usage_entropy": 0.9621288776397705
+      },
+      {
+        "assignment_contrast_loss": 0.6958062052726746,
+        "different_instance_unit_separation": 0.22716708481311798,
+        "final_semantic_target_loss": 0.8005297183990479,
+        "loss": 3.504565954208374,
+        "point_assignment_entropy": 0.4676433801651001,
+        "same_instance_pair_attraction": 0.49139338731765747,
+        "semantic_measurement_causal_contrast_loss": 0.6919445395469666,
+        "stable_preservation_loss": -4.270305353770709e-08,
+        "step": 150.0,
+        "topk_raw_evidence_loss": 0.8329369425773621,
+        "unit_anti_collapse": 0.3167528510093689,
+        "unit_memory_target_loss": 0.6703717708587646,
+        "unit_usage_entropy": 0.6832471489906311
+      },
+      {
+        "assignment_contrast_loss": 0.6883592009544373,
+        "different_instance_unit_separation": 0.15536530315876007,
+        "final_semantic_target_loss": 0.7302920818328857,
+        "loss": 3.2516849040985107,
+        "point_assignment_entropy": 0.4590628743171692,
+        "same_instance_pair_attraction": 0.43948766589164734,
+        "semantic_measurement_causal_contrast_loss": 0.6947021484375,
+        "stable_preservation_loss": -3.277452265137981e-08,
+        "step": 300.0,
+        "topk_raw_evidence_loss": 0.8150256872177124,
+        "unit_anti_collapse": 0.2840844988822937,
+        "unit_memory_target_loss": 0.5679139494895935,
+        "unit_usage_entropy": 0.7159155011177063
+      },
+      {
+        "assignment_contrast_loss": 0.6779717206954956,
+        "different_instance_unit_separation": 0.1924225389957428,
+        "final_semantic_target_loss": 0.727533221244812,
+        "loss": 3.2656195163726807,
+        "point_assignment_entropy": 0.3349294066429138,
+        "same_instance_pair_attraction": 0.3109877109527588,
+        "semantic_measurement_causal_contrast_loss": 0.688797116279602,
+        "stable_preservation_loss": -3.2722649478955645e-08,
+        "step": 450.0,
+        "topk_raw_evidence_loss": 0.8430833220481873,
+        "unit_anti_collapse": 0.36722683906555176,
+        "unit_memory_target_loss": 0.569894552230835,
+        "unit_usage_entropy": 0.6327731609344482
+      },
+      {
+        "assignment_contrast_loss": 0.6731059551239014,
+        "different_instance_unit_separation": 0.1303470879793167,
+        "final_semantic_target_loss": 0.7102246880531311,
+        "loss": 3.1235690116882324,
+        "point_assignment_entropy": 0.4077927768230438,
+        "same_instance_pair_attraction": 0.45829465985298157,
+        "semantic_measurement_causal_contrast_loss": 0.6845988631248474,
+        "stable_preservation_loss": -3.5015556676398774e-08,
+        "step": 600.0,
+        "topk_raw_evidence_loss": 0.817552387714386,
+        "unit_anti_collapse": 0.2698094844818115,
+        "unit_memory_target_loss": 0.485533207654953,
+        "unit_usage_entropy": 0.7301905155181885
+      },
+      {
+        "assignment_contrast_loss": 0.6529690623283386,
+        "different_instance_unit_separation": 0.1236715242266655,
+        "final_semantic_target_loss": 0.6337828040122986,
+        "loss": 2.958615779876709,
+        "point_assignment_entropy": 0.3427959084510803,
+        "same_instance_pair_attraction": 0.34779104590415955,
+        "semantic_measurement_causal_contrast_loss": 0.6745644211769104,
+        "stable_preservation_loss": -3.841986284669474e-08,
+        "step": 750.0,
+        "topk_raw_evidence_loss": 0.7626399993896484,
+        "unit_anti_collapse": 0.3150935769081116,
+        "unit_memory_target_loss": 0.47558268904685974,
+        "unit_usage_entropy": 0.6849064230918884
+      },
+      {
+        "assignment_contrast_loss": 0.659583568572998,
+        "different_instance_unit_separation": 0.12017073482275009,
+        "final_semantic_target_loss": 0.6368906497955322,
+        "loss": 2.946004867553711,
+        "point_assignment_entropy": 0.346204549074173,
+        "same_instance_pair_attraction": 0.3856149911880493,
+        "semantic_measurement_causal_contrast_loss": 0.6672243475914001,
+        "stable_preservation_loss": -3.304435836071207e-08,
+        "step": 900.0,
+        "topk_raw_evidence_loss": 0.8162781000137329,
+        "unit_anti_collapse": 0.29372483491897583,
+        "unit_memory_target_loss": 0.4232238531112671,
+        "unit_usage_entropy": 0.7062751650810242
+      },
+      {
+        "assignment_contrast_loss": 0.6625729203224182,
+        "different_instance_unit_separation": 0.13383285701274872,
+        "final_semantic_target_loss": 0.5857467651367188,
+        "loss": 2.8327555656433105,
+        "point_assignment_entropy": 0.3235737979412079,
+        "same_instance_pair_attraction": 0.2759020924568176,
+        "semantic_measurement_causal_contrast_loss": 0.6685386896133423,
+        "stable_preservation_loss": -3.138975657179799e-08,
+        "step": 1050.0,
+        "topk_raw_evidence_loss": 0.7986475825309753,
+        "unit_anti_collapse": 0.31833362579345703,
+        "unit_memory_target_loss": 0.4012194275856018,
+        "unit_usage_entropy": 0.681666374206543
+      },
+      {
+        "assignment_contrast_loss": 0.6507400870323181,
+        "different_instance_unit_separation": 0.11339437961578369,
+        "final_semantic_target_loss": 0.6755666136741638,
+        "loss": 2.9257991313934326,
+        "point_assignment_entropy": 0.34361642599105835,
+        "same_instance_pair_attraction": 0.3148275911808014,
+        "semantic_measurement_causal_contrast_loss": 0.6651034951210022,
+        "stable_preservation_loss": -3.609734733345249e-08,
+        "step": 1200.0,
+        "topk_raw_evidence_loss": 0.8144071698188782,
+        "unit_anti_collapse": 0.2656852602958679,
+        "unit_memory_target_loss": 0.3951856791973114,
+        "unit_usage_entropy": 0.7343147397041321
+      },
+      {
+        "assignment_contrast_loss": 0.6107075214385986,
+        "different_instance_unit_separation": 0.12226475030183792,
+        "final_semantic_target_loss": 0.5820720791816711,
+        "loss": 2.781569480895996,
+        "point_assignment_entropy": 0.2976040542125702,
+        "same_instance_pair_attraction": 0.25092336535453796,
+        "semantic_measurement_causal_contrast_loss": 0.6549891829490662,
+        "stable_preservation_loss": -3.698736961155191e-08,
+        "step": 1350.0,
+        "topk_raw_evidence_loss": 0.800677478313446,
+        "unit_anti_collapse": 0.3220459222793579,
+        "unit_memory_target_loss": 0.3989686667919159,
+        "unit_usage_entropy": 0.6779540777206421
+      },
+      {
+        "assignment_contrast_loss": 0.6455799341201782,
+        "different_instance_unit_separation": 0.10599055141210556,
+        "final_semantic_target_loss": 0.6194745898246765,
+        "loss": 2.8382861614227295,
+        "point_assignment_entropy": 0.2857576906681061,
+        "same_instance_pair_attraction": 0.2333381325006485,
+        "semantic_measurement_causal_contrast_loss": 0.6626847386360168,
+        "stable_preservation_loss": -3.804075277002994e-08,
+        "step": 1500.0,
+        "topk_raw_evidence_loss": 0.8339985013008118,
+        "unit_anti_collapse": 0.3196635842323303,
+        "unit_memory_target_loss": 0.37325477600097656,
+        "unit_usage_entropy": 0.6803364157676697
+      }
+    ],
+    "measurement_selector_frozen": true,
+    "oracle_residual_probe_ran": true,
+    "semantic_measurement_causal_contrast_loss": {
+      "active": true,
+      "first": 0.6963938474655151,
+      "last": 0.6626847386360168,
+      "mean": 0.6772310354492881
+    },
+    "steps": 1500,
+    "topk": 8,
+    "train_sample_count": 128,
+    "v30_backbone_frozen": true,
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.18 top-k evidence-conditioned oracle residual probe \u5df2\u5b8c\u6210\u8bad\u7ec3\uff1bV30 \u4e0e V34.14 selector \u51bb\u7ed3\uff0cresidual \u8bfb\u53d6 top-k raw evidence set\uff0c\u672a\u8bad\u7ec3 learned gate\u3002"
+  },
+  "v34_17_topk_ablation_reference": {
+    "base_selector": "v34_14_horizon_conditioned_soft_reader",
+    "best_topk_by_val": {
+      "name": "top8",
+      "test": {
+        "cosine": {
+          "causal": 0.20202734875764064,
+          "changed": 0.4002103812456573,
+          "hard": 0.5135697544731036,
+          "strict": 0.29759261475419846,
+          "valid": 0.5428739203629497
+        },
+        "minus_pointwise": {
+          "causal": 0.09591192932673215,
+          "changed": 0.0998522353519952,
+          "hard": 0.17623984527461306,
+          "strict": 0.1575304621073529,
+          "valid": 0.21218136543929317
+        },
+        "oracle_gap": {
+          "causal": 0.06909927658462071,
+          "changed": 0.09707786817998058,
+          "hard": 0.1014227873644082,
+          "strict": 0.09582883060882086,
+          "valid": 0.1097170616354137
+        }
+      },
+      "val": {
+        "cosine": {
+          "causal": 0.2597066055851657,
+          "changed": 0.4007720805388309,
+          "hard": 0.5242023869372971,
+          "strict": 0.28849511958374624,
+          "valid": 0.5592285754356205
+        },
+        "minus_pointwise": {
+          "causal": 0.1897370248264433,
+          "changed": 0.0787235138774436,
+          "hard": 0.15481108774181904,
+          "strict": 0.1640532054735517,
+          "valid": 0.18976999064455746
+        },
+        "oracle_gap": {
+          "causal": 0.07535153929119237,
+          "changed": 0.0957104654067192,
+          "hard": 0.09244253651340521,
+          "strict": 0.09896536769845343,
+          "valid": 0.10411684829825271
+        }
+      }
+    },
+    "best_topk_improves_hard_changed_vs_pointwise": true,
+    "future_teacher_embedding_input_allowed": false,
+    "generated_at_utc": "2026-05-13T10:30:04.279602+00:00",
+    "per_split": {
+      "test": {
+        "top1": {
+          "cosine": {
+            "causal": 0.19072980120972985,
+            "changed": 0.3840990225563673,
+            "hard": 0.4958004510200464,
+            "strict": 0.2858107806280992,
+            "valid": 0.5243678241859354
+          },
+          "minus_pointwise": {
+            "causal": 0.08461437338739457,
+            "changed": 0.08374088414069607,
+            "hard": 0.1584705529128072,
+            "strict": 0.14574863526282142,
+            "valid": 0.1936752795824935
+          },
+          "oracle_gap": {
+            "causal": 0.08039683048280043,
+            "changed": 0.11318923096679975,
+            "hard": 0.11919208165512735,
+            "strict": 0.10761066051372137,
+            "valid": 0.12822315499782397
+          }
+        },
+        "top2": {
+          "cosine": {
+            "causal": 0.1978939432876714,
+            "changed": 0.3953540437014538,
+            "hard": 0.5079898018509172,
+            "strict": 0.2941179341996575,
+            "valid": 0.5369485466525937
+          },
+          "minus_pointwise": {
+            "causal": 0.09177852521753481,
+            "changed": 0.094995904158962,
+            "hard": 0.17065990519036306,
+            "strict": 0.15405577559036873,
+            "valid": 0.2062559931362392
+          },
+          "oracle_gap": {
+            "causal": 0.07323268205458996,
+            "changed": 0.101934200807149,
+            "hard": 0.10700272889534315,
+            "strict": 0.09930351791727975,
+            "valid": 0.1156424287783604
+          }
+        },
+        "top3": {
+          "cosine": {
+            "causal": 0.2007593851168856,
+            "changed": 0.3983696121358824,
+            "hard": 0.5112438592659933,
+            "strict": 0.29631214620951757,
+            "valid": 0.540401442761493
+          },
+          "minus_pointwise": {
+            "causal": 0.09464396194385433,
+            "changed": 0.0980114698275584,
+            "hard": 0.17391396164098238,
+            "strict": 0.15624998910403085,
+            "valid": 0.20970888783783653
+          },
+          "oracle_gap": {
+            "causal": 0.0703672429469196,
+            "changed": 0.09891863319222623,
+            "hard": 0.10374867244472383,
+            "strict": 0.09710930717377927,
+            "valid": 0.11218953266946108
+          }
+        },
+        "top4": {
+          "cosine": {
+            "causal": 0.20145085501472393,
+            "changed": 0.39944049484149263,
+            "hard": 0.5125183038439014,
+            "strict": 0.2970073995857201,
+            "valid": 0.5417317653292189
+          },
+          "minus_pointwise": {
+            "causal": 0.0953354244708448,
+            "changed": 0.09908234413323372,
+            "hard": 0.1751883922342692,
+            "strict": 0.15694523899774446,
+            "valid": 0.2110392188493743
+          },
+          "oracle_gap": {
+            "causal": 0.06967578438884721,
+            "changed": 0.09784776114019199,
+            "hard": 0.10247424185143701,
+            "strict": 0.09641406055149468,
+            "valid": 0.11085920071972201
+          }
+        },
+        "top8": {
+          "cosine": {
+            "causal": 0.20202734875764064,
+            "changed": 0.4002103812456573,
+            "hard": 0.5135697544731036,
+            "strict": 0.29759261475419846,
+            "valid": 0.5428739203629497
+          },
+          "minus_pointwise": {
+            "causal": 0.09591192932673215,
+            "changed": 0.0998522353519952,
+            "hard": 0.17623984527461306,
+            "strict": 0.1575304621073529,
+            "valid": 0.21218136543929317
+          },
+          "oracle_gap": {
+            "causal": 0.06909927658462071,
+            "changed": 0.09707786817998058,
+            "hard": 0.1014227873644082,
+            "strict": 0.09582883060882086,
+            "valid": 0.1097170616354137
+          }
+        }
+      },
+      "val": {
+        "top1": {
+          "cosine": {
+            "causal": 0.24617756130360602,
+            "changed": 0.3830137964665422,
+            "hard": 0.5050979891054636,
+            "strict": 0.2767102170593561,
+            "valid": 0.5380268086796977
+          },
+          "minus_pointwise": {
+            "causal": 0.17620796574334815,
+            "changed": 0.06096524189961464,
+            "hard": 0.13570671088827096,
+            "strict": 0.1522683187897316,
+            "valid": 0.1685682075580897
+          },
+          "oracle_gap": {
+            "causal": 0.08888059632484414,
+            "changed": 0.11346874575763566,
+            "hard": 0.11154691569787391,
+            "strict": 0.11075026100651189,
+            "valid": 0.12531862117812992
+          }
+        },
+        "top2": {
+          "cosine": {
+            "causal": 0.25591070854675235,
+            "changed": 0.3952740358966542,
+            "hard": 0.5176629332155814,
+            "strict": 0.2845194521738746,
+            "valid": 0.5520115442581282
+          },
+          "minus_pointwise": {
+            "causal": 0.1859411133280684,
+            "changed": 0.07322548458592738,
+            "hard": 0.14827165266746825,
+            "strict": 0.16007756362459982,
+            "valid": 0.18255295538442887
+          },
+          "oracle_gap": {
+            "causal": 0.07914745226972082,
+            "changed": 0.10120850632752362,
+            "hard": 0.09898196809137508,
+            "strict": 0.10294101897974471,
+            "valid": 0.11133387539310888
+          }
+        },
+        "top3": {
+          "cosine": {
+            "causal": 0.2580069694045394,
+            "changed": 0.39836701721000684,
+            "hard": 0.5211557431646219,
+            "strict": 0.28670575266831233,
+            "valid": 0.5559328673510341
+          },
+          "minus_pointwise": {
+            "causal": 0.1880373661019399,
+            "changed": 0.076318416591098,
+            "hard": 0.15176446028558813,
+            "strict": 0.16226386311100133,
+            "valid": 0.18647427847733478
+          },
+          "oracle_gap": {
+            "causal": 0.07705119186736566,
+            "changed": 0.0981155678099516,
+            "hard": 0.09548915464595367,
+            "strict": 0.1007547236694935,
+            "valid": 0.10741255434152108
+          }
+        },
+        "top4": {
+          "cosine": {
+            "causal": 0.25878945052794533,
+            "changed": 0.39961203950251506,
+            "hard": 0.5226066853040863,
+            "strict": 0.28769105685886776,
+            "valid": 0.557585689961601
+          },
+          "minus_pointwise": {
+            "causal": 0.18881986248231322,
+            "changed": 0.07756347098044165,
+            "hard": 0.15321539776321128,
+            "strict": 0.16324915830123285,
+            "valid": 0.18812709292262927
+          },
+          "oracle_gap": {
+            "causal": 0.0762687034570499,
+            "changed": 0.09687051388577947,
+            "hard": 0.09403822532655265,
+            "strict": 0.09976942351108319,
+            "valid": 0.10575974397886279
+          }
+        },
+        "top8": {
+          "cosine": {
+            "causal": 0.2597066055851657,
+            "changed": 0.4007720805388309,
+            "hard": 0.5242023869372971,
+            "strict": 0.28849511958374624,
+            "valid": 0.5592285754356205
+          },
+          "minus_pointwise": {
+            "causal": 0.1897370248264433,
+            "changed": 0.0787235138774436,
+            "hard": 0.15481108774181904,
+            "strict": 0.1640532054735517,
+            "valid": 0.18976999064455746
+          },
+          "oracle_gap": {
+            "causal": 0.07535153929119237,
+            "changed": 0.0957104654067192,
+            "hard": 0.09244253651340521,
+            "strict": 0.09896536769845343,
+            "valid": 0.10411684829825271
+          }
+        }
+      }
+    },
+    "recommended_fix": "\u5982\u679c\u540e\u7eed\u8fdb\u5165 residual\uff0c\u5e94\u8ba9 residual \u8bfb\u53d6 top-k evidence set\uff0c\u800c\u4e0d\u662f\u5355\u4e2a selected vector \u6216 top-1 timestep label\u3002",
+    "recommended_next_step": "build_topk_evidence_conditioned_residual_probe",
+    "topk_ablation_done": true,
+    "\u4e2d\u6587\u7ed3\u8bba": "V34.17 top-k evidence selector ablation \u5df2\u5b8c\u6210\uff1b\u4e0d\u8bad\u7ec3\u65b0\u6a21\u578b\uff0c\u4ec5\u7528 V34.14 horizon-conditioned \u6743\u91cd\u8bc4\u4f30 top-k memory set \u662f\u5426\u6bd4\u5168 soft sum \u66f4\u5408\u7406\u3002"
+  }
+}

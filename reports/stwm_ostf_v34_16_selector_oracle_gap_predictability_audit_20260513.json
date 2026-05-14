@@ -1,0 +1,118 @@
+{
+  "best_current_selector": "v34_14_horizon_conditioned_soft_reader",
+  "generated_at_utc": "2026-05-13T10:28:27.676779+00:00",
+  "oracle_timestep_label_ambiguous": true,
+  "per_split": {
+    "test": {
+      "metrics": {
+        "low_margin_ratio:causal": 0.5356315491327013,
+        "low_margin_ratio:changed": 0.4349930013072561,
+        "low_margin_ratio:hard": 0.4603129740385614,
+        "low_margin_ratio:strict": 0.49608706399088814,
+        "low_margin_ratio:valid": 0.46832643652103356,
+        "oracle_best_cos:causal": 0.29130506028349584,
+        "oracle_best_cos:changed": 0.5066694313957847,
+        "oracle_best_cos:hard": 0.6278204989327482,
+        "oracle_best_cos:strict": 0.3556037401070907,
+        "oracle_best_cos:valid": 0.6448753507885002,
+        "oracle_margin:causal": null,
+        "oracle_margin:changed": 0.057767260786608834,
+        "oracle_margin:hard": 0.05695227102084449,
+        "oracle_margin:strict": 0.0551025323927336,
+        "oracle_margin:valid": 0.055189454343897354,
+        "random_top1_chance:causal": 0.19094668091379866,
+        "random_top1_chance:changed": 0.17543742394525405,
+        "random_top1_chance:hard": 0.18596088929671006,
+        "random_top1_chance:strict": 0.18266477565732603,
+        "random_top1_chance:valid": 0.17314447116348097
+      },
+      "oracle_timestep_histogram": [
+        54346,
+        42401,
+        40180,
+        38861,
+        44231,
+        54813,
+        73741,
+        171871
+      ],
+      "sample_count": 169
+    },
+    "val": {
+      "metrics": {
+        "low_margin_ratio:causal": 0.5671309613295503,
+        "low_margin_ratio:changed": 0.4370792959133784,
+        "low_margin_ratio:hard": 0.4629198067386945,
+        "low_margin_ratio:strict": 0.5591815634568532,
+        "low_margin_ratio:valid": 0.4855395258466403,
+        "oracle_best_cos:causal": 0.2589067164808512,
+        "oracle_best_cos:changed": 0.5067636779944102,
+        "oracle_best_cos:hard": 0.625446633497874,
+        "oracle_best_cos:strict": 0.3091525259613991,
+        "oracle_best_cos:valid": 0.6584458343187968,
+        "oracle_margin:causal": null,
+        "oracle_margin:changed": 0.059835662320256236,
+        "oracle_margin:hard": null,
+        "oracle_margin:strict": 0.05123770979853968,
+        "oracle_margin:valid": 0.05468206657717625,
+        "random_top1_chance:causal": 0.20525760700193715,
+        "random_top1_chance:changed": 0.17332307318036871,
+        "random_top1_chance:hard": 0.19872206880283216,
+        "random_top1_chance:strict": 0.17854591722389637,
+        "random_top1_chance:valid": 0.1675308765467754
+      },
+      "oracle_timestep_histogram": [
+        23936,
+        16513,
+        16601,
+        19105,
+        22904,
+        27880,
+        34903,
+        77357
+      ],
+      "sample_count": 75
+    }
+  },
+  "recommended_fix": "\u4e0d\u8981\u518d\u628a oracle timestep \u5f53\u786c top-1 \u6807\u7b7e\uff1b\u4fdd\u7559 V34.14 soft horizon-conditioned reader\uff0c\u4e0b\u4e00\u6b65\u5e94\u505a multi-evidence/top-k memory set \u6216 calibration\uff0c\u800c\u4e0d\u662f learned gate\u3002",
+  "recommended_next_step": "fix_nonoracle_measurement_selector_with_multievidence_memory",
+  "top1_timestep_ce_hurt_selector": true,
+  "v34_14_selector_decision": {
+    "oracle_gap_to_selector_changed": {
+      "test": 0.16231445223993368,
+      "val": 0.1318851563690839
+    },
+    "oracle_gap_to_selector_hard": {
+      "test": 0.24685240509561485,
+      "val": 0.2125378471579924
+    },
+    "selector_beats_pointwise_on_changed": {
+      "test": true,
+      "val": true
+    },
+    "selector_beats_pointwise_on_hard": {
+      "test": true,
+      "val": true
+    }
+  },
+  "v34_15_selector_decision": {
+    "oracle_timestep_top1_changed": {
+      "test": 0.21052861247616747,
+      "val": 0.2165917231918299
+    },
+    "oracle_timestep_top1_hard": {
+      "test": 0.21126026120140004,
+      "val": 0.23566927630322704
+    },
+    "selector_beats_pointwise_on_changed": {
+      "test": false,
+      "val": false
+    },
+    "selector_beats_pointwise_on_hard": {
+      "test": true,
+      "val": true
+    },
+    "selector_beats_v34_14_on_oracle_gap": false
+  },
+  "\u4e2d\u6587\u7ed3\u8bba": "V34.16 selector oracle gap \u53ef\u5b66\u4e60\u6027\u5ba1\u8ba1\u5b8c\u6210\uff1a\u91cd\u70b9\u5224\u65ad oracle best timestep \u662f\u5426\u662f\u7a33\u5b9a\u3001\u53ef\u5b66\u4e60\u7684 observed-only \u6807\u7b7e\uff0c\u4ee5\u53ca V34.15 top-1 CE \u4e3a\u4ec0\u4e48\u6ca1\u6709\u6539\u5584 gap\u3002"
+}

@@ -1,0 +1,24 @@
+# V34.33 oracle unit-delta value decoder 决策中文报告
+
+- 中文结论: `V34.33 oracle unit-delta value decoder 完成；本轮使用显式 oracle unit delta target 训练 value decoder，不训练 learned gate，不跑 M512。`
+- oracle_unit_delta_targets_used: `True`
+- target_kind: `top1`
+- probe_passed: `False`
+- selected_sparse_config_by_val: `{'gate_mode': 'sparse_gate', 'scale': 0.25, 'val_gain_anchor': -0.004242343166726531, 'val_gain_pointwise': 0.4710917837323231, 'stable': True}`
+- best_oracle_mask_config_by_val: `{'gate_mode': 'oracle_mask', 'scale': 0.25, 'val_gain_anchor': -0.0013747196603417962, 'val_gain_pointwise': 0.4739594189304243, 'stable': True}`
+- beats_copy_topk_baseline: `False`
+- unit_residual_improves_evidence_anchor: `False`
+- semantic_measurements_load_bearing_on_system: `True`
+- assignment_load_bearing_on_system: `False`
+- unit_memory_load_bearing_on_system: `False`
+- semantic_hard_signal: `{'val': True, 'test': True}`
+- changed_semantic_signal: `{'val': True, 'test': True}`
+- stable_preservation: `{'val': True, 'test': True}`
+- v30_backbone_frozen: `True`
+- future_leakage_detected: `False`
+- trajectory_degraded: `False`
+- learned_gate_training_ran: `False`
+- m512_dense_ready: `False`
+- integrated_semantic_field_claim_allowed: `False`
+- integrated_identity_field_claim_allowed: `False`
+- recommended_next_step: `fix_value_decoder_capacity_or_gate_interface`

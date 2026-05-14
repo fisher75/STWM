@@ -1,0 +1,21 @@
+# V34.19 hard/changed mask realignment probe 中文报告
+
+- 中文结论: `V34.19 只做 mask realignment 诊断：不重新训练，不训练 learned gate，用 V34.18 top-k residual 检查 hard/changed 覆盖错位是否是主要瓶颈。`
+- probe_ran: `True`
+- aligned_mask_improves_global_hard_changed: `True`
+- semantic_hard_signal: `{'val': True, 'test': True}`
+- changed_semantic_signal: `{'val': True, 'test': True}`
+- stable_preservation: `{'val': True, 'test': True}`
+- semantic_measurements_load_bearing_on_aligned_residual: `True`
+- assignment_load_bearing_on_aligned_residual: `True`
+- unit_memory_load_bearing_on_aligned_residual: `True`
+- selector_load_bearing_on_aligned_residual: `True`
+- zero_semantic_measurements_aligned_delta: `{'val': 0.0351758946108791, 'test': 0.02899817348225687}`
+- shuffle_semantic_measurements_aligned_delta: `{'val': 0.00620537682630827, 'test': 0.0053295069225227365}`
+- shuffle_assignment_aligned_delta: `{'val': 0.008276938600061345, 'test': 0.004763983223862234}`
+- hard_gain: `{'val': 0.01065278270896983, 'test': 0.012494170185113795}`
+- changed_gain: `{'val': 0.01655983521838203, 'test': 0.01767071809704397}`
+- causal_only_hard_gain: `{'val': 0.0006596075935356486, 'test': 0.0010314113643443313}`
+- causal_only_changed_gain: `{'val': 0.0014355292798869357, 'test': 0.0012221584457335589}`
+- mask_ratios: `{'val': {'causal_over_hard': 0.03998472407867099, 'aligned_over_hard': 0.5058239450066833, 'causal_over_changed': 0.01595914945507202, 'aligned_over_changed': 0.20189009983995124, 'aligned_ratio_valid': 0.11074461013633}, 'test': {'causal_over_hard': 0.03322298509113606, 'aligned_over_hard': 0.571198318703632, 'causal_over_changed': 0.014114906415317275, 'aligned_over_changed': 0.24267568946534548, 'aligned_ratio_valid': 0.13891215961755732}}`
+- recommended_next_step: `train_hard_changed_aligned_topk_residual_content`
