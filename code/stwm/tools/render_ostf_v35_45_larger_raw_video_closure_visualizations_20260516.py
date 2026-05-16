@@ -175,8 +175,21 @@ def features_for_sample(z: Any) -> dict[str, np.ndarray]:
 def semantic_scores(path: Path, model: torch.nn.Module, thresholds: dict[str, float], device: torch.device) -> dict[str, Any]:
     z = np.load(path, allow_pickle=True)
     data = features_for_sample(z)
-    pred = predict(model, data["x"], device)
     m, h = np.asarray(z["target_semantic_cluster_id"]).shape
+    if len(data["x"]) == 0:
+        return {
+            "changed_prob": np.full((m, h), np.nan, dtype=np.float32),
+            "hard_prob": np.full((m, h), np.nan, dtype=np.float32),
+            "uncertainty_prob": np.full((m, h), np.nan, dtype=np.float32),
+            "changed_point_score": np.zeros((m,), dtype=np.float32),
+            "hard_point_score": np.zeros((m,), dtype=np.float32),
+            "changed_target_point": np.zeros((m,), dtype=np.float32),
+            "hard_target_point": np.zeros((m,), dtype=np.float32),
+            "changed_accuracy": 0.0,
+            "hard_accuracy": 0.0,
+            "semantic_valid_token_count": 0,
+        }
+    pred = predict(model, data["x"], device)
     changed_prob = np.full((m, h), np.nan, dtype=np.float32)
     hard_prob = np.full((m, h), np.nan, dtype=np.float32)
     unc_prob = np.full((m, h), np.nan, dtype=np.float32)
@@ -202,6 +215,7 @@ def semantic_scores(path: Path, model: torch.nn.Module, thresholds: dict[str, fl
         "hard_target_point": hard_target.mean(axis=1),
         "changed_accuracy": ch_acc,
         "hard_accuracy": hard_acc,
+        "semantic_valid_token_count": int(data["valid"].sum()),
     }
 
 

@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-05-16T05:27:44.465335+00:00",
+  "current_completed_version": "V35.47",
+  "artifact_truth_audit_done": true,
+  "artifact_packaging_fixed": true,
+  "v35_45_bounded_claim_still_allowed": true,
+  "v35_46_failure_atlas_ready": true,
+  "full_cvpr_scale_claim_allowed": false,
+  "selected_clip_count": 32,
+  "raw_frontend_rerun_success_rate": 1.0,
+  "trace_drift_ok": true,
+  "semantic_three_seed_passed": true,
+  "stable_preservation": true,
+  "identity_real_instance_three_seed_passed": true,
+  "identity_pseudo_targets_excluded_from_claim": true,
+  "identity_real_instance_count": 16,
+  "pseudo_identity_count": 16,
+  "semantic_fragile_category_count_test": 3,
+  "identity_fragile_category_count_test": 0,
+  "vipseg_changed_fragile": true,
+  "high_motion_hard_fragile": true,
+  "real_instance_semantic_changed_fragile": true,
+  "semantic_fragile_categories_test": [
+    {
+      "split": "test",
+      "category": "dataset_vipseg",
+      "sample_count": 6,
+      "risk_metrics": {
+        "semantic_changed": 0.5448331270994358
+      }
+    },
+    {
+      "split": "test",
+      "category": "high_motion",
+      "sample_count": 6,
+      "risk_metrics": {
+        "semantic_hard": 0.5468473344002774
+      }
+    },
+    {
+      "split": "test",
+      "category": "real_instance_identity",
+      "sample_count": 6,
+      "risk_metrics": {
+        "semantic_changed": 0.5448331270994358
+      }
+    }
+  ],
+  "identity_fragile_categories_test": [],
+  "per_category_failure_atlas_ready": true,
+  "visualization_ready": true,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "scale_risk_assessment": {
+    "semantic_fragile_small_sample": true,
+    "identity_real_instance_count_below_30": true,
+    "zip_packaging_gap_recorded": true,
+    "direct_full_325_not_recommended_yet": true
+  },
+  "claim_boundary": "允许 V35.45/V35.46 bounded M128/H32 larger subset claim；不允许 full CVPR-scale claim。",
+  "next_scale_choice": "run_100plus_stratified_m128_h32_raw_video_closure",
+  "recommended_next_step": "run_100plus_stratified_m128_h32_raw_video_closure",
+  "中文结论": "V35.47 协议决策：不要直接 full 325。当前 32-clip bounded benchmark 成立，但 test fragile 类别仍存在且 sample_count 小，真实 instance identity 数量也只有 16。最合理下一步是 96-128 clip 的 100+ stratified M128/H32 raw-video closure，过采样 VIPSeg changed、高运动 hard、真实 instance semantic changed，并并行扩大真实 instance identity provenance。"
+}

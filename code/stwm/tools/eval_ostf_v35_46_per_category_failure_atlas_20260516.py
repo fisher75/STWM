@@ -125,6 +125,9 @@ def predict_semantic_samples(seed: int, device: torch.device, meta: dict[str, di
     for p in slice_paths():
         z = np.load(p, allow_pickle=True)
         data = features_for_sample(z)
+        if len(data["x"]) == 0:
+            log(f"跳过无有效 semantic token 的样本：{p}")
+            continue
         pred = predict(model, data["x"], device)
         split = str(scalar(z, "split"))
         uid = str(scalar(z, "sample_uid", p.stem))

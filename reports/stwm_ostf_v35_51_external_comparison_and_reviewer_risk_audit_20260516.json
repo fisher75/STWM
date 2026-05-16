@@ -1,0 +1,219 @@
+{
+  "generated_at_utc": "2026-05-16T07:34:10.832348+00:00",
+  "current_completed_version": "V35.51",
+  "source_completed_version": "V35.49/V35.50",
+  "external_comparison_and_reviewer_risk_audit_done": true,
+  "baseline_comparisons": [
+    {
+      "name": "pure_trace_v30_only",
+      "baseline_type": "trajectory_only_baseline",
+      "evidence": [
+        "reports/stwm_ostf_v30_external_gt_round2_multiseed_decision_v2_20260508.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_decision_20260516.json"
+      ],
+      "verdict": "necessary_but_not_sufficient",
+      "metric_summary": {
+        "v30_backbone_frozen": true,
+        "h32_item_bootstrap_positive": true,
+        "h32_motion_bootstrap_positive": true,
+        "trajectory_degraded": false
+      },
+      "interpretation_zh": "V30 是闭环系统的可靠 future trace backbone，但纯 trace 只解决 future object-dense trace，不输出 semantic state 或 pairwise identity retrieval。",
+      "limitation_zh": "不能把 V30 trajectory positive 单独包装成 semantic/identity field 成功；V35.49 的贡献是 trace 后接 semantic state + identity retrieval 的闭环。"
+    },
+    {
+      "name": "copy_persistence_semantic_baseline",
+      "baseline_type": "semantic_copy_or_persistence_baseline",
+      "evidence": [
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_eval_summary_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_decision_20260516.json"
+      ],
+      "verdict": "beaten_on_state_tasks_while_preserved_on_stable",
+      "metric_summary": {
+        "copy_top1_test_mean": 0.9285555555555556,
+        "cluster_top5_test_mean": 0.9501555555555555,
+        "stable_copy_top1_test_mean": 1.0,
+        "stable_top5_test_mean": 1.0,
+        "semantic_changed_ba_test_mean": 0.6330506810985567,
+        "semantic_hard_ba_test_mean": 0.6297324336532016,
+        "semantic_uncertainty_ba_test_mean": 0.6585140437477058
+      },
+      "interpretation_zh": "copy/persistence 对 stable token 很强，V35 保留 stable preservation；但 changed/hard/uncertainty 是状态预测任务，V35.49 三 seed 通过，说明不是只靠 stable copy。",
+      "limitation_zh": "semantic field 仍应描述为 semantic state / transition / uncertainty field，不应说成完整 open-vocabulary dense segmentation。"
+    },
+    {
+      "name": "semantic_only_v35_21",
+      "baseline_type": "semantic_only_system_component",
+      "evidence": [
+        "reports/stwm_ostf_v35_21_domain_normalized_video_semantic_adapter_replication_decision_20260515.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_decision_20260516.json"
+      ],
+      "verdict": "component_passed_but_not_complete_system_alone",
+      "metric_summary": {
+        "v35_21_three_seed_passed": true,
+        "v35_49_semantic_three_seed_passed": true,
+        "v35_49_raw_video_full_325_closure": true
+      },
+      "interpretation_zh": "V35.21 证明 semantic adapter 三 seed 可复现；V35.49 把它放入 raw-video full 325 closure，并与 identity retrieval 联合评估。",
+      "limitation_zh": "semantic-only 不能 claim full video system；它缺少 pairwise identity field 和 raw frontend rerun closure。"
+    },
+    {
+      "name": "identity_only_v35_29",
+      "baseline_type": "identity_only_system_component",
+      "evidence": [
+        "reports/stwm_ostf_v35_29_expanded_identity_replication_decision_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_decision_20260516.json"
+      ],
+      "verdict": "component_passed_but_not_complete_system_alone",
+      "metric_summary": {
+        "v35_29_expanded_identity_replication_done": true,
+        "v35_49_real_identity_three_seed_passed": true,
+        "real_instance_identity_count": 121,
+        "real_id_test_exclude_same_point_top1_mean": 0.9962673611111111,
+        "real_id_instance_pooled_test_mean": 0.9582899305555556,
+        "real_id_confuser_avoidance_test_mean": 0.9959226747253802
+      },
+      "interpretation_zh": "identity 从 same-instance pointwise BCE 改成 pairwise retrieval / contrastive field 后，真实 instance subset 在 full 325 closure 中三 seed 通过。",
+      "limitation_zh": "identity-only 不能 claim semantic field；VSPW pseudo slot identity 仍只能 diagnostic-only。"
+    },
+    {
+      "name": "pseudo_identity_diagnostic",
+      "baseline_type": "diagnostic_only_not_claim_gate",
+      "evidence": [
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_eval_summary_20260516.json",
+        "reports/stwm_ostf_v35_50_cvpr_claim_boundary_and_packaging_audit_20260516.json"
+      ],
+      "verdict": "excluded_from_claim_gate",
+      "metric_summary": {
+        "pseudo_identity_count": 204,
+        "pseudo_id_test_exclude_same_point_top1_mean": 0.9733733393719807,
+        "identity_pseudo_targets_excluded_from_claim": true
+      },
+      "interpretation_zh": "pseudo identity 可帮助观察系统行为，但不进入 identity claim gate；真实 claim 只看 real-instance subset。",
+      "limitation_zh": "后续如果要更强 identity claim，需要更多真实 instance provenance，不应靠 pseudo slot 扩 claim。"
+    },
+    {
+      "name": "v34_continuous_teacher_delta_route",
+      "baseline_type": "rejected_route",
+      "evidence": [
+        "reports/stwm_ostf_v34_43_observed_predictable_delta_targets_20260515.json"
+      ],
+      "verdict": "not_system_contribution",
+      "metric_summary": {
+        "observed_predictable_target_suite_ready": null,
+        "recommended_next_step": "stop_unit_delta_route_and_rethink_video_semantic_target"
+      },
+      "interpretation_zh": "V35 的贡献不是 continuous teacher embedding delta writer/gate/prototype/local expert；该路线已作为负结果被停止。",
+      "limitation_zh": "不能在 claim 里把 V34 delta residual 包装成 semantic field success。"
+    }
+  ],
+  "reviewer_risks": [
+    {
+      "risk_id": "frontend_is_just_old_cache",
+      "status": "mitigated",
+      "severity": "high",
+      "evidence": [
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_decision_20260516.json",
+        "outputs/logs/stwm_ostf_v35_49_full_325_raw_video_frontend_rerun_20260516.log"
+      ],
+      "finding_zh": "full 325 从 raw frame paths / predecode 重跑 frontend，旧 trace cache 只用于 drift comparison。",
+      "mitigation_zh": "保留 rerun cache、manifest、log 和 drift 指标；claim 中写 raw-video closure 而不是 cache-only closure。",
+      "remaining_risk_zh": "仍应在最终打包时确认 raw frame path metadata 可复验。"
+    },
+    {
+      "risk_id": "semantic_is_only_copy",
+      "status": "mitigated_but_claim_limited",
+      "severity": "medium",
+      "evidence": [
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_eval_summary_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_decision_20260516.json"
+      ],
+      "finding_zh": "stable copy 很强且被保留；但 changed/hard/uncertainty 三 seed 过，说明系统不只是输出 copy。",
+      "mitigation_zh": "claim 改成 future semantic state / transition / uncertainty field，并列出 changed/hard BA。",
+      "remaining_risk_zh": "不能 claim open-vocabulary dense segmentation；可继续补充 changed/hard case 可视化。"
+    },
+    {
+      "risk_id": "identity_depends_on_pseudo_labels",
+      "status": "mitigated",
+      "severity": "high",
+      "evidence": [
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_decision_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_eval_summary_20260516.json"
+      ],
+      "finding_zh": "VSPW pseudo slot identity 明确 diagnostic-only；identity claim 只使用 real-instance subset。",
+      "mitigation_zh": "claim table 中把 pseudo identity 从 gate 排除；报告 real_instance_identity_count=121。",
+      "remaining_risk_zh": "若目标是更强 identity field claim，下一阶段要扩大真实 instance provenance。"
+    },
+    {
+      "risk_id": "future_teacher_embedding_leakage",
+      "status": "mitigated",
+      "severity": "high",
+      "evidence": [
+        "reports/stwm_ostf_v35_50_cvpr_claim_boundary_and_packaging_audit_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_decision_20260516.json"
+      ],
+      "finding_zh": "V35.49/V35.50 均记录 future_leakage_detected=false，future teacher embedding 不作为 input。",
+      "mitigation_zh": "持续在 unified slice build 和 final decision 中机器检查 future_teacher_embedding_input_allowed=false。",
+      "remaining_risk_zh": "后续新 target/head 必须继承该检查。"
+    },
+    {
+      "risk_id": "teacher_or_external_tool_is_method",
+      "status": "mitigated_but_wording_sensitive",
+      "severity": "medium",
+      "evidence": [
+        "reports/stwm_ostf_v35_50_cvpr_claim_boundary_and_packaging_audit_20260516.json"
+      ],
+      "finding_zh": "teacher/DINO/CLIP/SAM2/CoTracker 只作为 frontend/measurement/supervision/source；STWM 方法主线是 trace→future trace→semantic state/identity retrieval。",
+      "mitigation_zh": "最终叙事中不要把 teacher/prototype-only 写成方法贡献。",
+      "remaining_risk_zh": "审稿人可能仍会追问 frontend 依赖外部 tracker，需要在 benchmark card 里独立说明。"
+    },
+    {
+      "risk_id": "failure_cases_hidden",
+      "status": "mitigated",
+      "severity": "medium",
+      "evidence": [
+        "reports/stwm_ostf_v35_49_full_325_per_category_failure_atlas_decision_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_visualization_manifest_20260516.json"
+      ],
+      "finding_zh": "full 325 atlas_ready=true，high_risk_category_count=0；case-mined visualization 覆盖 changed/hard/identity 成败、occlusion/crossing/confuser/high motion。",
+      "mitigation_zh": "保留 failure atlas eval JSON 和 12 张可视化，不能只报总分。",
+      "remaining_risk_zh": "后续可做更系统的 human-readable failure atlas 页面，但不是当前 blocker。"
+    },
+    {
+      "risk_id": "scale_overclaim",
+      "status": "active_boundary",
+      "severity": "high",
+      "evidence": [
+        "reports/stwm_ostf_v35_50_cvpr_claim_boundary_and_packaging_audit_20260516.json",
+        "reports/stwm_ostf_v35_49_full_325_raw_video_closure_decision_20260516.json"
+      ],
+      "finding_zh": "当前只允许 full 325 M128/H32 video-system benchmark claim，full_cvpr_scale_claim_allowed=false。",
+      "mitigation_zh": "最终措辞必须明确不是 H64/H96/M512/M1024，不是任意 horizon，不是任意分辨率。",
+      "remaining_risk_zh": "如果未来要扩 claim，需要另起严格实验，不能从 V35.49 外推。"
+    }
+  ],
+  "reviewer_risks_clear_for_bounded_claim": true,
+  "reviewer_risk_audit_passed": true,
+  "m128_h32_full_325_video_system_benchmark_claim_allowed": true,
+  "full_cvpr_scale_claim_allowed": false,
+  "semantic_changed_balanced_accuracy_test_mean": 0.6330506810985567,
+  "semantic_hard_balanced_accuracy_test_mean": 0.6297324336532016,
+  "semantic_uncertainty_balanced_accuracy_test_mean": 0.6585140437477058,
+  "real_id_test_exclude_same_point_top1_mean": 0.9962673611111111,
+  "real_id_instance_pooled_test_mean": 0.9582899305555556,
+  "real_id_confuser_avoidance_test_mean": 0.9959226747253802,
+  "copy_top1_test_mean": 0.9285555555555556,
+  "cluster_top5_test_mean": 0.9501555555555555,
+  "stable_copy_top1_test_mean": 1.0,
+  "stable_top5_test_mean": 1.0,
+  "artifact_packaging_complete": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "v30_backbone_frozen": true,
+  "contribution_boundary": {
+    "positive_contribution_zh": "V35 的核心贡献边界是：video-derived dense trace / raw-video frontend rerun → frozen V30 M128 future trace → 可观测可预测 semantic state / transition / uncertainty field → real-instance pairwise identity retrieval field。",
+    "negative_boundary_zh": "不是 V34 continuous teacher embedding delta writer/gate/prototype/local expert；不是 teacher/prototype-only；不是 open-vocabulary dense segmentation；不是任意尺度系统。"
+  },
+  "recommended_next_step": "prepare_v35_52_reproducibility_package_and_benchmark_card",
+  "中文结论": "V35.51 完成 reviewer-risk 与 baseline 对比审计：纯 trace、copy/persistence、semantic-only、identity-only 都不能单独构成完整系统；V35.49/V35.50 的新增证据是 full 325 raw-video closure 下的联合 trace+semantic state+real-instance identity retrieval 闭环。主要 reviewer 风险已被 artifact、atlas、pseudo exclusion 和 leakage audit 缓解，但 claim 必须保持 bounded M128/H32。"
+}
