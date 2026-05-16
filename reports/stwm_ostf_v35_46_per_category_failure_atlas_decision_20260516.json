@@ -1,0 +1,48 @@
+{
+  "generated_at_utc": "2026-05-16T04:43:38.524318+00:00",
+  "current_completed_version": "V35.46",
+  "per_category_failure_atlas_done": true,
+  "atlas_ready": true,
+  "m128_h32_larger_video_system_benchmark_claim_allowed": true,
+  "full_cvpr_scale_claim_allowed": false,
+  "category_count": 17,
+  "high_risk_category_count": 4,
+  "semantic_fragile_categories_test": [
+    {
+      "split": "test",
+      "category": "dataset_vipseg",
+      "sample_count": 6,
+      "risk_metrics": {
+        "semantic_changed": 0.5448331270994358
+      }
+    },
+    {
+      "split": "test",
+      "category": "high_motion",
+      "sample_count": 6,
+      "risk_metrics": {
+        "semantic_hard": 0.5468473344002774
+      }
+    },
+    {
+      "split": "test",
+      "category": "real_instance_identity",
+      "sample_count": 6,
+      "risk_metrics": {
+        "semantic_changed": 0.5448331270994358
+      }
+    }
+  ],
+  "identity_fragile_categories_test": [],
+  "robust_category_count": 22,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "innovation_status": {
+    "video_closure": "V35.45 的 raw-video rerun -> V30 frozen trace -> semantic state -> identity retrieval 证据链保持成立。",
+    "failure_atlas": "V35.46 不扩大 claim，而是把 bounded benchmark 的成功/失败边界拆到类别级，为下一轮 full M128/H32 protocol decision 或 failure repair 提供依据。",
+    "claim_boundary": "仍只允许 M128/H32 larger subset bounded claim；full CVPR-scale 仍为 false。"
+  },
+  "recommended_next_step": "run_v35_47_full_m128_h32_raw_video_closure_protocol_decision",
+  "中文结论": "V35.46 完成类别级失败图谱。创新点没有跑偏：仍是 raw video/video-derived dense trace 到 future trace/semantic state/identity retrieval 的闭环分析，不训练新模型。当前应把 V35.46 作为 V35.47 full M128/H32 raw-video closure protocol decision 的输入，而不是直接宣称 full CVPR-scale success。"
+}

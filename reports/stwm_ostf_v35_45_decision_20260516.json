@@ -1,0 +1,71 @@
+{
+  "generated_at_utc": "2026-05-16T04:28:46.231254+00:00",
+  "current_completed_version": "V35.45",
+  "artifact_truth_audit_done": true,
+  "artifact_packaging_fixed": true,
+  "larger_subset_built": true,
+  "selected_clip_count": 32,
+  "dataset_counts": {
+    "VSPW": 16,
+    "VIPSEG": 16
+  },
+  "split_counts": {
+    "val": 11,
+    "test": 10,
+    "train": 11
+  },
+  "real_instance_identity_count": 16,
+  "pseudo_identity_count": 16,
+  "raw_frontend_rerun_done": true,
+  "raw_frontend_rerun_success_rate": 1.0,
+  "trace_drift_ok": true,
+  "trace_drift_vs_cache_mean": 0.0,
+  "trace_drift_vs_cache_max": 0.0,
+  "visibility_agreement_mean": 1.0,
+  "unified_slice_built": true,
+  "semantic_three_seed_passed": true,
+  "stable_preservation": true,
+  "identity_real_instance_three_seed_passed": true,
+  "identity_pseudo_targets_excluded_from_claim": true,
+  "per_category_breakdown_ready": true,
+  "visualization_ready": true,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "semantic_changed_balanced_accuracy_val_mean": 0.6596785772896913,
+  "semantic_changed_balanced_accuracy_test_mean": 0.5713784450603817,
+  "semantic_hard_balanced_accuracy_val_mean": 0.6668395225484715,
+  "semantic_hard_balanced_accuracy_test_mean": 0.567431795246819,
+  "semantic_uncertainty_balanced_accuracy_val_mean": 0.6742237767195504,
+  "semantic_uncertainty_balanced_accuracy_test_mean": 0.6022897529710368,
+  "m128_h32_larger_video_system_benchmark_claim_allowed": true,
+  "m128_h32_larger_video_system_benchmark_claim_boundary": "允许 bounded claim：32-clip larger M128/H32 raw-video closure benchmark，raw frontend 重新跑、V30 frozen trace、V35 semantic state 三 seed、真实 instance subset identity retrieval 三 seed。VSPW pseudo identity 只做 diagnostic-only，不进入 identity claim gate。",
+  "full_cvpr_scale_claim_allowed": false,
+  "full_cvpr_scale_claim_blockers": [
+    "当前是 32-clip larger subset，不是完整 raw-video 全量 benchmark。",
+    "identity field claim 仍限定在真实 instance-labeled subset；pseudo slot identity 已排除，但真实 instance 数据规模仍需要继续扩大。",
+    "per-category 已覆盖但还需要 V35.46 failure atlas 做更细粒度 motion/occlusion/confuser/stable/changed/hard 失败地图。",
+    "本轮没有、也不应执行 H64/H96/M512/M1024。"
+  ],
+  "good_news": [
+    "V35.45 artifact truth audit 证明 V35.44 依赖 JSON 在 live repo 中存在，artifact packaging 当前已补齐。",
+    "larger raw-video closure subset 扩到 32 clips，VSPW/VIPSeg 各 16，val/test/train 均有覆盖。",
+    "raw-video frontend rerun 成功率 1.0，trace drift vs cache mean/max 均为 0，visibility agreement 为 1.0。",
+    "larger rerun unified slice 构建成功，16 个真实 instance identity 样本用于 claim，16 个 pseudo identity 样本只做诊断。",
+    "semantic 三 seed、stable preservation、real-instance identity 三 seed、per-category breakdown 与可视化均通过。"
+  ],
+  "bad_news": [
+    "这仍是 bounded M128/H32 larger subset，不是 full CVPR-scale complete benchmark。",
+    "semantic field 当前仍应称 future semantic state / transition field，不是 open-vocabulary dense semantic segmentation field。",
+    "identity field claim 仍依赖真实 instance-labeled subset；VSPW pseudo slot identity 已排除，后续需要扩大真实 instance provenance。"
+  ],
+  "innovation_status": {
+    "video_to_trace": "raw frame paths/predecode 重新跑 frontend，旧 trace cache 只用于 drift comparison。",
+    "trace_backbone": "V30 M128 frozen 仍作为可靠 future trace field backbone。",
+    "semantic_field": "V35 semantic state target 路线在 larger raw-video closure subset 上三 seed 通过，比 V34 continuous delta 路线更稳。",
+    "identity_field": "pairwise retrieval / instance-contrastive identity 在真实 instance-labeled subset 上三 seed 通过，claim boundary 清楚。",
+    "claim_boundary": "可以 claim M128/H32 bounded larger video system benchmark；不能 claim full CVPR-scale。"
+  },
+  "recommended_next_step": "run_v35_46_per_category_failure_atlas",
+  "中文结论": "V35.45 完成扩大版 M128/H32 raw-video closure benchmark：artifact、32-clip subset、raw frontend rerun、unified semantic/identity slice、三 seed joint eval、case-mined visualization 均闭合。当前可以允许 bounded M128/H32 larger video system benchmark claim，但仍不能 claim full CVPR-scale complete system。下一步应进入 V35.46 per-category failure atlas，把成功/失败按 motion、occlusion、crossing、confuser、stable/changed/hard 更细拆开。"
+}
