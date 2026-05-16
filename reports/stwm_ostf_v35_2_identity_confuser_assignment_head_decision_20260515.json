@@ -1,0 +1,46 @@
+{
+  "semantic_state_head_training_ran": true,
+  "semantic_state_head_passed": true,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "semantic_hard_signal": {
+    "val": true,
+    "test": true
+  },
+  "changed_semantic_signal": {
+    "val": true,
+    "test": true
+  },
+  "stable_preservation": {
+    "val": true,
+    "test": true
+  },
+  "identity_consistency": {
+    "val_auc": 0.4854630789655006,
+    "test_auc": 0.5342581862062495
+  },
+  "uncertainty_quality": {
+    "val_auc": 0.4974523093228411,
+    "test_auc": 0.5056876467304523
+  },
+  "unit_memory_load_bearing": true,
+  "semantic_measurement_load_bearing": true,
+  "assignment_load_bearing": true,
+  "effective_units": {
+    "val": 2.0195024013519287,
+    "test": 2.0850892066955566
+  },
+  "unit_dominant_instance_purity": {
+    "val": 0.41877745269399386,
+    "test": 0.39104084520571225
+  },
+  "unit_semantic_purity": {
+    "val": 0.28630088128378084,
+    "test": 0.31639741898568297
+  },
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "recommended_next_step": "run_v35_seed123_replication",
+  "中文结论": "V35 semantic state head 完成 seed42 最小验证。只有 seed123/456 复现也通过后才允许考虑更大规模；当前不允许 semantic field success claim。"
+}

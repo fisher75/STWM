@@ -1,0 +1,17 @@
+{
+  "generated_at_utc": "2026-05-15T16:31:52.923590+00:00",
+  "v35_23_stratified_changed_repair_done": true,
+  "vipseg_to_vspw_stratified_changed_repaired": false,
+  "diagnostic_only_transductive_or_oracle_passed": true,
+  "mixed_domain_semantic_route_ready": true,
+  "identity_route_ready": true,
+  "cross_dataset_full_semantic_claim_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "exact_blockers": [
+    "VIPSeg-only source 到 VSPW stratified changed 的 AUC 只有弱信号，阈值迁移不稳定。",
+    "target-score quantile 或 oracle threshold 能改善 BA，但不能作为无泄漏主证据。",
+    "mixed-domain unseen 与 VSPW→VIPSeg 已通过，说明路线不是坏掉；纯一向 domain shift 仍是 benchmark 风险。"
+  ],
+  "recommended_next_step": "build_balanced_cross_dataset_changed_benchmark_with_more_vspw_vipseg_changed_cases",
+  "中文结论": "这是好消息中的坏消息：V35 的语义/身份主路线已经有三 seed 与 mixed-domain 支撑，但 VIPSeg→VSPW stratified changed 不是简单校准即可解决。下一步应扩充/重平衡 changed benchmark，同时保留 mixed-domain joint closure 作为系统进展证据；不能 claim 完整 semantic field。"
+}

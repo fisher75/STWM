@@ -1,0 +1,37 @@
+{
+  "video_identity_pairwise_retrieval_training_ran": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_29_expanded_video_identity_pairwise_retrieval_h32_m128/v35_29_expanded_video_identity_pairwise_retrieval_m128_h32_seed123_best.pt",
+  "seed": 123,
+  "steps": 1200,
+  "batch_points": 640,
+  "loss_trace": {
+    "loss": {
+      "first": 6.187865257263184,
+      "last": 4.970198154449463,
+      "mean": 5.314200505415599
+    },
+    "supcon_loss": {
+      "first": 5.995051860809326,
+      "last": 4.904930114746094,
+      "mean": 5.197665030558904
+    },
+    "confuser_margin_loss": {
+      "first": 0.19491897523403168,
+      "last": 0.030859991908073425,
+      "mean": 0.10036992596630114
+    },
+    "residual_loss": {
+      "first": 0.013158222660422325,
+      "last": 0.04991307482123375,
+      "mean": 0.04376890845363959
+    },
+    "base_align_loss": {
+      "first": 0.7322996258735657,
+      "last": 0.7916356921195984,
+      "mean": 0.7072834320366382
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "future_teacher_embedding_input_allowed": false
+}

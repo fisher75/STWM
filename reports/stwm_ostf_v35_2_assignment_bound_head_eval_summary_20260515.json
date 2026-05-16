@@ -1,0 +1,110 @@
+{
+  "generated_at_utc": "2026-05-15T07:01:43.012150+00:00",
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_semantic_state_head_h32_m128/v35_semantic_state_head_m128_h32_seed42_best.pt",
+  "val": {
+    "global_top1": 0.38514793122044827,
+    "global_top5": 0.45128533146041583,
+    "stable_top1": 0.9318032388909682,
+    "stable_top5": 0.9653452827707589,
+    "changed_top1": 0.12652765185856754,
+    "changed_top5": 0.20981565427621637,
+    "hard_top1": 0.3319266755776208,
+    "hard_top5": 0.4039526446438801,
+    "copy_global_top1": 0.4001563551687089,
+    "copy_stable_top1": 0.9681977726302586,
+    "copy_changed_top1": 0.13277727410093684,
+    "copy_hard_top1": 0.3421615428680542,
+    "family_top1": 0.7163575098558105,
+    "family_top3": 0.9629095439362205,
+    "effective_units": 3.9152626991271973,
+    "unit_semantic_purity": 0.2807136245765441,
+    "unit_dominant_instance_purity": 0.402867188597016,
+    "semantic_changed_metrics": {
+      "roc_auc": 0.6647094661959367,
+      "balanced_accuracy": 0.6214641709357289,
+      "f1": 0.735344452593912,
+      "positive_ratio": 0.6916834936600905
+    },
+    "same_instance_metrics": {
+      "roc_auc": 0.4945029181394852,
+      "balanced_accuracy": 0.5109648040479634,
+      "f1": 0.26098662297402286,
+      "positive_ratio": 0.9381110218293827
+    },
+    "uncertainty_high_metrics": {
+      "roc_auc": 0.527209493244268,
+      "balanced_accuracy": 0.5280146383694274,
+      "f1": 0.3764788791275733,
+      "positive_ratio": 0.30000543480532943
+    }
+  },
+  "test": {
+    "global_top1": 0.3813551506021781,
+    "global_top5": 0.4378300066865984,
+    "stable_top1": 0.9429906053535704,
+    "stable_top5": 0.962497445815652,
+    "changed_top1": 0.1421562961190756,
+    "changed_top5": 0.21578821448444754,
+    "hard_top1": 0.3469490949600613,
+    "hard_top5": 0.4070823029335777,
+    "copy_global_top1": 0.38981715612054324,
+    "copy_stable_top1": 0.9640703481769064,
+    "copy_changed_top1": 0.1463256621657585,
+    "copy_hard_top1": 0.35495263453136233,
+    "family_top1": 0.7312794460114825,
+    "family_top3": 0.9641825057066659,
+    "effective_units": 3.9518892765045166,
+    "unit_semantic_purity": 0.30360818068769097,
+    "unit_dominant_instance_purity": 0.3675065163272682,
+    "semantic_changed_metrics": {
+      "roc_auc": 0.6636489407913473,
+      "balanced_accuracy": 0.6217294734832041,
+      "f1": 0.7387739422809928,
+      "positive_ratio": 0.714772386654472
+    },
+    "same_instance_metrics": {
+      "roc_auc": 0.5340372414508827,
+      "balanced_accuracy": 0.5152162410238084,
+      "f1": 0.30940272278055037,
+      "positive_ratio": 0.9098111669505635
+    },
+    "uncertainty_high_metrics": {
+      "roc_auc": 0.5127254104803259,
+      "balanced_accuracy": 0.5028780853842166,
+      "f1": 0.32724901062125017,
+      "positive_ratio": 0.3000053800216738
+    }
+  },
+  "thresholds_from_val": {
+    "semantic_changed": 0.7090121209621429,
+    "same_instance": 0.8434235185384751,
+    "uncertainty_high": 0.1295133948326111
+  },
+  "interventions_val": {
+    "zero_semantic_measurements": {
+      "hard_top5_delta_vs_normal": 0.30211953408439945,
+      "changed_top5_delta_vs_normal": 0.10756724085826533,
+      "global_top5_delta_vs_normal": 0.34899811454061264
+    },
+    "shuffle_semantic_measurements": {
+      "hard_top5_delta_vs_normal": 0.22965438227993126,
+      "changed_top5_delta_vs_normal": 0.05152009670595345,
+      "global_top5_delta_vs_normal": 0.26663154946299944
+    },
+    "shuffle_assignment": {
+      "hard_top5_delta_vs_normal": -0.003475272102348659,
+      "changed_top5_delta_vs_normal": -0.002925355092172871,
+      "global_top5_delta_vs_normal": -0.0014673974389524669
+    },
+    "zero_unit_memory": {
+      "hard_top5_delta_vs_normal": 0.009299217109031865,
+      "changed_top5_delta_vs_normal": 0.01563009972801449,
+      "global_top5_delta_vs_normal": 0.00872913348299953
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "teacher_as_method": false,
+  "中文结论": "V35 semantic state head 已完成 seed42 评估；本结果只验证低维 semantic state head，不代表完整 semantic field success。"
+}

@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-05-15T10:23:46.905785+00:00",
+  "target_predictability_eval_done": true,
+  "semantic_cluster_transition_passed": false,
+  "semantic_changed_passed": false,
+  "semantic_hard_passed": false,
+  "evidence_anchor_family_passed": false,
+  "same_instance_passed": "not_evaluable_in_current_video_target_cache",
+  "uncertainty_target_passed": false,
+  "observed_predictable_video_semantic_state_suite_ready": false,
+  "future_leakage_detected": false,
+  "semantic_state_head_training_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "exact_blockers": [
+    "当前 video target cache 只有 6 个 M128/H32 smoke 样本，val/test 上界不足以支撑训练新 semantic head。",
+    "如果 changed/hard 或 uncertainty target 不过，应优先修 target 定义或扩充 video-derived future semantic supervision，而不是训练 writer/gate。"
+  ],
+  "recommended_next_step": "fix_video_semantic_state_targets_or_collect_better_video_targets",
+  "中文结论": "V35.12 target suite 尚未达到 observed-only 上界门槛，不能训练 video semantic state head。"
+}

@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-05-15T06:13:50.508719+00:00",
+  "fixed_semantic_state_targets_built": true,
+  "target_predictability_eval_done": true,
+  "semantic_cluster_transition_passed": true,
+  "semantic_changed_passed": true,
+  "evidence_anchor_family_passed": false,
+  "same_instance_passed": false,
+  "uncertainty_target_passed": true,
+  "observed_predictable_semantic_state_suite_ready": true,
+  "semantic_changed_auc": {
+    "val": 0.6758799022391349,
+    "test": 0.6764811893002483
+  },
+  "same_instance_auc": {
+    "val": 0.5623998947680466,
+    "test": 0.6280086610996265
+  },
+  "uncertainty_high_auc": {
+    "val": 0.8346436972787656,
+    "test": 0.8402648885142144
+  },
+  "semantic_state_head_training_ran": false,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "recommended_next_step": "train_v35_semantic_state_head",
+  "中文结论": "V35.1 已完成 target 修复与 observed-only 上界审计。semantic_cluster_transition、semantic_changed、uncertainty_target 通过，suite_ready=true；本轮仍未训练 semantic state head，下一步才允许训练 seed42 V35 head。"
+}

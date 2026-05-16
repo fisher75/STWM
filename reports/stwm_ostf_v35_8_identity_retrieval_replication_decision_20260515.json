@@ -1,0 +1,81 @@
+{
+  "generated_at_utc": "2026-05-15T09:24:37.873100+00:00",
+  "v35_8_identity_retrieval_replication_done": true,
+  "seeds": [
+    "seed42",
+    "seed123",
+    "seed456"
+  ],
+  "semantic_state_head_passed_all": true,
+  "identity_retrieval_passed_all": true,
+  "stable_preservation_all": true,
+  "semantic_hard_signal_all": true,
+  "changed_semantic_signal_all": true,
+  "semantic_measurement_load_bearing_all": true,
+  "unit_memory_load_bearing_all": false,
+  "assignment_load_bearing_all": false,
+  "identity_retrieval_exclude_same_point_top1": {
+    "seed42": {
+      "val": 0.8713997236688277,
+      "test": 0.8273449319213313
+    },
+    "seed123": {
+      "val": 0.8852162822829206,
+      "test": 0.8381240544629349
+    },
+    "seed456": {
+      "val": 0.875650972473164,
+      "test": 0.8353819969742814
+    }
+  },
+  "identity_retrieval_same_frame_top1": {
+    "seed42": {
+      "val": 0.8713997236688277,
+      "test": 0.8273449319213313
+    },
+    "seed123": {
+      "val": 0.8852162822829206,
+      "test": 0.8381240544629349
+    },
+    "seed456": {
+      "val": 0.875650972473164,
+      "test": 0.8353819969742814
+    }
+  },
+  "identity_retrieval_instance_pooled_top1": {
+    "seed42": {
+      "val": 0.7563060245987075,
+      "test": 0.726280747179582
+    },
+    "seed123": {
+      "val": 0.7614133833646028,
+      "test": 0.7223044201960421
+    },
+    "seed456": {
+      "val": 0.7506775067750677,
+      "test": 0.7297022378398372
+    }
+  },
+  "identity_confuser_separation": {
+    "seed42": {
+      "val": 0.2938940285523876,
+      "test": 0.2151662932981117
+    },
+    "seed123": {
+      "val": 0.27568742137336405,
+      "test": 0.21943356247222084
+    },
+    "seed456": {
+      "val": 0.3072691850725325,
+      "test": 0.2246987242464069
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "integrated_identity_field_claim_allowed": true,
+  "integrated_semantic_field_claim_allowed": false,
+  "recommended_next_step": "build_video_input_closure",
+  "secondary_blocker": "fix_unit_assignment_load_bearing",
+  "中文结论": "V35.8 在 seed42/123/456 的 M128/H32 复现实验中通过 semantic state head 与 identity retrieval gate。 identity field claim 在当前 video-derived trace + observed semantic measurement 输入合同下可以成立；但 unit/assignment load-bearing 没有三 seed 全过，且尚未完成 raw video input closure，不能宣称完整 semantic field success。"
+}

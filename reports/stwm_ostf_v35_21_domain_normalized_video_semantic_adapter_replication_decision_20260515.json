@@ -1,0 +1,348 @@
+{
+  "generated_at_utc": "2026-05-15T16:13:15.689260+00:00",
+  "v35_21_video_semantic_adapter_replication_done": true,
+  "seeds": [
+    42,
+    123,
+    456
+  ],
+  "seed_results": {
+    "42": {
+      "decision": {
+        "generated_at_utc": "2026-05-15T16:11:38.367387+00:00",
+        "video_semantic_state_adapter_training_ran": true,
+        "video_semantic_state_adapter_passed": true,
+        "semantic_changed_passed": true,
+        "semantic_hard_passed": true,
+        "uncertainty_passed": true,
+        "stable_preservation": true,
+        "identity_measurement_base_required": true,
+        "v30_backbone_frozen": true,
+        "future_leakage_detected": false,
+        "trajectory_degraded": false,
+        "integrated_identity_field_claim_allowed": false,
+        "integrated_semantic_field_claim_allowed": false,
+        "full_video_semantic_identity_field_claim_allowed": false,
+        "recommended_next_step": "aggregate_v35_21_three_seed_cross_dataset_video_semantic_adapter",
+        "中文结论": "V35.21 domain-normalized video semantic state adapter seed42 通过 changed/hard/uncertainty/stable gate；下一步应做 seed123/456 复现。"
+      },
+      "eval": {
+        "generated_at_utc": "2026-05-15T16:11:38.367373+00:00",
+        "video_semantic_state_adapter_eval_done": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_21_domain_normalized_video_semantic_state_adapter_h32_m128/v35_21_domain_normalized_video_semantic_state_adapter_m128_h32_seed42_best.pt",
+        "thresholds_from_val": {
+          "changed": 0.3037847280502319,
+          "hard": 0.5318470090627672,
+          "uncertainty": 0.5388666555285454
+        },
+        "val": {
+          "semantic_changed": {
+            "roc_auc": 0.6591311688868908,
+            "balanced_accuracy": 0.6151717172231566,
+            "f1": 0.27815747068955937,
+            "positive_ratio": 0.1248875
+          },
+          "semantic_hard": {
+            "roc_auc": 0.6903501271077078,
+            "balanced_accuracy": 0.6484836537350112,
+            "f1": 0.4247363374880153,
+            "positive_ratio": 0.1965
+          },
+          "semantic_uncertainty": {
+            "roc_auc": 0.7109959165499129,
+            "balanced_accuracy": 0.6695611478209322,
+            "f1": 0.5322975287496942,
+            "positive_ratio": 0.28805
+          },
+          "cluster": {
+            "cluster_top1": 0.54075,
+            "cluster_top5": 0.8989,
+            "copy_top1": 0.863575,
+            "stable_top5": 1.0,
+            "stable_copy_top1": 1.0,
+            "stable_token_ratio": 0.863575
+          }
+        },
+        "test": {
+          "semantic_changed": {
+            "roc_auc": 0.6807479877956993,
+            "balanced_accuracy": 0.6248230851891221,
+            "f1": 0.2788172834105506,
+            "positive_ratio": 0.1204125
+          },
+          "semantic_hard": {
+            "roc_auc": 0.6973701899473373,
+            "balanced_accuracy": 0.6273682440751258,
+            "f1": 0.39336134234492837,
+            "positive_ratio": 0.190375
+          },
+          "semantic_uncertainty": {
+            "roc_auc": 0.7257728571780001,
+            "balanced_accuracy": 0.6577460196400526,
+            "f1": 0.510752923656432,
+            "positive_ratio": 0.2852
+          },
+          "cluster": {
+            "cluster_top1": 0.63715,
+            "cluster_top5": 0.9478625,
+            "copy_top1": 0.9293125,
+            "stable_top5": 1.0,
+            "stable_copy_top1": 1.0,
+            "stable_token_ratio": 0.9293125
+          }
+        },
+        "semantic_changed_passed": true,
+        "semantic_hard_passed": true,
+        "uncertainty_passed": true,
+        "stable_preservation": true,
+        "future_leakage_detected": false,
+        "trajectory_degraded": false
+      },
+      "passed": true,
+      "semantic_changed_passed": true,
+      "semantic_hard_passed": true,
+      "uncertainty_passed": true,
+      "stable_preservation": true,
+      "test_changed_balanced_accuracy": 0.6248230851891221,
+      "test_changed_roc_auc": 0.6807479877956993,
+      "test_hard_balanced_accuracy": 0.6273682440751258,
+      "test_hard_roc_auc": 0.6973701899473373,
+      "test_uncertainty_balanced_accuracy": 0.6577460196400526,
+      "test_uncertainty_roc_auc": 0.7257728571780001,
+      "test_stable_top5": 1.0
+    },
+    "123": {
+      "decision": {
+        "generated_at_utc": "2026-05-15T16:11:36.217786+00:00",
+        "video_semantic_state_adapter_training_ran": true,
+        "video_semantic_state_adapter_passed": true,
+        "semantic_changed_passed": true,
+        "semantic_hard_passed": true,
+        "uncertainty_passed": true,
+        "stable_preservation": true,
+        "identity_measurement_base_required": true,
+        "v30_backbone_frozen": true,
+        "future_leakage_detected": false,
+        "trajectory_degraded": false,
+        "integrated_identity_field_claim_allowed": false,
+        "integrated_semantic_field_claim_allowed": false,
+        "full_video_semantic_identity_field_claim_allowed": false,
+        "recommended_next_step": "aggregate_v35_21_three_seed_cross_dataset_video_semantic_adapter",
+        "中文结论": "V35.21 domain-normalized video semantic state adapter seed123 通过 changed/hard/uncertainty/stable gate；下一步应做 seed123/456 复现。"
+      },
+      "eval": {
+        "generated_at_utc": "2026-05-15T16:11:36.217773+00:00",
+        "video_semantic_state_adapter_eval_done": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_21_domain_normalized_video_semantic_state_adapter_h32_m128/v35_21_domain_normalized_video_semantic_state_adapter_m128_h32_seed123_best.pt",
+        "thresholds_from_val": {
+          "changed": 0.49454883933067323,
+          "hard": 0.491234503686428,
+          "uncertainty": 0.3973337203264236
+        },
+        "val": {
+          "semantic_changed": {
+            "roc_auc": 0.6646538451992641,
+            "balanced_accuracy": 0.624875230023052,
+            "f1": 0.29602338903282543,
+            "positive_ratio": 0.1258875
+          },
+          "semantic_hard": {
+            "roc_auc": 0.6970869604722532,
+            "balanced_accuracy": 0.6581430619971679,
+            "f1": 0.432161957444855,
+            "positive_ratio": 0.1945875
+          },
+          "semantic_uncertainty": {
+            "roc_auc": 0.7222880452623537,
+            "balanced_accuracy": 0.6703742940732536,
+            "f1": 0.537530843188973,
+            "positive_ratio": 0.2845625
+          },
+          "cluster": {
+            "cluster_top1": 0.644175,
+            "cluster_top5": 0.9112,
+            "copy_top1": 0.8632375,
+            "stable_top5": 1.0,
+            "stable_copy_top1": 1.0,
+            "stable_token_ratio": 0.8632375
+          }
+        },
+        "test": {
+          "semantic_changed": {
+            "roc_auc": 0.6854855003232325,
+            "balanced_accuracy": 0.6322910676883187,
+            "f1": 0.30468859735370957,
+            "positive_ratio": 0.1221125
+          },
+          "semantic_hard": {
+            "roc_auc": 0.6930902150115076,
+            "balanced_accuracy": 0.6385709404054674,
+            "f1": 0.4069761847486168,
+            "positive_ratio": 0.191475
+          },
+          "semantic_uncertainty": {
+            "roc_auc": 0.7280594665750916,
+            "balanced_accuracy": 0.6633293177410824,
+            "f1": 0.5296244296244296,
+            "positive_ratio": 0.286
+          },
+          "cluster": {
+            "cluster_top1": 0.7477125,
+            "cluster_top5": 0.9525375,
+            "copy_top1": 0.9281375,
+            "stable_top5": 1.0,
+            "stable_copy_top1": 1.0,
+            "stable_token_ratio": 0.9281375
+          }
+        },
+        "semantic_changed_passed": true,
+        "semantic_hard_passed": true,
+        "uncertainty_passed": true,
+        "stable_preservation": true,
+        "future_leakage_detected": false,
+        "trajectory_degraded": false
+      },
+      "passed": true,
+      "semantic_changed_passed": true,
+      "semantic_hard_passed": true,
+      "uncertainty_passed": true,
+      "stable_preservation": true,
+      "test_changed_balanced_accuracy": 0.6322910676883187,
+      "test_changed_roc_auc": 0.6854855003232325,
+      "test_hard_balanced_accuracy": 0.6385709404054674,
+      "test_hard_roc_auc": 0.6930902150115076,
+      "test_uncertainty_balanced_accuracy": 0.6633293177410824,
+      "test_uncertainty_roc_auc": 0.7280594665750916,
+      "test_stable_top5": 1.0
+    },
+    "456": {
+      "decision": {
+        "generated_at_utc": "2026-05-15T16:11:30.504926+00:00",
+        "video_semantic_state_adapter_training_ran": true,
+        "video_semantic_state_adapter_passed": true,
+        "semantic_changed_passed": true,
+        "semantic_hard_passed": true,
+        "uncertainty_passed": true,
+        "stable_preservation": true,
+        "identity_measurement_base_required": true,
+        "v30_backbone_frozen": true,
+        "future_leakage_detected": false,
+        "trajectory_degraded": false,
+        "integrated_identity_field_claim_allowed": false,
+        "integrated_semantic_field_claim_allowed": false,
+        "full_video_semantic_identity_field_claim_allowed": false,
+        "recommended_next_step": "aggregate_v35_21_three_seed_cross_dataset_video_semantic_adapter",
+        "中文结论": "V35.21 domain-normalized video semantic state adapter seed456 通过 changed/hard/uncertainty/stable gate；下一步应做 seed123/456 复现。"
+      },
+      "eval": {
+        "generated_at_utc": "2026-05-15T16:11:30.504907+00:00",
+        "video_semantic_state_adapter_eval_done": true,
+        "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_21_domain_normalized_video_semantic_state_adapter_h32_m128/v35_21_domain_normalized_video_semantic_state_adapter_m128_h32_seed456_best.pt",
+        "thresholds_from_val": {
+          "changed": 0.5718861013650895,
+          "hard": 0.5742390647530556,
+          "uncertainty": 0.4938611350953579
+        },
+        "val": {
+          "semantic_changed": {
+            "roc_auc": 0.6820022784284671,
+            "balanced_accuracy": 0.6466186802528222,
+            "f1": 0.32342079689018466,
+            "positive_ratio": 0.1251875
+          },
+          "semantic_hard": {
+            "roc_auc": 0.7119297939373745,
+            "balanced_accuracy": 0.6684296317831568,
+            "f1": 0.4455583939846725,
+            "positive_ratio": 0.193675
+          },
+          "semantic_uncertainty": {
+            "roc_auc": 0.7327362578452806,
+            "balanced_accuracy": 0.6797819955213926,
+            "f1": 0.5453683691654343,
+            "positive_ratio": 0.284325
+          },
+          "cluster": {
+            "cluster_top1": 0.6944625,
+            "cluster_top5": 0.912675,
+            "copy_top1": 0.8629375,
+            "stable_top5": 1.0,
+            "stable_copy_top1": 1.0,
+            "stable_token_ratio": 0.8629375
+          }
+        },
+        "test": {
+          "semantic_changed": {
+            "roc_auc": 0.681844273806456,
+            "balanced_accuracy": 0.6311832731029896,
+            "f1": 0.3067077782302635,
+            "positive_ratio": 0.1226625
+          },
+          "semantic_hard": {
+            "roc_auc": 0.7043446925078114,
+            "balanced_accuracy": 0.6321934487963228,
+            "f1": 0.4003473286341812,
+            "positive_ratio": 0.1914375
+          },
+          "semantic_uncertainty": {
+            "roc_auc": 0.7287700433219573,
+            "balanced_accuracy": 0.6549603180852396,
+            "f1": 0.5141319498218987,
+            "positive_ratio": 0.2851625
+          },
+          "cluster": {
+            "cluster_top1": 0.7558125,
+            "cluster_top5": 0.949575,
+            "copy_top1": 0.9280875,
+            "stable_top5": 1.0,
+            "stable_copy_top1": 1.0,
+            "stable_token_ratio": 0.9280875
+          }
+        },
+        "semantic_changed_passed": true,
+        "semantic_hard_passed": true,
+        "uncertainty_passed": true,
+        "stable_preservation": true,
+        "future_leakage_detected": false,
+        "trajectory_degraded": false
+      },
+      "passed": true,
+      "semantic_changed_passed": true,
+      "semantic_hard_passed": true,
+      "uncertainty_passed": true,
+      "stable_preservation": true,
+      "test_changed_balanced_accuracy": 0.6311832731029896,
+      "test_changed_roc_auc": 0.681844273806456,
+      "test_hard_balanced_accuracy": 0.6321934487963228,
+      "test_hard_roc_auc": 0.7043446925078114,
+      "test_uncertainty_balanced_accuracy": 0.6549603180852396,
+      "test_uncertainty_roc_auc": 0.7287700433219573,
+      "test_stable_top5": 1.0
+    }
+  },
+  "all_three_seed_passed": true,
+  "semantic_changed_passed_all_seeds": true,
+  "semantic_hard_passed_all_seeds": true,
+  "uncertainty_passed_all_seeds": true,
+  "stable_preservation_all_seeds": true,
+  "test_changed_balanced_accuracy_mean": 0.6294324753268101,
+  "test_changed_roc_auc_mean": 0.6826925873084626,
+  "test_hard_balanced_accuracy_mean": 0.632710877758972,
+  "test_hard_roc_auc_mean": 0.6982683658222187,
+  "test_uncertainty_balanced_accuracy_mean": 0.6586785518221249,
+  "test_uncertainty_roc_auc_mean": 0.7275341223583496,
+  "cross_dataset_video_semantic_suite_ready": true,
+  "mixed_unseen_passed": true,
+  "vspw_to_vipseg_passed": true,
+  "vipseg_to_vspw_all_passed": true,
+  "vipseg_to_vspw_stratified_changed_passed": false,
+  "vipseg_to_vspw_stratified_changed_test_balanced_accuracy": 0.5305747700180692,
+  "vipseg_to_vspw_stratified_changed_test_roc_auc": 0.5844640889059612,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "recommended_next_step": "run_joint_video_semantic_identity_closure_with_stratified_changed_breakdown",
+  "中文结论": "V35.21 domain-normalized video semantic adapter 在 seed42/123/456 上全部通过，说明 mask-derived video semantic state target 已经从单 seed smoke 走到较稳的跨 seed 复现。仍不能 claim 完整 semantic field：VIPSeg→VSPW stratified changed 仍未通过，且还需要和 video identity retrieval 做联合闭环。"
+}

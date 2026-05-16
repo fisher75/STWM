@@ -1,0 +1,38 @@
+{
+  "generated_at_utc": "2026-05-15T10:25:10.437413+00:00",
+  "video_trace_cache_expanded": true,
+  "video_trace_processed_clip_count": 32,
+  "video_trace_processed_split_counts": {
+    "test": 5,
+    "train": 22,
+    "val": 5
+  },
+  "observed_measurement_cache_built": true,
+  "observed_measurement_sample_count": 32,
+  "identity_measurement_base_passed": true,
+  "stable_copy_adapter_passed": true,
+  "video_input_trace_measurement_closure_passed": true,
+  "video_future_semantic_targets_built": true,
+  "fixed_video_semantic_targets_built": true,
+  "target_predictability_eval_done": true,
+  "semantic_cluster_transition_passed": false,
+  "semantic_changed_passed": false,
+  "semantic_hard_passed": false,
+  "evidence_anchor_family_passed": false,
+  "uncertainty_target_passed": false,
+  "observed_predictable_video_semantic_state_suite_ready": false,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "integrated_identity_field_video_smoke_allowed": true,
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "exact_blockers": [
+    "Video-derived trace + observed measurement + identity measurement base 已闭环，但 semantic changed/hard target 在 observed-only 上界中没有稳定通过。",
+    "V35.13 fixed target 后 uncertainty/changed/hard 仍存在 val/test 分布不稳，说明当前 video future semantic target 不是可靠训练目标。",
+    "继续训练 V35 semantic head 会把 target/benchmark 问题伪装成模型问题，因此应先收集或定义更可靠的 video future semantic targets。"
+  ],
+  "recommended_next_step": "collect_better_video_semantic_benchmark_targets",
+  "中文结论": "V35.13 已把系统推进到 M128/H32 video-derived trace + observed semantic measurement 的闭环 smoke：identity measurement base 和 stable copy adapter 通过。但 video future semantic state target 的 observed-only 上界没有通过，不能 claim 完整 semantic field success。下一步应修/扩 video semantic benchmark target，而不是训练 writer/gate/head。"
+}

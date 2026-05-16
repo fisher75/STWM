@@ -1,0 +1,69 @@
+{
+  "generated_at_utc": "2026-05-15T17:08:56.911512+00:00",
+  "video_identity_pairwise_retrieval_eval_done": true,
+  "seed": 456,
+  "target_root": "outputs/cache/stwm_ostf_v35_27_expanded_video_identity_pairwise_retrieval_targets/M128_H32",
+  "measurement_baseline": {
+    "val": {
+      "identity_retrieval_exclude_same_point_top1": 0.8332248263888888,
+      "identity_retrieval_same_frame_top1": 0.8332248263888888,
+      "identity_retrieval_instance_pooled_top1": 0.8315700954861112,
+      "identity_confuser_separation": 0.1636424322012301,
+      "identity_confuser_avoidance_top1": 0.827885855244716,
+      "occlusion_reappear_retrieval_top1": 0.8756498232480765,
+      "trajectory_crossing_retrieval_top1": 0.8165667937776163,
+      "same_pair_similarity_mean": 0.9983728883147552,
+      "confuser_pair_similarity_mean": 0.8347304561135251,
+      "confuser_pair_count": 16799706.0,
+      "occlusion_reappear_total": 4809.0,
+      "trajectory_crossing_total": 33042.0
+    },
+    "test": {
+      "identity_retrieval_exclude_same_point_top1": 0.86556976010101,
+      "identity_retrieval_same_frame_top1": 0.86556976010101,
+      "identity_retrieval_instance_pooled_top1": 0.8516808712121212,
+      "identity_confuser_separation": 0.15979838617094688,
+      "identity_confuser_avoidance_top1": 0.8615660392732013,
+      "occlusion_reappear_retrieval_top1": 0.9332519332519332,
+      "trajectory_crossing_retrieval_top1": 0.8563259154180335,
+      "same_pair_similarity_mean": 0.9984144997996854,
+      "confuser_pair_similarity_mean": 0.8386161136287386,
+      "confuser_pair_count": 13046182.0,
+      "occlusion_reappear_total": 4914.0,
+      "trajectory_crossing_total": 22558.0
+    }
+  },
+  "learned_identity_head": {
+    "val": {
+      "identity_retrieval_exclude_same_point_top1": 0.9030490451388888,
+      "identity_retrieval_same_frame_top1": 0.9030490451388888,
+      "identity_retrieval_instance_pooled_top1": 0.8445909288194444,
+      "identity_confuser_separation": 0.49143120875876006,
+      "identity_confuser_avoidance_top1": 0.9000112126478668,
+      "occlusion_reappear_retrieval_top1": 0.9631940112289458,
+      "trajectory_crossing_retrieval_top1": 0.891895163731009,
+      "same_pair_similarity_mean": 0.9682910828244133,
+      "confuser_pair_similarity_mean": 0.4768598740656533,
+      "confuser_pair_count": 16799706.0,
+      "occlusion_reappear_total": 4809.0,
+      "trajectory_crossing_total": 33042.0
+    },
+    "test": {
+      "identity_retrieval_exclude_same_point_top1": 0.9824021464646465,
+      "identity_retrieval_same_frame_top1": 0.9824021464646465,
+      "identity_retrieval_instance_pooled_top1": 0.8742108585858586,
+      "identity_confuser_separation": 0.5169037050701741,
+      "identity_confuser_avoidance_top1": 0.9819522529128982,
+      "occlusion_reappear_retrieval_top1": 0.98005698005698,
+      "trajectory_crossing_retrieval_top1": 0.9803174040251795,
+      "same_pair_similarity_mean": 0.9719474408371128,
+      "confuser_pair_similarity_mean": 0.45504373576693863,
+      "confuser_pair_count": 13046182.0,
+      "occlusion_reappear_total": 4914.0,
+      "trajectory_crossing_total": 22558.0
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

@@ -1,0 +1,122 @@
+{
+  "generated_at_utc": "2026-05-15T09:02:43.063090+00:00",
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_7_dual_path_identity_retrieval_head_h32_m128/v35_semantic_state_head_m128_h32_seed42_best.pt",
+  "val": {
+    "global_top1": 0.3915442790312669,
+    "global_top5": 0.44972177977332684,
+    "stable_top1": 0.9465107575282468,
+    "stable_top5": 0.9631603969209294,
+    "changed_top1": 0.13028709579933515,
+    "changed_top5": 0.20828044726503475,
+    "hard_top1": 0.3356119915982433,
+    "hard_top5": 0.4063204124498759,
+    "copy_global_top1": 0.4001563551687089,
+    "copy_stable_top1": 0.9681977726302586,
+    "copy_changed_top1": 0.13277727410093684,
+    "copy_hard_top1": 0.3421615428680542,
+    "family_top1": 0.7545098432685755,
+    "family_top3": 0.9629095439362205,
+    "effective_units": 2.596451997756958,
+    "unit_semantic_purity": 0.26702825210118697,
+    "unit_dominant_instance_purity": 0.42690551824228895,
+    "identity_retrieval_exclude_same_point_top1": 0.8142204272505048,
+    "identity_retrieval_same_frame_top1": 0.8142204272505048,
+    "identity_retrieval_instance_pooled_top1": 0.6544715447154471,
+    "identity_same_pair_similarity": 0.795912010878768,
+    "identity_confuser_pair_similarity": 0.6469690112381848,
+    "identity_confuser_separation": 0.1489429996405831,
+    "semantic_changed_metrics": {
+      "roc_auc": 0.6712129675459722,
+      "balanced_accuracy": 0.6274798647791491,
+      "f1": 0.751244044632925,
+      "positive_ratio": 0.6916834936600905
+    },
+    "same_instance_metrics": {
+      "roc_auc": 0.5396066926585379,
+      "balanced_accuracy": 0.5339274730966541,
+      "f1": 0.6362470569071982,
+      "positive_ratio": 0.9381110218293827
+    },
+    "uncertainty_high_metrics": {
+      "roc_auc": 0.5042469666434244,
+      "balanced_accuracy": 0.5234141382464164,
+      "f1": 0.4508594539939333,
+      "positive_ratio": 0.30000543480532943
+    }
+  },
+  "test": {
+    "global_top1": 0.38326890116900186,
+    "global_top5": 0.43237504899662593,
+    "stable_top1": 0.9468301978245477,
+    "stable_top5": 0.9615280437561479,
+    "changed_top1": 0.14296006172059603,
+    "changed_top5": 0.20793604283882483,
+    "hard_top1": 0.3469411941312644,
+    "hard_top5": 0.4017887476396274,
+    "copy_global_top1": 0.38981715612054324,
+    "copy_stable_top1": 0.9640703481769064,
+    "copy_changed_top1": 0.1463256621657585,
+    "copy_hard_top1": 0.35495263453136233,
+    "family_top1": 0.7760200905380791,
+    "family_top3": 0.9641825057066659,
+    "effective_units": 2.505563259124756,
+    "unit_semantic_purity": 0.2676141008320161,
+    "unit_dominant_instance_purity": 0.34872423647902906,
+    "identity_retrieval_exclude_same_point_top1": 0.773874810892587,
+    "identity_retrieval_same_frame_top1": 0.773874810892587,
+    "identity_retrieval_instance_pooled_top1": 0.6088403920843352,
+    "identity_same_pair_similarity": 0.6610831052140458,
+    "identity_confuser_pair_similarity": 0.5895095016201307,
+    "identity_confuser_separation": 0.07157360359391507,
+    "semantic_changed_metrics": {
+      "roc_auc": 0.6849327469560179,
+      "balanced_accuracy": 0.6341678336758458,
+      "f1": 0.7549996448611407,
+      "positive_ratio": 0.714772386654472
+    },
+    "same_instance_metrics": {
+      "roc_auc": 0.5270868783887362,
+      "balanced_accuracy": 0.5199798339606108,
+      "f1": 0.6516362467708792,
+      "positive_ratio": 0.9098111669505635
+    },
+    "uncertainty_high_metrics": {
+      "roc_auc": 0.5358402866754071,
+      "balanced_accuracy": 0.5272760553625645,
+      "f1": 0.4534864549058403,
+      "positive_ratio": 0.3000053800216738
+    }
+  },
+  "thresholds_from_val": {
+    "semantic_changed": 0.747055047750473,
+    "same_instance": 0.8349992126226425,
+    "uncertainty_high": 0.08897692449390888
+  },
+  "interventions_val": {
+    "zero_semantic_measurements": {
+      "hard_top5_delta_vs_normal": 0.3041054038571701,
+      "changed_top5_delta_vs_normal": 0.1119250528860683,
+      "global_top5_delta_vs_normal": 0.35393960677093134
+    },
+    "shuffle_semantic_measurements": {
+      "hard_top5_delta_vs_normal": 0.21949589459614283,
+      "changed_top5_delta_vs_normal": 0.04933212450891508,
+      "global_top5_delta_vs_normal": 0.2623464144916994
+    },
+    "shuffle_assignment": {
+      "hard_top5_delta_vs_normal": 0.005002864235249205,
+      "changed_top5_delta_vs_normal": 0.006152916288909044,
+      "global_top5_delta_vs_normal": 0.003913059837206689
+    },
+    "zero_unit_memory": {
+      "hard_top5_delta_vs_normal": 0.009642925338934516,
+      "changed_top5_delta_vs_normal": 0.006050166213357494,
+      "global_top5_delta_vs_normal": 0.002044322927771458
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "teacher_as_method": false,
+  "中文结论": "V35 semantic state head 已完成 seed42 评估；本结果只验证低维 semantic state head，不代表完整 semantic field success。"
+}

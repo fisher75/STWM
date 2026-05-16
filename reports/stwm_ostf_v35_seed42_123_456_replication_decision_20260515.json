@@ -1,0 +1,158 @@
+{
+  "generated_at_utc": "2026-05-15T07:11:01.885390+00:00",
+  "seed_decisions_present": true,
+  "seed42_123_456_semantic_state_head_passed": true,
+  "semantic_hard_signal_replicated": true,
+  "changed_semantic_signal_replicated": true,
+  "stable_preservation_replicated": true,
+  "semantic_measurement_load_bearing_replicated": true,
+  "unit_memory_load_bearing_replicated": false,
+  "assignment_load_bearing_replicated": false,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "recommended_next_step": "fix_identity_consistency_and_unit_assignment_load_bearing",
+  "per_seed": {
+    "42": {
+      "semantic_state_head_training_ran": true,
+      "semantic_state_head_passed": true,
+      "v30_backbone_frozen": true,
+      "future_leakage_detected": false,
+      "trajectory_degraded": false,
+      "semantic_hard_signal": {
+        "val": true,
+        "test": true
+      },
+      "changed_semantic_signal": {
+        "val": true,
+        "test": true
+      },
+      "stable_preservation": {
+        "val": true,
+        "test": true
+      },
+      "identity_consistency": {
+        "val_auc": 0.467893148521324,
+        "test_auc": 0.5270077776855651
+      },
+      "uncertainty_quality": {
+        "val_auc": 0.5199170927683987,
+        "test_auc": 0.5576183264300443
+      },
+      "unit_memory_load_bearing": true,
+      "semantic_measurement_load_bearing": true,
+      "assignment_load_bearing": false,
+      "effective_units": {
+        "val": 11.969320297241211,
+        "test": 11.965314865112305
+      },
+      "unit_dominant_instance_purity": {
+        "val": 0.4206711361666142,
+        "test": 0.33909218682759257
+      },
+      "unit_semantic_purity": {
+        "val": 0.2891224279026457,
+        "test": 0.2671592864285299
+      },
+      "integrated_identity_field_claim_allowed": false,
+      "integrated_semantic_field_claim_allowed": false,
+      "recommended_next_step": "run_v35_seed123_replication",
+      "中文结论": "V35 semantic state head 完成 seed42 最小验证。只有 seed123/456 复现也通过后才允许考虑更大规模；当前不允许 semantic field success claim。"
+    },
+    "123": {
+      "semantic_state_head_training_ran": true,
+      "semantic_state_head_passed": true,
+      "v30_backbone_frozen": true,
+      "future_leakage_detected": false,
+      "trajectory_degraded": false,
+      "semantic_hard_signal": {
+        "val": true,
+        "test": true
+      },
+      "changed_semantic_signal": {
+        "val": true,
+        "test": true
+      },
+      "stable_preservation": {
+        "val": true,
+        "test": true
+      },
+      "identity_consistency": {
+        "val_auc": 0.4993343524795995,
+        "test_auc": 0.5283791725427396
+      },
+      "uncertainty_quality": {
+        "val_auc": 0.5656772194186421,
+        "test_auc": 0.5749996466853576
+      },
+      "unit_memory_load_bearing": false,
+      "semantic_measurement_load_bearing": true,
+      "assignment_load_bearing": false,
+      "effective_units": {
+        "val": 11.751401901245117,
+        "test": 11.83174991607666
+      },
+      "unit_dominant_instance_purity": {
+        "val": 0.42045341365647515,
+        "test": 0.3386459076224667
+      },
+      "unit_semantic_purity": {
+        "val": 0.2907857844755502,
+        "test": 0.26967873898910155
+      },
+      "integrated_identity_field_claim_allowed": false,
+      "integrated_semantic_field_claim_allowed": false,
+      "recommended_next_step": "run_v35_seed123_replication",
+      "中文结论": "V35 semantic state head 完成 seed42 最小验证。只有 seed123/456 复现也通过后才允许考虑更大规模；当前不允许 semantic field success claim。"
+    },
+    "456": {
+      "semantic_state_head_training_ran": true,
+      "semantic_state_head_passed": true,
+      "v30_backbone_frozen": true,
+      "future_leakage_detected": false,
+      "trajectory_degraded": false,
+      "semantic_hard_signal": {
+        "val": true,
+        "test": true
+      },
+      "changed_semantic_signal": {
+        "val": true,
+        "test": true
+      },
+      "stable_preservation": {
+        "val": true,
+        "test": true
+      },
+      "identity_consistency": {
+        "val_auc": 0.510154335796649,
+        "test_auc": 0.5227207001613925
+      },
+      "uncertainty_quality": {
+        "val_auc": 0.5123832005047259,
+        "test_auc": 0.5141231311675581
+      },
+      "unit_memory_load_bearing": false,
+      "semantic_measurement_load_bearing": true,
+      "assignment_load_bearing": false,
+      "effective_units": {
+        "val": 11.943657875061035,
+        "test": 11.961445808410645
+      },
+      "unit_dominant_instance_purity": {
+        "val": 0.4218281272141256,
+        "test": 0.339007243916792
+      },
+      "unit_semantic_purity": {
+        "val": 0.2891478180360288,
+        "test": 0.2662286633862931
+      },
+      "integrated_identity_field_claim_allowed": false,
+      "integrated_semantic_field_claim_allowed": false,
+      "recommended_next_step": "run_v35_seed123_replication",
+      "中文结论": "V35 semantic state head 完成 seed42 最小验证。只有 seed123/456 复现也通过后才允许考虑更大规模；当前不允许 semantic field success claim。"
+    }
+  },
+  "中文结论": "V35 semantic state head 在 seed42/123/456 上复现了 stable/changed/hard 语义状态正信号，且 semantic measurement 是 load-bearing；但 identity consistency、unit memory、assignment 仍未立住，因此不能 claim 完整 semantic/identity field success，下一步应修 identity 与 unit/assignment load-bearing。"
+}

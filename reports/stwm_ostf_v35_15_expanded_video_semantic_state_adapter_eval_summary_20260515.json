@@ -1,0 +1,72 @@
+{
+  "generated_at_utc": "2026-05-15T12:10:47.415583+00:00",
+  "video_semantic_state_adapter_eval_done": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_15_expanded_video_semantic_state_adapter_h32_m128/v35_14_video_semantic_state_adapter_m128_h32_seed42_best.pt",
+  "thresholds_from_val": {
+    "changed": 0.22522649206221101,
+    "hard": 0.19675017148256288,
+    "uncertainty": 0.23237261511385437
+  },
+  "val": {
+    "semantic_changed": {
+      "roc_auc": 0.7350648026963597,
+      "balanced_accuracy": 0.6897576460961166,
+      "f1": 0.2856922304990544,
+      "positive_ratio": 0.10075555555555556
+    },
+    "semantic_hard": {
+      "roc_auc": 0.7198482108883644,
+      "balanced_accuracy": 0.6799653250047184,
+      "f1": 0.2762817193164164,
+      "positive_ratio": 0.10075555555555556
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7260632226042126,
+      "balanced_accuracy": 0.688408672620783,
+      "f1": 0.2848431047126481,
+      "positive_ratio": 0.10075555555555556
+    },
+    "cluster": {
+      "cluster_top1": 0.5854666666666667,
+      "cluster_top5": 0.9223111111111111,
+      "copy_top1": 0.8995444444444445,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.8995444444444445
+    }
+  },
+  "test": {
+    "semantic_changed": {
+      "roc_auc": 0.678210255617562,
+      "balanced_accuracy": 0.6360814723046632,
+      "f1": 0.25606796116504854,
+      "positive_ratio": 0.10322222222222223
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6850045739113805,
+      "balanced_accuracy": 0.6331504480085848,
+      "f1": 0.2522643774326143,
+      "positive_ratio": 0.10322222222222223
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.673962419639798,
+      "balanced_accuracy": 0.6341353493664076,
+      "f1": 0.25503074609248577,
+      "positive_ratio": 0.10322222222222223
+    },
+    "cluster": {
+      "cluster_top1": 0.6570444444444444,
+      "cluster_top5": 0.9447666666666666,
+      "copy_top1": 0.8963,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.8963
+    }
+  },
+  "semantic_changed_passed": true,
+  "semantic_hard_passed": true,
+  "uncertainty_passed": true,
+  "stable_preservation": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

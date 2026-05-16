@@ -1,0 +1,3463 @@
+{
+  "generated_at_utc": "2026-05-15T15:24:08.167007+00:00",
+  "v35_20_domain_shift_target_split_audit_done": true,
+  "target_root": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32",
+  "dataset_split_summary": {
+    "test:VIPSEG": {
+      "changed_ratio": {
+        "mean": 0.08046531502695779,
+        "median": 0.04863633565228098,
+        "min": 0.0,
+        "max": 0.30143670371374354
+      },
+      "hard_ratio": {
+        "mean": 0.0905206370687637,
+        "median": 0.04863633565228098,
+        "min": 0.0,
+        "max": 0.38361150911977693
+      },
+      "risk_mean": {
+        "mean": 0.13275164167086284,
+        "median": 0.11421860754489899,
+        "min": 0.07120426744222641,
+        "max": 0.2584401071071625
+      },
+      "risk_p90": {
+        "mean": 0.23955102761586508,
+        "median": 0.1599999964237213,
+        "min": 0.1599999964237213,
+        "max": 0.5799999833106995
+      },
+      "boundary_ratio": {
+        "mean": 0.08495736508120245,
+        "median": 0.030289532293986638,
+        "min": 0.0,
+        "max": 0.47839983503453964
+      },
+      "samples": 15
+    },
+    "test:VSPW": {
+      "changed_ratio": {
+        "mean": 0.026236989449966625,
+        "median": 0.02061948783998836,
+        "min": 0.0,
+        "max": 0.08265721760439779
+      },
+      "hard_ratio": {
+        "mean": 0.03679404429170295,
+        "median": 0.026703607333799874,
+        "min": 0.0,
+        "max": 0.1487564989899659
+      },
+      "risk_mean": {
+        "mean": 0.1132016483694315,
+        "median": 0.10550741478800774,
+        "min": 0.0698755756020546,
+        "max": 0.17510442435741425
+      },
+      "risk_p90": {
+        "mean": 0.20758996710181235,
+        "median": 0.1599999964237213,
+        "min": 0.1599999964237213,
+        "max": 0.5184149742126465
+      },
+      "boundary_ratio": {
+        "mean": 0.04598614881516126,
+        "median": 0.04074902109074096,
+        "min": 0.0,
+        "max": 0.16475146537735536
+      },
+      "samples": 20
+    },
+    "train:VIPSEG": {
+      "changed_ratio": {
+        "mean": 0.06466058795482349,
+        "median": 0.03682427456179113,
+        "min": 0.0,
+        "max": 0.3442340791738382
+      },
+      "hard_ratio": {
+        "mean": 0.07498933441559961,
+        "median": 0.04835164835164835,
+        "min": 0.0,
+        "max": 0.37005163511187605
+      },
+      "risk_mean": {
+        "mean": 0.11522302229570437,
+        "median": 0.10728227347135544,
+        "min": 0.05350770428776741,
+        "max": 0.2203976809978485
+      },
+      "risk_p90": {
+        "mean": 0.22490601549042935,
+        "median": 0.1599999964237213,
+        "min": 0.1544780030846596,
+        "max": 0.5799999833106995
+      },
+      "boundary_ratio": {
+        "mean": 0.048407364200593786,
+        "median": 0.020801468338941573,
+        "min": 0.0,
+        "max": 0.22552255225522552
+      },
+      "samples": 79
+    },
+    "train:VSPW": {
+      "changed_ratio": {
+        "mean": 0.05394893695458199,
+        "median": 0.03317947135764431,
+        "min": 0.0,
+        "max": 0.47643979057591623
+      },
+      "hard_ratio": {
+        "mean": 0.06648233669939177,
+        "median": 0.04118574471978603,
+        "min": 0.0,
+        "max": 0.4816753926701571
+      },
+      "risk_mean": {
+        "mean": 0.11638379463221173,
+        "median": 0.11080736666917801,
+        "min": 0.018076090142130852,
+        "max": 0.329660028219223
+      },
+      "risk_p90": {
+        "mean": 0.2293341020197684,
+        "median": 0.1599999964237213,
+        "min": 0.0367553848773241,
+        "max": 0.5799999833106995
+      },
+      "boundary_ratio": {
+        "mean": 0.06562985327818728,
+        "median": 0.04077022793834605,
+        "min": 0.0,
+        "max": 0.6844272844272844
+      },
+      "samples": 148
+    },
+    "val:VIPSEG": {
+      "changed_ratio": {
+        "mean": 0.05743470626492333,
+        "median": 0.03176043557168784,
+        "min": 0.0,
+        "max": 0.22451328282343916
+      },
+      "hard_ratio": {
+        "mean": 0.06688396452355887,
+        "median": 0.037037037037037035,
+        "min": 0.0,
+        "max": 0.28138486621271697
+      },
+      "risk_mean": {
+        "mean": 0.11932358596670001,
+        "median": 0.10861340910196304,
+        "min": 0.05920488014817238,
+        "max": 0.23948729038238525
+      },
+      "risk_p90": {
+        "mean": 0.21599127148327077,
+        "median": 0.1599999964237213,
+        "min": 0.1599999964237213,
+        "max": 0.5761733531951905
+      },
+      "boundary_ratio": {
+        "mean": 0.05868351719515941,
+        "median": 0.025070510811657787,
+        "min": 0.0,
+        "max": 0.3228157667593747
+      },
+      "samples": 19
+    },
+    "val:VSPW": {
+      "changed_ratio": {
+        "mean": 0.048164168610525845,
+        "median": 0.030817056157687032,
+        "min": 0.0,
+        "max": 0.25829270974599566
+      },
+      "hard_ratio": {
+        "mean": 0.05579220302901685,
+        "median": 0.04238516200241654,
+        "min": 0.0,
+        "max": 0.2633141516695378
+      },
+      "risk_mean": {
+        "mean": 0.11380677659892374,
+        "median": 0.10547302663326263,
+        "min": 0.056969452649354935,
+        "max": 0.20314455032348633
+      },
+      "risk_p90": {
+        "mean": 0.23891879651281567,
+        "median": 0.1599999964237213,
+        "min": 0.1599999964237213,
+        "max": 0.5799999833106995
+      },
+      "boundary_ratio": {
+        "mean": 0.06105118898996251,
+        "median": 0.03906577835588827,
+        "min": 0.0,
+        "max": 0.26815232928930105
+      },
+      "samples": 36
+    }
+  },
+  "vipseg_to_vspw_target_split_imbalanced": true,
+  "vspw_heldout_changed_sparse": true,
+  "domain_normalized_risk_calibration_required": true,
+  "adapter_training_should_remain_blocked": true,
+  "recommended_fix": "build_domain_normalized_per_video_risk_targets_and_dataset_balanced_unseen_protocol",
+  "sample_rows": [
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1007_nnjklmugBfo.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.7362060546875,
+      "changed_ratio": 4.14524954402255e-05,
+      "hard_ratio": 4.14524954402255e-05,
+      "risk_mean": 0.07850395888090134,
+      "boundary_ratio": 4.14524954402255e-05
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1015_-KqXcm-I2zY.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.5665108816964286,
+      "changed_ratio": 0.04863633565228098,
+      "hard_ratio": 0.04863633565228098,
+      "risk_mean": 0.0837213397026062,
+      "boundary_ratio": 0.061564981838330354
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1016_8J41CsGYhNI.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.04248046875,
+      "changed_ratio": 0.020114942528735632,
+      "hard_ratio": 0.020114942528735632,
+      "risk_mean": 0.1105949804186821,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1031_xzuhRhedIM4.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.96435546875,
+      "changed_ratio": 0.007848101265822785,
+      "hard_ratio": 0.014683544303797468,
+      "risk_mean": 0.10387953370809555,
+      "boundary_ratio": 0.021772151898734177
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1033_79Whs_1_nWs.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.789306640625,
+      "changed_ratio": 0.2854933498298794,
+      "hard_ratio": 0.2854933498298794,
+      "risk_mean": 0.2584401071071625,
+      "boundary_ratio": 0.47839983503453964
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1035_P1c2o2aupEc.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.021392822265625,
+      "changed_ratio": 0.0898716119828816,
+      "hard_ratio": 0.0898716119828816,
+      "risk_mean": 0.15101458132266998,
+      "boundary_ratio": 0.009985734664764621
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1041_kIXALP9plU0.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.548095703125,
+      "changed_ratio": 0.1603563474387528,
+      "hard_ratio": 0.16080178173719376,
+      "risk_mean": 0.11421860754489899,
+      "boundary_ratio": 0.030289532293986638
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1064_ASPrLKRQayQ.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.3516845703125,
+      "changed_ratio": 0.1423116973273169,
+      "hard_ratio": 0.1947240541478653,
+      "risk_mean": 0.19242505729198456,
+      "boundary_ratio": 0.18604651162790697
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1070_n0CkTLKWDDk.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.943267822265625,
+      "changed_ratio": 0.05584134070982562,
+      "hard_ratio": 0.06480313177391699,
+      "risk_mean": 0.14033429324626923,
+      "boundary_ratio": 0.0708207965317545
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1074_eVW9GbCJ-pw.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.8125,
+      "changed_ratio": 0.049879807692307696,
+      "hard_ratio": 0.049879807692307696,
+      "risk_mean": 0.11624185740947723,
+      "boundary_ratio": 0.04657451923076923
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__107_tQA8kJXlTwc.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.788055419921875,
+      "changed_ratio": 0.30143670371374354,
+      "hard_ratio": 0.38361150911977693,
+      "risk_mean": 0.24175024032592773,
+      "boundary_ratio": 0.3326104635402548
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1099_tiGU0PSP_lw.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.178955078125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0986822098493576,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1105_OsZzzXVy3gI.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.4869384765625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.1175718903541565,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__1115_fSv8HIpvAcc.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.806884765625,
+      "changed_ratio": 0.005143721633888048,
+      "hard_ratio": 0.005143721633888048,
+      "risk_mean": 0.11269170045852661,
+      "boundary_ratio": 0.001210287443267776
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VIPSEG__387_Estkfs5A7Gg.npz",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.3773600260416667,
+      "changed_ratio": 0.04000431313349148,
+      "hard_ratio": 0.04000431313349148,
+      "risk_mean": 0.07120426744222641,
+      "boundary_ratio": 0.035044209618287685
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1031_xzuhRhedIM4.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.832244873046875,
+      "changed_ratio": 0.014520919658245023,
+      "hard_ratio": 0.023358146015914343,
+      "risk_mean": 0.10600357502698898,
+      "boundary_ratio": 0.037072347915367974
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1072_zvNEdUk5k0Q.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.756103515625,
+      "changed_ratio": 0.02123022279625444,
+      "hard_ratio": 0.026517597675169518,
+      "risk_mean": 0.09857847541570663,
+      "boundary_ratio": 0.04532612205360026
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1105_OsZzzXVy3gI.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.88671875,
+      "changed_ratio": 0.020305616740088107,
+      "hard_ratio": 0.02921943832599119,
+      "risk_mean": 0.10501125454902649,
+      "boundary_ratio": 0.0473568281938326
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__115_fdG4Jz1oY58.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.831878662109375,
+      "changed_ratio": 0.0156645511574159,
+      "hard_ratio": 0.020580358780586228,
+      "risk_mean": 0.09521672129631042,
+      "boundary_ratio": 0.044425694266113945
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1197_wh3SI2YeCMw.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8438197544642857,
+      "changed_ratio": 0.014714391998016036,
+      "hard_ratio": 0.024840869637100107,
+      "risk_mean": 0.11697075515985489,
+      "boundary_ratio": 0.024964867322476648
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__131_eUiWFntut00.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.801483154296875,
+      "changed_ratio": 0.04698625442637932,
+      "hard_ratio": 0.05776187031184556,
+      "risk_mean": 0.12600570917129517,
+      "boundary_ratio": 0.11754178882838975
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1326_VsX78k4m-bY.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6356201171875,
+      "changed_ratio": 0.02093335893988861,
+      "hard_ratio": 0.02160553101594008,
+      "risk_mean": 0.09417394548654556,
+      "boundary_ratio": 0.003168811215671212
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1328_fR3s12FZ9kI.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 1.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.13323195278644562,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1548_aOoMYOQ22f0.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.732080078125,
+      "changed_ratio": 0.006603081438004402,
+      "hard_ratio": 0.006603081438004402,
+      "risk_mean": 0.0698755756020546,
+      "boundary_ratio": 0.005002334422730607
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1579_e9uO2pZ1A5A.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8851318359375,
+      "changed_ratio": 0.008274720728175424,
+      "hard_ratio": 0.01130878499517308,
+      "risk_mean": 0.09167401492595673,
+      "boundary_ratio": 0.01551510136532892
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1598_-_WtbzzO6J0.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.2689615885416667,
+      "changed_ratio": 0.04266263237518911,
+      "hard_ratio": 0.04568835098335855,
+      "risk_mean": 0.09811972826719284,
+      "boundary_ratio": 0.010892586989409985
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__15_3oTBlynptOo.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.921539306640625,
+      "changed_ratio": 0.08265721760439779,
+      "hard_ratio": 0.1487564989899659,
+      "risk_mean": 0.17510442435741425,
+      "boundary_ratio": 0.16475146537735536
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1652_hrp1smAtr4E.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.48370361328125,
+      "changed_ratio": 0.06706624605678234,
+      "hard_ratio": 0.11129337539432177,
+      "risk_mean": 0.165561243891716,
+      "boundary_ratio": 0.11899053627760252
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1660_-pPlf2Y_6-g.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.722015380859375,
+      "changed_ratio": 0.027473688659706664,
+      "hard_ratio": 0.03550445919100554,
+      "risk_mean": 0.10456398129463196,
+      "boundary_ratio": 0.05194640517350691
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__174_kchyC0HHre0.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7386881510416666,
+      "changed_ratio": 0.025999779662884213,
+      "hard_ratio": 0.03338107304175388,
+      "risk_mean": 0.10972756147384644,
+      "boundary_ratio": 0.047482648452131765
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1844_evC_CSrDRws.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.613037109375,
+      "changed_ratio": 0.001941457586618877,
+      "hard_ratio": 0.002339705296694544,
+      "risk_mean": 0.11471368372440338,
+      "boundary_ratio": 0.0016925527678215851
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__1947_8fYGpfNxl5s.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9660237630208334,
+      "changed_ratio": 0.05753759319321006,
+      "hard_ratio": 0.07367002232424918,
+      "risk_mean": 0.12499742209911346,
+      "boundary_ratio": 0.0893391179815509
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__2040_ZHzN60c54h4.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7899983723958334,
+      "changed_ratio": 0.030543394282771055,
+      "hard_ratio": 0.03512747875354107,
+      "risk_mean": 0.10244132578372955,
+      "boundary_ratio": 0.06536183363378831
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__2095_DR9Ar_MjnXM.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.93597412109375,
+      "changed_ratio": 0.0014346266710140202,
+      "hard_ratio": 0.0014346266710140202,
+      "risk_mean": 0.10161075741052628,
+      "boundary_ratio": 0.0011737854581023801
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/test/VSPW__214_bnbqPJpywls.npz",
+      "split": "test",
+      "dataset": "VSPW",
+      "valid_ratio": 0.810333251953125,
+      "changed_ratio": 0.01819003502429104,
+      "hard_ratio": 0.026889616992430233,
+      "risk_mean": 0.13045085966587067,
+      "boundary_ratio": 0.02771814860844349
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__0_wHveSGjXyDY.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.286376953125,
+      "changed_ratio": 0.07899971582836032,
+      "hard_ratio": 0.09093492469451549,
+      "risk_mean": 0.1296616941690445,
+      "boundary_ratio": 0.05399261153736857
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1000_TI-3Jlujxlk.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.9232584635416666,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.11933737993240356,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1003_bW7ntcdquEU.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.8355712890625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09736331552267075,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1004_EmItoQBCS9s.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.28570556640625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.07125283777713776,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1006_XnpEQX8Gv70.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.765625,
+      "changed_ratio": 0.0074936224489795915,
+      "hard_ratio": 0.0074936224489795915,
+      "risk_mean": 0.0933992937207222,
+      "boundary_ratio": 0.009486607142857142
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1008_Aiub59uZH1A.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0555419921875,
+      "changed_ratio": 0.046153846153846156,
+      "hard_ratio": 0.04835164835164835,
+      "risk_mean": 0.12476456165313721,
+      "boundary_ratio": 0.01978021978021978
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__100_c89oFWvnRSQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.220947265625,
+      "changed_ratio": 0.02541436464088398,
+      "hard_ratio": 0.02541436464088398,
+      "risk_mean": 0.05851193517446518,
+      "boundary_ratio": 0.0066298342541436465
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1011_lq2REad-o0Y.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.427001953125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09950482100248337,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1012_y_rURLuFW_c.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.121337890625,
+      "changed_ratio": 0.12877263581488935,
+      "hard_ratio": 0.13531187122736418,
+      "risk_mean": 0.12823837995529175,
+      "boundary_ratio": 0.06539235412474849
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1017_8aIZCJKQL1s.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.8494873046875,
+      "changed_ratio": 0.018968242563586722,
+      "hard_ratio": 0.018968242563586722,
+      "risk_mean": 0.05350770428776741,
+      "boundary_ratio": 0.012789193849691047
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1020_Pf2hmFeUsbY.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.661865234375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.05498329550027847,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1021_PmFBGfBstnQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.924072265625,
+      "changed_ratio": 0.1215323645970938,
+      "hard_ratio": 0.16829590488771468,
+      "risk_mean": 0.18257896602153778,
+      "boundary_ratio": 0.21162483487450462
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1022_Y7S-EQ_B3SM.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.975830078125,
+      "changed_ratio": 0.18313735301476108,
+      "hard_ratio": 0.19664748561421067,
+      "risk_mean": 0.13329613208770752,
+      "boundary_ratio": 0.11833875406554917
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1023_f1BgzIZRfT8.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1024_7tf-gTc7OvA.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.64794921875,
+      "changed_ratio": 0.0018839487565938207,
+      "hard_ratio": 0.0018839487565938207,
+      "risk_mean": 0.08058900386095047,
+      "boundary_ratio": 0.0011303692539562924
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1025_9RzDloaFez4.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.619384765625,
+      "changed_ratio": 0.19471817106819078,
+      "hard_ratio": 0.19471817106819078,
+      "risk_mean": 0.1566379815340042,
+      "boundary_ratio": 0.11824990145841545
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1026_kJ_8F7YIEg4.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.298828125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09048254787921906,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1028_HAXrGoIRa04.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.34619140625,
+      "changed_ratio": 0.021156558533145273,
+      "hard_ratio": 0.021156558533145273,
+      "risk_mean": 0.0886627808213234,
+      "boundary_ratio": 0.0021156558533145277
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__102_EWaB6JPVONo.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.629669189453125,
+      "changed_ratio": 0.1497600930548151,
+      "hard_ratio": 0.172006009790142,
+      "risk_mean": 0.14158940315246582,
+      "boundary_ratio": 0.11278049726166821
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1030_nIed-hkNRZc.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.06640625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.10607720911502838,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1032_zJV7lgz1pzs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.44775390625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09260319173336029,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1036_RsM6XEE7P3g.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.844635009765625,
+      "changed_ratio": 0.030747552119088053,
+      "hard_ratio": 0.04162300827401814,
+      "risk_mean": 0.12291620671749115,
+      "boundary_ratio": 0.04115330418759259
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1038_2_ivuqprcPg.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.03546142578125,
+      "changed_ratio": 0.3442340791738382,
+      "hard_ratio": 0.37005163511187605,
+      "risk_mean": 0.16259129345417023,
+      "boundary_ratio": 0.16523235800344235
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1040_XQyX3FK2DrA.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.183349609375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09430210292339325,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1042_Jm2XgVtdZMs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1043_MiFXPS_dIow.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.16357421875,
+      "changed_ratio": 0.16865671641791044,
+      "hard_ratio": 0.1701492537313433,
+      "risk_mean": 0.11138170957565308,
+      "boundary_ratio": 0.05373134328358209
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1044_X1-6N9RWn6g.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.96875,
+      "changed_ratio": 0.2421875,
+      "hard_ratio": 0.27595766129032256,
+      "risk_mean": 0.16630682349205017,
+      "boundary_ratio": 0.1663306451612903
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1045_pI_9hAyBRRQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.14290364583333334,
+      "changed_ratio": 0.15432801822323464,
+      "hard_ratio": 0.1600227790432802,
+      "risk_mean": 0.15904416143894196,
+      "boundary_ratio": 0.14407744874715261
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1048_RL3EjH9-WSs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.798095703125,
+      "changed_ratio": 0.04802691954726216,
+      "hard_ratio": 0.05536861425512389,
+      "risk_mean": 0.133017435669899,
+      "boundary_ratio": 0.020801468338941573
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1053_MLWQ-qvra68.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.500732421875,
+      "changed_ratio": 0.022753128555176336,
+      "hard_ratio": 0.023078173248821714,
+      "risk_mean": 0.10043234378099442,
+      "boundary_ratio": 0.018690069884609133
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1055_TjMNtglzaGQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.9176025390625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.10292606800794601,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1056_gi3cqkPUUDE.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.060546875,
+      "changed_ratio": 0.036290322580645164,
+      "hard_ratio": 0.04032258064516129,
+      "risk_mean": 0.09481596201658249,
+      "boundary_ratio": 0.008064516129032258
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1058_9tvZOFs1xvc.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.867431640625,
+      "changed_ratio": 0.040529130312412044,
+      "hard_ratio": 0.06360821840698001,
+      "risk_mean": 0.13115091621875763,
+      "boundary_ratio": 0.07345904869124684
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1059_4MysT1n0EnU.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.009033203125,
+      "changed_ratio": 0.07722007722007722,
+      "hard_ratio": 0.07722007722007722,
+      "risk_mean": 0.10532039403915405,
+      "boundary_ratio": 0.007722007722007722
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1061_n78BLxWhx3Y.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.625732421875,
+      "changed_ratio": 0.05852516582130316,
+      "hard_ratio": 0.06073611653010794,
+      "risk_mean": 0.10484357178211212,
+      "boundary_ratio": 0.04226817531538562
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1063_naPMk89Na88.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.638671875,
+      "changed_ratio": 0.07454128440366972,
+      "hard_ratio": 0.0863914373088685,
+      "risk_mean": 0.15029552578926086,
+      "boundary_ratio": 0.04243119266055046
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1065_MH7X-bbrYVM.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.311279296875,
+      "changed_ratio": 0.01764705882352941,
+      "hard_ratio": 0.01764705882352941,
+      "risk_mean": 0.10034201294183731,
+      "boundary_ratio": 0.009019607843137255
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1066_VdbBn0YWj7Q.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.668914794921875,
+      "changed_ratio": 0.10178384050367262,
+      "hard_ratio": 0.10251380081208085,
+      "risk_mean": 0.11236555874347687,
+      "boundary_ratio": 0.04991103608741275
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1067_m9zr8SwFHho.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.822265625,
+      "changed_ratio": 0.14459619952494063,
+      "hard_ratio": 0.22298099762470308,
+      "risk_mean": 0.2203976809978485,
+      "boundary_ratio": 0.19714964370546317
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1068_OAGfx7eB3gA.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.14485677083333334,
+      "changed_ratio": 0.015168539325842697,
+      "hard_ratio": 0.01853932584269663,
+      "risk_mean": 0.10891441255807877,
+      "boundary_ratio": 0.012359550561797753
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__106_pjt88qeIvRw.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.6141357421875,
+      "changed_ratio": 0.01267143709004174,
+      "hard_ratio": 0.013168356191612005,
+      "risk_mean": 0.0853966549038887,
+      "boundary_ratio": 0.010634068773603657
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1071_0JMf4WYuQNs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1073_aaBWfyGPLS8.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.09375,
+      "changed_ratio": 0.1328125,
+      "hard_ratio": 0.140625,
+      "risk_mean": 0.10523220151662827,
+      "boundary_ratio": 0.0546875
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1076_CPFqAzKdsos.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.8287353515625,
+      "changed_ratio": 0.03682427456179113,
+      "hard_ratio": 0.037266165856532626,
+      "risk_mean": 0.08978957682847977,
+      "boundary_ratio": 0.010605391073795847
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1077_2-B9BvGkx_8.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.48834228515625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.08740674704313278,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1079_DpkjxPkF3DM.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1080_NSjofkBoEnw.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.55316162109375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.08650796860456467,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1084_LTK-x54Mi1I.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.88916015625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09731502830982208,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1086_iywqpda7d8k.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.8193359375,
+      "changed_ratio": 0.06525625744934446,
+      "hard_ratio": 0.07508939213349225,
+      "risk_mean": 0.11610523611307144,
+      "boundary_ratio": 0.0697258641239571
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1087_r63RNCRnF08.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.953369140625,
+      "changed_ratio": 0.028425096030729832,
+      "hard_ratio": 0.05556978233034571,
+      "risk_mean": 0.13165047764778137,
+      "boundary_ratio": 0.060691421254801536
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1088_1_iGqfaYhjw.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.35009765625,
+      "changed_ratio": 0.04951185495118549,
+      "hard_ratio": 0.08786610878661087,
+      "risk_mean": 0.15300488471984863,
+      "boundary_ratio": 0.10739191073919108
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1090_oNBX7Ag2Wgc.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.97607421875,
+      "changed_ratio": 0.0735367683841921,
+      "hard_ratio": 0.1113056528264132,
+      "risk_mean": 0.15068422257900238,
+      "boundary_ratio": 0.13931965982991495
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1092_EPWA4113pAs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.395660400390625,
+      "changed_ratio": 0.19568067875048206,
+      "hard_ratio": 0.1959892016968762,
+      "risk_mean": 0.12185551971197128,
+      "boundary_ratio": 0.09186270728885461
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1094_LIlN4rSoU_w.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.021728515625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.10728227347135544,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1095_W39pB_sKRGs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0283203125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.08567371219396591,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1096_sTtQpCDAZaQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.90625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.08756885677576065,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__10_EpnJ4c9Sni4.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.23720703125,
+      "changed_ratio": 0.03128859613009469,
+      "hard_ratio": 0.03128859613009469,
+      "risk_mean": 0.1068585142493248,
+      "boundary_ratio": 0.026348291477974475
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1100_-GAGoI-fNdU.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.65576171875,
+      "changed_ratio": 0.04690990320178704,
+      "hard_ratio": 0.056962025316455694,
+      "risk_mean": 0.11607780307531357,
+      "boundary_ratio": 0.06366344005956813
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1104_N5Wa9I2qK3g.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.394287109375,
+      "changed_ratio": 0.05325077399380805,
+      "hard_ratio": 0.05325077399380805,
+      "risk_mean": 0.09777096658945084,
+      "boundary_ratio": 0.021362229102167184
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1106_RrrDLdeL2HQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.33489990234375,
+      "changed_ratio": 0.26034262802988883,
+      "hard_ratio": 0.2632586112629852,
+      "risk_mean": 0.1497635841369629,
+      "boundary_ratio": 0.06087114999088755
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1108_h-z_-6KeJVM.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.24505615234375,
+      "changed_ratio": 0.07272727272727272,
+      "hard_ratio": 0.09987546699875467,
+      "risk_mean": 0.16011986136436462,
+      "boundary_ratio": 0.10435865504358655
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1109_4CQ0mMmmsYQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0009765625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.11165493726730347,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__110_imD1ZkxiZHo.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.6744384765625,
+      "changed_ratio": 0.04122171945701358,
+      "hard_ratio": 0.0779185520361991,
+      "risk_mean": 0.1409413069486618,
+      "boundary_ratio": 0.08610859728506787
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1110_ZICWcqcx8Ng.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1111_dJ--nt-3MB8.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.310302734375,
+      "changed_ratio": 0.26671911880409127,
+      "hard_ratio": 0.33280881195908735,
+      "risk_mean": 0.20076850056648254,
+      "boundary_ratio": 0.2116443745082612
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1113_29nO4VTPsXg.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.255859375,
+      "changed_ratio": 0.1431297709923664,
+      "hard_ratio": 0.16030534351145037,
+      "risk_mean": 0.1451178789138794,
+      "boundary_ratio": 0.06679389312977099
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1114_3Hgdqex-n5U.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.044677734375,
+      "changed_ratio": 0.2185792349726776,
+      "hard_ratio": 0.2185792349726776,
+      "risk_mean": 0.0909402146935463,
+      "boundary_ratio": 0.0273224043715847
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1117_1u1R_qLgLlE.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.2958984375,
+      "changed_ratio": 0.17601760176017603,
+      "hard_ratio": 0.22827282728272827,
+      "risk_mean": 0.18970933556556702,
+      "boundary_ratio": 0.22552255225522552
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1118_kAqkOYkqIEU.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.5719401041666666,
+      "changed_ratio": 0.014513375071143995,
+      "hard_ratio": 0.014797951052931132,
+      "risk_mean": 0.08792605996131897,
+      "boundary_ratio": 0.006545247581104155
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1119_lFh_ttAztfA.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.81005859375,
+      "changed_ratio": 0.003616636528028933,
+      "hard_ratio": 0.003616636528028933,
+      "risk_mean": 0.11413073539733887,
+      "boundary_ratio": 0.002863170584689572
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1120_xrWqgjOeyas.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.09814453125,
+      "changed_ratio": 0.07462686567164178,
+      "hard_ratio": 0.12935323383084577,
+      "risk_mean": 0.16590729355812073,
+      "boundary_ratio": 0.12437810945273632
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1121_RyACyzeCaVI.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.7189127604166666,
+      "changed_ratio": 0.11025582974869821,
+      "hard_ratio": 0.11036902875254698,
+      "risk_mean": 0.0974733754992485,
+      "boundary_ratio": 0.03724247226624406
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1122_azk_C_kGXXk.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.77630615234375,
+      "changed_ratio": 0.10680871137668056,
+      "hard_ratio": 0.10708389024294362,
+      "risk_mean": 0.11220458894968033,
+      "boundary_ratio": 0.016982467175092383
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1165_OxqFAwLeLNs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.797900390625,
+      "changed_ratio": 0.013585459886175877,
+      "hard_ratio": 0.014197417538706321,
+      "risk_mean": 0.09650868922472,
+      "boundary_ratio": 0.006792729943087938
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__1182_tNbLX2wX4Bs.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.71405029296875,
+      "changed_ratio": 0.013248995640653047,
+      "hard_ratio": 0.013248995640653047,
+      "risk_mean": 0.08515068143606186,
+      "boundary_ratio": 0.06090264125138901
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__151_BNFMbfOYTKg.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.878570556640625,
+      "changed_ratio": 0.0177150995171767,
+      "hard_ratio": 0.01816666087741846,
+      "risk_mean": 0.0886835977435112,
+      "boundary_ratio": 0.018444544791413386
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__154_6-pyJNd1h3I.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.939788818359375,
+      "changed_ratio": 0.05377496346809547,
+      "hard_ratio": 0.13466471829842508,
+      "risk_mean": 0.16425688564777374,
+      "boundary_ratio": 0.15304432537749635
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__231_-_w6ZFauJBI.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__23_XmN5TD3AjMY.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.29443359375,
+      "changed_ratio": 0.05286069651741294,
+      "hard_ratio": 0.05286069651741294,
+      "risk_mean": 0.08355578780174255,
+      "boundary_ratio": 0.053482587064676616
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__281__lcLNaySFDc.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.411224365234375,
+      "changed_ratio": 0.004155844155844156,
+      "hard_ratio": 0.0044526901669758815,
+      "risk_mean": 0.11495430022478104,
+      "boundary_ratio": 0.003339517625231911
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__309_eqkqEkjLJ-A.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.6670735677083334,
+      "changed_ratio": 0.0677076979382701,
+      "hard_ratio": 0.0677076979382701,
+      "risk_mean": 0.06196894124150276,
+      "boundary_ratio": 0.029888983774551667
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__349_Gh9yCX9KyrU.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.7523193359375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.08917279541492462,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__667_lnly4FHs6OQ.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.14860026041666666,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.10907283425331116,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__736_ML-JwZIxno0.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.54150390625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.08794677257537842,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VIPSEG__926_5QB2Z8AypBA.npz",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.234423828125,
+      "changed_ratio": 0.11518433659654238,
+      "hard_ratio": 0.14684440741512184,
+      "risk_mean": 0.144102543592453,
+      "boundary_ratio": 0.08664861487190169
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1004_Qa0lNfaU4Bc.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.923004150390625,
+      "changed_ratio": 0.013423706397751695,
+      "hard_ratio": 0.018680773681600264,
+      "risk_mean": 0.1128045916557312,
+      "boundary_ratio": 0.017721937510332287
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1006_XnpEQX8Gv70.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.5878092447916666,
+      "changed_ratio": 0.08618302644330611,
+      "hard_ratio": 0.1375467257372283,
+      "risk_mean": 0.16578108072280884,
+      "boundary_ratio": 0.15152983524851169
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1008_cjuVdt1f04I.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.509521484375,
+      "changed_ratio": 0.09064047276792844,
+      "hard_ratio": 0.09399456955757866,
+      "risk_mean": 0.12105520814657211,
+      "boundary_ratio": 0.03745408081776074
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1011_h5BpMSTlIqQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.404052734375,
+      "changed_ratio": 0.17877643504531723,
+      "hard_ratio": 0.23610271903323263,
+      "risk_mean": 0.19111457467079163,
+      "boundary_ratio": 0.21042296072507552
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1012_k_QytWMuWzA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.41143798828125,
+      "changed_ratio": 0.09768580329327993,
+      "hard_ratio": 0.10146862483311081,
+      "risk_mean": 0.10642361640930176,
+      "boundary_ratio": 0.06987093902981753
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1016_8J41CsGYhNI.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.013468424479166666,
+      "changed_ratio": 0.09969788519637462,
+      "hard_ratio": 0.1148036253776435,
+      "risk_mean": 0.1186072900891304,
+      "boundary_ratio": 0.045317220543806644
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1025_9RzDloaFez4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.559814453125,
+      "changed_ratio": 0.07339106597719769,
+      "hard_ratio": 0.09376362843436546,
+      "risk_mean": 0.1270534098148346,
+      "boundary_ratio": 0.06647560899632422
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1026_6pDulyu9MFo.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.701904296875,
+      "changed_ratio": 0.09252173913043478,
+      "hard_ratio": 0.1422111801242236,
+      "risk_mean": 0.16577103734016418,
+      "boundary_ratio": 0.180472049689441
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1026_kJ_8F7YIEg4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.5429338727678571,
+      "changed_ratio": 0.02710862722425644,
+      "hard_ratio": 0.046251686259394874,
+      "risk_mean": 0.12017583847045898,
+      "boundary_ratio": 0.04882122438491681
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1028_BH1XVabTjso.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.42451171875,
+      "changed_ratio": 0.016793190706234185,
+      "hard_ratio": 0.02150908672647803,
+      "risk_mean": 0.11910086125135422,
+      "boundary_ratio": 0.025879917184265012
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1028_HAXrGoIRa04.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8663330078125,
+      "changed_ratio": 0.019268705086656332,
+      "hard_ratio": 0.021699309567422855,
+      "risk_mean": 0.09501971304416656,
+      "boundary_ratio": 0.03568409186980414
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1030_J_m6vc8gtvQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6328125,
+      "changed_ratio": 0.10590277777777778,
+      "hard_ratio": 0.1353202160493827,
+      "risk_mean": 0.13982154428958893,
+      "boundary_ratio": 0.07146990740740741
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1036_9maO6GinFQo.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6416829427083334,
+      "changed_ratio": 0.05865567533291059,
+      "hard_ratio": 0.05960684844641725,
+      "risk_mean": 0.09870851039886475,
+      "boundary_ratio": 0.04229549778059607
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1047_CjUyIs7-IXQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.939013671875,
+      "changed_ratio": 0.017315792210493473,
+      "hard_ratio": 0.026155686131766418,
+      "risk_mean": 0.10973209887742996,
+      "boundary_ratio": 0.03416359003691956
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1051_X1hvRYpRFrE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.212890625,
+      "changed_ratio": 0.095565749235474,
+      "hard_ratio": 0.10321100917431193,
+      "risk_mean": 0.11374878883361816,
+      "boundary_ratio": 0.047400611620795105
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1053_MLWQ-qvra68.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8518415178571429,
+      "changed_ratio": 0.02587618735669833,
+      "hard_ratio": 0.03426957091385523,
+      "risk_mean": 0.13336730003356934,
+      "boundary_ratio": 0.03443334425155584
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1060_gO8N3L_aERg.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.962371826171875,
+      "changed_ratio": 0.011162200729348343,
+      "hard_ratio": 0.013255113366101157,
+      "risk_mean": 0.10779321193695068,
+      "boundary_ratio": 0.013159980973521484
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__106_pjt88qeIvRw.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.62506103515625,
+      "changed_ratio": 0.07030563421540865,
+      "hard_ratio": 0.12855189922859095,
+      "risk_mean": 0.17716403305530548,
+      "boundary_ratio": 0.14852065228005076
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1074_Ehrk9vBuK-M.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8230329241071429,
+      "changed_ratio": 0.023391812865497075,
+      "hard_ratio": 0.024112212899398255,
+      "risk_mean": 0.0800507515668869,
+      "boundary_ratio": 0.01665395372489194
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1081_VOl-nOZsMGw.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.84588623046875,
+      "changed_ratio": 0.06472328450826179,
+      "hard_ratio": 0.06522837145537196,
+      "risk_mean": 0.10120698809623718,
+      "boundary_ratio": 0.07922649541813984
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1092_EPWA4113pAs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.978607177734375,
+      "changed_ratio": 0.2323884367106371,
+      "hard_ratio": 0.2756416253469299,
+      "risk_mean": 0.16835328936576843,
+      "boundary_ratio": 0.1559859045124271
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1094_LIlN4rSoU_w.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.780322265625,
+      "changed_ratio": 0.008885551592516113,
+      "hard_ratio": 0.01364119892372192,
+      "risk_mean": 0.09740684181451797,
+      "boundary_ratio": 0.045804392716350666
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1096_sTtQpCDAZaQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.97900390625,
+      "changed_ratio": 0.006172069825436409,
+      "hard_ratio": 0.00885286783042394,
+      "risk_mean": 0.11451439559459686,
+      "boundary_ratio": 0.008977556109725686
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1106_2IAk1lm69Vs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.05487060546875,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.12903225806451613,
+      "risk_mean": 0.14730176329612732,
+      "boundary_ratio": 0.13014460511679643
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1118_hKjl0bkJinc.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.99365234375,
+      "changed_ratio": 0.035184275184275186,
+      "hard_ratio": 0.052776412776412776,
+      "risk_mean": 0.13783083856105804,
+      "boundary_ratio": 0.05616707616707617
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1125_5Eplp7nV12E.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.93243408203125,
+      "changed_ratio": 0.010407802579040388,
+      "hard_ratio": 0.014924396151076783,
+      "risk_mean": 0.11422275751829147,
+      "boundary_ratio": 0.01584080644105518
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1128_b-ECRS4R1Po.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7530343191964286,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09166896343231201,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1135_Pvi7mPwBX2Q.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7353166852678571,
+      "changed_ratio": 0.042119242991984066,
+      "hard_ratio": 0.06958212778067638,
+      "risk_mean": 0.1438673883676529,
+      "boundary_ratio": 0.0726651804771617
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1152_oKNDRYIPsYA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.545623779296875,
+      "changed_ratio": 0.06035013143911852,
+      "hard_ratio": 0.06169248839420549,
+      "risk_mean": 0.10789431631565094,
+      "boundary_ratio": 0.025281055987471334
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1162_KXK_i6cPbxo.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.952972412109375,
+      "changed_ratio": 0.032375828609856855,
+      "hard_ratio": 0.040221603099881514,
+      "risk_mean": 0.11120351403951645,
+      "boundary_ratio": 0.05290293656130912
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1162__nMoKHEY5xo.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.4390869140625,
+      "changed_ratio": 0.036836252432582706,
+      "hard_ratio": 0.0376007784264665,
+      "risk_mean": 0.09265046566724777,
+      "boundary_ratio": 0.01188490408673895
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1164_oVJv8pv9LpM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.009326171875,
+      "changed_ratio": 0.47643979057591623,
+      "hard_ratio": 0.4816753926701571,
+      "risk_mean": 0.10523954778909683,
+      "boundary_ratio": 0.010471204188481676
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1178_PN_oYWaoOiQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9691685267857143,
+      "changed_ratio": 0.09414135598099899,
+      "hard_ratio": 0.09414135598099899,
+      "risk_mean": 0.11823160946369171,
+      "boundary_ratio": 0.19580394414855334
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1179_Vnb31Da9Ce8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.588958740234375,
+      "changed_ratio": 0.12306337115912741,
+      "hard_ratio": 0.14358256904502825,
+      "risk_mean": 0.15538498759269714,
+      "boundary_ratio": 0.1528058448624281
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1196_u_qGakf3KiM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9647216796875,
+      "changed_ratio": 0.015690244211059093,
+      "hard_ratio": 0.023535366316588636,
+      "risk_mean": 0.10392947494983673,
+      "boundary_ratio": 0.03473364545109452
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1201_K9hItOvY_Vk.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.54384765625,
+      "changed_ratio": 0.02047046148321063,
+      "hard_ratio": 0.03232178128927994,
+      "risk_mean": 0.13244527578353882,
+      "boundary_ratio": 0.028730472257137728
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1202__hf6ke1-i3E.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.2889927455357143,
+      "changed_ratio": 0.07470432054067101,
+      "hard_ratio": 0.07530774800868936,
+      "risk_mean": 0.08822960406541824,
+      "boundary_ratio": 0.030654115375331886
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1209_2IV0A-me8xQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6940220424107143,
+      "changed_ratio": 0.04527865721895573,
+      "hard_ratio": 0.04527865721895573,
+      "risk_mean": 0.08701343089342117,
+      "boundary_ratio": 0.060907583295643
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1217_REXpaiZ7a2w.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.3559977213541667,
+      "changed_ratio": 0.05520630929249057,
+      "hard_ratio": 0.09646816779060464,
+      "risk_mean": 0.15650083124637604,
+      "boundary_ratio": 0.08423819865127444
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__121_7wOrT_feKvA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.773651123046875,
+      "changed_ratio": 0.021143150171590866,
+      "hard_ratio": 0.03325312610942369,
+      "risk_mean": 0.1400286704301834,
+      "boundary_ratio": 0.03640882016488502
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1230_nBNHSOn7N1s.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7572428385416666,
+      "changed_ratio": 0.07936593229446534,
+      "hard_ratio": 0.10107469102632993,
+      "risk_mean": 0.12375391274690628,
+      "boundary_ratio": 0.09758194519075766
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1238_vVirreWp5IY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7528889973958334,
+      "changed_ratio": 0.001621358698589418,
+      "hard_ratio": 0.0017294492784953792,
+      "risk_mean": 0.07265605032444,
+      "boundary_ratio": 0.0023779927579311464
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1264_IKdAloAdk88.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8267822265625,
+      "changed_ratio": 0.014543038535360993,
+      "hard_ratio": 0.021925291598996012,
+      "risk_mean": 0.11081812530755997,
+      "boundary_ratio": 0.02458290270190462
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1277_Bo6il9S6lZ8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6097412109375,
+      "changed_ratio": 0.0028028028028028026,
+      "hard_ratio": 0.003003003003003003,
+      "risk_mean": 0.09304917603731155,
+      "boundary_ratio": 0.0026026026026026027
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__127_ca6Al7-lY58.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.908935546875,
+      "changed_ratio": 0.000201450443190975,
+      "hard_ratio": 0.00026860059092130003,
+      "risk_mean": 0.07370888441801071,
+      "boundary_ratio": 0.0014101531023368251
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1290_Dd-mg5yf8Sw.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.04541015625,
+      "changed_ratio": 0.04838709677419355,
+      "hard_ratio": 0.04838709677419355,
+      "risk_mean": 0.06966572254896164,
+      "boundary_ratio": 0.041474654377880185
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1298_d7DtRPgYwME.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.65093994140625,
+      "changed_ratio": 0.020346929207688703,
+      "hard_ratio": 0.021659634317862168,
+      "risk_mean": 0.0920725092291832,
+      "boundary_ratio": 0.012283169245194561
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__129_e-EieTvbejY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8649553571428571,
+      "changed_ratio": 0.020806451612903225,
+      "hard_ratio": 0.02314516129032258,
+      "risk_mean": 0.08517026156187057,
+      "boundary_ratio": 0.03354838709677419
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1319_jvFGffS7y_w.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.92572021484375,
+      "changed_ratio": 0.020636909078921344,
+      "hard_ratio": 0.03375749983516846,
+      "risk_mean": 0.12108700722455978,
+      "boundary_ratio": 0.04331772928067515
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1331_23U0NXBoOvE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.74041748046875,
+      "changed_ratio": 0.005605473580084082,
+      "hard_ratio": 0.00589399060258841,
+      "risk_mean": 0.08429885655641556,
+      "boundary_ratio": 0.004863572665072953
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1335_1yAV-oOwDV4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.806732177734375,
+      "changed_ratio": 0.0380177794590505,
+      "hard_ratio": 0.04138452808776243,
+      "risk_mean": 0.10890287905931473,
+      "boundary_ratio": 0.08995649706828068
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1341_PBA2tEcYEv4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6650041852678571,
+      "changed_ratio": 0.11884407615251481,
+      "hard_ratio": 0.12807468400902083,
+      "risk_mean": 0.14418534934520721,
+      "boundary_ratio": 0.11359941259768186
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__135_2kypyIlTK-E.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7798897879464286,
+      "changed_ratio": 0.005634810607754573,
+      "hard_ratio": 0.005634810607754573,
+      "risk_mean": 0.06789178401231766,
+      "boundary_ratio": 0.011627386968382452
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1383_T03V0aPyjSE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8987223307291666,
+      "changed_ratio": 0.008919273780957124,
+      "hard_ratio": 0.015212568479195908,
+      "risk_mean": 0.10573606193065643,
+      "boundary_ratio": 0.022954679223072396
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1392_-DBC8FtyMXM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.854888916015625,
+      "changed_ratio": 0.07310891371863064,
+      "hard_ratio": 0.12501338664191625,
+      "risk_mean": 0.16134972870349884,
+      "boundary_ratio": 0.16285296112519188
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1393_4MMapKweKXU.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.775909423828125,
+      "changed_ratio": 0.012586037364798427,
+      "hard_ratio": 0.012586037364798427,
+      "risk_mean": 0.08884475380182266,
+      "boundary_ratio": 0.06847590953785644
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1395_8oQ33qK_i50.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.623046875,
+      "changed_ratio": 0.0006530825496342738,
+      "hard_ratio": 0.0006530825496342738,
+      "risk_mean": 0.09654215723276138,
+      "boundary_ratio": 0.00026123301985370953
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1442_N4JxqDp6M9U.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.658843994140625,
+      "changed_ratio": 0.02996896567696512,
+      "hard_ratio": 0.03024688498772523,
+      "risk_mean": 0.08360768854618073,
+      "boundary_ratio": 0.013386446801611933
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1457_rXqT20FDaWM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.731414794921875,
+      "changed_ratio": 0.07643843618308507,
+      "hard_ratio": 0.07643843618308507,
+      "risk_mean": 0.11733408272266388,
+      "boundary_ratio": 0.15104101472858514
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1461_D-80uiCaqjA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.095703125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09187890589237213,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1472_aYzLe5uem-w.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9595424107142857,
+      "changed_ratio": 0.0030532131433556268,
+      "hard_ratio": 0.003089560918871765,
+      "risk_mean": 0.07894134521484375,
+      "boundary_ratio": 0.00319860424542018
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__147_SOcrEASUJ8I.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.48492431640625,
+      "changed_ratio": 0.13757079924480806,
+      "hard_ratio": 0.17595972309628696,
+      "risk_mean": 0.15426687896251678,
+      "boundary_ratio": 0.11107614852108244
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1493_FTombmR7MnU.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.47734375,
+      "changed_ratio": 0.03702945990180033,
+      "hard_ratio": 0.03702945990180033,
+      "risk_mean": 0.07395990937948227,
+      "boundary_ratio": 0.016673486088379704
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1506_izpYELTU4MA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7969563802083334,
+      "changed_ratio": 0.0009190237925048504,
+      "hard_ratio": 0.0009190237925048504,
+      "risk_mean": 0.10157283395528793,
+      "boundary_ratio": 0.0005105687736138058
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1509_myyBqJqEa3g.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.705230712890625,
+      "changed_ratio": 0.0323683413388723,
+      "hard_ratio": 0.03440218096845385,
+      "risk_mean": 0.09415414184331894,
+      "boundary_ratio": 0.056947509628283356
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1522_O77MMHpLXg4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9540666852678571,
+      "changed_ratio": 0.01063790897459331,
+      "hard_ratio": 0.01063790897459331,
+      "risk_mean": 0.06890540570020676,
+      "boundary_ratio": 0.04006580149881192
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1523_OpSbptALikU.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6514892578125,
+      "changed_ratio": 0.011335956529885704,
+      "hard_ratio": 0.01414652426456811,
+      "risk_mean": 0.09833470731973648,
+      "boundary_ratio": 0.03911373430766348
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__152_n53fjwqb2Pw.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.385711669921875,
+      "changed_ratio": 0.1624337368462695,
+      "hard_ratio": 0.1955850937574175,
+      "risk_mean": 0.14843392372131348,
+      "boundary_ratio": 0.14510641664688662
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1535_BuyAqIWFwq4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9826253255208334,
+      "changed_ratio": 0.08476541471696551,
+      "hard_ratio": 0.11681643132220795,
+      "risk_mean": 0.14179135859012604,
+      "boundary_ratio": 0.0952006294256491
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1538_xEAWPxAD7oI.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.46923828125,
+      "changed_ratio": 0.004682622268470343,
+      "hard_ratio": 0.004682622268470343,
+      "risk_mean": 0.09470490366220474,
+      "boundary_ratio": 0.006243496357960458
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__153_fK0X7PqeNdo.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9764404296875,
+      "changed_ratio": 0.00571946493311664,
+      "hard_ratio": 0.006063257907238405,
+      "risk_mean": 0.07310986518859863,
+      "boundary_ratio": 0.013282910363795475
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1542_hxy-0zpJwxs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.448486328125,
+      "changed_ratio": 0.0013609145345672292,
+      "hard_ratio": 0.0013609145345672292,
+      "risk_mean": 0.09114935994148254,
+      "boundary_ratio": 0.0010887316276537834
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1553_jsz4CQj244I.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.505322265625,
+      "changed_ratio": 0.024736689535220794,
+      "hard_ratio": 0.02483331722871775,
+      "risk_mean": 0.07047131657600403,
+      "boundary_ratio": 0.006474055464296067
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1556_1-sDefIglFM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.90751953125,
+      "changed_ratio": 0.01743247605724739,
+      "hard_ratio": 0.02496502744000861,
+      "risk_mean": 0.1119871586561203,
+      "boundary_ratio": 0.033950285160873776
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1557_4x4NbAC7NiY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.351165771484375,
+      "changed_ratio": 0.15173372729642826,
+      "hard_ratio": 0.1546015468845051,
+      "risk_mean": 0.11178358644247055,
+      "boundary_ratio": 0.08055965933779438
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1559_ZetcUEMwkCI.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6940569196428571,
+      "changed_ratio": 0.1228140703517588,
+      "hard_ratio": 0.14683417085427136,
+      "risk_mean": 0.1503044068813324,
+      "boundary_ratio": 0.15819095477386935
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1561_f5SxJNCdZD8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8363560267857143,
+      "changed_ratio": 0.006797331109257715,
+      "hard_ratio": 0.009799833194328608,
+      "risk_mean": 0.08698329329490662,
+      "boundary_ratio": 0.022894078398665554
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1569_6K3MUNmP-2A.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.86480712890625,
+      "changed_ratio": 0.04171077704848613,
+      "hard_ratio": 0.04171077704848613,
+      "risk_mean": 0.0964580848813057,
+      "boundary_ratio": 0.09425506387183287
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__156_PeX2e40Hyh8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.739105224609375,
+      "changed_ratio": 0.04054667822783765,
+      "hard_ratio": 0.050002064494818116,
+      "risk_mean": 0.12219907343387604,
+      "boundary_ratio": 0.04810272926214955
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1583_wSOiJMYpfWY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.45947265625,
+      "changed_ratio": 0.017215727948990435,
+      "hard_ratio": 0.017747077577045696,
+      "risk_mean": 0.10429084300994873,
+      "boundary_ratio": 0.005951115834218916
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1586_5IH8x5327Y0.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.63592529296875,
+      "changed_ratio": 0.014972646127267493,
+      "hard_ratio": 0.01679623764276802,
+      "risk_mean": 0.08605416119098663,
+      "boundary_ratio": 0.022267012189269603
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1597_qNzFevk5FsE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7696533203125,
+      "changed_ratio": 0.05662172878667724,
+      "hard_ratio": 0.07776896642876024,
+      "risk_mean": 0.1428927183151245,
+      "boundary_ratio": 0.11213322759714513
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__159_Rf10ZV2dnuQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.89141845703125,
+      "changed_ratio": 0.007120849024306744,
+      "hard_ratio": 0.009893871961656966,
+      "risk_mean": 0.08518100529909134,
+      "boundary_ratio": 0.0140705237932215
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__160_hM8mV2bKOZM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.795263671875,
+      "changed_ratio": 0.0044821022901700746,
+      "hard_ratio": 0.0044821022901700746,
+      "risk_mean": 0.07587537914514542,
+      "boundary_ratio": 0.024313869957634925
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1618_9dq7gftFjPk.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.723236083984375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.07873499393463135,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1638_MhoaeR88gm4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.437042236328125,
+      "changed_ratio": 0.2111584386565184,
+      "hard_ratio": 0.279798896725089,
+      "risk_mean": 0.2500956952571869,
+      "boundary_ratio": 0.3756720899378535
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1639_NBBwEdGzcVs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.57098388671875,
+      "changed_ratio": 0.11950828433992518,
+      "hard_ratio": 0.14623196151790485,
+      "risk_mean": 0.12836889922618866,
+      "boundary_ratio": 0.0772314270443613
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1642_SScKUXGIHpw.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.61553955078125,
+      "changed_ratio": 0.048686167575607335,
+      "hard_ratio": 0.04972731779871096,
+      "risk_mean": 0.0934220626950264,
+      "boundary_ratio": 0.025185919682697074
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1645_X0obOxBjJRE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.76318359375,
+      "changed_ratio": 0.17454414587332054,
+      "hard_ratio": 0.1798224568138196,
+      "risk_mean": 0.1430051028728485,
+      "boundary_ratio": 0.10904510556621881
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1650__Lg_2DgXUwU.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.472320556640625,
+      "changed_ratio": 0.060347612586418554,
+      "hard_ratio": 0.06241519674355495,
+      "risk_mean": 0.09991246461868286,
+      "boundary_ratio": 0.0203527815468114
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__165_tOMF4HLBCA0.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.918914794921875,
+      "changed_ratio": 0.095214373484773,
+      "hard_ratio": 0.14207432499750922,
+      "risk_mean": 0.17472732067108154,
+      "boundary_ratio": 0.16668327189399224
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1664_6y3Gt6BiSZE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6094098772321429,
+      "changed_ratio": 0.10107022262919933,
+      "hard_ratio": 0.10954043381216734,
+      "risk_mean": 0.12296784669160843,
+      "boundary_ratio": 0.05528529731585875
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1666_9JM4jDqJZCs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7991420200892857,
+      "changed_ratio": 0.008815956007506655,
+      "hard_ratio": 0.014140444289268101,
+      "risk_mean": 0.10083021968603134,
+      "boundary_ratio": 0.039715445380351766
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1671_J-O538BayZA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8496907552083334,
+      "changed_ratio": 0.0369217507901542,
+      "hard_ratio": 0.06436165118283689,
+      "risk_mean": 0.13627980649471283,
+      "boundary_ratio": 0.10243271717268461
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1672_PVbHJeHuBWA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.548492431640625,
+      "changed_ratio": 0.048239025204473374,
+      "hard_ratio": 0.04946308351416013,
+      "risk_mean": 0.09237930923700333,
+      "boundary_ratio": 0.0366661102765259
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1678__qxxSOgqMpc.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.844970703125,
+      "changed_ratio": 0.05403062698642011,
+      "hard_ratio": 0.07382259462583068,
+      "risk_mean": 0.13106398284435272,
+      "boundary_ratio": 0.10871135509968217
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1679__tBH9SE-Kw8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.893157958984375,
+      "changed_ratio": 0.02118426897187959,
+      "hard_ratio": 0.02118426897187959,
+      "risk_mean": 0.0944824069738388,
+      "boundary_ratio": 0.07407660505005638
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1681_acs0MKQHogk.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.66485595703125,
+      "changed_ratio": 0.03571100706875975,
+      "hard_ratio": 0.03607821536766731,
+      "risk_mean": 0.09533379971981049,
+      "boundary_ratio": 0.0024786560176259984
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1682_b4-lZLki2YQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.879364013671875,
+      "changed_ratio": 0.014818670831164324,
+      "hard_ratio": 0.02325177858754121,
+      "risk_mean": 0.12481735646724701,
+      "boundary_ratio": 0.02280062467464862
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1696_Lc4Bn1v8iZk.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.80400390625,
+      "changed_ratio": 0.030244139438843676,
+      "hard_ratio": 0.04743107008380906,
+      "risk_mean": 0.12542153894901276,
+      "boundary_ratio": 0.050589092675816835
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__16_4HhR9D2Nq4Y.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.623504638671875,
+      "changed_ratio": 0.14947873329744016,
+      "hard_ratio": 0.15574372277421566,
+      "risk_mean": 0.13078583776950836,
+      "boundary_ratio": 0.12583818706867017
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1706_UYQWN_wA3Qs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.854248046875,
+      "changed_ratio": 0.002143469562732209,
+      "hard_ratio": 0.004572735067162046,
+      "risk_mean": 0.11079660803079605,
+      "boundary_ratio": 0.005037153472420692
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1707_Uho01TNeKDs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9612862723214286,
+      "changed_ratio": 0.04165154923445323,
+      "hard_ratio": 0.06403744285610623,
+      "risk_mean": 0.12915286421775818,
+      "boundary_ratio": 0.08352078949277991
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__170_pbMEU4tp0S8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.5709228515625,
+      "changed_ratio": 0.004596963865725893,
+      "hard_ratio": 0.007055805003207184,
+      "risk_mean": 0.12002856284379959,
+      "boundary_ratio": 0.007697241821680564
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__171_p_djfxkj6GE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.2139892578125,
+      "changed_ratio": 0.1853964632059327,
+      "hard_ratio": 0.19138619509412436,
+      "risk_mean": 0.1290086954832077,
+      "boundary_ratio": 0.1284940102681118
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1736_Q-9dKcgIank.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.621368408203125,
+      "changed_ratio": 0.028682284760080546,
+      "hard_ratio": 0.03192377584598006,
+      "risk_mean": 0.09710417687892914,
+      "boundary_ratio": 0.05544914296940229
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1739_drnBy71Sn2Q.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.75714111328125,
+      "changed_ratio": 0.015235792019347038,
+      "hard_ratio": 0.027045546150745666,
+      "risk_mean": 0.10492068529129028,
+      "boundary_ratio": 0.0475614671503426
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1772_KtiaEFjWf4g.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.10758463541666667,
+      "changed_ratio": 0.07677760968229955,
+      "hard_ratio": 0.09266263237518911,
+      "risk_mean": 0.15726903080940247,
+      "boundary_ratio": 0.2004538577912254
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__177_lCm15ZpJTRM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.79718017578125,
+      "changed_ratio": 0.034185743817471866,
+      "hard_ratio": 0.06718474848786464,
+      "risk_mean": 0.1621168851852417,
+      "boundary_ratio": 0.06756756756756757
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__178_qqFtth52adI.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7472330729166666,
+      "changed_ratio": 0.005989980396427793,
+      "hard_ratio": 0.006262252232629057,
+      "risk_mean": 0.08481840789318085,
+      "boundary_ratio": 0.007460248311914616
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1794_NaEStkkg8jY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9610188802083334,
+      "changed_ratio": 0.006901515793039208,
+      "hard_ratio": 0.01138961808789906,
+      "risk_mean": 0.1013978123664856,
+      "boundary_ratio": 0.015750698619696843
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1797_gUox9IVrmHw.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.680322265625,
+      "changed_ratio": 0.0027273379745926937,
+      "hard_ratio": 0.003014426182444556,
+      "risk_mean": 0.07978104799985886,
+      "boundary_ratio": 0.017943012990741407
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__180_uEgVC7zO4rQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.75400390625,
+      "changed_ratio": 0.15885248024867246,
+      "hard_ratio": 0.3666623494366015,
+      "risk_mean": 0.28873857855796814,
+      "boundary_ratio": 0.40221473902344257
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1811_1eA_hRPEjL8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.59521484375,
+      "changed_ratio": 0.026544005625219736,
+      "hard_ratio": 0.03181764912691902,
+      "risk_mean": 0.10227200388908386,
+      "boundary_ratio": 0.03937653814602133
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__181_nWH7tzVtB2k.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.707275390625,
+      "changed_ratio": 0.021401449775629963,
+      "hard_ratio": 0.024922333448394892,
+      "risk_mean": 0.09355423599481583,
+      "boundary_ratio": 0.041767345529858474
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1825_CjE3-Fd5HfQ.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.32118443080357145,
+      "changed_ratio": 0.01151047887935715,
+      "hard_ratio": 0.0156368769681833,
+      "risk_mean": 0.08914761990308762,
+      "boundary_ratio": 0.019220327940058637
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__182_7na_-LfGfpE.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.884716796875,
+      "changed_ratio": 0.005463877697444671,
+      "hard_ratio": 0.005960593851757823,
+      "risk_mean": 0.093626469373703,
+      "boundary_ratio": 0.007395551630884707
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1835_7Lg7V25b8Vk.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.709564208984375,
+      "changed_ratio": 0.043697045288374696,
+      "hard_ratio": 0.04528837469356157,
+      "risk_mean": 0.0832679495215416,
+      "boundary_ratio": 0.019095952862242485
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1840_Uw8eRSQB18U.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.958404541015625,
+      "changed_ratio": 0.03206495780926604,
+      "hard_ratio": 0.03429390224486547,
+      "risk_mean": 0.09732308983802795,
+      "boundary_ratio": 0.05142493233561535
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1843__toEoqgYZcU.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9718017578125,
+      "changed_ratio": 0.06230373068709961,
+      "hard_ratio": 0.06230373068709961,
+      "risk_mean": 0.11990305781364441,
+      "boundary_ratio": 0.027163672905413893
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1856_M7qcNQRZWL0.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8705008370535714,
+      "changed_ratio": 0.035658479907047555,
+      "hard_ratio": 0.05028246323971313,
+      "risk_mean": 0.11930270493030548,
+      "boundary_ratio": 0.05420890260026443
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1895_n_NTF4JCd8Y.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7253011067708334,
+      "changed_ratio": 0.09901823281907433,
+      "hard_ratio": 0.10098176718092566,
+      "risk_mean": 0.09075711667537689,
+      "boundary_ratio": 0.01750350631136045
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1897_392VbYfoeVc.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.913848876953125,
+      "changed_ratio": 0.020738019702788445,
+      "hard_ratio": 0.02788445483386208,
+      "risk_mean": 0.12355576455593109,
+      "boundary_ratio": 0.02825179495742194
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1899_84IR-sL2iI0.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9281005859375,
+      "changed_ratio": 0.07066289622517427,
+      "hard_ratio": 0.10887149809285808,
+      "risk_mean": 0.15737353265285492,
+      "boundary_ratio": 0.14944758647902143
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1910_NcnybUWNMq4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.972412109375,
+      "changed_ratio": 0.01418528747175496,
+      "hard_ratio": 0.02154992049543895,
+      "risk_mean": 0.11713550984859467,
+      "boundary_ratio": 0.022303121600133903
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1925_3toYsojQa6M.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 1.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.018076090142130852,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__192_eYqOITSzne4.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.349365234375,
+      "changed_ratio": 0.18806778476589797,
+      "hard_ratio": 0.20728511530398322,
+      "risk_mean": 0.18891853094100952,
+      "boundary_ratio": 0.1773235499650594
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1944_3pJmVLQyd6U.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7506626674107143,
+      "changed_ratio": 0.05798448171723273,
+      "hard_ratio": 0.0822840682061051,
+      "risk_mean": 0.13464170694351196,
+      "boundary_ratio": 0.10965014170886958
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__195_5VNJEE0FlS0.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.714630126953125,
+      "changed_ratio": 0.043515394798650554,
+      "hard_ratio": 0.056070376222402525,
+      "risk_mean": 0.11435331404209137,
+      "boundary_ratio": 0.05256864670965538
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1968_f5Ov_n0crZ8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.521942138671875,
+      "changed_ratio": 0.03496462608899024,
+      "hard_ratio": 0.040986961351809625,
+      "risk_mean": 0.1024589017033577,
+      "boundary_ratio": 0.037654212711220256
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1987_R3TXgRVTt54.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.81298828125,
+      "changed_ratio": 0.35148005148005146,
+      "hard_ratio": 0.35148005148005146,
+      "risk_mean": 0.329660028219223,
+      "boundary_ratio": 0.6844272844272844
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1993_pL1o2yMqt5k.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9185791015625,
+      "changed_ratio": 0.06272425249169435,
+      "hard_ratio": 0.09794019933554818,
+      "risk_mean": 0.1516534686088562,
+      "boundary_ratio": 0.13059800664451826
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__1997_ETV-qlamwAs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.76953125,
+      "changed_ratio": 0.03351046954314721,
+      "hard_ratio": 0.04144194162436548,
+      "risk_mean": 0.1047564297914505,
+      "boundary_ratio": 0.045526649746192895
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2007_FeDljBKYJLA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.45672607421875,
+      "changed_ratio": 0.00841908325537886,
+      "hard_ratio": 0.010156354403314178,
+      "risk_mean": 0.08479057997465134,
+      "boundary_ratio": 0.016303621542162236
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2011_wK9XkeQoWU8.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.429229736328125,
+      "changed_ratio": 0.07536437966583719,
+      "hard_ratio": 0.07536437966583719,
+      "risk_mean": 0.12350131571292877,
+      "boundary_ratio": 0.128759331674369
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2015_DxRyVc1aF68.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.31243896484375,
+      "changed_ratio": 0.08458683336589178,
+      "hard_ratio": 0.09113108028911897,
+      "risk_mean": 0.11406794935464859,
+      "boundary_ratio": 0.04854463762453604
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2053_iisVfWgUvYY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6025739397321429,
+      "changed_ratio": 0.03553857729929965,
+      "hard_ratio": 0.045494009376627884,
+      "risk_mean": 0.11187037080526352,
+      "boundary_ratio": 0.06511547143601319
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__207_ofjmj0yjQEA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.77996826171875,
+      "changed_ratio": 0.10259018702558885,
+      "hard_ratio": 0.11554112215353314,
+      "risk_mean": 0.14815539121627808,
+      "boundary_ratio": 0.12724000313013537
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2101_lnPyEyqvvzU.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.51708984375,
+      "changed_ratio": 0.022544853635505194,
+      "hard_ratio": 0.025495750708215296,
+      "risk_mean": 0.09185711294412613,
+      "boundary_ratio": 0.01758734655335222
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2120_vr04Dpk_O14.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7010323660714286,
+      "changed_ratio": 0.06611940298507463,
+      "hard_ratio": 0.07492537313432836,
+      "risk_mean": 0.11660224199295044,
+      "boundary_ratio": 0.04965174129353234
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__212_0vvyDjyJG18.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.461181640625,
+      "changed_ratio": 0.10183959767072526,
+      "hard_ratio": 0.12367654843832716,
+      "risk_mean": 0.1516418159008026,
+      "boundary_ratio": 0.09628110111169931
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2133_yzFxIryDJ9c.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.5318603515625,
+      "changed_ratio": 0.030869864585724122,
+      "hard_ratio": 0.035919210465916916,
+      "risk_mean": 0.09588766098022461,
+      "boundary_ratio": 0.03213220105577232
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2153_79MfrrGJsqg.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.3875325520833333,
+      "changed_ratio": 0.032549349013019736,
+      "hard_ratio": 0.03391432171356573,
+      "risk_mean": 0.11805297434329987,
+      "boundary_ratio": 0.014804703905921882
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2165_k0X5Y4jbUTY.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.998291015625,
+      "changed_ratio": 0.12731719246759599,
+      "hard_ratio": 0.14487649792125215,
+      "risk_mean": 0.1577071100473404,
+      "boundary_ratio": 0.2070432868672047
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__216_ln63SOGqztc.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9050990513392857,
+      "changed_ratio": 0.0025432545951986434,
+      "hard_ratio": 0.006435204809063235,
+      "risk_mean": 0.09666299819946289,
+      "boundary_ratio": 0.009941813417594697
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2187_2_OkSoW2tkA.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.950408935546875,
+      "changed_ratio": 0.032848473172141415,
+      "hard_ratio": 0.05529332434254889,
+      "risk_mean": 0.13326627016067505,
+      "boundary_ratio": 0.06845840156696528
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__2189_8jpjltOLbNs.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.834747314453125,
+      "changed_ratio": 0.012101049245055387,
+      "hard_ratio": 0.014842978832303587,
+      "risk_mean": 0.08976150304079056,
+      "boundary_ratio": 0.025189193141520124
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/train/VSPW__322_rUWndTh2COM.npz",
+      "split": "train",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6946498325892857,
+      "changed_ratio": 0.024802932168499273,
+      "hard_ratio": 0.027263142039463773,
+      "risk_mean": 0.0966988131403923,
+      "boundary_ratio": 0.022091680473966962
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1005_XVAsMTo04Js.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.9195556640625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.07592209428548813,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1009_gqY_aDM_mmU.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.72491455078125,
+      "changed_ratio": 0.1731918834722573,
+      "hard_ratio": 0.20316578260503493,
+      "risk_mean": 0.19199472665786743,
+      "boundary_ratio": 0.2642081333670119
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1019_OfFne6dmXvE.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.708984375,
+      "changed_ratio": 0.13314967860422405,
+      "hard_ratio": 0.15048209366391185,
+      "risk_mean": 0.14927555620670319,
+      "boundary_ratio": 0.12741046831955924
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1027_oXWlL7W5G90.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0897216796875,
+      "changed_ratio": 0.0013605442176870747,
+      "hard_ratio": 0.0013605442176870747,
+      "risk_mean": 0.1309574991464615,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1039_QZROp4t0doU.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.271240234375,
+      "changed_ratio": 0.009900990099009901,
+      "hard_ratio": 0.010801080108010801,
+      "risk_mean": 0.08346886932849884,
+      "boundary_ratio": 0.0063006300630063005
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__103_5ZujNM_MouM.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.318206787109375,
+      "changed_ratio": 0.22451328282343916,
+      "hard_ratio": 0.28138486621271697,
+      "risk_mean": 0.23948729038238525,
+      "boundary_ratio": 0.3228157667593747
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1050_1flkZzBSzwY.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.6359456380208334,
+      "changed_ratio": 0.14473094887708746,
+      "hard_ratio": 0.15803954187727942,
+      "risk_mean": 0.13153725862503052,
+      "boundary_ratio": 0.06411158743361699
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1051_X1hvRYpRFrE.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0628662109375,
+      "changed_ratio": 0.09320388349514563,
+      "hard_ratio": 0.09320388349514563,
+      "risk_mean": 0.11338513344526291,
+      "boundary_ratio": 0.021359223300970873
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1081_VOl-nOZsMGw.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.19915771484375,
+      "changed_ratio": 0.05776892430278884,
+      "hard_ratio": 0.05776892430278884,
+      "risk_mean": 0.10132739692926407,
+      "boundary_ratio": 0.046276432730616
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1082_vnHED7pGLsk.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.5055338541666666,
+      "changed_ratio": 0.01883451384417257,
+      "hard_ratio": 0.03203477141017386,
+      "risk_mean": 0.10812100768089294,
+      "boundary_ratio": 0.05119124275595621
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1083_GeoAbL3JXdQ.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.80712890625,
+      "changed_ratio": 0.03176043557168784,
+      "hard_ratio": 0.038415003024803385,
+      "risk_mean": 0.10861340910196304,
+      "boundary_ratio": 0.04900181488203267
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1089_o1Gqc8_dKew.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.4935302734375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09136168658733368,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__112_0OB2IP1enjU.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.17609514508928573,
+      "changed_ratio": 0.037037037037037035,
+      "hard_ratio": 0.037037037037037035,
+      "risk_mean": 0.08221043646335602,
+      "boundary_ratio": 0.05327787680728857
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__1163_ayuSarPEafI.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__127_-hIVCYO4C90.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.779052734375,
+      "changed_ratio": 0.014337198370416797,
+      "hard_ratio": 0.021035725477906612,
+      "risk_mean": 0.11129148304462433,
+      "boundary_ratio": 0.025070510811657787
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__141_pdbnHgo554Q.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.637939453125,
+      "changed_ratio": 0.10830463069269039,
+      "hard_ratio": 0.13930348258706468,
+      "risk_mean": 0.1353856474161148,
+      "boundary_ratio": 0.062380405663987754
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__184_qOLd2_WB7WA.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.98828125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.05920488014817238,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__258_xINh_0D2h_0.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.00244140625,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.15251106023788452,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__291_4JldoYOiGok.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.0,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.0,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__322_rUWndTh2COM.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.06787109375,
+      "changed_ratio": 0.04316546762589928,
+      "hard_ratio": 0.046762589928057555,
+      "risk_mean": 0.09360397607088089,
+      "boundary_ratio": 0.02158273381294964
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VIPSEG__358_t384CT-gxlA.npz",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "valid_ratio": 0.947998046875,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.1074887216091156,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1058_9tvZOFs1xvc.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.95439453125,
+      "changed_ratio": 0.016115829325693238,
+      "hard_ratio": 0.03218049728844776,
+      "risk_mean": 0.11262619495391846,
+      "boundary_ratio": 0.048859101606466795
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1063_naPMk89Na88.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8489583333333334,
+      "changed_ratio": 0.04313650306748466,
+      "hard_ratio": 0.04399923312883436,
+      "risk_mean": 0.09304169565439224,
+      "boundary_ratio": 0.03575536809815951
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1087_r63RNCRnF08.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8623046875,
+      "changed_ratio": 0.011702529256323141,
+      "hard_ratio": 0.023027557568893922,
+      "risk_mean": 0.10833333432674408,
+      "boundary_ratio": 0.03454133635334088
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1160_K1K-rHbdmHw.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.31793212890625,
+      "changed_ratio": 0.11240161259358802,
+      "hard_ratio": 0.11240161259358802,
+      "risk_mean": 0.09131110459566116,
+      "boundary_ratio": 0.0820694951046266
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1166_hatpNWn0QRY.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.255859375,
+      "changed_ratio": 0.04802798982188295,
+      "hard_ratio": 0.05025445292620865,
+      "risk_mean": 0.10079377889633179,
+      "boundary_ratio": 0.02862595419847328
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1167_l3ULdXGVtW0.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7598005022321429,
+      "changed_ratio": 0.018131742024328667,
+      "hard_ratio": 0.021253155841175122,
+      "risk_mean": 0.08679446578025818,
+      "boundary_ratio": 0.037135643791599726
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1176_i0goiI8AhPk.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 1.0,
+      "changed_ratio": 0.09375,
+      "hard_ratio": 0.09375,
+      "risk_mean": 0.1385560780763626,
+      "boundary_ratio": 0.09375
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1185_ifHRDBx-ctw.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.616015625,
+      "changed_ratio": 0.10423272035510463,
+      "hard_ratio": 0.11350665821179455,
+      "risk_mean": 0.13692519068717957,
+      "boundary_ratio": 0.07379518072289157
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__118_tQw4cJh7LVw.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9353434244791666,
+      "changed_ratio": 0.013616391873667725,
+      "hard_ratio": 0.022751990255361725,
+      "risk_mean": 0.11151096969842911,
+      "boundary_ratio": 0.03201809718536564
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1193_6cwPvrMW7tE.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8228352864583334,
+      "changed_ratio": 0.0018791415290277916,
+      "hard_ratio": 0.0018791415290277916,
+      "risk_mean": 0.056969452649354935,
+      "boundary_ratio": 0.019038670754623677
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1197_zZ4AG16A4E8.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.950341796875,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09967897832393646,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1199_5qVaYyKYVNg.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8888346354166666,
+      "changed_ratio": 0.04852591100531038,
+      "hard_ratio": 0.059512909723493865,
+      "risk_mean": 0.13849852979183197,
+      "boundary_ratio": 0.14090825856070316
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1208_1nNkCuPWNlg.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.62236328125,
+      "changed_ratio": 0.015063549348815314,
+      "hard_ratio": 0.0175741409069512,
+      "risk_mean": 0.09820321202278137,
+      "boundary_ratio": 0.011454573983994978
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1241_qYvEuwrSiXc.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.082794189453125,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.09899967908859253,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1259_nY3cWyZ3Z3U.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.908935546875,
+      "changed_ratio": 0.053585817888799354,
+      "hard_ratio": 0.07789417136717701,
+      "risk_mean": 0.13632619380950928,
+      "boundary_ratio": 0.10206822455009401
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1264_sOecwdmrUBk.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.53228759765625,
+      "changed_ratio": 0.02889576883384933,
+      "hard_ratio": 0.029927760577915376,
+      "risk_mean": 0.08926758170127869,
+      "boundary_ratio": 0.03657837403967435
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1269_VEtgq6IeCWc.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9515555245535714,
+      "changed_ratio": 0.25829270974599566,
+      "hard_ratio": 0.2633141516695378,
+      "risk_mean": 0.20314455032348633,
+      "boundary_ratio": 0.26815232928930105
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__128_d0NUycUlLbA.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6375732421875,
+      "changed_ratio": 0.013115067968600421,
+      "hard_ratio": 0.016561363201225348,
+      "risk_mean": 0.10045350342988968,
+      "boundary_ratio": 0.015604058969940647
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1297_X7S2nETEm7I.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7730887276785714,
+      "changed_ratio": 0.005819723901470721,
+      "hard_ratio": 0.007218262203374537,
+      "risk_mean": 0.08733770251274109,
+      "boundary_ratio": 0.0083912298114229
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1312_-CF5nP71J_I.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.529449462890625,
+      "changed_ratio": 0.10796011297481123,
+      "hard_ratio": 0.13539685284454436,
+      "risk_mean": 0.16580456495285034,
+      "boundary_ratio": 0.12519453570810998
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1369_n9fuw7yiLzM.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.933868408203125,
+      "changed_ratio": 0.12362341099964054,
+      "hard_ratio": 0.12365608967027221,
+      "risk_mean": 0.16319440305233002,
+      "boundary_ratio": 0.12365608967027221
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1541_RnlPrdMoQ1Y.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6662946428571429,
+      "changed_ratio": 0.004868090452261307,
+      "hard_ratio": 0.007171273031825796,
+      "risk_mean": 0.08209634572267532,
+      "boundary_ratio": 0.018844221105527637
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__159_ESPTaWnzmCA.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.446044921875,
+      "changed_ratio": 0.013793103448275862,
+      "hard_ratio": 0.014997263273125342,
+      "risk_mean": 0.09300828725099564,
+      "boundary_ratio": 0.00875752599890531
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__15_ZiZqE1bZ8lU.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.69287109375,
+      "changed_ratio": 0.0,
+      "hard_ratio": 0.0,
+      "risk_mean": 0.10261271893978119,
+      "boundary_ratio": 0.0
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1691_md-DpQ4HX7Q.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.715576171875,
+      "changed_ratio": 0.02183555100648243,
+      "hard_ratio": 0.022381439781644488,
+      "risk_mean": 0.0808413177728653,
+      "boundary_ratio": 0.03411804844762879
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1764_axwN80e2aRI.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.5849609375,
+      "changed_ratio": 0.039858096828046745,
+      "hard_ratio": 0.043614357262103505,
+      "risk_mean": 0.08527195453643799,
+      "boundary_ratio": 0.027824151363383415
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1765_c7J_o-M_b7I.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.937164306640625,
+      "changed_ratio": 0.08053013774463512,
+      "hard_ratio": 0.09717021068742063,
+      "risk_mean": 0.13809338212013245,
+      "boundary_ratio": 0.11107492917385782
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1818__iGqYGM1OHc.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.67669677734375,
+      "changed_ratio": 0.04049788040046902,
+      "hard_ratio": 0.05005862722106972,
+      "risk_mean": 0.12817123532295227,
+      "boundary_ratio": 0.13249751961757011
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1892_Zyq_UpOQ9r4.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.530810546875,
+      "changed_ratio": 0.013982154355625057,
+      "hard_ratio": 0.01683377794131175,
+      "risk_mean": 0.08828884363174438,
+      "boundary_ratio": 0.01683377794131175
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1908_pYFJrXI1TL4.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.6923828125,
+      "changed_ratio": 0.07834978843441467,
+      "hard_ratio": 0.09026798307475317,
+      "risk_mean": 0.1339804232120514,
+      "boundary_ratio": 0.10141043723554302
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__1979_74hAVniLnCQ.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.877288818359375,
+      "changed_ratio": 0.06351967161790796,
+      "hard_ratio": 0.1033151285351515,
+      "risk_mean": 0.15603485703468323,
+      "boundary_ratio": 0.12738720562145614
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__201_MRpIKGg_Y3c.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.89666748046875,
+      "changed_ratio": 0.04223674358450752,
+      "hard_ratio": 0.07273160438363624,
+      "risk_mean": 0.15943194925785065,
+      "boundary_ratio": 0.07314001769791029
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__2043_-UirQbIF2sA.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8362862723214286,
+      "changed_ratio": 0.03273834348152473,
+      "hard_ratio": 0.0413295520894153,
+      "risk_mean": 0.11492859572172165,
+      "boundary_ratio": 0.040995912920176826
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__212_OroNM1E-A9c.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.7696126302083334,
+      "changed_ratio": 0.00803637517183039,
+      "hard_ratio": 0.00803637517183039,
+      "risk_mean": 0.07464637607336044,
+      "boundary_ratio": 0.044623030559374006
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__2142_e3LcSq6ckXM.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.9910074869791666,
+      "changed_ratio": 0.024676657770478342,
+      "hard_ratio": 0.04344077191541778,
+      "risk_mean": 0.11154759675264359,
+      "boundary_ratio": 0.06138369944569903
+    },
+    {
+      "path": "outputs/cache/stwm_ostf_v35_19_boundary_risk_video_semantic_state_targets/M128_H32/val/VSPW__93_qZmq-lc8lAg.npz",
+      "split": "val",
+      "dataset": "VSPW",
+      "valid_ratio": 0.8076171875,
+      "changed_ratio": 0.15111094316807738,
+      "hard_ratio": 0.15111094316807738,
+      "risk_mean": 0.13031890988349915,
+      "boundary_ratio": 0.08135580411124546
+    }
+  ],
+  "中文结论": "V35.20 的 mixed-unseen 有正信号，但 VIPSeg→VSPW 仍失败。审计显示 VSPW held-out 的 changed/risk 分布偏稀疏，直接用全局阈值会把数据集风格差异误当语义状态差异；下一步应做 per-video/domain-normalized risk target 和 dataset-balanced unseen 协议，不应训练 adapter。"
+}

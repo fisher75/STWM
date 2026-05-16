@@ -1,0 +1,72 @@
+{
+  "generated_at_utc": "2026-05-15T12:11:57.963795+00:00",
+  "video_semantic_state_adapter_eval_done": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_15_expanded_video_semantic_state_adapter_h32_m128/v35_14_video_semantic_state_adapter_m128_h32_seed123_best.pt",
+  "thresholds_from_val": {
+    "changed": 0.019401027215644715,
+    "hard": 0.023468348197638985,
+    "uncertainty": 0.04698413051664821
+  },
+  "val": {
+    "semantic_changed": {
+      "roc_auc": 0.6794346217508792,
+      "balanced_accuracy": 0.6472935900360806,
+      "f1": 0.24467003622513997,
+      "positive_ratio": 0.10101111111111111
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6856548679195505,
+      "balanced_accuracy": 0.663461731633657,
+      "f1": 0.2539095441700818,
+      "positive_ratio": 0.10101111111111111
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.6867562674408482,
+      "balanced_accuracy": 0.6567213097227196,
+      "f1": 0.2560444437139429,
+      "positive_ratio": 0.10101111111111111
+    },
+    "cluster": {
+      "cluster_top1": 0.45676666666666665,
+      "cluster_top5": 0.9369111111111111,
+      "copy_top1": 0.8992777777777777,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.8992777777777777
+    }
+  },
+  "test": {
+    "semantic_changed": {
+      "roc_auc": 0.6310572407515235,
+      "balanced_accuracy": 0.5599868344333081,
+      "f1": 0.20716806604915464,
+      "positive_ratio": 0.10304444444444444
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6254955594082473,
+      "balanced_accuracy": 0.5671976724958333,
+      "f1": 0.21032180670734887,
+      "positive_ratio": 0.10304444444444444
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.631258333935259,
+      "balanced_accuracy": 0.5780531233188638,
+      "f1": 0.21578300139935264,
+      "positive_ratio": 0.10304444444444444
+    },
+    "cluster": {
+      "cluster_top1": 0.4631222222222222,
+      "cluster_top5": 0.9510666666666666,
+      "copy_top1": 0.8963444444444445,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.8963444444444445
+    }
+  },
+  "semantic_changed_passed": false,
+  "semantic_hard_passed": true,
+  "uncertainty_passed": true,
+  "stable_preservation": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

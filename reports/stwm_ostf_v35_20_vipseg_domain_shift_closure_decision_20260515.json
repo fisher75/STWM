@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-05-15T15:01:26.890278+00:00",
+  "v35_20_vipseg_source_boost_ran": true,
+  "vipseg_processed_split_counts": {
+    "test": 15,
+    "train": 85,
+    "val": 21
+  },
+  "boundary_risk_targets_built": true,
+  "target_sample_count": 325,
+  "vipseg_source_train_val_expanded": true,
+  "mixed_unseen_passed": true,
+  "vspw_to_vipseg_passed": false,
+  "vipseg_to_vspw_all_passed": false,
+  "vipseg_to_vspw_stratified_passed": false,
+  "cross_dataset_video_semantic_suite_ready": false,
+  "mixed_unseen_signal_positive": true,
+  "vipseg_to_vspw_blocker": "vipseg_to_vspw_observed_only_features_do_not_transfer",
+  "semantic_adapter_training_ran": false,
+  "identity_retrieval_training_ran": false,
+  "not_run_reason": "cross_dataset_video_semantic_predictability_failed",
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "visualization_ready": true,
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "recommended_next_step": "fix_video_semantic_target_split_or_domain_normalization_before_adapter_training",
+  "中文结论": "V35.20 扩大 VIPSeg source 后，mixed-unseen 已通过，但 VIPSeg→VSPW 在 all/stratified 下仍未过；这说明当前 mask-derived semantic target 仍有真实跨数据集域迁移/target split 问题。不能训练 adapter，不能 claim 完整 video semantic field。"
+}

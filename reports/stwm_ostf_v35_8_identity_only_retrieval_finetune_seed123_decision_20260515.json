@@ -1,0 +1,63 @@
+{
+  "semantic_state_head_training_ran": true,
+  "semantic_state_head_passed": true,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "semantic_hard_signal": {
+    "val": true,
+    "test": true
+  },
+  "changed_semantic_signal": {
+    "val": true,
+    "test": true
+  },
+  "stable_preservation": {
+    "val": true,
+    "test": true
+  },
+  "identity_consistency": {
+    "val_auc": 0.5145612431775037,
+    "test_auc": 0.5331551621340492,
+    "retrieval_passed": true,
+    "identity_retrieval_exclude_same_point_top1": {
+      "val": 0.8852162822829206,
+      "test": 0.8381240544629349
+    },
+    "identity_retrieval_same_frame_top1": {
+      "val": 0.8852162822829206,
+      "test": 0.8381240544629349
+    },
+    "identity_retrieval_instance_pooled_top1": {
+      "val": 0.7614133833646028,
+      "test": 0.7223044201960421
+    },
+    "identity_confuser_separation": {
+      "val": 0.27568742137336405,
+      "test": 0.21943356247222084
+    }
+  },
+  "uncertainty_quality": {
+    "val_auc": 0.581906377066205,
+    "test_auc": 0.5767481035094724
+  },
+  "unit_memory_load_bearing": true,
+  "semantic_measurement_load_bearing": true,
+  "assignment_load_bearing": false,
+  "effective_units": {
+    "val": 2.5913398265838623,
+    "test": 2.6077721118927
+  },
+  "unit_dominant_instance_purity": {
+    "val": 0.4388869515087015,
+    "test": 0.3659204707448751
+  },
+  "unit_semantic_purity": {
+    "val": 0.27201018925882003,
+    "test": 0.2856189614838965
+  },
+  "integrated_identity_field_claim_allowed": true,
+  "integrated_semantic_field_claim_allowed": false,
+  "recommended_next_step": "run_v35_identity_seed123_replication",
+  "中文结论": "V35 identity retrieval 评估已加入 pairwise / retrieval gate。只有 exclude-same-point、same-frame、instance-pooled 检索和 confuser separation 同时过，才允许 identity field claim；semantic field success 仍不允许。"
+}

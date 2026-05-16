@@ -1,0 +1,69 @@
+{
+  "generated_at_utc": "2026-05-15T12:36:33.599056+00:00",
+  "video_identity_pairwise_retrieval_eval_done": true,
+  "seed": 123,
+  "target_root": "outputs/cache/stwm_ostf_v35_16_video_identity_pairwise_retrieval_targets/M128_H32",
+  "measurement_baseline": {
+    "val": {
+      "identity_retrieval_exclude_same_point_top1": 0.906982421875,
+      "identity_retrieval_same_frame_top1": 0.906982421875,
+      "identity_retrieval_instance_pooled_top1": 0.900146484375,
+      "identity_confuser_separation": 0.18357239463646657,
+      "identity_confuser_avoidance_top1": 0.9038485804416404,
+      "occlusion_reappear_retrieval_top1": 0.9688311688311688,
+      "trajectory_crossing_retrieval_top1": 0.8934712707954704,
+      "same_pair_similarity_mean": 0.998376307525034,
+      "confuser_pair_similarity_mean": 0.8148039128885675,
+      "confuser_pair_count": 3490964.0,
+      "occlusion_reappear_total": 1155.0,
+      "trajectory_crossing_total": 7153.0
+    },
+    "test": {
+      "identity_retrieval_exclude_same_point_top1": 0.9074590773809523,
+      "identity_retrieval_same_frame_top1": 0.9074590773809523,
+      "identity_retrieval_instance_pooled_top1": 0.8686755952380952,
+      "identity_confuser_separation": 0.1954830508127482,
+      "identity_confuser_avoidance_top1": 0.9049224544841538,
+      "occlusion_reappear_retrieval_top1": 0.9676975945017182,
+      "trajectory_crossing_retrieval_top1": 0.8996482516035589,
+      "same_pair_similarity_mean": 0.9979282689532583,
+      "confuser_pair_similarity_mean": 0.8024452181405101,
+      "confuser_pair_count": 5208120.0,
+      "occlusion_reappear_total": 2910.0,
+      "trajectory_crossing_total": 9666.0
+    }
+  },
+  "learned_identity_head": {
+    "val": {
+      "identity_retrieval_exclude_same_point_top1": 0.9853515625,
+      "identity_retrieval_same_frame_top1": 0.9853515625,
+      "identity_retrieval_instance_pooled_top1": 0.911865234375,
+      "identity_confuser_separation": 0.6388266544773789,
+      "identity_confuser_avoidance_top1": 0.9849842271293375,
+      "occlusion_reappear_retrieval_top1": 0.9887445887445887,
+      "trajectory_crossing_retrieval_top1": 0.983223822172515,
+      "same_pair_similarity_mean": 0.9611116000047819,
+      "confuser_pair_similarity_mean": 0.32228494552740306,
+      "confuser_pair_count": 3490964.0,
+      "occlusion_reappear_total": 1155.0,
+      "trajectory_crossing_total": 7153.0
+    },
+    "test": {
+      "identity_retrieval_exclude_same_point_top1": 0.9919084821428571,
+      "identity_retrieval_same_frame_top1": 0.9919084821428571,
+      "identity_retrieval_instance_pooled_top1": 0.8673735119047619,
+      "identity_confuser_separation": 0.5640832702230527,
+      "identity_confuser_avoidance_top1": 0.991811964165302,
+      "occlusion_reappear_retrieval_top1": 0.9872852233676976,
+      "trajectory_crossing_retrieval_top1": 0.9911028346782537,
+      "same_pair_similarity_mean": 0.9663078299523473,
+      "confuser_pair_similarity_mean": 0.40222455972929466,
+      "confuser_pair_count": 5208120.0,
+      "occlusion_reappear_total": 2910.0,
+      "trajectory_crossing_total": 9666.0
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

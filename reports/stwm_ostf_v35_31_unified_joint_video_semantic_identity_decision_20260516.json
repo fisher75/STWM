@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-05-15T17:16:01.310498+00:00",
+  "unified_joint_eval_done": true,
+  "semantic_three_seed_passed_on_unified_benchmark": true,
+  "identity_three_seed_passed_on_unified_benchmark": true,
+  "full_unified_video_semantic_identity_benchmark_used": true,
+  "joint_clip_count": 325,
+  "raw_video_frame_paths_available": true,
+  "semantic_identity_sample_alignment_passed": true,
+  "semantic_test_changed_balanced_accuracy_mean": 0.6294324753268101,
+  "semantic_test_hard_balanced_accuracy_mean": 0.632710877758972,
+  "semantic_test_uncertainty_balanced_accuracy_mean": 0.6586785518221249,
+  "identity_test_exclude_same_point_top1_mean": 0.9802977693602695,
+  "identity_test_confuser_avoidance_top1_mean": 0.9797930416361118,
+  "identity_test_occlusion_reappear_top1_mean": 0.9773436440103106,
+  "identity_test_trajectory_crossing_top1_mean": 0.9779235747849987,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "full_unified_joint_eval_passed": true,
+  "integrated_semantic_field_claim_allowed": false,
+  "integrated_identity_field_claim_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "exact_blockers": [
+    "当前只允许 M128/H32，尚未做 H64/H96/M512/M1024 泛化。",
+    "V35.31 证明的是统一 video-derived trace benchmark 上的组件闭环，不等于最终 CVPR full-scale claim。",
+    "下一步需要 video input closure：从 raw video 自动得到 dense traces/semantic masks/identity targets 的端到端打包审计。"
+  ],
+  "recommended_next_step": "build_video_input_closure",
+  "中文结论": "V35.31 统一联合评估通过：semantic 三 seed、identity 三 seed、325 clip unified video benchmark、raw video frame path、future leakage safety 在同一口径下对齐。这是强好消息，说明 M128/H32 video-derived trace 到 future semantic/identity 的闭环已经成形；但仍不能宣称完整 semantic field success，下一步应做 video input closure。"
+}

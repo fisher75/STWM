@@ -1,0 +1,72 @@
+{
+  "generated_at_utc": "2026-05-15T11:16:32.122336+00:00",
+  "video_semantic_state_adapter_eval_done": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_14_video_semantic_state_adapter_h32_m128/v35_14_video_semantic_state_adapter_m128_h32_seed42_best.pt",
+  "thresholds_from_val": {
+    "changed": 0.4076885685324666,
+    "hard": 0.3935706965625285,
+    "uncertainty": 0.3701505549252031
+  },
+  "val": {
+    "semantic_changed": {
+      "roc_auc": 0.6274746090120171,
+      "balanced_accuracy": 0.6280476450195516,
+      "f1": 0.20851482898375062,
+      "positive_ratio": 0.085025
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6221606588579763,
+      "balanced_accuracy": 0.6282083221786563,
+      "f1": 0.20859058369001174,
+      "positive_ratio": 0.085025
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.6113233761269363,
+      "balanced_accuracy": 0.6273245978035802,
+      "f1": 0.20817393280557556,
+      "positive_ratio": 0.085025
+    },
+    "cluster": {
+      "cluster_top1": 0.419425,
+      "cluster_top5": 0.917825,
+      "copy_top1": 0.9152375,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.9152375
+    }
+  },
+  "test": {
+    "semantic_changed": {
+      "roc_auc": 0.6622387451571639,
+      "balanced_accuracy": 0.640796641448584,
+      "f1": 0.22601839684625494,
+      "positive_ratio": 0.053275
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6708632186765413,
+      "balanced_accuracy": 0.6452434960061817,
+      "f1": 0.22995560198485243,
+      "positive_ratio": 0.053275
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.6695157612490559,
+      "balanced_accuracy": 0.6511493430531262,
+      "f1": 0.22808521057786485,
+      "positive_ratio": 0.053275
+    },
+    "cluster": {
+      "cluster_top1": 0.868875,
+      "cluster_top5": 0.9731125,
+      "copy_top1": 0.9530375,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.9530375
+    }
+  },
+  "semantic_changed_passed": true,
+  "semantic_hard_passed": true,
+  "uncertainty_passed": true,
+  "stable_preservation": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

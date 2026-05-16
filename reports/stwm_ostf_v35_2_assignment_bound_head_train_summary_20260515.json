@@ -1,0 +1,76 @@
+{
+  "generated_at_utc": "2026-05-15T07:00:03.192842+00:00",
+  "semantic_state_head_training_ran": true,
+  "fresh_training_completed": true,
+  "seed": 42,
+  "M": 128,
+  "H": 32,
+  "steps": 1500,
+  "batch_size": 8,
+  "target_root": "outputs/cache/stwm_ostf_v35_1_fixed_semantic_state_targets/pointodyssey",
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_2_assignment_bound_head_h32_m128/v35_2_assignment_bound_head_m128_h32_seed42_best.pt",
+  "last_checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_2_assignment_bound_head_h32_m128/v35_2_assignment_bound_head_m128_h32_seed42_last.pt",
+  "best_val_loss": 7.711625814437866,
+  "copy_prior_strength": 7.0,
+  "assignment_bound_decoder": true,
+  "train_seconds": 220.89599442481995,
+  "loss_trace": {
+    "loss": {
+      "first": 10.23207950592041,
+      "last": 4.597996711730957,
+      "mean": 5.442828632036845
+    },
+    "cluster_ce": {
+      "first": 4.405890941619873,
+      "last": 1.8162864446640015,
+      "mean": 2.210622777938843
+    },
+    "changed_hard_cluster_ce": {
+      "first": 5.819229602813721,
+      "last": 2.4258017539978027,
+      "mean": 2.953830172856649
+    },
+    "stable_ce": {
+      "first": 0.12431914359331131,
+      "last": 0.4858771860599518,
+      "mean": 0.5426138654202223
+    },
+    "change_bce": {
+      "first": 0.385570228099823,
+      "last": 0.4211517870426178,
+      "mean": 0.46673063437143963
+    },
+    "family_ce": {
+      "first": 1.6707531213760376,
+      "last": 0.5256227850914001,
+      "mean": 0.6591270258227984
+    },
+    "same_instance_bce": {
+      "first": 0.20945055782794952,
+      "last": 0.1199641153216362,
+      "mean": 0.12344651825726033
+    },
+    "uncertainty_mse": {
+      "first": 0.17631134390830994,
+      "last": 0.008602912537753582,
+      "mean": 0.010079368863875667
+    },
+    "pairwise_assignment_loss": {
+      "first": 1.892227053642273,
+      "last": 0.8270150423049927,
+      "mean": 0.7343620649178823
+    },
+    "unit_anti_collapse": {
+      "first": 0.0006888508796691895,
+      "last": 0.29250913858413696,
+      "mean": 0.37397113084793093
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "teacher_as_method": false,
+  "future_teacher_embeddings_input_allowed": false,
+  "中文结论": "V35 semantic state head 已在 V35.1 fixed targets 上完成 seed42 训练；本训练只更新 semantic state head，不训练 V30 trajectory backbone。",
+  "artifact_packaging_note": "V35.2 checkpoint 已迁移到独立目录，避免覆盖 V35 seed42 copy-preserving checkpoint。"
+}

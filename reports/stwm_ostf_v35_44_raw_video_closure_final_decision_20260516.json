@@ -1,0 +1,63 @@
+{
+  "generated_at_utc": "2026-05-15T17:55:17.527926+00:00",
+  "current_completed_version": "V35.44",
+  "raw_video_frontend_reproducibility_harness_ready": false,
+  "raw_video_frontend_rerun_done": true,
+  "raw_video_frontend_drift_ok": true,
+  "raw_video_frame_paths_rerun_used": true,
+  "old_trace_cache_used_as_input_result": false,
+  "selected_split_counts": {
+    "val": 5,
+    "test": 5,
+    "train": 2
+  },
+  "semantic_three_seed_passed_on_eval_balanced_raw_rerun": true,
+  "semantic_changed_balanced_accuracy_val_mean": 0.6054896170939043,
+  "semantic_changed_balanced_accuracy_test_mean": 0.5649242389482738,
+  "semantic_hard_balanced_accuracy_val_mean": 0.6651715961321715,
+  "semantic_hard_balanced_accuracy_test_mean": 0.55657512508995,
+  "semantic_uncertainty_balanced_accuracy_val_mean": 0.6989554318654774,
+  "semantic_uncertainty_balanced_accuracy_test_mean": 0.5817944349128319,
+  "stable_preservation_all_seeds": true,
+  "identity_label_provenance_fixed": true,
+  "identity_valid_instance_sample_count": 7,
+  "identity_invalid_or_pseudo_sample_count": 5,
+  "identity_three_seed_passed_on_real_instance_subset": true,
+  "identity_seed456_test_exclude_same_point_top1": 0.99921875,
+  "identity_seed456_test_instance_pooled_top1": 0.984765625,
+  "identity_seed456_test_confuser_avoidance_top1": 0.9995848899958489,
+  "visualization_ready": true,
+  "visualization_manifest": "reports/stwm_ostf_v35_43_raw_video_closure_visualization_manifest_20260516.json",
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "teacher_as_method": false,
+  "m128_h32_video_system_benchmark_claim_allowed": true,
+  "m128_h32_video_system_benchmark_claim_boundary": "允许 bounded claim：raw video/frontend rerun 到 M128/H32 trace，再到 semantic field 和真实 instance-labeled subset identity field；VSPW identity pseudo slot 只做诊断。",
+  "full_cvpr_scale_claim_allowed": false,
+  "full_cvpr_scale_claim_blockers": [
+    "raw-video rerun 仍是 12-clip eval-balanced subset，不是完整 325-clip raw rerun。",
+    "identity claim 当前只对真实 instance-labeled subset 成立；VSPW identity pseudo slot 不能作为真实 identity field 证据。",
+    "尚未跑更大 M128/H32 raw-video closure subset 与完整 case-mined breakdown。",
+    "本轮没有、也不应扩到 H64/H96/M512/M1024。"
+  ],
+  "innovation_status": {
+    "future_trace_field_backbone": "V30 M128 frozen 主干仍是稳定 trace field 基座。",
+    "semantic_field": "V35 离散/低维可观测语义状态路线在 raw-video rerun eval-balanced slice 上三 seed 通过。",
+    "identity_field": "pairwise retrieval / instance-contrastive 方向成立，但 claim 必须限定在真实 instance-labeled 数据；VSPW pseudo identity 需排除或另建 supervision。",
+    "video_closure": "已从 raw frame paths 重跑 frontend，未把旧 trace cache 当输入结果，只作为 drift comparison。"
+  },
+  "good_news": [
+    "V35.38 eval-balanced raw-video rerun trace 与 cache drift 为 0，frame path、visibility、confidence、motion 对齐。",
+    "V35.38 semantic 三 seed 均通过，stable preservation 全 seed 通过。",
+    "V35.42 修正 identity label provenance 后，VIPSeg real-instance subset identity 三 seed 通过。",
+    "V35.43 真实 case-mined PNG 已生成。"
+  ],
+  "bad_news": [
+    "VSPW identity target 在当前构造中是 pseudo slot/semantic-track group，不能作为真实 identity field claim。",
+    "当前 raw-video closure 规模仍小，不能 claim full CVPR-scale complete system。",
+    "还没有完整 325-clip raw frontend rerun，也没有更大 subset 的 per-category robust breakdown。"
+  ],
+  "recommended_next_step": "run_larger_m128_h32_raw_video_closure_subset_with_identity_provenance_filter",
+  "中文结论": "V35.44 完成阶段性闭环：raw frame paths 最小重跑 frontend、M128/H32 trace、semantic state adapter、pairwise identity retrieval 在真实 instance subset 上形成 bounded video system benchmark。创新点比 V34 路线更稳：语义目标从 continuous teacher delta 改成可观测语义状态，identity 从 pointwise BCE 改成 pairwise retrieval。但这还不是 full CVPR-scale claim：规模仍是 12-clip rerun subset，identity 需要明确排除 VSPW pseudo identity。"
+}

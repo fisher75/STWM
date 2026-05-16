@@ -1,0 +1,72 @@
+{
+  "generated_at_utc": "2026-05-15T16:11:36.217773+00:00",
+  "video_semantic_state_adapter_eval_done": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_21_domain_normalized_video_semantic_state_adapter_h32_m128/v35_21_domain_normalized_video_semantic_state_adapter_m128_h32_seed123_best.pt",
+  "thresholds_from_val": {
+    "changed": 0.49454883933067323,
+    "hard": 0.491234503686428,
+    "uncertainty": 0.3973337203264236
+  },
+  "val": {
+    "semantic_changed": {
+      "roc_auc": 0.6646538451992641,
+      "balanced_accuracy": 0.624875230023052,
+      "f1": 0.29602338903282543,
+      "positive_ratio": 0.1258875
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6970869604722532,
+      "balanced_accuracy": 0.6581430619971679,
+      "f1": 0.432161957444855,
+      "positive_ratio": 0.1945875
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7222880452623537,
+      "balanced_accuracy": 0.6703742940732536,
+      "f1": 0.537530843188973,
+      "positive_ratio": 0.2845625
+    },
+    "cluster": {
+      "cluster_top1": 0.644175,
+      "cluster_top5": 0.9112,
+      "copy_top1": 0.8632375,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.8632375
+    }
+  },
+  "test": {
+    "semantic_changed": {
+      "roc_auc": 0.6854855003232325,
+      "balanced_accuracy": 0.6322910676883187,
+      "f1": 0.30468859735370957,
+      "positive_ratio": 0.1221125
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6930902150115076,
+      "balanced_accuracy": 0.6385709404054674,
+      "f1": 0.4069761847486168,
+      "positive_ratio": 0.191475
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7280594665750916,
+      "balanced_accuracy": 0.6633293177410824,
+      "f1": 0.5296244296244296,
+      "positive_ratio": 0.286
+    },
+    "cluster": {
+      "cluster_top1": 0.7477125,
+      "cluster_top5": 0.9525375,
+      "copy_top1": 0.9281375,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.9281375
+    }
+  },
+  "semantic_changed_passed": true,
+  "semantic_hard_passed": true,
+  "uncertainty_passed": true,
+  "stable_preservation": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

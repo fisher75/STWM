@@ -15,8 +15,11 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import setproctitle
 import torch
 from PIL import Image, ImageDraw
+
+setproctitle.setproctitle("python")
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -26,8 +29,6 @@ OUT_ROOT = ROOT / "outputs/cache/stwm_real_teacher_object_dense_v15c"
 
 def _apply_process_title() -> None:
     try:
-        import setproctitle  # type: ignore
-
         setproctitle.setproctitle(str(os.environ.get("STWM_PROC_TITLE", "python")))
     except Exception:
         pass

@@ -1,0 +1,45 @@
+{
+  "generated_at_utc": "2026-05-15T11:18:36.200110+00:00",
+  "video_semantic_state_adapter_training_ran": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_14_video_semantic_state_adapter_h32_m128/v35_14_video_semantic_state_adapter_m128_h32_seed456_best.pt",
+  "target_root": "outputs/cache/stwm_ostf_v35_14_mask_derived_video_semantic_state_targets/M128_H32",
+  "steps": 1200,
+  "batch_size": 4096,
+  "input_dim": 1037,
+  "loss_trace": {
+    "loss": {
+      "first": 5.957126617431641,
+      "last": 0.6560049653053284,
+      "mean": 0.9019048126041889
+    },
+    "cluster_loss": {
+      "first": 5.070776462554932,
+      "last": 0.11936423182487488,
+      "mean": 0.2275916270725429
+    },
+    "changed_loss": {
+      "first": 1.1408963203430176,
+      "last": 0.16603043675422668,
+      "mean": 0.2215767820427815
+    },
+    "hard_loss": {
+      "first": 1.0230138301849365,
+      "last": 0.1657221019268036,
+      "mean": 0.22110243558883666
+    },
+    "uncertainty_loss": {
+      "first": 0.993188738822937,
+      "last": 0.16486701369285583,
+      "mean": 0.22220823843032123
+    },
+    "family_loss": {
+      "first": 1.7916473150253296,
+      "last": 0.08940140902996063,
+      "mean": 0.12365127799411614
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "future_teacher_embedding_input_allowed": false,
+  "中文结论": "V35.14 video semantic state adapter 已完成 M128/H32 seed42 训练；只使用 observed measurement 与 future trace geometry。"
+}

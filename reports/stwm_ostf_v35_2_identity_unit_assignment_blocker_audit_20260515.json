@@ -1,0 +1,107 @@
+{
+  "generated_at_utc": "2026-05-15T07:11:04.729839+00:00",
+  "three_seed_semantic_state_head_passed": true,
+  "stable_changed_hard_replicated": true,
+  "semantic_measurement_load_bearing_replicated": true,
+  "identity_consistency_weak": true,
+  "identity_auc_by_seed": {
+    "42": {
+      "val": 0.467893148521324,
+      "test": 0.5270077776855651
+    },
+    "123": {
+      "val": 0.4993343524795995,
+      "test": 0.5283791725427396
+    },
+    "456": {
+      "val": 0.510154335796649,
+      "test": 0.5227207001613925
+    }
+  },
+  "identity_target_positive_ratio_by_split": {
+    "train": 0.9531145027110322,
+    "val": 0.9381110218293827,
+    "test": 0.9098111669505635
+  },
+  "identity_blocker": "identity target 极度正类偏置，当前 same-instance head 只学到 continuation prior，缺少 identity confuser / hard negative / reappear 对比监督。",
+  "uncertainty_head_weak_after_neural_head": true,
+  "uncertainty_auc_by_seed": {
+    "42": {
+      "val": 0.5199170927683987,
+      "test": 0.5576183264300443
+    },
+    "123": {
+      "val": 0.5656772194186421,
+      "test": 0.5749996466853576
+    },
+    "456": {
+      "val": 0.5123832005047259,
+      "test": 0.5141231311675581
+    }
+  },
+  "unit_memory_not_load_bearing": true,
+  "assignment_not_load_bearing": true,
+  "unit_assignment_blocker": "当前 copy-preserving head 的语义 cluster 主要由 copy prior 与 point-level semantic features 决定，unit memory 和 assignment 只作为弱隐藏残差，没有直接支撑 state transition 或 identity consistency。",
+  "evidence_anchor_family_still_weak": true,
+  "recommended_fix": "build_v35_2_identity_confuser_unit_assignment_targets_and_train_loadbearing_head",
+  "exact_code_locations": {
+    "copy_prior_and_unit_gate": {
+      "copy_prior_strength": [
+        25,
+        34,
+        131,
+        133
+      ],
+      "unit_gate": [
+        57,
+        118,
+        157
+      ],
+      "assignment_head": [
+        50,
+        103
+      ],
+      "zero_unit_memory": [
+        113
+      ],
+      "shuffle_assignment": [
+        105
+      ]
+    },
+    "identity_loss": {
+      "same_instance_bce": [
+        198
+      ],
+      "balanced_bce\\(out\\[\"same_instance_logits\"\\]": [
+        184
+      ],
+      "same_mask": [
+        178,
+        184
+      ]
+    },
+    "intervention_eval": {
+      "shuffle_assignment": [
+        226,
+        238
+      ],
+      "zero_unit_memory": [
+        226,
+        239
+      ],
+      "semantic_measurement_load_bearing": [
+        237,
+        273,
+        295
+      ],
+      "assignment_load_bearing": [
+        238,
+        274,
+        296
+      ]
+    }
+  },
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "中文结论": "V35 三 seed 证明低维 semantic state head 有稳定语义信号，但 identity 与 unit/assignment 机制仍未成立。下一步应构建 identity confuser/hard-negative/reappear targets，并给 unit/assignment 添加直接 load-bearing supervision；不应扩大到 H64/H96/M512 或 claim 完整 semantic field。"
+}

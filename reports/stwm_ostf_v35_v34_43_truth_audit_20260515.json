@@ -1,0 +1,36 @@
+{
+  "generated_at_utc": "2026-05-15T04:44:25.285188+00:00",
+  "inputs": {
+    "v34_43_script": "code/stwm/tools/eval_ostf_v34_43_observed_predictable_delta_targets_20260515.py",
+    "v34_43_doc": "docs/STWM_OSTF_V34_43_OBSERVED_PREDICTABLE_DELTA_TARGETS_20260515.md",
+    "v34_43_report": "reports/stwm_ostf_v34_43_observed_predictable_delta_targets_20260515.json",
+    "previous_reports": [
+      "reports/stwm_ostf_v34_42_cluster_local_linear_expert_unit_delta_audit_20260515.json",
+      "reports/stwm_ostf_v34_41_prototype_mode_generalization_audit_20260515.json",
+      "reports/stwm_ostf_v34_40_prototype_conditioned_mixture_unit_delta_writer_decision_20260515.json",
+      "reports/stwm_ostf_v34_35_unit_delta_generalization_audit_20260514.json"
+    ]
+  },
+  "v34_43_report_json_missing": false,
+  "v34_43_report_json_missing_after_audit": false,
+  "v34_43_artifact_packaging_fixed": true,
+  "v34_43_report_materialization": {
+    "materialized": false,
+    "method": "already_present"
+  },
+  "v34_43_doc_depends_on_report_json": false,
+  "v34_43_future_leakage_detected": false,
+  "v34_43_features_observed_only": true,
+  "v34_43_pass_requires_semantic_and_consistency_families": true,
+  "observed_predictable_target_suite_ready": false,
+  "continuous_unit_delta_route_exhausted": true,
+  "continuous_route_blockers": [],
+  "exact_code_locations": {
+    "build_features": "code/stwm/tools/eval_ostf_v34_43_observed_predictable_delta_targets_20260515.py:131",
+    "target_cache_write": "code/stwm/tools/eval_ostf_v34_43_observed_predictable_delta_targets_20260515.py:205",
+    "pass_decision": "code/stwm/tools/eval_ostf_v34_43_observed_predictable_delta_targets_20260515.py:442",
+    "v34_42_expert_decision": "reports/stwm_ostf_v34_42_cluster_local_linear_expert_unit_delta_audit_20260515.json"
+  },
+  "recommended_fix": "build_v35_observed_predictable_semantic_state_targets",
+  "中文结论": "V34.43 live repo 中 JSON 已可用；连续 teacher embedding unit_delta 路线已被 V34.34-V34.43 多轮上界和泛化审计耗尽。V35 应停止继续训练 V34 writer/gate/prototype/local expert，改为构建可观测可预测的离散/低维 semantic state targets。"
+}

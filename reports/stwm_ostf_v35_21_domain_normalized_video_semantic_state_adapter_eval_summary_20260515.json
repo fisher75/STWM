@@ -1,0 +1,72 @@
+{
+  "generated_at_utc": "2026-05-15T16:11:38.367373+00:00",
+  "video_semantic_state_adapter_eval_done": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_21_domain_normalized_video_semantic_state_adapter_h32_m128/v35_21_domain_normalized_video_semantic_state_adapter_m128_h32_seed42_best.pt",
+  "thresholds_from_val": {
+    "changed": 0.3037847280502319,
+    "hard": 0.5318470090627672,
+    "uncertainty": 0.5388666555285454
+  },
+  "val": {
+    "semantic_changed": {
+      "roc_auc": 0.6591311688868908,
+      "balanced_accuracy": 0.6151717172231566,
+      "f1": 0.27815747068955937,
+      "positive_ratio": 0.1248875
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6903501271077078,
+      "balanced_accuracy": 0.6484836537350112,
+      "f1": 0.4247363374880153,
+      "positive_ratio": 0.1965
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7109959165499129,
+      "balanced_accuracy": 0.6695611478209322,
+      "f1": 0.5322975287496942,
+      "positive_ratio": 0.28805
+    },
+    "cluster": {
+      "cluster_top1": 0.54075,
+      "cluster_top5": 0.8989,
+      "copy_top1": 0.863575,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.863575
+    }
+  },
+  "test": {
+    "semantic_changed": {
+      "roc_auc": 0.6807479877956993,
+      "balanced_accuracy": 0.6248230851891221,
+      "f1": 0.2788172834105506,
+      "positive_ratio": 0.1204125
+    },
+    "semantic_hard": {
+      "roc_auc": 0.6973701899473373,
+      "balanced_accuracy": 0.6273682440751258,
+      "f1": 0.39336134234492837,
+      "positive_ratio": 0.190375
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7257728571780001,
+      "balanced_accuracy": 0.6577460196400526,
+      "f1": 0.510752923656432,
+      "positive_ratio": 0.2852
+    },
+    "cluster": {
+      "cluster_top1": 0.63715,
+      "cluster_top5": 0.9478625,
+      "copy_top1": 0.9293125,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.9293125
+    }
+  },
+  "semantic_changed_passed": true,
+  "semantic_hard_passed": true,
+  "uncertainty_passed": true,
+  "stable_preservation": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

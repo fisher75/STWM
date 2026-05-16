@@ -1,0 +1,72 @@
+{
+  "generated_at_utc": "2026-05-15T16:11:30.504907+00:00",
+  "video_semantic_state_adapter_eval_done": true,
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_21_domain_normalized_video_semantic_state_adapter_h32_m128/v35_21_domain_normalized_video_semantic_state_adapter_m128_h32_seed456_best.pt",
+  "thresholds_from_val": {
+    "changed": 0.5718861013650895,
+    "hard": 0.5742390647530556,
+    "uncertainty": 0.4938611350953579
+  },
+  "val": {
+    "semantic_changed": {
+      "roc_auc": 0.6820022784284671,
+      "balanced_accuracy": 0.6466186802528222,
+      "f1": 0.32342079689018466,
+      "positive_ratio": 0.1251875
+    },
+    "semantic_hard": {
+      "roc_auc": 0.7119297939373745,
+      "balanced_accuracy": 0.6684296317831568,
+      "f1": 0.4455583939846725,
+      "positive_ratio": 0.193675
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7327362578452806,
+      "balanced_accuracy": 0.6797819955213926,
+      "f1": 0.5453683691654343,
+      "positive_ratio": 0.284325
+    },
+    "cluster": {
+      "cluster_top1": 0.6944625,
+      "cluster_top5": 0.912675,
+      "copy_top1": 0.8629375,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.8629375
+    }
+  },
+  "test": {
+    "semantic_changed": {
+      "roc_auc": 0.681844273806456,
+      "balanced_accuracy": 0.6311832731029896,
+      "f1": 0.3067077782302635,
+      "positive_ratio": 0.1226625
+    },
+    "semantic_hard": {
+      "roc_auc": 0.7043446925078114,
+      "balanced_accuracy": 0.6321934487963228,
+      "f1": 0.4003473286341812,
+      "positive_ratio": 0.1914375
+    },
+    "semantic_uncertainty": {
+      "roc_auc": 0.7287700433219573,
+      "balanced_accuracy": 0.6549603180852396,
+      "f1": 0.5141319498218987,
+      "positive_ratio": 0.2851625
+    },
+    "cluster": {
+      "cluster_top1": 0.7558125,
+      "cluster_top5": 0.949575,
+      "copy_top1": 0.9280875,
+      "stable_top5": 1.0,
+      "stable_copy_top1": 1.0,
+      "stable_token_ratio": 0.9280875
+    }
+  },
+  "semantic_changed_passed": true,
+  "semantic_hard_passed": true,
+  "uncertainty_passed": true,
+  "stable_preservation": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false
+}

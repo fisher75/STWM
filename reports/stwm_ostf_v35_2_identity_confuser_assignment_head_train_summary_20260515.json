@@ -1,0 +1,77 @@
+{
+  "generated_at_utc": "2026-05-15T07:33:25.660856+00:00",
+  "semantic_state_head_training_ran": true,
+  "fresh_training_completed": true,
+  "seed": 42,
+  "M": 128,
+  "H": 32,
+  "steps": 1500,
+  "batch_size": 8,
+  "target_root": "outputs/cache/stwm_ostf_v35_1_fixed_semantic_state_targets/pointodyssey",
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_2_identity_confuser_assignment_head_h32_m128/v35_semantic_state_head_m128_h32_seed42_best.pt",
+  "last_checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_2_identity_confuser_assignment_head_h32_m128/v35_semantic_state_head_m128_h32_seed42_last.pt",
+  "best_val_loss": 7.6365025520324705,
+  "copy_prior_strength": 7.0,
+  "assignment_bound_decoder": true,
+  "pairwise_assignment_weight": 0.8,
+  "assignment_target_root": "outputs/cache/stwm_ostf_v35_2_identity_confuser_assignment_targets/pointodyssey",
+  "train_seconds": 343.357146024704,
+  "loss_trace": {
+    "loss": {
+      "first": 10.01382064819336,
+      "last": 4.550887107849121,
+      "mean": 5.3249159773190815
+    },
+    "cluster_ce": {
+      "first": 4.405890941619873,
+      "last": 1.8665882349014282,
+      "mean": 2.2053973622322083
+    },
+    "changed_hard_cluster_ce": {
+      "first": 5.819229602813721,
+      "last": 2.491024971008301,
+      "mean": 2.9467930097579957
+    },
+    "stable_ce": {
+      "first": 0.12431914359331131,
+      "last": 0.4818918704986572,
+      "mean": 0.5392173692335686
+    },
+    "change_bce": {
+      "first": 0.385570228099823,
+      "last": 0.40241366624832153,
+      "mean": 0.46442415383458135
+    },
+    "family_ce": {
+      "first": 1.6707531213760376,
+      "last": 0.5424164533615112,
+      "mean": 0.6628000757892927
+    },
+    "same_instance_bce": {
+      "first": 0.20945055782794952,
+      "last": 0.12874571979045868,
+      "mean": 0.1235338978221019
+    },
+    "uncertainty_mse": {
+      "first": 0.17631134390830994,
+      "last": 0.00927883479744196,
+      "mean": 0.010226558838970959
+    },
+    "pairwise_assignment_loss": {
+      "first": 0.5550259351730347,
+      "last": 0.18204812705516815,
+      "mean": 0.18076828564703465
+    },
+    "unit_anti_collapse": {
+      "first": 0.0006888508796691895,
+      "last": 0.40700578689575195,
+      "mean": 0.5054219369888305
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "teacher_as_method": false,
+  "future_teacher_embeddings_input_allowed": false,
+  "中文结论": "V35 semantic state head 已在 V35.1 fixed targets 上完成 seed42 训练；本训练只更新 semantic state head，不训练 V30 trajectory backbone。"
+}

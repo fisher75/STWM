@@ -1,0 +1,1562 @@
+{
+  "generated_at_utc": "2026-05-15T15:39:09.559609+00:00",
+  "domain_shift_target_split_audit_done": true,
+  "domain_normalized_targets_built": true,
+  "target_sample_count": 325,
+  "domain_normalization_scope": "per_video_percentile_rank",
+  "target_split_balanced_after_normalization": true,
+  "domain_normalized_predictability_eval_done": true,
+  "mixed_domain_dataset_balanced_unseen_passed": true,
+  "vipseg_to_vspw_domain_normalized_passed": true,
+  "vspw_to_vipseg_passed": true,
+  "cross_dataset_video_semantic_suite_ready": true,
+  "semantic_adapter_training_ran": false,
+  "not_run_reason": null,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "visualization_ready": true,
+  "integrated_identity_field_claim_allowed": false,
+  "integrated_semantic_field_claim_allowed": false,
+  "full_video_semantic_identity_field_claim_allowed": false,
+  "recommended_next_step": "run_three_seed_cross_dataset_video_semantic_adapter",
+  "predictability_eval_report": {
+    "generated_at_utc": "2026-05-15T15:38:29.546406+00:00",
+    "v35_18_vipseg_to_vspw_domain_shift_eval_done": true,
+    "target_root": "outputs/cache/stwm_ostf_v35_21_domain_normalized_video_semantic_state_targets/M128_H32",
+    "target_build_report": "reports/stwm_ostf_v35_21_domain_normalized_video_semantic_state_target_build_20260515.json",
+    "vipseg_source_train_val_expanded": null,
+    "ontology_agnostic_change_target_used": true,
+    "stratified_vspw_test_used": true,
+    "protocols": {
+      "mixed_unseen_ontology_agnostic": {
+        "protocol": "mixed_unseen_ontology_agnostic",
+        "stratified_test": false,
+        "sample_counts": {
+          "train": 233,
+          "val": 57,
+          "test": 35
+        },
+        "token_counts": {
+          "train": 90000,
+          "val": 45000,
+          "test": 45000
+        },
+        "semantic_changed": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5083377703075045,
+          "val": {
+            "roc_auc": 0.6499111874777166,
+            "balanced_accuracy": 0.6096757443576348,
+            "f1": 0.29705882352941176,
+            "positive_ratio": 0.12788888888888889,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.671722165626236,
+            "balanced_accuracy": 0.6132820839223576,
+            "f1": 0.28841426776642815,
+            "positive_ratio": 0.12095555555555555,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "semantic_hard": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.46286140203614184,
+          "val": {
+            "roc_auc": 0.7223178141025461,
+            "balanced_accuracy": 0.6606826207364178,
+            "f1": 0.4358576823693103,
+            "positive_ratio": 0.1960888888888889,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6998919440981184,
+            "balanced_accuracy": 0.6421833740114792,
+            "f1": 0.41096116544921796,
+            "positive_ratio": 0.19202222222222223,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "semantic_uncertainty": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4415081475875613,
+          "val": {
+            "roc_auc": 0.7724330000528505,
+            "balanced_accuracy": 0.7048204083211624,
+            "f1": 0.5768324483961168,
+            "positive_ratio": 0.2855333333333333,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.7480092536451906,
+            "balanced_accuracy": 0.6900991485755213,
+            "f1": 0.5596021278604929,
+            "positive_ratio": 0.28526666666666667,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "test_breakdown_changed": {
+          "motion_low": {
+            "tokens": 21669,
+            "balanced_accuracy": 0.5663536196522071,
+            "positive_ratio": 0.0846370390880982
+          },
+          "motion_mid": {
+            "tokens": 12438,
+            "balanced_accuracy": 0.5450141698566766,
+            "positive_ratio": 0.11456825856246985
+          },
+          "motion_high": {
+            "tokens": 10893,
+            "balanced_accuracy": 0.5729397339369782,
+            "positive_ratio": 0.2004957312035252
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.6132820839223576,
+            "positive_ratio": 0.12095555555555555
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 7618,
+              "positive_ratio": 0.12037280126017327,
+              "balanced_accuracy": 0.5052116279459584
+            },
+            {
+              "category": 61,
+              "tokens": 2252,
+              "positive_ratio": 0.21492007104795738,
+              "balanced_accuracy": 0.6547716988893459
+            },
+            {
+              "category": 16,
+              "tokens": 1885,
+              "positive_ratio": 0.08010610079575597,
+              "balanced_accuracy": 0.6736997486957386
+            },
+            {
+              "category": 1,
+              "tokens": 1630,
+              "positive_ratio": 0.07607361963190185,
+              "balanced_accuracy": 0.5838956003941225
+            },
+            {
+              "category": 67,
+              "tokens": 1583,
+              "positive_ratio": 0.1781427668982944,
+              "balanced_accuracy": 0.6604017095414875
+            },
+            {
+              "category": 29,
+              "tokens": 1236,
+              "positive_ratio": 0.17475728155339806,
+              "balanced_accuracy": 0.557979302832244
+            },
+            {
+              "category": 6100,
+              "tokens": 1116,
+              "positive_ratio": 0.23835125448028674,
+              "balanced_accuracy": 0.6651039363113667
+            },
+            {
+              "category": 2,
+              "tokens": 1095,
+              "positive_ratio": 0.13881278538812786,
+              "balanced_accuracy": 0.46318440587151866
+            },
+            {
+              "category": 23,
+              "tokens": 934,
+              "positive_ratio": 0.12312633832976445,
+              "balanced_accuracy": 0.6337686468121251
+            },
+            {
+              "category": 91,
+              "tokens": 860,
+              "positive_ratio": 0.06511627906976744,
+              "balanced_accuracy": 0.47139303482587064
+            },
+            {
+              "category": 15,
+              "tokens": 845,
+              "positive_ratio": 0.06982248520710059,
+              "balanced_accuracy": 0.5560551170914737
+            },
+            {
+              "category": 8,
+              "tokens": 784,
+              "positive_ratio": 0.12627551020408162,
+              "balanced_accuracy": 0.5862346088623461
+            }
+          ]
+        },
+        "test_breakdown_hard": {
+          "motion_low": {
+            "tokens": 21669,
+            "balanced_accuracy": 0.6219514601981628,
+            "positive_ratio": 0.135123909732798
+          },
+          "motion_mid": {
+            "tokens": 12438,
+            "balanced_accuracy": 0.5535977872978803,
+            "positive_ratio": 0.16433510210644797
+          },
+          "motion_high": {
+            "tokens": 10893,
+            "balanced_accuracy": 0.5556184119619438,
+            "positive_ratio": 0.3368218121729551
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.6421833740114792,
+            "positive_ratio": 0.19202222222222223
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 7618,
+              "positive_ratio": 0.18180624835914938,
+              "balanced_accuracy": 0.5761135704278091
+            },
+            {
+              "category": 61,
+              "tokens": 2252,
+              "positive_ratio": 0.35968028419182946,
+              "balanced_accuracy": 0.6795696991489871
+            },
+            {
+              "category": 16,
+              "tokens": 1885,
+              "positive_ratio": 0.14058355437665782,
+              "balanced_accuracy": 0.7464360587002097
+            },
+            {
+              "category": 1,
+              "tokens": 1630,
+              "positive_ratio": 0.1312883435582822,
+              "balanced_accuracy": 0.5718391942552405
+            },
+            {
+              "category": 67,
+              "tokens": 1583,
+              "positive_ratio": 0.27416298168035375,
+              "balanced_accuracy": 0.6657321734387346
+            },
+            {
+              "category": 29,
+              "tokens": 1236,
+              "positive_ratio": 0.29449838187702265,
+              "balanced_accuracy": 0.6449364855328159
+            },
+            {
+              "category": 6100,
+              "tokens": 1116,
+              "positive_ratio": 0.36469534050179214,
+              "balanced_accuracy": 0.634183869726888
+            },
+            {
+              "category": 2,
+              "tokens": 1095,
+              "positive_ratio": 0.17442922374429223,
+              "balanced_accuracy": 0.5272726219709957
+            },
+            {
+              "category": 23,
+              "tokens": 934,
+              "positive_ratio": 0.18629550321199143,
+              "balanced_accuracy": 0.6810949788263763
+            },
+            {
+              "category": 91,
+              "tokens": 860,
+              "positive_ratio": 0.11395348837209303,
+              "balanced_accuracy": 0.417684396593283
+            },
+            {
+              "category": 15,
+              "tokens": 845,
+              "positive_ratio": 0.1408284023668639,
+              "balanced_accuracy": 0.6491365141097761
+            },
+            {
+              "category": 8,
+              "tokens": 784,
+              "positive_ratio": 0.2181122448979592,
+              "balanced_accuracy": 0.732162788700953
+            }
+          ]
+        },
+        "test_breakdown_uncertainty": {
+          "motion_low": {
+            "tokens": 21669,
+            "balanced_accuracy": 0.7044829055372577,
+            "positive_ratio": 0.2159305920900826
+          },
+          "motion_mid": {
+            "tokens": 12438,
+            "balanced_accuracy": 0.6204291216002846,
+            "positive_ratio": 0.2210162405531436
+          },
+          "motion_high": {
+            "tokens": 10893,
+            "balanced_accuracy": 0.6042649458132223,
+            "positive_ratio": 0.4965574221977417
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.6900991485755213,
+            "positive_ratio": 0.28526666666666667
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 7618,
+              "positive_ratio": 0.28747702809136255,
+              "balanced_accuracy": 0.5967866600714038
+            },
+            {
+              "category": 61,
+              "tokens": 2252,
+              "positive_ratio": 0.42362344582593253,
+              "balanced_accuracy": 0.6643489580809696
+            },
+            {
+              "category": 16,
+              "tokens": 1885,
+              "positive_ratio": 0.2403183023872679,
+              "balanced_accuracy": 0.7859683118132377
+            },
+            {
+              "category": 1,
+              "tokens": 1630,
+              "positive_ratio": 0.20920245398773007,
+              "balanced_accuracy": 0.6705327506148347
+            },
+            {
+              "category": 67,
+              "tokens": 1583,
+              "positive_ratio": 0.39355653821857234,
+              "balanced_accuracy": 0.8053746990369182
+            },
+            {
+              "category": 29,
+              "tokens": 1236,
+              "positive_ratio": 0.4425566343042071,
+              "balanced_accuracy": 0.7416704919033228
+            },
+            {
+              "category": 6100,
+              "tokens": 1116,
+              "positive_ratio": 0.3951612903225806,
+              "balanced_accuracy": 0.6924716553287982
+            },
+            {
+              "category": 2,
+              "tokens": 1095,
+              "positive_ratio": 0.3178082191780822,
+              "balanced_accuracy": 0.7021419009370816
+            },
+            {
+              "category": 23,
+              "tokens": 934,
+              "positive_ratio": 0.2955032119914347,
+              "balanced_accuracy": 0.6958338839698692
+            },
+            {
+              "category": 91,
+              "tokens": 860,
+              "positive_ratio": 0.21976744186046512,
+              "balanced_accuracy": 0.5090286155859927
+            },
+            {
+              "category": 15,
+              "tokens": 845,
+              "positive_ratio": 0.2556213017751479,
+              "balanced_accuracy": 0.6988275039745628
+            },
+            {
+              "category": 8,
+              "tokens": 784,
+              "positive_ratio": 0.336734693877551,
+              "balanced_accuracy": 0.7534090909090909
+            }
+          ]
+        },
+        "suite_passed": true
+      },
+      "vspw_to_vipseg_ontology_agnostic": {
+        "protocol": "vspw_to_vipseg_ontology_agnostic",
+        "stratified_test": false,
+        "sample_counts": {
+          "train": 148,
+          "val": 36,
+          "test": 15
+        },
+        "token_counts": {
+          "train": 90000,
+          "val": 45000,
+          "test": 45000
+        },
+        "semantic_changed": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4283532843205846,
+          "val": {
+            "roc_auc": 0.6341431869013966,
+            "balanced_accuracy": 0.5917991401111165,
+            "f1": 0.2635678604690543,
+            "positive_ratio": 0.12284444444444445,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.7289226182747303,
+            "balanced_accuracy": 0.6597078203103479,
+            "f1": 0.37400220433519255,
+            "positive_ratio": 0.16113333333333332,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "semantic_hard": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.42674856726826865,
+          "val": {
+            "roc_auc": 0.7249516297369694,
+            "balanced_accuracy": 0.6685214567201638,
+            "f1": 0.4360345536816125,
+            "positive_ratio": 0.1920888888888889,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6745413261404898,
+            "balanced_accuracy": 0.636766650589015,
+            "f1": 0.4335603920917096,
+            "positive_ratio": 0.2182,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "semantic_uncertainty": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4312967266161305,
+          "val": {
+            "roc_auc": 0.7775190672000359,
+            "balanced_accuracy": 0.7080275478354927,
+            "f1": 0.5800354761759129,
+            "positive_ratio": 0.28526666666666667,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6861721535898608,
+            "balanced_accuracy": 0.659092154800906,
+            "f1": 0.5245408194606548,
+            "positive_ratio": 0.2848,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "test_breakdown_changed": {
+          "motion_low": {
+            "tokens": 15046,
+            "balanced_accuracy": 0.5842192469675765,
+            "positive_ratio": 0.08327794762727635
+          },
+          "motion_mid": {
+            "tokens": 19546,
+            "balanced_accuracy": 0.6139887826265837,
+            "positive_ratio": 0.15327944336437122
+          },
+          "motion_high": {
+            "tokens": 10408,
+            "balanced_accuracy": 0.5718136779099288,
+            "positive_ratio": 0.28843197540353577
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.6597078203103479,
+            "positive_ratio": 0.16113333333333332
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 6100,
+              "tokens": 5097,
+              "positive_ratio": 0.2607416127133608,
+              "balanced_accuracy": 0.6767743574259657
+            },
+            {
+              "category": 9100,
+              "tokens": 2528,
+              "positive_ratio": 0.040348101265822785,
+              "balanced_accuracy": 0.3494980844769895
+            },
+            {
+              "category": 9000,
+              "tokens": 2382,
+              "positive_ratio": 0.19353484466834592,
+              "balanced_accuracy": 0.5681795341137625
+            },
+            {
+              "category": 4900,
+              "tokens": 2158,
+              "positive_ratio": 0.09406858202038924,
+              "balanced_accuracy": 0.7774936061381075
+            },
+            {
+              "category": 900,
+              "tokens": 1899,
+              "positive_ratio": 0.07109004739336493,
+              "balanced_accuracy": 0.7186318972033258
+            },
+            {
+              "category": 6102,
+              "tokens": 1793,
+              "positive_ratio": 0.06134969325153374,
+              "balanced_accuracy": 0.6243315508021391
+            },
+            {
+              "category": 6103,
+              "tokens": 1579,
+              "positive_ratio": 0.12982900569981,
+              "balanced_accuracy": 0.5535768807469734
+            },
+            {
+              "category": 4400,
+              "tokens": 1524,
+              "positive_ratio": 0.39238845144356954,
+              "balanced_accuracy": 0.5994730455008416
+            },
+            {
+              "category": 6104,
+              "tokens": 1456,
+              "positive_ratio": 0.017857142857142856,
+              "balanced_accuracy": 0.4947552447552448
+            },
+            {
+              "category": 7700,
+              "tokens": 1444,
+              "positive_ratio": 0.47714681440443213,
+              "balanced_accuracy": 0.5213112390545853
+            },
+            {
+              "category": 6201,
+              "tokens": 1271,
+              "positive_ratio": 0.00944138473642801,
+              "balanced_accuracy": 0.6942017474185862
+            },
+            {
+              "category": 4401,
+              "tokens": 1255,
+              "positive_ratio": 0.38326693227091635,
+              "balanced_accuracy": 0.5420017513040769
+            }
+          ]
+        },
+        "test_breakdown_hard": {
+          "motion_low": {
+            "tokens": 15046,
+            "balanced_accuracy": 0.5592037825293804,
+            "positive_ratio": 0.08779742124152598
+          },
+          "motion_mid": {
+            "tokens": 19546,
+            "balanced_accuracy": 0.49587002390288015,
+            "positive_ratio": 0.18684129745216413
+          },
+          "motion_high": {
+            "tokens": 10408,
+            "balanced_accuracy": 0.5705152349316889,
+            "positive_ratio": 0.4656033820138355
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.636766650589015,
+            "positive_ratio": 0.2182
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 6100,
+              "tokens": 5097,
+              "positive_ratio": 0.37335687659407496,
+              "balanced_accuracy": 0.7079318289580667
+            },
+            {
+              "category": 9100,
+              "tokens": 2528,
+              "positive_ratio": 0.07792721518987342,
+              "balanced_accuracy": 0.5226085403750378
+            },
+            {
+              "category": 9000,
+              "tokens": 2382,
+              "positive_ratio": 0.2707808564231738,
+              "balanced_accuracy": 0.6404037969768781
+            },
+            {
+              "category": 4900,
+              "tokens": 2158,
+              "positive_ratio": 0.17655236329935126,
+              "balanced_accuracy": 0.7633652222847496
+            },
+            {
+              "category": 900,
+              "tokens": 1899,
+              "positive_ratio": 0.07109004739336493,
+              "balanced_accuracy": 0.6888510959939531
+            },
+            {
+              "category": 6102,
+              "tokens": 1793,
+              "positive_ratio": 0.0619074177356386,
+              "balanced_accuracy": 0.5887831946095917
+            },
+            {
+              "category": 6103,
+              "tokens": 1579,
+              "positive_ratio": 0.17479417352754908,
+              "balanced_accuracy": 0.4544445927458374
+            },
+            {
+              "category": 4400,
+              "tokens": 1524,
+              "positive_ratio": 0.40091863517060367,
+              "balanced_accuracy": 0.6807461956141783
+            },
+            {
+              "category": 6104,
+              "tokens": 1456,
+              "positive_ratio": 0.10370879120879122,
+              "balanced_accuracy": 0.42550556951105023
+            },
+            {
+              "category": 7700,
+              "tokens": 1444,
+              "positive_ratio": 0.47714681440443213,
+              "balanced_accuracy": 0.5838839281423313
+            },
+            {
+              "category": 6201,
+              "tokens": 1271,
+              "positive_ratio": 0.03304484657749803,
+              "balanced_accuracy": 0.6163547599674533
+            },
+            {
+              "category": 4401,
+              "tokens": 1255,
+              "positive_ratio": 0.38326693227091635,
+              "balanced_accuracy": 0.5220994697738883
+            }
+          ]
+        },
+        "test_breakdown_uncertainty": {
+          "motion_low": {
+            "tokens": 15046,
+            "balanced_accuracy": 0.528004407814896,
+            "positive_ratio": 0.1275422039080154
+          },
+          "motion_mid": {
+            "tokens": 19546,
+            "balanced_accuracy": 0.5592653792300342,
+            "positive_ratio": 0.23078890821651488
+          },
+          "motion_high": {
+            "tokens": 10408,
+            "balanced_accuracy": 0.6538586007463181,
+            "positive_ratio": 0.6135664873174481
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.659092154800906,
+            "positive_ratio": 0.2848
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 6100,
+              "tokens": 5097,
+              "positive_ratio": 0.4071022169903865,
+              "balanced_accuracy": 0.6636319201358711
+            },
+            {
+              "category": 9100,
+              "tokens": 2528,
+              "positive_ratio": 0.17365506329113925,
+              "balanced_accuracy": 0.5924415884920579
+            },
+            {
+              "category": 9000,
+              "tokens": 2382,
+              "positive_ratio": 0.37489504617968095,
+              "balanced_accuracy": 0.702655607339226
+            },
+            {
+              "category": 4900,
+              "tokens": 2158,
+              "positive_ratio": 0.2798887859128823,
+              "balanced_accuracy": 0.7943940866126296
+            },
+            {
+              "category": 900,
+              "tokens": 1899,
+              "positive_ratio": 0.08267509215376515,
+              "balanced_accuracy": 0.6237138657520823
+            },
+            {
+              "category": 6102,
+              "tokens": 1793,
+              "positive_ratio": 0.08644729503625209,
+              "balanced_accuracy": 0.5301646382291544
+            },
+            {
+              "category": 6103,
+              "tokens": 1579,
+              "positive_ratio": 0.2786573780873971,
+              "balanced_accuracy": 0.3304313991539628
+            },
+            {
+              "category": 4400,
+              "tokens": 1524,
+              "positive_ratio": 0.33070866141732286,
+              "balanced_accuracy": 0.6215686274509804
+            },
+            {
+              "category": 6104,
+              "tokens": 1456,
+              "positive_ratio": 0.16826923076923078,
+              "balanced_accuracy": 0.25730800990916597
+            },
+            {
+              "category": 7700,
+              "tokens": 1444,
+              "positive_ratio": 0.44321329639889195,
+              "balanced_accuracy": 0.5753847947761195
+            },
+            {
+              "category": 6201,
+              "tokens": 1271,
+              "positive_ratio": 0.08497246262785209,
+              "balanced_accuracy": 0.7691315563198624
+            },
+            {
+              "category": 4401,
+              "tokens": 1255,
+              "positive_ratio": 0.35856573705179284,
+              "balanced_accuracy": 0.4805314009661836
+            }
+          ]
+        },
+        "suite_passed": true
+      },
+      "vipseg_to_vspw_all_ontology_agnostic": {
+        "protocol": "vipseg_to_vspw_all_ontology_agnostic",
+        "stratified_test": false,
+        "sample_counts": {
+          "train": 85,
+          "val": 21,
+          "test": 20
+        },
+        "token_counts": {
+          "train": 90000,
+          "val": 45000,
+          "test": 45000
+        },
+        "semantic_changed": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.47202268008253495,
+          "val": {
+            "roc_auc": 0.666433743675031,
+            "balanced_accuracy": 0.6387415583408261,
+            "f1": 0.3620864852658914,
+            "positive_ratio": 0.14773333333333333,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.5939970272587621,
+            "balanced_accuracy": 0.5649329485203326,
+            "f1": 0.22234314632420962,
+            "positive_ratio": 0.10953333333333333,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "semantic_hard": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5526583126340117,
+          "val": {
+            "roc_auc": 0.7072576931145014,
+            "balanced_accuracy": 0.674800065154918,
+            "f1": 0.4801994719859196,
+            "positive_ratio": 0.20908888888888888,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6334653966497957,
+            "balanced_accuracy": 0.5742813117140281,
+            "f1": 0.3040299679777657,
+            "positive_ratio": 0.1817777777777778,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "semantic_uncertainty": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.48364749310069854,
+          "val": {
+            "roc_auc": 0.7380221906999167,
+            "balanced_accuracy": 0.6792674448189033,
+            "f1": 0.5438784455050161,
+            "positive_ratio": 0.28215555555555555,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6980599236328229,
+            "balanced_accuracy": 0.608638625851935,
+            "f1": 0.4414519000077393,
+            "positive_ratio": 0.2854,
+            "tokens": 45000
+          },
+          "passed": true
+        },
+        "test_breakdown_changed": {
+          "motion_low": {
+            "tokens": 23813,
+            "balanced_accuracy": 0.5579244597094644,
+            "positive_ratio": 0.08512157225045143
+          },
+          "motion_mid": {
+            "tokens": 10167,
+            "balanced_accuracy": 0.4903081862497093,
+            "positive_ratio": 0.0984557883348087
+          },
+          "motion_high": {
+            "tokens": 11020,
+            "balanced_accuracy": 0.5016537143257319,
+            "positive_ratio": 0.17250453720508166
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.5649329485203326,
+            "positive_ratio": 0.10953333333333333
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 9816,
+              "positive_ratio": 0.12387938060309699,
+              "balanced_accuracy": 0.48717220012239904
+            },
+            {
+              "category": 61,
+              "tokens": 3029,
+              "positive_ratio": 0.2221855397821063,
+              "balanced_accuracy": 0.5497900463424295
+            },
+            {
+              "category": 16,
+              "tokens": 2547,
+              "positive_ratio": 0.05928543384373773,
+              "balanced_accuracy": 0.5609003416289843
+            },
+            {
+              "category": 67,
+              "tokens": 2186,
+              "positive_ratio": 0.1678865507776761,
+              "balanced_accuracy": 0.5462001908405523
+            },
+            {
+              "category": 1,
+              "tokens": 2147,
+              "positive_ratio": 0.08430367955286447,
+              "balanced_accuracy": 0.6145720339697509
+            },
+            {
+              "category": 29,
+              "tokens": 1611,
+              "positive_ratio": 0.1818746120422098,
+              "balanced_accuracy": 0.6411954196812836
+            },
+            {
+              "category": 2,
+              "tokens": 1461,
+              "positive_ratio": 0.12046543463381246,
+              "balanced_accuracy": 0.36192739653342765
+            },
+            {
+              "category": 91,
+              "tokens": 1186,
+              "positive_ratio": 0.06661045531197302,
+              "balanced_accuracy": 0.5
+            },
+            {
+              "category": 23,
+              "tokens": 1152,
+              "positive_ratio": 0.0998263888888889,
+              "balanced_accuracy": 0.5135340237306611
+            },
+            {
+              "category": 15,
+              "tokens": 1141,
+              "positive_ratio": 0.07712532865907099,
+              "balanced_accuracy": 0.5576059742726409
+            },
+            {
+              "category": 14,
+              "tokens": 1050,
+              "positive_ratio": 0.0761904761904762,
+              "balanced_accuracy": 0.4645618556701031
+            },
+            {
+              "category": 8,
+              "tokens": 978,
+              "positive_ratio": 0.12678936605316973,
+              "balanced_accuracy": 0.6138569917655058
+            }
+          ]
+        },
+        "test_breakdown_hard": {
+          "motion_low": {
+            "tokens": 23813,
+            "balanced_accuracy": 0.5330800926097607,
+            "positive_ratio": 0.14399697644143955
+          },
+          "motion_mid": {
+            "tokens": 10167,
+            "balanced_accuracy": 0.5249003237107925,
+            "positive_ratio": 0.1536343070718993
+          },
+          "motion_high": {
+            "tokens": 11020,
+            "balanced_accuracy": 0.5334097036330231,
+            "positive_ratio": 0.2893829401088929
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.5742813117140281,
+            "positive_ratio": 0.1817777777777778
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 9816,
+              "positive_ratio": 0.18103096984515077,
+              "balanced_accuracy": 0.5613317757418236
+            },
+            {
+              "category": 61,
+              "tokens": 3029,
+              "positive_ratio": 0.36975899636843845,
+              "balanced_accuracy": 0.5493321110529072
+            },
+            {
+              "category": 16,
+              "tokens": 2547,
+              "positive_ratio": 0.11739301138594425,
+              "balanced_accuracy": 0.6016273104892941
+            },
+            {
+              "category": 67,
+              "tokens": 2186,
+              "positive_ratio": 0.26715462031107046,
+              "balanced_accuracy": 0.6001113761907205
+            },
+            {
+              "category": 1,
+              "tokens": 2147,
+              "positive_ratio": 0.14438751746623196,
+              "balanced_accuracy": 0.5885770980034066
+            },
+            {
+              "category": 29,
+              "tokens": 1611,
+              "positive_ratio": 0.30291744258224707,
+              "balanced_accuracy": 0.6224043107601127
+            },
+            {
+              "category": 2,
+              "tokens": 1461,
+              "positive_ratio": 0.162217659137577,
+              "balanced_accuracy": 0.5210453379664102
+            },
+            {
+              "category": 91,
+              "tokens": 1186,
+              "positive_ratio": 0.1239460370994941,
+              "balanced_accuracy": 0.5
+            },
+            {
+              "category": 23,
+              "tokens": 1152,
+              "positive_ratio": 0.1684027777777778,
+              "balanced_accuracy": 0.5890654929729032
+            },
+            {
+              "category": 15,
+              "tokens": 1141,
+              "positive_ratio": 0.18141980718667836,
+              "balanced_accuracy": 0.5650079136020855
+            },
+            {
+              "category": 14,
+              "tokens": 1050,
+              "positive_ratio": 0.16476190476190475,
+              "balanced_accuracy": 0.5584592772259609
+            },
+            {
+              "category": 8,
+              "tokens": 978,
+              "positive_ratio": 0.21267893660531698,
+              "balanced_accuracy": 0.5192307692307693
+            }
+          ]
+        },
+        "test_breakdown_uncertainty": {
+          "motion_low": {
+            "tokens": 23813,
+            "balanced_accuracy": 0.5709370067415638,
+            "positive_ratio": 0.2314702053500189
+          },
+          "motion_mid": {
+            "tokens": 10167,
+            "balanced_accuracy": 0.5816775136251326,
+            "positive_ratio": 0.2234680830136717
+          },
+          "motion_high": {
+            "tokens": 11020,
+            "balanced_accuracy": 0.5523035860125142,
+            "positive_ratio": 0.4590744101633394
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.608638625851935,
+            "positive_ratio": 0.2854
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 9816,
+              "positive_ratio": 0.28636919315403425,
+              "balanced_accuracy": 0.5254393682816894
+            },
+            {
+              "category": 61,
+              "tokens": 3029,
+              "positive_ratio": 0.4380983823043909,
+              "balanced_accuracy": 0.6193137290496485
+            },
+            {
+              "category": 16,
+              "tokens": 2547,
+              "positive_ratio": 0.21868865331762857,
+              "balanced_accuracy": 0.6382175689939824
+            },
+            {
+              "category": 67,
+              "tokens": 2186,
+              "positive_ratio": 0.3897529734675206,
+              "balanced_accuracy": 0.6758636526807019
+            },
+            {
+              "category": 1,
+              "tokens": 2147,
+              "positive_ratio": 0.2184443409408477,
+              "balanced_accuracy": 0.6548713947714179
+            },
+            {
+              "category": 29,
+              "tokens": 1611,
+              "positive_ratio": 0.43947858472998136,
+              "balanced_accuracy": 0.6717837903785874
+            },
+            {
+              "category": 2,
+              "tokens": 1461,
+              "positive_ratio": 0.30937713894592744,
+              "balanced_accuracy": 0.6068689318259557
+            },
+            {
+              "category": 91,
+              "tokens": 1186,
+              "positive_ratio": 0.23440134907251264,
+              "balanced_accuracy": 0.506643583811365
+            },
+            {
+              "category": 23,
+              "tokens": 1152,
+              "positive_ratio": 0.2838541666666667,
+              "balanced_accuracy": 0.6356130108423685
+            },
+            {
+              "category": 15,
+              "tokens": 1141,
+              "positive_ratio": 0.2997370727432077,
+              "balanced_accuracy": 0.6337600363026883
+            },
+            {
+              "category": 14,
+              "tokens": 1050,
+              "positive_ratio": 0.2895238095238095,
+              "balanced_accuracy": 0.5772805841681953
+            },
+            {
+              "category": 8,
+              "tokens": 978,
+              "positive_ratio": 0.31390593047034765,
+              "balanced_accuracy": 0.5211726384364821
+            }
+          ]
+        },
+        "suite_passed": true
+      },
+      "vipseg_to_vspw_stratified_ontology_agnostic": {
+        "protocol": "vipseg_to_vspw_stratified_ontology_agnostic",
+        "stratified_test": true,
+        "sample_counts": {
+          "train": 85,
+          "val": 21,
+          "test": 20
+        },
+        "token_counts": {
+          "train": 90000,
+          "val": 45000,
+          "test": 45000
+        },
+        "semantic_changed": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5105325143832873,
+          "val": {
+            "roc_auc": 0.6902115780644305,
+            "balanced_accuracy": 0.6496916222113148,
+            "f1": 0.3924611973392461,
+            "positive_ratio": 0.1538,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.5844640889059612,
+            "balanced_accuracy": 0.5305747700180692,
+            "f1": 0.1857293410203955,
+            "positive_ratio": 0.10984444444444444,
+            "tokens": 45000
+          },
+          "test_stratified": {
+            "roc_auc": 0.5890962966079542,
+            "balanced_accuracy": 0.5349989884685413,
+            "f1": 0.3945739496905044,
+            "positive_ratio": 0.5,
+            "tokens": 9886
+          },
+          "passed": false
+        },
+        "semantic_hard": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.3951317787734797,
+          "val": {
+            "roc_auc": 0.7106291270365901,
+            "balanced_accuracy": 0.659629921670388,
+            "f1": 0.4555745184772387,
+            "positive_ratio": 0.2162888888888889,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6300300256641723,
+            "balanced_accuracy": 0.5896549174661008,
+            "f1": 0.3414270584081905,
+            "positive_ratio": 0.1821111111111111,
+            "tokens": 45000
+          },
+          "test_stratified": {
+            "roc_auc": 0.6265182455856912,
+            "balanced_accuracy": 0.5862111043319097,
+            "f1": 0.5620560506263722,
+            "positive_ratio": 0.5,
+            "tokens": 16390
+          },
+          "passed": true
+        },
+        "semantic_uncertainty": {
+          "model": "hist_gradient_boosting",
+          "threshold": 0.46627524312488194,
+          "val": {
+            "roc_auc": 0.7241430623279339,
+            "balanced_accuracy": 0.6642875247787221,
+            "f1": 0.5319048961563763,
+            "positive_ratio": 0.28773333333333334,
+            "tokens": 45000
+          },
+          "test": {
+            "roc_auc": 0.6986666976426041,
+            "balanced_accuracy": 0.6246465067763796,
+            "f1": 0.46488358668462576,
+            "positive_ratio": 0.2856666666666667,
+            "tokens": 45000
+          },
+          "test_stratified": {
+            "roc_auc": 0.699703387618927,
+            "balanced_accuracy": 0.6252430960715675,
+            "f1": 0.5562974902141377,
+            "positive_ratio": 0.5,
+            "tokens": 25710
+          },
+          "passed": true
+        },
+        "test_breakdown_changed": {
+          "motion_low": {
+            "tokens": 23838,
+            "balanced_accuracy": 0.5266326318648834,
+            "positive_ratio": 0.08683614397180972
+          },
+          "motion_mid": {
+            "tokens": 10088,
+            "balanced_accuracy": 0.5087962604649355,
+            "positive_ratio": 0.10001982553528946
+          },
+          "motion_high": {
+            "tokens": 11074,
+            "balanced_accuracy": 0.44847938888966554,
+            "positive_ratio": 0.1683221961350912
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.5305747700180692,
+            "positive_ratio": 0.10984444444444444
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 9915,
+              "positive_ratio": 0.11901159858799798,
+              "balanced_accuracy": 0.47090120594142015
+            },
+            {
+              "category": 61,
+              "tokens": 3038,
+              "positive_ratio": 0.22679394338380512,
+              "balanced_accuracy": 0.48728699672095893
+            },
+            {
+              "category": 16,
+              "tokens": 2520,
+              "positive_ratio": 0.06746031746031746,
+              "balanced_accuracy": 0.5691239048811013
+            },
+            {
+              "category": 67,
+              "tokens": 2143,
+              "positive_ratio": 0.17778814745683622,
+              "balanced_accuracy": 0.5422405343486434
+            },
+            {
+              "category": 1,
+              "tokens": 2104,
+              "positive_ratio": 0.08269961977186312,
+              "balanced_accuracy": 0.5616550533023643
+            },
+            {
+              "category": 29,
+              "tokens": 1702,
+              "positive_ratio": 0.17685076380728554,
+              "balanced_accuracy": 0.575184787325617
+            },
+            {
+              "category": 2,
+              "tokens": 1450,
+              "positive_ratio": 0.15172413793103448,
+              "balanced_accuracy": 0.42115668883961566
+            },
+            {
+              "category": 23,
+              "tokens": 1208,
+              "positive_ratio": 0.11754966887417219,
+              "balanced_accuracy": 0.500475649393547
+            },
+            {
+              "category": 91,
+              "tokens": 1169,
+              "positive_ratio": 0.07955517536355859,
+              "balanced_accuracy": 0.5
+            },
+            {
+              "category": 15,
+              "tokens": 1076,
+              "positive_ratio": 0.06505576208178439,
+              "balanced_accuracy": 0.5221669980119285
+            },
+            {
+              "category": 14,
+              "tokens": 1049,
+              "positive_ratio": 0.07340324118207817,
+              "balanced_accuracy": 0.4704785954785955
+            },
+            {
+              "category": 8,
+              "tokens": 991,
+              "positive_ratio": 0.11200807265388496,
+              "balanced_accuracy": 0.5135135135135135
+            }
+          ]
+        },
+        "test_breakdown_hard": {
+          "motion_low": {
+            "tokens": 23838,
+            "balanced_accuracy": 0.5681112390204562,
+            "positive_ratio": 0.14418155885560868
+          },
+          "motion_mid": {
+            "tokens": 10088,
+            "balanced_accuracy": 0.5566729592406205,
+            "positive_ratio": 0.1559278350515464
+          },
+          "motion_high": {
+            "tokens": 11074,
+            "balanced_accuracy": 0.49836578683073807,
+            "positive_ratio": 0.28761061946902655
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.5896549174661008,
+            "positive_ratio": 0.1821111111111111
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 9915,
+              "positive_ratio": 0.178416540595058,
+              "balanced_accuracy": 0.5692784536921366
+            },
+            {
+              "category": 61,
+              "tokens": 3038,
+              "positive_ratio": 0.37129690585911784,
+              "balanced_accuracy": 0.6230700679514314
+            },
+            {
+              "category": 16,
+              "tokens": 2520,
+              "positive_ratio": 0.12103174603174603,
+              "balanced_accuracy": 0.5745439070421493
+            },
+            {
+              "category": 67,
+              "tokens": 2143,
+              "positive_ratio": 0.2743817078861409,
+              "balanced_accuracy": 0.6466702758273728
+            },
+            {
+              "category": 1,
+              "tokens": 2104,
+              "positive_ratio": 0.1326045627376426,
+              "balanced_accuracy": 0.6144262778023273
+            },
+            {
+              "category": 29,
+              "tokens": 1702,
+              "positive_ratio": 0.2902467685076381,
+              "balanced_accuracy": 0.5610219990883986
+            },
+            {
+              "category": 2,
+              "tokens": 1450,
+              "positive_ratio": 0.1896551724137931,
+              "balanced_accuracy": 0.5276982591876209
+            },
+            {
+              "category": 23,
+              "tokens": 1208,
+              "positive_ratio": 0.18211920529801323,
+              "balanced_accuracy": 0.642776959882223
+            },
+            {
+              "category": 91,
+              "tokens": 1169,
+              "positive_ratio": 0.13259195893926431,
+              "balanced_accuracy": 0.5280874212636
+            },
+            {
+              "category": 15,
+              "tokens": 1076,
+              "positive_ratio": 0.1579925650557621,
+              "balanced_accuracy": 0.5597065316192702
+            },
+            {
+              "category": 14,
+              "tokens": 1049,
+              "positive_ratio": 0.14299332697807435,
+              "balanced_accuracy": 0.5365517241379311
+            },
+            {
+              "category": 8,
+              "tokens": 991,
+              "positive_ratio": 0.1927346115035318,
+              "balanced_accuracy": 0.6900130890052356
+            }
+          ]
+        },
+        "test_breakdown_uncertainty": {
+          "motion_low": {
+            "tokens": 23838,
+            "balanced_accuracy": 0.5776623458165189,
+            "positive_ratio": 0.23277959560365802
+          },
+          "motion_mid": {
+            "tokens": 10088,
+            "balanced_accuracy": 0.6013016717950168,
+            "positive_ratio": 0.2227398889770024
+          },
+          "motion_high": {
+            "tokens": 11074,
+            "balanced_accuracy": 0.5596834986395776,
+            "positive_ratio": 0.45683583167780384
+          },
+          "occlusion_false": {
+            "tokens": 45000,
+            "balanced_accuracy": 0.6246465067763796,
+            "positive_ratio": 0.2856666666666667
+          },
+          "occlusion_true": {
+            "tokens": 0,
+            "balanced_accuracy": null,
+            "positive_ratio": 0.0
+          },
+          "top_category_breakdown": [
+            {
+              "category": 0,
+              "tokens": 9915,
+              "positive_ratio": 0.2801815431164902,
+              "balanced_accuracy": 0.5944710299594695
+            },
+            {
+              "category": 61,
+              "tokens": 3038,
+              "positive_ratio": 0.4368005266622778,
+              "balanced_accuracy": 0.5945204948520082
+            },
+            {
+              "category": 16,
+              "tokens": 2520,
+              "positive_ratio": 0.2226190476190476,
+              "balanced_accuracy": 0.7015870806069887
+            },
+            {
+              "category": 67,
+              "tokens": 2143,
+              "positive_ratio": 0.40737284181054595,
+              "balanced_accuracy": 0.6775175654589568
+            },
+            {
+              "category": 1,
+              "tokens": 2104,
+              "positive_ratio": 0.20437262357414449,
+              "balanced_accuracy": 0.6358700786307688
+            },
+            {
+              "category": 29,
+              "tokens": 1702,
+              "positive_ratio": 0.4236192714453584,
+              "balanced_accuracy": 0.5915614427238192
+            },
+            {
+              "category": 2,
+              "tokens": 1450,
+              "positive_ratio": 0.3406896551724138,
+              "balanced_accuracy": 0.5910804126505513
+            },
+            {
+              "category": 23,
+              "tokens": 1208,
+              "positive_ratio": 0.2947019867549669,
+              "balanced_accuracy": 0.6663765363717888
+            },
+            {
+              "category": 91,
+              "tokens": 1169,
+              "positive_ratio": 0.24208725406330198,
+              "balanced_accuracy": 0.5573227831441585
+            },
+            {
+              "category": 15,
+              "tokens": 1076,
+              "positive_ratio": 0.266728624535316,
+              "balanced_accuracy": 0.600243769955353
+            },
+            {
+              "category": 14,
+              "tokens": 1049,
+              "positive_ratio": 0.27073403241182076,
+              "balanced_accuracy": 0.6046257939795636
+            },
+            {
+              "category": 8,
+              "tokens": 991,
+              "positive_ratio": 0.29868819374369326,
+              "balanced_accuracy": 0.6588469764728757
+            }
+          ]
+        },
+        "suite_passed": false
+      }
+    },
+    "future_teacher_embedding_input_allowed": false,
+    "future_leakage_detected": false,
+    "中文结论": "V35.18 完成 VIPSeg→VSPW ontology-agnostic target 与 VSPW stratified test 诊断。",
+    "domain_normalized_risk_calibration_used": true,
+    "mixed_domain_dataset_balanced_unseen_passed": true,
+    "vipseg_to_vspw_domain_normalized_passed": true
+  },
+  "中文结论": "V35.21 已完成 domain-normalized target split 修复且 suite 通过；本轮仍未训练 adapter，下一轮可做三 seed adapter。"
+}

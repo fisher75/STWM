@@ -1,0 +1,86 @@
+{
+  "generated_at_utc": "2026-05-15T08:58:19.758282+00:00",
+  "semantic_state_head_training_ran": true,
+  "fresh_training_completed": true,
+  "seed": 42,
+  "M": 128,
+  "H": 32,
+  "steps": 1500,
+  "batch_size": 8,
+  "target_root": "outputs/cache/stwm_ostf_v35_1_fixed_semantic_state_targets/pointodyssey",
+  "checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_6_decoupled_identity_retrieval_head_h32_m128/v35_semantic_state_head_m128_h32_seed42_best.pt",
+  "last_checkpoint_path": "outputs/checkpoints/stwm_ostf_v35_6_decoupled_identity_retrieval_head_h32_m128/v35_semantic_state_head_m128_h32_seed42_last.pt",
+  "best_val_loss": 8.839583396911621,
+  "copy_prior_strength": 7.0,
+  "assignment_bound_decoder": true,
+  "identity_dim": 128,
+  "pairwise_assignment_weight": 0.8,
+  "identity_contrastive_weight": 0.5,
+  "assignment_target_root": "outputs/cache/stwm_ostf_v35_2_identity_confuser_assignment_targets/pointodyssey",
+  "measurement_bank_root": "outputs/cache/stwm_ostf_v34_9_trace_preserving_semantic_measurement_bank/pointodyssey",
+  "include_observed_measurement_embedding": true,
+  "train_seconds": 228.78331923484802,
+  "loss_trace": {
+    "loss": {
+      "first": 10.073785781860352,
+      "last": 4.0146002769470215,
+      "mean": 4.7871993155479435
+    },
+    "cluster_ce": {
+      "first": 4.214099884033203,
+      "last": 1.7291518449783325,
+      "mean": 1.9516332987944285
+    },
+    "changed_hard_cluster_ce": {
+      "first": 5.424473762512207,
+      "last": 2.237365245819092,
+      "mean": 2.616083751598994
+    },
+    "stable_ce": {
+      "first": 0.07352911680936813,
+      "last": 0.33539751172065735,
+      "mean": 0.46095898529390494
+    },
+    "change_bce": {
+      "first": 0.3932492733001709,
+      "last": 0.30760642886161804,
+      "mean": 0.41154898998141287
+    },
+    "family_ce": {
+      "first": 1.627830147743225,
+      "last": 0.4359811842441559,
+      "mean": 0.5907572695215543
+    },
+    "same_instance_bce": {
+      "first": 0.19200000166893005,
+      "last": 0.09447048604488373,
+      "mean": 0.11684922812879085
+    },
+    "identity_embedding_pairwise_loss": {
+      "first": 1.1811585426330566,
+      "last": 0.05529442057013512,
+      "mean": 0.18205448869864146
+    },
+    "uncertainty_mse": {
+      "first": 0.1559680998325348,
+      "last": 0.007424985524266958,
+      "mean": 0.009566241528838873
+    },
+    "pairwise_assignment_loss": {
+      "first": 0.5659939050674438,
+      "last": 0.12079416960477829,
+      "mean": 0.15028571085631848
+    },
+    "unit_anti_collapse": {
+      "first": 0.00031495094299316406,
+      "last": 0.4597541093826294,
+      "mean": 0.45041443947951
+    }
+  },
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "teacher_as_method": false,
+  "future_teacher_embeddings_input_allowed": false,
+  "中文结论": "V35 semantic state head 已在 V35.1 fixed targets 上完成 seed42 训练；本训练只更新 semantic state head，不训练 V30 trajectory backbone。"
+}

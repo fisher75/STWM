@@ -12,7 +12,10 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import setproctitle
 import torch
+
+setproctitle.setproctitle("python")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_cotracker_object_dense_teacher_v15c_20260502 as v15c  # noqa: E402
@@ -57,6 +60,20 @@ def _write_doc(path: Path, payload: dict[str, Any]) -> None:
         "next_step_if_failed",
     ]:
         lines.append(f"- {key}: `{payload.get(key)}`")
+    lines.extend(
+        [
+            "",
+            "## 中文总结",
+            (
+                "本次只构建 video-derived object-dense trace cache；"
+                "CoTracker 作为 video trace teacher 生成观测/未来 trace 监督，STWM 主模型输入仍限制为 observed trace。"
+            ),
+            f"- 已处理 clip 数: `{payload.get('processed_clip_count')}`",
+            f"- 已跳过已有 cache 数: `{payload.get('skipped_existing_clip_count')}`",
+            f"- 失败 clip 数: `{payload.get('failed_clip_count')}`",
+            f"- 输出 cache: `{payload.get('cache_root')}`",
+        ]
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
@@ -177,7 +194,7 @@ def main() -> int:
             rows.append(existing)
             success_by_split[existing["split"]] += 1
             skipped_existing += 1
-            print(f"[{idx+1}/{len(selected)}] resumed={len(rows)} failed={len(failures)} {pre_path.name}", flush=True)
+            print(f"[{idx+1}/{len(selected)}] 已恢复={len(rows)} 失败={len(failures)} {pre_path.name}", flush=True)
             continue
         row, fail = v15c._run_clip(model, pre_path, args, device, split_map)
         if row:
@@ -185,7 +202,7 @@ def main() -> int:
             success_by_split[row["split"]] += 1
         if fail:
             failures.append(fail)
-        print(f"[{idx+1}/{len(selected)}] ok={len(rows)} failed={len(failures)} {pre_path.name}", flush=True)
+        print(f"[{idx+1}/{len(selected)}] 成功={len(rows)} 失败={len(failures)} {pre_path.name}", flush=True)
     split_counts = Counter(row["split"] for row in rows)
     dataset_counts = Counter(row["dataset"] for row in rows)
     point_count = int(sum(row["point_count"] for row in rows))
@@ -235,7 +252,7 @@ def main() -> int:
     _write_doc(ROOT / f"docs/STWM_COTRACKER_OBJECT_DENSE_TEACHER_V16_{combo}_20260502.md", payload)
     # Also write/update a lightweight aggregate index for running jobs.
     _dump(ROOT / "reports/stwm_cotracker_object_dense_teacher_v16_20260502.json", {"latest_combo_report": str(report.relative_to(ROOT)), **payload})
-    print(report.relative_to(ROOT))
+    print(f"报告路径: {report.relative_to(ROOT)}")
     return 0 if rows else 2
 
 
