@@ -1,0 +1,41 @@
+{
+  "generated_at_utc": "2026-05-16T09:43:26.149902+00:00",
+  "v35_49_causal_trace_contract_audit_done": true,
+  "v35_49_is_teacher_trace_upper_bound": true,
+  "past_only_observed_trace_input_built": true,
+  "v30_past_only_future_trace_rollout_done": true,
+  "future_trace_predicted_from_past_only": true,
+  "v30_beats_strongest_prior": false,
+  "causal_unified_slice_built": true,
+  "causal_benchmark_ran": true,
+  "causal_benchmark_passed": false,
+  "teacher_trace_upper_bound_gap": {
+    "semantic_changed_balanced_accuracy_val_gap_v36_minus_v35_49_upper_bound": -0.04353574384720893,
+    "semantic_changed_balanced_accuracy_test_gap_v36_minus_v35_49_upper_bound": -0.06717203489964874,
+    "semantic_hard_balanced_accuracy_val_gap_v36_minus_v35_49_upper_bound": -0.07058187506689062,
+    "semantic_hard_balanced_accuracy_test_gap_v36_minus_v35_49_upper_bound": -0.059941209720786426,
+    "semantic_uncertainty_balanced_accuracy_val_gap_v36_minus_v35_49_upper_bound": -0.06047010178228418,
+    "semantic_uncertainty_balanced_accuracy_test_gap_v36_minus_v35_49_upper_bound": -0.08897249736620527
+  },
+  "semantic_three_seed_passed": true,
+  "stable_preservation": true,
+  "identity_real_instance_three_seed_passed": true,
+  "identity_pseudo_targets_excluded_from_claim": true,
+  "visualization_ready": true,
+  "v30_backbone_frozen": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "m128_h32_causal_video_world_model_claim_allowed": false,
+  "m128_h32_teacher_trace_upper_bound_claim_allowed": true,
+  "full_cvpr_scale_claim_allowed": false,
+  "recommended_next_step": "fix_v30_vs_strongest_prior",
+  "paths": {
+    "audit": "reports/stwm_ostf_v36_v35_49_causal_trace_contract_audit_20260516.json",
+    "past_only_input": "reports/stwm_ostf_v36_past_only_observed_trace_input_build_20260516.json",
+    "rollout": "reports/stwm_ostf_v36_v30_past_only_future_trace_rollout_20260516.json",
+    "causal_slice": "reports/stwm_ostf_v36_causal_unified_semantic_identity_slice_build_20260516.json",
+    "benchmark_decision": "reports/stwm_ostf_v36_causal_past_only_video_world_model_benchmark_decision_20260516.json",
+    "visualization": "reports/stwm_ostf_v36_causal_past_only_world_model_visualization_manifest_20260516.json"
+  },
+  "中文结论": "V36 已完成因果 contract 审计与 causal pipeline 重建，但当前 causal benchmark 未过；不能 claim M128/H32 causal video world model。"
+}

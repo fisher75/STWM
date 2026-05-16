@@ -1,0 +1,3323 @@
+{
+  "generated_at_utc": "2026-05-16T13:10:55.067521+00:00",
+  "v36_6_occlusion_reappear_identity_target_contract_audit_done": true,
+  "source_slice_root": "outputs/cache/stwm_ostf_v36_2c_conservative_selector_downstream_slice/M128_H32",
+  "override_root": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32",
+  "target_override_count": 325,
+  "summary_by_split_and_provenance": {
+    "train": {
+      "real_instance": {
+        "sample_count": 85,
+        "original_predicted_occ_sample_count": 0,
+        "original_predicted_occ_point_count": 0,
+        "teacher_occ_sample_count": 76,
+        "teacher_occ_point_count": 9188,
+        "teacher_occ_feasible_point_count": 9188
+      },
+      "pseudo_diagnostic": {
+        "sample_count": 148,
+        "original_predicted_occ_sample_count": 0,
+        "original_predicted_occ_point_count": 0,
+        "teacher_occ_sample_count": 142,
+        "teacher_occ_point_count": 17099,
+        "teacher_occ_feasible_point_count": 17099
+      }
+    },
+    "val": {
+      "real_instance": {
+        "sample_count": 21,
+        "original_predicted_occ_sample_count": 0,
+        "original_predicted_occ_point_count": 0,
+        "teacher_occ_sample_count": 17,
+        "teacher_occ_point_count": 2037,
+        "teacher_occ_feasible_point_count": 2037
+      },
+      "pseudo_diagnostic": {
+        "sample_count": 36,
+        "original_predicted_occ_sample_count": 0,
+        "original_predicted_occ_point_count": 0,
+        "teacher_occ_sample_count": 34,
+        "teacher_occ_point_count": 2772,
+        "teacher_occ_feasible_point_count": 2772
+      }
+    },
+    "test": {
+      "real_instance": {
+        "sample_count": 15,
+        "original_predicted_occ_sample_count": 0,
+        "original_predicted_occ_point_count": 0,
+        "teacher_occ_sample_count": 14,
+        "teacher_occ_point_count": 1861,
+        "teacher_occ_feasible_point_count": 1861
+      },
+      "pseudo_diagnostic": {
+        "sample_count": 20,
+        "original_predicted_occ_sample_count": 0,
+        "original_predicted_occ_point_count": 0,
+        "teacher_occ_sample_count": 19,
+        "teacher_occ_point_count": 3053,
+        "teacher_occ_feasible_point_count": 3053
+      }
+    }
+  },
+  "original_predicted_future_vis_occ_mask_empty": true,
+  "teacher_future_vis_occ_target_available": true,
+  "teacher_occ_target_source": "future_trace_teacher_vis_supervision_only",
+  "future_teacher_trace_input_allowed": false,
+  "future_trace_predicted_from_past_only": true,
+  "future_leakage_detected": false,
+  "target_contract_fix_required": true,
+  "exact_issue_zh": "V36 causal slice 的 identity_occlusion_reappear_point_mask 来自 selector/predicted future_vis；selector future_vis 在当前 full325 中没有产生 occlusion/reappear，导致 real-instance val/test occlusion total 为 0。应使用 future_trace_teacher_vis 作为 supervision/eval target 来定义遮挡再出现事件，而不是作为模型 input。",
+  "rows": [
+    {
+      "sample_uid": "VIPSEG__0_wHveSGjXyDY",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__0_wHveSGjXyDY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 122,
+      "teacher_occ_feasible_points": 122
+    },
+    {
+      "sample_uid": "VIPSEG__1000_TI-3Jlujxlk",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1000_TI-3Jlujxlk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 58,
+      "teacher_occ_feasible_points": 58
+    },
+    {
+      "sample_uid": "VIPSEG__1003_bW7ntcdquEU",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1003_bW7ntcdquEU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 86,
+      "teacher_occ_feasible_points": 86
+    },
+    {
+      "sample_uid": "VIPSEG__1004_EmItoQBCS9s",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1004_EmItoQBCS9s.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 93,
+      "teacher_occ_feasible_points": 93
+    },
+    {
+      "sample_uid": "VIPSEG__1006_XnpEQX8Gv70",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1006_XnpEQX8Gv70.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 399,
+      "teacher_occ_feasible_points": 399
+    },
+    {
+      "sample_uid": "VIPSEG__1008_Aiub59uZH1A",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1008_Aiub59uZH1A.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 10,
+      "teacher_occ_feasible_points": 10
+    },
+    {
+      "sample_uid": "VIPSEG__100_c89oFWvnRSQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__100_c89oFWvnRSQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 4,
+      "teacher_occ_feasible_points": 4
+    },
+    {
+      "sample_uid": "VIPSEG__1011_lq2REad-o0Y",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1011_lq2REad-o0Y.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 335,
+      "teacher_occ_feasible_points": 335
+    },
+    {
+      "sample_uid": "VIPSEG__1012_y_rURLuFW_c",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1012_y_rURLuFW_c.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 150,
+      "teacher_occ_feasible_points": 150
+    },
+    {
+      "sample_uid": "VIPSEG__1017_8aIZCJKQL1s",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1017_8aIZCJKQL1s.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 157,
+      "teacher_occ_feasible_points": 157
+    },
+    {
+      "sample_uid": "VIPSEG__1020_Pf2hmFeUsbY",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1020_Pf2hmFeUsbY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 66,
+      "teacher_occ_feasible_points": 66
+    },
+    {
+      "sample_uid": "VIPSEG__1021_PmFBGfBstnQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1021_PmFBGfBstnQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 7,
+      "teacher_occ_feasible_points": 7
+    },
+    {
+      "sample_uid": "VIPSEG__1022_Y7S-EQ_B3SM",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1022_Y7S-EQ_B3SM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 1,
+      "teacher_occ_feasible_points": 1
+    },
+    {
+      "sample_uid": "VIPSEG__1023_f1BgzIZRfT8",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1023_f1BgzIZRfT8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1024_7tf-gTc7OvA",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1024_7tf-gTc7OvA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VIPSEG__1025_9RzDloaFez4",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1025_9RzDloaFez4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 119,
+      "teacher_occ_feasible_points": 119
+    },
+    {
+      "sample_uid": "VIPSEG__1026_kJ_8F7YIEg4",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1026_kJ_8F7YIEg4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 54,
+      "teacher_occ_feasible_points": 54
+    },
+    {
+      "sample_uid": "VIPSEG__1028_HAXrGoIRa04",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1028_HAXrGoIRa04.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 84,
+      "teacher_occ_feasible_points": 84
+    },
+    {
+      "sample_uid": "VIPSEG__102_EWaB6JPVONo",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__102_EWaB6JPVONo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 146,
+      "teacher_occ_feasible_points": 146
+    },
+    {
+      "sample_uid": "VIPSEG__1030_nIed-hkNRZc",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1030_nIed-hkNRZc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 51,
+      "teacher_occ_feasible_points": 51
+    },
+    {
+      "sample_uid": "VIPSEG__1032_zJV7lgz1pzs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1032_zJV7lgz1pzs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 37,
+      "teacher_occ_feasible_points": 37
+    },
+    {
+      "sample_uid": "VIPSEG__1036_RsM6XEE7P3g",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1036_RsM6XEE7P3g.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 161,
+      "teacher_occ_feasible_points": 161
+    },
+    {
+      "sample_uid": "VIPSEG__1038_2_ivuqprcPg",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1038_2_ivuqprcPg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 42,
+      "teacher_occ_feasible_points": 42
+    },
+    {
+      "sample_uid": "VIPSEG__1040_XQyX3FK2DrA",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1040_XQyX3FK2DrA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 5,
+      "teacher_occ_feasible_points": 5
+    },
+    {
+      "sample_uid": "VIPSEG__1042_Jm2XgVtdZMs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1042_Jm2XgVtdZMs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1043_MiFXPS_dIow",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1043_MiFXPS_dIow.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 7,
+      "teacher_occ_feasible_points": 7
+    },
+    {
+      "sample_uid": "VIPSEG__1044_X1-6N9RWn6g",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1044_X1-6N9RWn6g.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1045_pI_9hAyBRRQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1045_pI_9hAyBRRQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1048_RL3EjH9-WSs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1048_RL3EjH9-WSs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 33,
+      "teacher_occ_feasible_points": 33
+    },
+    {
+      "sample_uid": "VIPSEG__1053_MLWQ-qvra68",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1053_MLWQ-qvra68.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 45,
+      "teacher_occ_feasible_points": 45
+    },
+    {
+      "sample_uid": "VIPSEG__1055_TjMNtglzaGQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1055_TjMNtglzaGQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 45,
+      "teacher_occ_feasible_points": 45
+    },
+    {
+      "sample_uid": "VIPSEG__1056_gi3cqkPUUDE",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1056_gi3cqkPUUDE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 3,
+      "teacher_occ_feasible_points": 3
+    },
+    {
+      "sample_uid": "VIPSEG__1058_9tvZOFs1xvc",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1058_9tvZOFs1xvc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 10,
+      "teacher_occ_feasible_points": 10
+    },
+    {
+      "sample_uid": "VIPSEG__1059_4MysT1n0EnU",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1059_4MysT1n0EnU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 43,
+      "teacher_occ_feasible_points": 43
+    },
+    {
+      "sample_uid": "VIPSEG__1061_n78BLxWhx3Y",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1061_n78BLxWhx3Y.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 136,
+      "teacher_occ_feasible_points": 136
+    },
+    {
+      "sample_uid": "VIPSEG__1063_naPMk89Na88",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1063_naPMk89Na88.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 27,
+      "teacher_occ_feasible_points": 27
+    },
+    {
+      "sample_uid": "VIPSEG__1065_MH7X-bbrYVM",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1065_MH7X-bbrYVM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 79,
+      "teacher_occ_feasible_points": 79
+    },
+    {
+      "sample_uid": "VIPSEG__1066_VdbBn0YWj7Q",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1066_VdbBn0YWj7Q.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 8,
+      "teacher_occ_feasible_points": 8
+    },
+    {
+      "sample_uid": "VIPSEG__1067_m9zr8SwFHho",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1067_m9zr8SwFHho.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 53,
+      "teacher_occ_feasible_points": 53
+    },
+    {
+      "sample_uid": "VIPSEG__1068_OAGfx7eB3gA",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1068_OAGfx7eB3gA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 33,
+      "teacher_occ_feasible_points": 33
+    },
+    {
+      "sample_uid": "VIPSEG__106_pjt88qeIvRw",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__106_pjt88qeIvRw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 670,
+      "teacher_occ_feasible_points": 670
+    },
+    {
+      "sample_uid": "VIPSEG__1071_0JMf4WYuQNs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1071_0JMf4WYuQNs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1073_aaBWfyGPLS8",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1073_aaBWfyGPLS8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1076_CPFqAzKdsos",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1076_CPFqAzKdsos.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 101,
+      "teacher_occ_feasible_points": 101
+    },
+    {
+      "sample_uid": "VIPSEG__1077_2-B9BvGkx_8",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1077_2-B9BvGkx_8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 749,
+      "teacher_occ_feasible_points": 749
+    },
+    {
+      "sample_uid": "VIPSEG__1079_DpkjxPkF3DM",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1079_DpkjxPkF3DM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1080_NSjofkBoEnw",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1080_NSjofkBoEnw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 636,
+      "teacher_occ_feasible_points": 636
+    },
+    {
+      "sample_uid": "VIPSEG__1084_LTK-x54Mi1I",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1084_LTK-x54Mi1I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 6,
+      "teacher_occ_feasible_points": 6
+    },
+    {
+      "sample_uid": "VIPSEG__1086_iywqpda7d8k",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1086_iywqpda7d8k.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 57,
+      "teacher_occ_feasible_points": 57
+    },
+    {
+      "sample_uid": "VIPSEG__1087_r63RNCRnF08",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1087_r63RNCRnF08.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VIPSEG__1088_1_iGqfaYhjw",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1088_1_iGqfaYhjw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 47,
+      "teacher_occ_feasible_points": 47
+    },
+    {
+      "sample_uid": "VIPSEG__1090_oNBX7Ag2Wgc",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1090_oNBX7Ag2Wgc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 6,
+      "teacher_occ_feasible_points": 6
+    },
+    {
+      "sample_uid": "VIPSEG__1092_EPWA4113pAs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1092_EPWA4113pAs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 488,
+      "teacher_occ_feasible_points": 488
+    },
+    {
+      "sample_uid": "VIPSEG__1094_LIlN4rSoU_w",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1094_LIlN4rSoU_w.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 10,
+      "teacher_occ_feasible_points": 10
+    },
+    {
+      "sample_uid": "VIPSEG__1095_W39pB_sKRGs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1095_W39pB_sKRGs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 32,
+      "teacher_occ_feasible_points": 32
+    },
+    {
+      "sample_uid": "VIPSEG__1096_sTtQpCDAZaQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1096_sTtQpCDAZaQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 6,
+      "teacher_occ_feasible_points": 6
+    },
+    {
+      "sample_uid": "VIPSEG__10_EpnJ4c9Sni4",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__10_EpnJ4c9Sni4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 73,
+      "teacher_occ_feasible_points": 73
+    },
+    {
+      "sample_uid": "VIPSEG__1100_-GAGoI-fNdU",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1100_-GAGoI-fNdU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 1,
+      "teacher_occ_feasible_points": 1
+    },
+    {
+      "sample_uid": "VIPSEG__1104_N5Wa9I2qK3g",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1104_N5Wa9I2qK3g.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 26,
+      "teacher_occ_feasible_points": 26
+    },
+    {
+      "sample_uid": "VIPSEG__1106_RrrDLdeL2HQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1106_RrrDLdeL2HQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 371,
+      "teacher_occ_feasible_points": 371
+    },
+    {
+      "sample_uid": "VIPSEG__1108_h-z_-6KeJVM",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1108_h-z_-6KeJVM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 147,
+      "teacher_occ_feasible_points": 147
+    },
+    {
+      "sample_uid": "VIPSEG__1109_4CQ0mMmmsYQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1109_4CQ0mMmmsYQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 1,
+      "teacher_occ_feasible_points": 1
+    },
+    {
+      "sample_uid": "VIPSEG__110_imD1ZkxiZHo",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__110_imD1ZkxiZHo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 305,
+      "teacher_occ_feasible_points": 305
+    },
+    {
+      "sample_uid": "VIPSEG__1110_ZICWcqcx8Ng",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1110_ZICWcqcx8Ng.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1111_dJ--nt-3MB8",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1111_dJ--nt-3MB8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 64,
+      "teacher_occ_feasible_points": 64
+    },
+    {
+      "sample_uid": "VIPSEG__1113_29nO4VTPsXg",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1113_29nO4VTPsXg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 57,
+      "teacher_occ_feasible_points": 57
+    },
+    {
+      "sample_uid": "VIPSEG__1114_3Hgdqex-n5U",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1114_3Hgdqex-n5U.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 6,
+      "teacher_occ_feasible_points": 6
+    },
+    {
+      "sample_uid": "VIPSEG__1117_1u1R_qLgLlE",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1117_1u1R_qLgLlE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 201,
+      "teacher_occ_feasible_points": 201
+    },
+    {
+      "sample_uid": "VIPSEG__1118_kAqkOYkqIEU",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1118_kAqkOYkqIEU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 125,
+      "teacher_occ_feasible_points": 125
+    },
+    {
+      "sample_uid": "VIPSEG__1119_lFh_ttAztfA",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1119_lFh_ttAztfA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 46,
+      "teacher_occ_feasible_points": 46
+    },
+    {
+      "sample_uid": "VIPSEG__1120_xrWqgjOeyas",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1120_xrWqgjOeyas.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 22,
+      "teacher_occ_feasible_points": 22
+    },
+    {
+      "sample_uid": "VIPSEG__1121_RyACyzeCaVI",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1121_RyACyzeCaVI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 650,
+      "teacher_occ_feasible_points": 650
+    },
+    {
+      "sample_uid": "VIPSEG__1122_azk_C_kGXXk",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1122_azk_C_kGXXk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 100,
+      "teacher_occ_feasible_points": 100
+    },
+    {
+      "sample_uid": "VIPSEG__1165_OxqFAwLeLNs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1165_OxqFAwLeLNs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 189,
+      "teacher_occ_feasible_points": 189
+    },
+    {
+      "sample_uid": "VIPSEG__1182_tNbLX2wX4Bs",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__1182_tNbLX2wX4Bs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 190,
+      "teacher_occ_feasible_points": 190
+    },
+    {
+      "sample_uid": "VIPSEG__151_BNFMbfOYTKg",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__151_BNFMbfOYTKg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 43,
+      "teacher_occ_feasible_points": 43
+    },
+    {
+      "sample_uid": "VIPSEG__154_6-pyJNd1h3I",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__154_6-pyJNd1h3I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 66,
+      "teacher_occ_feasible_points": 66
+    },
+    {
+      "sample_uid": "VIPSEG__231_-_w6ZFauJBI",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__231_-_w6ZFauJBI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__23_XmN5TD3AjMY",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__23_XmN5TD3AjMY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 1,
+      "teacher_occ_feasible_points": 1
+    },
+    {
+      "sample_uid": "VIPSEG__281__lcLNaySFDc",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__281__lcLNaySFDc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 439,
+      "teacher_occ_feasible_points": 439
+    },
+    {
+      "sample_uid": "VIPSEG__309_eqkqEkjLJ-A",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__309_eqkqEkjLJ-A.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 19,
+      "teacher_occ_feasible_points": 19
+    },
+    {
+      "sample_uid": "VIPSEG__349_Gh9yCX9KyrU",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__349_Gh9yCX9KyrU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 72,
+      "teacher_occ_feasible_points": 72
+    },
+    {
+      "sample_uid": "VIPSEG__667_lnly4FHs6OQ",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__667_lnly4FHs6OQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 102,
+      "teacher_occ_feasible_points": 102
+    },
+    {
+      "sample_uid": "VIPSEG__736_ML-JwZIxno0",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__736_ML-JwZIxno0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 29,
+      "teacher_occ_feasible_points": 29
+    },
+    {
+      "sample_uid": "VIPSEG__926_5QB2Z8AypBA",
+      "split": "train",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VIPSEG__926_5QB2Z8AypBA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 322,
+      "teacher_occ_feasible_points": 322
+    },
+    {
+      "sample_uid": "VSPW__1004_Qa0lNfaU4Bc",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1004_Qa0lNfaU4Bc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 16,
+      "teacher_occ_feasible_points": 16
+    },
+    {
+      "sample_uid": "VSPW__1006_XnpEQX8Gv70",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1006_XnpEQX8Gv70.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 179,
+      "teacher_occ_feasible_points": 179
+    },
+    {
+      "sample_uid": "VSPW__1008_cjuVdt1f04I",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1008_cjuVdt1f04I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 139,
+      "teacher_occ_feasible_points": 139
+    },
+    {
+      "sample_uid": "VSPW__1011_h5BpMSTlIqQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1011_h5BpMSTlIqQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 18,
+      "teacher_occ_feasible_points": 18
+    },
+    {
+      "sample_uid": "VSPW__1012_k_QytWMuWzA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1012_k_QytWMuWzA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 195,
+      "teacher_occ_feasible_points": 195
+    },
+    {
+      "sample_uid": "VSPW__1016_8J41CsGYhNI",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1016_8J41CsGYhNI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 11,
+      "teacher_occ_feasible_points": 11
+    },
+    {
+      "sample_uid": "VSPW__1025_9RzDloaFez4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1025_9RzDloaFez4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 176,
+      "teacher_occ_feasible_points": 176
+    },
+    {
+      "sample_uid": "VSPW__1026_6pDulyu9MFo",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1026_6pDulyu9MFo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 21,
+      "teacher_occ_feasible_points": 21
+    },
+    {
+      "sample_uid": "VSPW__1026_kJ_8F7YIEg4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1026_kJ_8F7YIEg4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 28,
+      "teacher_occ_feasible_points": 28
+    },
+    {
+      "sample_uid": "VSPW__1028_BH1XVabTjso",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1028_BH1XVabTjso.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 72,
+      "teacher_occ_feasible_points": 72
+    },
+    {
+      "sample_uid": "VSPW__1028_HAXrGoIRa04",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1028_HAXrGoIRa04.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 150,
+      "teacher_occ_feasible_points": 150
+    },
+    {
+      "sample_uid": "VSPW__1030_J_m6vc8gtvQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1030_J_m6vc8gtvQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 416,
+      "teacher_occ_feasible_points": 416
+    },
+    {
+      "sample_uid": "VSPW__1036_9maO6GinFQo",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1036_9maO6GinFQo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 94,
+      "teacher_occ_feasible_points": 94
+    },
+    {
+      "sample_uid": "VSPW__1047_CjUyIs7-IXQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1047_CjUyIs7-IXQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 5,
+      "teacher_occ_feasible_points": 5
+    },
+    {
+      "sample_uid": "VSPW__1051_X1hvRYpRFrE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1051_X1hvRYpRFrE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 153,
+      "teacher_occ_feasible_points": 153
+    },
+    {
+      "sample_uid": "VSPW__1053_MLWQ-qvra68",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1053_MLWQ-qvra68.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 80,
+      "teacher_occ_feasible_points": 80
+    },
+    {
+      "sample_uid": "VSPW__1060_gO8N3L_aERg",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1060_gO8N3L_aERg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 57,
+      "teacher_occ_feasible_points": 57
+    },
+    {
+      "sample_uid": "VSPW__106_pjt88qeIvRw",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__106_pjt88qeIvRw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 196,
+      "teacher_occ_feasible_points": 196
+    },
+    {
+      "sample_uid": "VSPW__1074_Ehrk9vBuK-M",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1074_Ehrk9vBuK-M.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 138,
+      "teacher_occ_feasible_points": 138
+    },
+    {
+      "sample_uid": "VSPW__1081_VOl-nOZsMGw",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1081_VOl-nOZsMGw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 248,
+      "teacher_occ_feasible_points": 248
+    },
+    {
+      "sample_uid": "VSPW__1092_EPWA4113pAs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1092_EPWA4113pAs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1094_LIlN4rSoU_w",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1094_LIlN4rSoU_w.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 19,
+      "teacher_occ_feasible_points": 19
+    },
+    {
+      "sample_uid": "VSPW__1096_sTtQpCDAZaQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1096_sTtQpCDAZaQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 13,
+      "teacher_occ_feasible_points": 13
+    },
+    {
+      "sample_uid": "VSPW__1106_2IAk1lm69Vs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1106_2IAk1lm69Vs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 40,
+      "teacher_occ_feasible_points": 40
+    },
+    {
+      "sample_uid": "VSPW__1118_hKjl0bkJinc",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1118_hKjl0bkJinc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 7,
+      "teacher_occ_feasible_points": 7
+    },
+    {
+      "sample_uid": "VSPW__1125_5Eplp7nV12E",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1125_5Eplp7nV12E.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 60,
+      "teacher_occ_feasible_points": 60
+    },
+    {
+      "sample_uid": "VSPW__1128_b-ECRS4R1Po",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1128_b-ECRS4R1Po.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 110,
+      "teacher_occ_feasible_points": 110
+    },
+    {
+      "sample_uid": "VSPW__1135_Pvi7mPwBX2Q",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1135_Pvi7mPwBX2Q.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 226,
+      "teacher_occ_feasible_points": 226
+    },
+    {
+      "sample_uid": "VSPW__1152_oKNDRYIPsYA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1152_oKNDRYIPsYA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 80,
+      "teacher_occ_feasible_points": 80
+    },
+    {
+      "sample_uid": "VSPW__1162_KXK_i6cPbxo",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1162_KXK_i6cPbxo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 66,
+      "teacher_occ_feasible_points": 66
+    },
+    {
+      "sample_uid": "VSPW__1162__nMoKHEY5xo",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1162__nMoKHEY5xo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 44,
+      "teacher_occ_feasible_points": 44
+    },
+    {
+      "sample_uid": "VSPW__1164_oVJv8pv9LpM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1164_oVJv8pv9LpM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 1,
+      "teacher_occ_feasible_points": 1
+    },
+    {
+      "sample_uid": "VSPW__1178_PN_oYWaoOiQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1178_PN_oYWaoOiQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 49,
+      "teacher_occ_feasible_points": 49
+    },
+    {
+      "sample_uid": "VSPW__1179_Vnb31Da9Ce8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1179_Vnb31Da9Ce8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 382,
+      "teacher_occ_feasible_points": 382
+    },
+    {
+      "sample_uid": "VSPW__1196_u_qGakf3KiM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1196_u_qGakf3KiM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1201_K9hItOvY_Vk",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1201_K9hItOvY_Vk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 31,
+      "teacher_occ_feasible_points": 31
+    },
+    {
+      "sample_uid": "VSPW__1202__hf6ke1-i3E",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1202__hf6ke1-i3E.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 449,
+      "teacher_occ_feasible_points": 449
+    },
+    {
+      "sample_uid": "VSPW__1209_2IV0A-me8xQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1209_2IV0A-me8xQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 82,
+      "teacher_occ_feasible_points": 82
+    },
+    {
+      "sample_uid": "VSPW__1217_REXpaiZ7a2w",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1217_REXpaiZ7a2w.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 171,
+      "teacher_occ_feasible_points": 171
+    },
+    {
+      "sample_uid": "VSPW__121_7wOrT_feKvA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__121_7wOrT_feKvA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 76,
+      "teacher_occ_feasible_points": 76
+    },
+    {
+      "sample_uid": "VSPW__1230_nBNHSOn7N1s",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1230_nBNHSOn7N1s.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 265,
+      "teacher_occ_feasible_points": 265
+    },
+    {
+      "sample_uid": "VSPW__1238_vVirreWp5IY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1238_vVirreWp5IY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 108,
+      "teacher_occ_feasible_points": 108
+    },
+    {
+      "sample_uid": "VSPW__1264_IKdAloAdk88",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1264_IKdAloAdk88.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 18,
+      "teacher_occ_feasible_points": 18
+    },
+    {
+      "sample_uid": "VSPW__1277_Bo6il9S6lZ8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1277_Bo6il9S6lZ8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 92,
+      "teacher_occ_feasible_points": 92
+    },
+    {
+      "sample_uid": "VSPW__127_ca6Al7-lY58",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__127_ca6Al7-lY58.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VSPW__1290_Dd-mg5yf8Sw",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1290_Dd-mg5yf8Sw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 67,
+      "teacher_occ_feasible_points": 67
+    },
+    {
+      "sample_uid": "VSPW__1298_d7DtRPgYwME",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1298_d7DtRPgYwME.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 199,
+      "teacher_occ_feasible_points": 199
+    },
+    {
+      "sample_uid": "VSPW__129_e-EieTvbejY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__129_e-EieTvbejY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 32,
+      "teacher_occ_feasible_points": 32
+    },
+    {
+      "sample_uid": "VSPW__1319_jvFGffS7y_w",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1319_jvFGffS7y_w.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 36,
+      "teacher_occ_feasible_points": 36
+    },
+    {
+      "sample_uid": "VSPW__1331_23U0NXBoOvE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1331_23U0NXBoOvE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 26,
+      "teacher_occ_feasible_points": 26
+    },
+    {
+      "sample_uid": "VSPW__1335_1yAV-oOwDV4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1335_1yAV-oOwDV4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 115,
+      "teacher_occ_feasible_points": 115
+    },
+    {
+      "sample_uid": "VSPW__1341_PBA2tEcYEv4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1341_PBA2tEcYEv4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 190,
+      "teacher_occ_feasible_points": 190
+    },
+    {
+      "sample_uid": "VSPW__135_2kypyIlTK-E",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__135_2kypyIlTK-E.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 28,
+      "teacher_occ_feasible_points": 28
+    },
+    {
+      "sample_uid": "VSPW__1383_T03V0aPyjSE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1383_T03V0aPyjSE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 52,
+      "teacher_occ_feasible_points": 52
+    },
+    {
+      "sample_uid": "VSPW__1392_-DBC8FtyMXM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1392_-DBC8FtyMXM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 61,
+      "teacher_occ_feasible_points": 61
+    },
+    {
+      "sample_uid": "VSPW__1393_4MMapKweKXU",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1393_4MMapKweKXU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 193,
+      "teacher_occ_feasible_points": 193
+    },
+    {
+      "sample_uid": "VSPW__1395_8oQ33qK_i50",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1395_8oQ33qK_i50.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 36,
+      "teacher_occ_feasible_points": 36
+    },
+    {
+      "sample_uid": "VSPW__1442_N4JxqDp6M9U",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1442_N4JxqDp6M9U.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 473,
+      "teacher_occ_feasible_points": 473
+    },
+    {
+      "sample_uid": "VSPW__1457_rXqT20FDaWM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1457_rXqT20FDaWM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 221,
+      "teacher_occ_feasible_points": 221
+    },
+    {
+      "sample_uid": "VSPW__1461_D-80uiCaqjA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1461_D-80uiCaqjA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 27,
+      "teacher_occ_feasible_points": 27
+    },
+    {
+      "sample_uid": "VSPW__1472_aYzLe5uem-w",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1472_aYzLe5uem-w.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 47,
+      "teacher_occ_feasible_points": 47
+    },
+    {
+      "sample_uid": "VSPW__147_SOcrEASUJ8I",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__147_SOcrEASUJ8I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 294,
+      "teacher_occ_feasible_points": 294
+    },
+    {
+      "sample_uid": "VSPW__1493_FTombmR7MnU",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1493_FTombmR7MnU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VSPW__1506_izpYELTU4MA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1506_izpYELTU4MA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 20,
+      "teacher_occ_feasible_points": 20
+    },
+    {
+      "sample_uid": "VSPW__1509_myyBqJqEa3g",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1509_myyBqJqEa3g.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 210,
+      "teacher_occ_feasible_points": 210
+    },
+    {
+      "sample_uid": "VSPW__1522_O77MMHpLXg4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1522_O77MMHpLXg4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 14,
+      "teacher_occ_feasible_points": 14
+    },
+    {
+      "sample_uid": "VSPW__1523_OpSbptALikU",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1523_OpSbptALikU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 29,
+      "teacher_occ_feasible_points": 29
+    },
+    {
+      "sample_uid": "VSPW__152_n53fjwqb2Pw",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__152_n53fjwqb2Pw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 405,
+      "teacher_occ_feasible_points": 405
+    },
+    {
+      "sample_uid": "VSPW__1535_BuyAqIWFwq4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1535_BuyAqIWFwq4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1538_xEAWPxAD7oI",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1538_xEAWPxAD7oI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 27,
+      "teacher_occ_feasible_points": 27
+    },
+    {
+      "sample_uid": "VSPW__153_fK0X7PqeNdo",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__153_fK0X7PqeNdo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 27,
+      "teacher_occ_feasible_points": 27
+    },
+    {
+      "sample_uid": "VSPW__1542_hxy-0zpJwxs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1542_hxy-0zpJwxs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 31,
+      "teacher_occ_feasible_points": 31
+    },
+    {
+      "sample_uid": "VSPW__1553_jsz4CQj244I",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1553_jsz4CQj244I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 22,
+      "teacher_occ_feasible_points": 22
+    },
+    {
+      "sample_uid": "VSPW__1556_1-sDefIglFM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1556_1-sDefIglFM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1557_4x4NbAC7NiY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1557_4x4NbAC7NiY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 188,
+      "teacher_occ_feasible_points": 188
+    },
+    {
+      "sample_uid": "VSPW__1559_ZetcUEMwkCI",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1559_ZetcUEMwkCI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 76,
+      "teacher_occ_feasible_points": 76
+    },
+    {
+      "sample_uid": "VSPW__1561_f5SxJNCdZD8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1561_f5SxJNCdZD8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 74,
+      "teacher_occ_feasible_points": 74
+    },
+    {
+      "sample_uid": "VSPW__1569_6K3MUNmP-2A",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1569_6K3MUNmP-2A.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 148,
+      "teacher_occ_feasible_points": 148
+    },
+    {
+      "sample_uid": "VSPW__156_PeX2e40Hyh8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__156_PeX2e40Hyh8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 212,
+      "teacher_occ_feasible_points": 212
+    },
+    {
+      "sample_uid": "VSPW__1583_wSOiJMYpfWY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1583_wSOiJMYpfWY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 100,
+      "teacher_occ_feasible_points": 100
+    },
+    {
+      "sample_uid": "VSPW__1586_5IH8x5327Y0",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1586_5IH8x5327Y0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 123,
+      "teacher_occ_feasible_points": 123
+    },
+    {
+      "sample_uid": "VSPW__1597_qNzFevk5FsE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1597_qNzFevk5FsE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 1,
+      "teacher_occ_feasible_points": 1
+    },
+    {
+      "sample_uid": "VSPW__159_Rf10ZV2dnuQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__159_Rf10ZV2dnuQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 71,
+      "teacher_occ_feasible_points": 71
+    },
+    {
+      "sample_uid": "VSPW__160_hM8mV2bKOZM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__160_hM8mV2bKOZM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 26,
+      "teacher_occ_feasible_points": 26
+    },
+    {
+      "sample_uid": "VSPW__1618_9dq7gftFjPk",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1618_9dq7gftFjPk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1638_MhoaeR88gm4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1638_MhoaeR88gm4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 60,
+      "teacher_occ_feasible_points": 60
+    },
+    {
+      "sample_uid": "VSPW__1639_NBBwEdGzcVs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1639_NBBwEdGzcVs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 53,
+      "teacher_occ_feasible_points": 53
+    },
+    {
+      "sample_uid": "VSPW__1642_SScKUXGIHpw",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1642_SScKUXGIHpw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 241,
+      "teacher_occ_feasible_points": 241
+    },
+    {
+      "sample_uid": "VSPW__1645_X0obOxBjJRE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1645_X0obOxBjJRE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 92,
+      "teacher_occ_feasible_points": 92
+    },
+    {
+      "sample_uid": "VSPW__1650__Lg_2DgXUwU",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1650__Lg_2DgXUwU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 243,
+      "teacher_occ_feasible_points": 243
+    },
+    {
+      "sample_uid": "VSPW__165_tOMF4HLBCA0",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__165_tOMF4HLBCA0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 46,
+      "teacher_occ_feasible_points": 46
+    },
+    {
+      "sample_uid": "VSPW__1664_6y3Gt6BiSZE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1664_6y3Gt6BiSZE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 339,
+      "teacher_occ_feasible_points": 339
+    },
+    {
+      "sample_uid": "VSPW__1666_9JM4jDqJZCs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1666_9JM4jDqJZCs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 29,
+      "teacher_occ_feasible_points": 29
+    },
+    {
+      "sample_uid": "VSPW__1671_J-O538BayZA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1671_J-O538BayZA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 18,
+      "teacher_occ_feasible_points": 18
+    },
+    {
+      "sample_uid": "VSPW__1672_PVbHJeHuBWA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1672_PVbHJeHuBWA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 303,
+      "teacher_occ_feasible_points": 303
+    },
+    {
+      "sample_uid": "VSPW__1678__qxxSOgqMpc",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1678__qxxSOgqMpc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VSPW__1679__tBH9SE-Kw8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1679__tBH9SE-Kw8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 17,
+      "teacher_occ_feasible_points": 17
+    },
+    {
+      "sample_uid": "VSPW__1681_acs0MKQHogk",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1681_acs0MKQHogk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 112,
+      "teacher_occ_feasible_points": 112
+    },
+    {
+      "sample_uid": "VSPW__1682_b4-lZLki2YQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1682_b4-lZLki2YQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 515,
+      "teacher_occ_feasible_points": 515
+    },
+    {
+      "sample_uid": "VSPW__1696_Lc4Bn1v8iZk",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1696_Lc4Bn1v8iZk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 22,
+      "teacher_occ_feasible_points": 22
+    },
+    {
+      "sample_uid": "VSPW__16_4HhR9D2Nq4Y",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__16_4HhR9D2Nq4Y.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 384,
+      "teacher_occ_feasible_points": 384
+    },
+    {
+      "sample_uid": "VSPW__1706_UYQWN_wA3Qs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1706_UYQWN_wA3Qs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 30,
+      "teacher_occ_feasible_points": 30
+    },
+    {
+      "sample_uid": "VSPW__1707_Uho01TNeKDs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1707_Uho01TNeKDs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VSPW__170_pbMEU4tp0S8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__170_pbMEU4tp0S8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 132,
+      "teacher_occ_feasible_points": 132
+    },
+    {
+      "sample_uid": "VSPW__171_p_djfxkj6GE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__171_p_djfxkj6GE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 284,
+      "teacher_occ_feasible_points": 284
+    },
+    {
+      "sample_uid": "VSPW__1736_Q-9dKcgIank",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1736_Q-9dKcgIank.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 88,
+      "teacher_occ_feasible_points": 88
+    },
+    {
+      "sample_uid": "VSPW__1739_drnBy71Sn2Q",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1739_drnBy71Sn2Q.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 104,
+      "teacher_occ_feasible_points": 104
+    },
+    {
+      "sample_uid": "VSPW__1772_KtiaEFjWf4g",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1772_KtiaEFjWf4g.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 45,
+      "teacher_occ_feasible_points": 45
+    },
+    {
+      "sample_uid": "VSPW__177_lCm15ZpJTRM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__177_lCm15ZpJTRM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 123,
+      "teacher_occ_feasible_points": 123
+    },
+    {
+      "sample_uid": "VSPW__178_qqFtth52adI",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__178_qqFtth52adI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 117,
+      "teacher_occ_feasible_points": 117
+    },
+    {
+      "sample_uid": "VSPW__1794_NaEStkkg8jY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1794_NaEStkkg8jY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 31,
+      "teacher_occ_feasible_points": 31
+    },
+    {
+      "sample_uid": "VSPW__1797_gUox9IVrmHw",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1797_gUox9IVrmHw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 137,
+      "teacher_occ_feasible_points": 137
+    },
+    {
+      "sample_uid": "VSPW__180_uEgVC7zO4rQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__180_uEgVC7zO4rQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VSPW__1811_1eA_hRPEjL8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1811_1eA_hRPEjL8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 230,
+      "teacher_occ_feasible_points": 230
+    },
+    {
+      "sample_uid": "VSPW__181_nWH7tzVtB2k",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__181_nWH7tzVtB2k.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 67,
+      "teacher_occ_feasible_points": 67
+    },
+    {
+      "sample_uid": "VSPW__1825_CjE3-Fd5HfQ",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1825_CjE3-Fd5HfQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 42,
+      "teacher_occ_feasible_points": 42
+    },
+    {
+      "sample_uid": "VSPW__182_7na_-LfGfpE",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__182_7na_-LfGfpE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 116,
+      "teacher_occ_feasible_points": 116
+    },
+    {
+      "sample_uid": "VSPW__1835_7Lg7V25b8Vk",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1835_7Lg7V25b8Vk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 299,
+      "teacher_occ_feasible_points": 299
+    },
+    {
+      "sample_uid": "VSPW__1840_Uw8eRSQB18U",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1840_Uw8eRSQB18U.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 91,
+      "teacher_occ_feasible_points": 91
+    },
+    {
+      "sample_uid": "VSPW__1843__toEoqgYZcU",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1843__toEoqgYZcU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 16,
+      "teacher_occ_feasible_points": 16
+    },
+    {
+      "sample_uid": "VSPW__1856_M7qcNQRZWL0",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1856_M7qcNQRZWL0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 63,
+      "teacher_occ_feasible_points": 63
+    },
+    {
+      "sample_uid": "VSPW__1895_n_NTF4JCd8Y",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1895_n_NTF4JCd8Y.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 185,
+      "teacher_occ_feasible_points": 185
+    },
+    {
+      "sample_uid": "VSPW__1897_392VbYfoeVc",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1897_392VbYfoeVc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 71,
+      "teacher_occ_feasible_points": 71
+    },
+    {
+      "sample_uid": "VSPW__1899_84IR-sL2iI0",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1899_84IR-sL2iI0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 23,
+      "teacher_occ_feasible_points": 23
+    },
+    {
+      "sample_uid": "VSPW__1910_NcnybUWNMq4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1910_NcnybUWNMq4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VSPW__1925_3toYsojQa6M",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1925_3toYsojQa6M.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__192_eYqOITSzne4",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__192_eYqOITSzne4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 654,
+      "teacher_occ_feasible_points": 654
+    },
+    {
+      "sample_uid": "VSPW__1944_3pJmVLQyd6U",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1944_3pJmVLQyd6U.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 45,
+      "teacher_occ_feasible_points": 45
+    },
+    {
+      "sample_uid": "VSPW__195_5VNJEE0FlS0",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__195_5VNJEE0FlS0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 264,
+      "teacher_occ_feasible_points": 264
+    },
+    {
+      "sample_uid": "VSPW__1968_f5Ov_n0crZ8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1968_f5Ov_n0crZ8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 290,
+      "teacher_occ_feasible_points": 290
+    },
+    {
+      "sample_uid": "VSPW__1987_R3TXgRVTt54",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1987_R3TXgRVTt54.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 105,
+      "teacher_occ_feasible_points": 105
+    },
+    {
+      "sample_uid": "VSPW__1993_pL1o2yMqt5k",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1993_pL1o2yMqt5k.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 9,
+      "teacher_occ_feasible_points": 9
+    },
+    {
+      "sample_uid": "VSPW__1997_ETV-qlamwAs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__1997_ETV-qlamwAs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 147,
+      "teacher_occ_feasible_points": 147
+    },
+    {
+      "sample_uid": "VSPW__2007_FeDljBKYJLA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2007_FeDljBKYJLA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 168,
+      "teacher_occ_feasible_points": 168
+    },
+    {
+      "sample_uid": "VSPW__2011_wK9XkeQoWU8",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2011_wK9XkeQoWU8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 207,
+      "teacher_occ_feasible_points": 207
+    },
+    {
+      "sample_uid": "VSPW__2015_DxRyVc1aF68",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2015_DxRyVc1aF68.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 402,
+      "teacher_occ_feasible_points": 402
+    },
+    {
+      "sample_uid": "VSPW__2053_iisVfWgUvYY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2053_iisVfWgUvYY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 101,
+      "teacher_occ_feasible_points": 101
+    },
+    {
+      "sample_uid": "VSPW__207_ofjmj0yjQEA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__207_ofjmj0yjQEA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 87,
+      "teacher_occ_feasible_points": 87
+    },
+    {
+      "sample_uid": "VSPW__2101_lnPyEyqvvzU",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2101_lnPyEyqvvzU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 214,
+      "teacher_occ_feasible_points": 214
+    },
+    {
+      "sample_uid": "VSPW__2120_vr04Dpk_O14",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2120_vr04Dpk_O14.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 92,
+      "teacher_occ_feasible_points": 92
+    },
+    {
+      "sample_uid": "VSPW__212_0vvyDjyJG18",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__212_0vvyDjyJG18.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 364,
+      "teacher_occ_feasible_points": 364
+    },
+    {
+      "sample_uid": "VSPW__2133_yzFxIryDJ9c",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2133_yzFxIryDJ9c.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 215,
+      "teacher_occ_feasible_points": 215
+    },
+    {
+      "sample_uid": "VSPW__2153_79MfrrGJsqg",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2153_79MfrrGJsqg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 131,
+      "teacher_occ_feasible_points": 131
+    },
+    {
+      "sample_uid": "VSPW__2165_k0X5Y4jbUTY",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2165_k0X5Y4jbUTY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VSPW__216_ln63SOGqztc",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__216_ln63SOGqztc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 16,
+      "teacher_occ_feasible_points": 16
+    },
+    {
+      "sample_uid": "VSPW__2187_2_OkSoW2tkA",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2187_2_OkSoW2tkA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 9,
+      "teacher_occ_feasible_points": 9
+    },
+    {
+      "sample_uid": "VSPW__2189_8jpjltOLbNs",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__2189_8jpjltOLbNs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 34,
+      "teacher_occ_feasible_points": 34
+    },
+    {
+      "sample_uid": "VSPW__322_rUWndTh2COM",
+      "split": "train",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/train/VSPW__322_rUWndTh2COM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 41,
+      "teacher_occ_feasible_points": 41
+    },
+    {
+      "sample_uid": "VIPSEG__1005_XVAsMTo04Js",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1005_XVAsMTo04Js.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 88,
+      "teacher_occ_feasible_points": 88
+    },
+    {
+      "sample_uid": "VIPSEG__1009_gqY_aDM_mmU",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1009_gqY_aDM_mmU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 345,
+      "teacher_occ_feasible_points": 345
+    },
+    {
+      "sample_uid": "VIPSEG__1019_OfFne6dmXvE",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1019_OfFne6dmXvE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 88,
+      "teacher_occ_feasible_points": 88
+    },
+    {
+      "sample_uid": "VIPSEG__1027_oXWlL7W5G90",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1027_oXWlL7W5G90.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 33,
+      "teacher_occ_feasible_points": 33
+    },
+    {
+      "sample_uid": "VIPSEG__1039_QZROp4t0doU",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1039_QZROp4t0doU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__103_5ZujNM_MouM",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__103_5ZujNM_MouM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 403,
+      "teacher_occ_feasible_points": 403
+    },
+    {
+      "sample_uid": "VIPSEG__1050_1flkZzBSzwY",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1050_1flkZzBSzwY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 351,
+      "teacher_occ_feasible_points": 351
+    },
+    {
+      "sample_uid": "VIPSEG__1051_X1hvRYpRFrE",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1051_X1hvRYpRFrE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 15,
+      "teacher_occ_feasible_points": 15
+    },
+    {
+      "sample_uid": "VIPSEG__1081_VOl-nOZsMGw",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1081_VOl-nOZsMGw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 299,
+      "teacher_occ_feasible_points": 299
+    },
+    {
+      "sample_uid": "VIPSEG__1082_vnHED7pGLsk",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1082_vnHED7pGLsk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VIPSEG__1083_GeoAbL3JXdQ",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1083_GeoAbL3JXdQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1089_o1Gqc8_dKew",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1089_o1Gqc8_dKew.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 82,
+      "teacher_occ_feasible_points": 82
+    },
+    {
+      "sample_uid": "VIPSEG__112_0OB2IP1enjU",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__112_0OB2IP1enjU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 92,
+      "teacher_occ_feasible_points": 92
+    },
+    {
+      "sample_uid": "VIPSEG__1163_ayuSarPEafI",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__1163_ayuSarPEafI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__127_-hIVCYO4C90",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__127_-hIVCYO4C90.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 196,
+      "teacher_occ_feasible_points": 196
+    },
+    {
+      "sample_uid": "VIPSEG__141_pdbnHgo554Q",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__141_pdbnHgo554Q.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 7,
+      "teacher_occ_feasible_points": 7
+    },
+    {
+      "sample_uid": "VIPSEG__184_qOLd2_WB7WA",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__184_qOLd2_WB7WA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 13,
+      "teacher_occ_feasible_points": 13
+    },
+    {
+      "sample_uid": "VIPSEG__258_xINh_0D2h_0",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__258_xINh_0D2h_0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 3,
+      "teacher_occ_feasible_points": 3
+    },
+    {
+      "sample_uid": "VIPSEG__291_4JldoYOiGok",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__291_4JldoYOiGok.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__322_rUWndTh2COM",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__322_rUWndTh2COM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 3,
+      "teacher_occ_feasible_points": 3
+    },
+    {
+      "sample_uid": "VIPSEG__358_t384CT-gxlA",
+      "split": "val",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VIPSEG__358_t384CT-gxlA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 7,
+      "teacher_occ_feasible_points": 7
+    },
+    {
+      "sample_uid": "VSPW__1058_9tvZOFs1xvc",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1058_9tvZOFs1xvc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 22,
+      "teacher_occ_feasible_points": 22
+    },
+    {
+      "sample_uid": "VSPW__1063_naPMk89Na88",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1063_naPMk89Na88.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 102,
+      "teacher_occ_feasible_points": 102
+    },
+    {
+      "sample_uid": "VSPW__1087_r63RNCRnF08",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1087_r63RNCRnF08.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 29,
+      "teacher_occ_feasible_points": 29
+    },
+    {
+      "sample_uid": "VSPW__1160_K1K-rHbdmHw",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1160_K1K-rHbdmHw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 135,
+      "teacher_occ_feasible_points": 135
+    },
+    {
+      "sample_uid": "VSPW__1166_hatpNWn0QRY",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1166_hatpNWn0QRY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 36,
+      "teacher_occ_feasible_points": 36
+    },
+    {
+      "sample_uid": "VSPW__1167_l3ULdXGVtW0",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1167_l3ULdXGVtW0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 201,
+      "teacher_occ_feasible_points": 201
+    },
+    {
+      "sample_uid": "VSPW__1176_i0goiI8AhPk",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1176_i0goiI8AhPk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1185_ifHRDBx-ctw",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1185_ifHRDBx-ctw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 56,
+      "teacher_occ_feasible_points": 56
+    },
+    {
+      "sample_uid": "VSPW__118_tQw4cJh7LVw",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__118_tQw4cJh7LVw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VSPW__1193_6cwPvrMW7tE",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1193_6cwPvrMW7tE.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 106,
+      "teacher_occ_feasible_points": 106
+    },
+    {
+      "sample_uid": "VSPW__1197_zZ4AG16A4E8",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1197_zZ4AG16A4E8.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 50,
+      "teacher_occ_feasible_points": 50
+    },
+    {
+      "sample_uid": "VSPW__1199_5qVaYyKYVNg",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1199_5qVaYyKYVNg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 62,
+      "teacher_occ_feasible_points": 62
+    },
+    {
+      "sample_uid": "VSPW__1208_1nNkCuPWNlg",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1208_1nNkCuPWNlg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 194,
+      "teacher_occ_feasible_points": 194
+    },
+    {
+      "sample_uid": "VSPW__1241_qYvEuwrSiXc",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1241_qYvEuwrSiXc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 78,
+      "teacher_occ_feasible_points": 78
+    },
+    {
+      "sample_uid": "VSPW__1259_nY3cWyZ3Z3U",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1259_nY3cWyZ3Z3U.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 29,
+      "teacher_occ_feasible_points": 29
+    },
+    {
+      "sample_uid": "VSPW__1264_sOecwdmrUBk",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1264_sOecwdmrUBk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 179,
+      "teacher_occ_feasible_points": 179
+    },
+    {
+      "sample_uid": "VSPW__1269_VEtgq6IeCWc",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1269_VEtgq6IeCWc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 45,
+      "teacher_occ_feasible_points": 45
+    },
+    {
+      "sample_uid": "VSPW__128_d0NUycUlLbA",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__128_d0NUycUlLbA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 3,
+      "teacher_occ_feasible_points": 3
+    },
+    {
+      "sample_uid": "VSPW__1297_X7S2nETEm7I",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1297_X7S2nETEm7I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 48,
+      "teacher_occ_feasible_points": 48
+    },
+    {
+      "sample_uid": "VSPW__1312_-CF5nP71J_I",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1312_-CF5nP71J_I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 212,
+      "teacher_occ_feasible_points": 212
+    },
+    {
+      "sample_uid": "VSPW__1369_n9fuw7yiLzM",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1369_n9fuw7yiLzM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 87,
+      "teacher_occ_feasible_points": 87
+    },
+    {
+      "sample_uid": "VSPW__1541_RnlPrdMoQ1Y",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1541_RnlPrdMoQ1Y.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 133,
+      "teacher_occ_feasible_points": 133
+    },
+    {
+      "sample_uid": "VSPW__159_ESPTaWnzmCA",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__159_ESPTaWnzmCA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 228,
+      "teacher_occ_feasible_points": 228
+    },
+    {
+      "sample_uid": "VSPW__15_ZiZqE1bZ8lU",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__15_ZiZqE1bZ8lU.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 17,
+      "teacher_occ_feasible_points": 17
+    },
+    {
+      "sample_uid": "VSPW__1691_md-DpQ4HX7Q",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1691_md-DpQ4HX7Q.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 50,
+      "teacher_occ_feasible_points": 50
+    },
+    {
+      "sample_uid": "VSPW__1764_axwN80e2aRI",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1764_axwN80e2aRI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 145,
+      "teacher_occ_feasible_points": 145
+    },
+    {
+      "sample_uid": "VSPW__1765_c7J_o-M_b7I",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1765_c7J_o-M_b7I.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 68,
+      "teacher_occ_feasible_points": 68
+    },
+    {
+      "sample_uid": "VSPW__1818__iGqYGM1OHc",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1818__iGqYGM1OHc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 87,
+      "teacher_occ_feasible_points": 87
+    },
+    {
+      "sample_uid": "VSPW__1892_Zyq_UpOQ9r4",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1892_Zyq_UpOQ9r4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 177,
+      "teacher_occ_feasible_points": 177
+    },
+    {
+      "sample_uid": "VSPW__1908_pYFJrXI1TL4",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1908_pYFJrXI1TL4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 67,
+      "teacher_occ_feasible_points": 67
+    },
+    {
+      "sample_uid": "VSPW__1979_74hAVniLnCQ",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__1979_74hAVniLnCQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 21,
+      "teacher_occ_feasible_points": 21
+    },
+    {
+      "sample_uid": "VSPW__201_MRpIKGg_Y3c",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__201_MRpIKGg_Y3c.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 39,
+      "teacher_occ_feasible_points": 39
+    },
+    {
+      "sample_uid": "VSPW__2043_-UirQbIF2sA",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__2043_-UirQbIF2sA.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VSPW__212_OroNM1E-A9c",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__212_OroNM1E-A9c.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 44,
+      "teacher_occ_feasible_points": 44
+    },
+    {
+      "sample_uid": "VSPW__2142_e3LcSq6ckXM",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__2142_e3LcSq6ckXM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 8,
+      "teacher_occ_feasible_points": 8
+    },
+    {
+      "sample_uid": "VSPW__93_qZmq-lc8lAg",
+      "split": "val",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/val/VSPW__93_qZmq-lc8lAg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1007_nnjklmugBfo",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1007_nnjklmugBfo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 238,
+      "teacher_occ_feasible_points": 238
+    },
+    {
+      "sample_uid": "VIPSEG__1015_-KqXcm-I2zY",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1015_-KqXcm-I2zY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 183,
+      "teacher_occ_feasible_points": 183
+    },
+    {
+      "sample_uid": "VIPSEG__1016_8J41CsGYhNI",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1016_8J41CsGYhNI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 5,
+      "teacher_occ_feasible_points": 5
+    },
+    {
+      "sample_uid": "VIPSEG__1031_xzuhRhedIM4",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1031_xzuhRhedIM4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 2,
+      "teacher_occ_feasible_points": 2
+    },
+    {
+      "sample_uid": "VIPSEG__1033_79Whs_1_nWs",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1033_79Whs_1_nWs.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 47,
+      "teacher_occ_feasible_points": 47
+    },
+    {
+      "sample_uid": "VIPSEG__1035_P1c2o2aupEc",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1035_P1c2o2aupEc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VIPSEG__1041_kIXALP9plU0",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1041_kIXALP9plU0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 128,
+      "teacher_occ_feasible_points": 128
+    },
+    {
+      "sample_uid": "VIPSEG__1064_ASPrLKRQayQ",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1064_ASPrLKRQayQ.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 144,
+      "teacher_occ_feasible_points": 144
+    },
+    {
+      "sample_uid": "VIPSEG__1070_n0CkTLKWDDk",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1070_n0CkTLKWDDk.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 135,
+      "teacher_occ_feasible_points": 135
+    },
+    {
+      "sample_uid": "VIPSEG__1074_eVW9GbCJ-pw",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1074_eVW9GbCJ-pw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 128,
+      "teacher_occ_feasible_points": 128
+    },
+    {
+      "sample_uid": "VIPSEG__107_tQA8kJXlTwc",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__107_tQA8kJXlTwc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 298,
+      "teacher_occ_feasible_points": 298
+    },
+    {
+      "sample_uid": "VIPSEG__1099_tiGU0PSP_lw",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1099_tiGU0PSP_lw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 88,
+      "teacher_occ_feasible_points": 88
+    },
+    {
+      "sample_uid": "VIPSEG__1105_OsZzzXVy3gI",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1105_OsZzzXVy3gI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 81,
+      "teacher_occ_feasible_points": 81
+    },
+    {
+      "sample_uid": "VIPSEG__1115_fSv8HIpvAcc",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__1115_fSv8HIpvAcc.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 118,
+      "teacher_occ_feasible_points": 118
+    },
+    {
+      "sample_uid": "VIPSEG__387_Estkfs5A7Gg",
+      "split": "test",
+      "dataset": "VIPSEG",
+      "identity_claim_allowed": true,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VIPSEG__387_Estkfs5A7Gg.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 266,
+      "teacher_occ_feasible_points": 266
+    },
+    {
+      "sample_uid": "VSPW__1031_xzuhRhedIM4",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1031_xzuhRhedIM4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 86,
+      "teacher_occ_feasible_points": 86
+    },
+    {
+      "sample_uid": "VSPW__1072_zvNEdUk5k0Q",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1072_zvNEdUk5k0Q.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 112,
+      "teacher_occ_feasible_points": 112
+    },
+    {
+      "sample_uid": "VSPW__1105_OsZzzXVy3gI",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1105_OsZzzXVy3gI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 56,
+      "teacher_occ_feasible_points": 56
+    },
+    {
+      "sample_uid": "VSPW__115_fdG4Jz1oY58",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__115_fdG4Jz1oY58.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 51,
+      "teacher_occ_feasible_points": 51
+    },
+    {
+      "sample_uid": "VSPW__1197_wh3SI2YeCMw",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1197_wh3SI2YeCMw.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 207,
+      "teacher_occ_feasible_points": 207
+    },
+    {
+      "sample_uid": "VSPW__131_eUiWFntut00",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__131_eUiWFntut00.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 103,
+      "teacher_occ_feasible_points": 103
+    },
+    {
+      "sample_uid": "VSPW__1326_VsX78k4m-bY",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1326_VsX78k4m-bY.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 231,
+      "teacher_occ_feasible_points": 231
+    },
+    {
+      "sample_uid": "VSPW__1328_fR3s12FZ9kI",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1328_fR3s12FZ9kI.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 0,
+      "teacher_occ_feasible_points": 0
+    },
+    {
+      "sample_uid": "VSPW__1548_aOoMYOQ22f0",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1548_aOoMYOQ22f0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 75,
+      "teacher_occ_feasible_points": 75
+    },
+    {
+      "sample_uid": "VSPW__1579_e9uO2pZ1A5A",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1579_e9uO2pZ1A5A.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 61,
+      "teacher_occ_feasible_points": 61
+    },
+    {
+      "sample_uid": "VSPW__1598_-_WtbzzO6J0",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1598_-_WtbzzO6J0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 12,
+      "teacher_occ_feasible_points": 12
+    },
+    {
+      "sample_uid": "VSPW__15_3oTBlynptOo",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__15_3oTBlynptOo.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 639,
+      "teacher_occ_feasible_points": 639
+    },
+    {
+      "sample_uid": "VSPW__1652_hrp1smAtr4E",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1652_hrp1smAtr4E.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 90,
+      "teacher_occ_feasible_points": 90
+    },
+    {
+      "sample_uid": "VSPW__1660_-pPlf2Y_6-g",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1660_-pPlf2Y_6-g.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 70,
+      "teacher_occ_feasible_points": 70
+    },
+    {
+      "sample_uid": "VSPW__174_kchyC0HHre0",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__174_kchyC0HHre0.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 28,
+      "teacher_occ_feasible_points": 28
+    },
+    {
+      "sample_uid": "VSPW__1844_evC_CSrDRws",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1844_evC_CSrDRws.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 366,
+      "teacher_occ_feasible_points": 366
+    },
+    {
+      "sample_uid": "VSPW__1947_8fYGpfNxl5s",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__1947_8fYGpfNxl5s.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 13,
+      "teacher_occ_feasible_points": 13
+    },
+    {
+      "sample_uid": "VSPW__2040_ZHzN60c54h4",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__2040_ZHzN60c54h4.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 636,
+      "teacher_occ_feasible_points": 636
+    },
+    {
+      "sample_uid": "VSPW__2095_DR9Ar_MjnXM",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__2095_DR9Ar_MjnXM.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 60,
+      "teacher_occ_feasible_points": 60
+    },
+    {
+      "sample_uid": "VSPW__214_bnbqPJpywls",
+      "split": "test",
+      "dataset": "VSPW",
+      "identity_claim_allowed": false,
+      "override_path": "outputs/cache/stwm_ostf_v36_6_occlusion_reappear_identity_target_overrides/M128_H32/test/VSPW__214_bnbqPJpywls.npz",
+      "original_predicted_occ_points": 0,
+      "teacher_occ_points": 157,
+      "teacher_occ_feasible_points": 157
+    }
+  ]
+}

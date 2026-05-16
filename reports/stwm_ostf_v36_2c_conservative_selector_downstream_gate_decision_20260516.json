@@ -1,0 +1,49 @@
+{
+  "generated_at_utc": "2026-05-16T11:02:38.051975+00:00",
+  "conservative_selector_downstream_gate_eval_done": true,
+  "trace_copy_default_selector_passed": true,
+  "semantic_three_seed_passed": true,
+  "stable_preservation": true,
+  "identity_real_instance_three_seed_passed": true,
+  "identity_pseudo_targets_excluded_from_claim": true,
+  "pseudo_identity_diagnostic_sample_count_val": 36,
+  "pseudo_identity_diagnostic_sample_count_test": 20,
+  "selector_semantic_metrics": {
+    "semantic_changed_balanced_accuracy_val_mean": 0.5878541656354189,
+    "semantic_changed_balanced_accuracy_test_mean": 0.5927800158523552,
+    "semantic_hard_balanced_accuracy_val_mean": 0.5954859163145706,
+    "semantic_hard_balanced_accuracy_test_mean": 0.5890257773352886,
+    "semantic_uncertainty_balanced_accuracy_val_mean": 0.6327205441201175,
+    "semantic_uncertainty_balanced_accuracy_test_mean": 0.5997945470101568
+  },
+  "selector_identity_test_means": {
+    "identity_retrieval_exclude_same_point_top1": 0.9972222222222221,
+    "identity_retrieval_same_frame_top1": 0.9972222222222221,
+    "identity_retrieval_instance_pooled_top1": 0.94921875,
+    "identity_confuser_avoidance_top1": 0.9970051340559042,
+    "occlusion_reappear_retrieval_top1": 0.0,
+    "trajectory_crossing_retrieval_top1": 0.9961002785515319
+  },
+  "selector_minus_strongest_prior_semantic_deltas": {
+    "semantic_changed_balanced_accuracy_val_selector_minus_prior": 0.0014009189851114101,
+    "semantic_changed_balanced_accuracy_test_selector_minus_prior": 0.01636595163992738,
+    "semantic_hard_balanced_accuracy_val_selector_minus_prior": 0.023886821553665838,
+    "semantic_hard_balanced_accuracy_test_selector_minus_prior": 0.03734254190147501,
+    "semantic_uncertainty_balanced_accuracy_val_selector_minus_prior": 0.05214732687308854,
+    "semantic_uncertainty_balanced_accuracy_test_selector_minus_prior": 0.04424805292242773
+  },
+  "selector_minus_v36_semantic_deltas": {
+    "semantic_changed_balanced_accuracy_val_selector_minus_v36": 0.0025387775572638382,
+    "semantic_changed_balanced_accuracy_test_selector_minus_v36": 0.02690136965344725,
+    "semantic_hard_balanced_accuracy_val_selector_minus_v36": 0.0070956427585887605,
+    "semantic_hard_balanced_accuracy_test_selector_minus_v36": 0.01923455340287339,
+    "semantic_uncertainty_balanced_accuracy_val_selector_minus_v36": 0.02006941992375122,
+    "semantic_uncertainty_balanced_accuracy_test_selector_minus_v36": 0.030253000628656213
+  },
+  "downstream_positive_causal_trace": true,
+  "secondary_gate_passed": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "recommended_next_step": "run_v36_3_full_325_causal_benchmark_rerun",
+  "中文结论": "V36.2c conservative selector 同时满足 trace no-harm 与 downstream secondary gate；可以进入 V36.3 full causal benchmark rerun。"
+}

@@ -1,0 +1,92 @@
+{
+  "generated_at_utc": "2026-05-16T12:44:41.940815+00:00",
+  "current_completed_version": "V36.5",
+  "reviewer_risk_audit_done": true,
+  "causal_failure_atlas_done": true,
+  "atlas_ready": true,
+  "v36_3_causal_claim_allowed": true,
+  "full_cvpr_scale_claim_allowed": false,
+  "claim_table_path": "reports/stwm_ostf_v36_4_machine_checkable_claim_table_20260516.json",
+  "claim_table_claim_count": 8,
+  "reviewer_risks": [
+    {
+      "risk_id": "future_trace_teacher_upper_bound_confusion",
+      "status": "controlled_by_claim_boundary",
+      "evidence": "reports/stwm_ostf_v36_4_causal_claim_boundary_and_packaging_audit_20260516.json",
+      "说明": "V35.49 已被明确改名为 teacher-trace upper-bound；V36.3 才是 causal past-only benchmark。"
+    },
+    {
+      "risk_id": "occlusion_reappear_identity_failure",
+      "status": "hard_risk",
+      "evidence": "reports/stwm_ostf_v36_3_full_325_causal_benchmark_rerun_decision_20260516.json",
+      "metric": "occlusion_reappear_retrieval_top1",
+      "value": 0.0,
+      "说明": "该项为 0.0，不能 claim occlusion/reappear identity solved；下一步应做 occlusion-aware identity memory/reassociation 修复。"
+    },
+    {
+      "risk_id": "semantic_medium_margin",
+      "status": "needs_failure_boundary_explanation",
+      "evidence": "reports/stwm_ostf_v36_5_causal_failure_atlas_eval_20260516.json",
+      "metric": {
+        "semantic_changed_test": 0.5927800158523552,
+        "semantic_hard_test": 0.5890257773352886,
+        "semantic_uncertainty_test": 0.5997945470101568
+      },
+      "说明": "semantic state field 已过三 seed，但分数不是压倒性，需要以类别图谱解释 high-motion/VIPSeg/changed/hard 边界。"
+    },
+    {
+      "risk_id": "teacher_trace_upper_bound_gap",
+      "status": "must_report",
+      "evidence": "reports/stwm_ostf_v36_3_full_325_causal_benchmark_rerun_decision_20260516.json",
+      "metric": {
+        "semantic_changed_balanced_accuracy_val_mean_gap_vs_teacher_trace_upper_bound": -0.04099696628994509,
+        "semantic_changed_balanced_accuracy_test_mean_gap_vs_teacher_trace_upper_bound": -0.04027066524620149,
+        "semantic_hard_balanced_accuracy_val_mean_gap_vs_teacher_trace_upper_bound": -0.06348623230830186,
+        "semantic_hard_balanced_accuracy_test_mean_gap_vs_teacher_trace_upper_bound": -0.04070665631791304,
+        "semantic_uncertainty_balanced_accuracy_val_mean_gap_vs_teacher_trace_upper_bound": -0.04040068185853296,
+        "semantic_uncertainty_balanced_accuracy_test_mean_gap_vs_teacher_trace_upper_bound": -0.05871949673754906
+      },
+      "说明": "必须报告 V36 causal predicted trace 相对 V35.49 teacher-trace upper-bound 的 gap；不能把 upper-bound 当因果结果。"
+    },
+    {
+      "risk_id": "pseudo_identity_overclaim",
+      "status": "controlled",
+      "evidence": "reports/stwm_ostf_v36_3_full_325_causal_benchmark_rerun_decision_20260516.json",
+      "metric": "identity_pseudo_targets_excluded_from_claim",
+      "value": true,
+      "说明": "VSPW pseudo identity 仍 diagnostic-only，不进入 identity claim gate。"
+    }
+  ],
+  "category_risk_rows": [
+    {
+      "source": "semantic_fragile_categories_test",
+      "split": "test",
+      "category": "dataset_vipseg",
+      "sample_count": 15,
+      "risk_metrics": {
+        "semantic_uncertainty": 0.5489189011960419
+      }
+    },
+    {
+      "source": "semantic_fragile_categories_test",
+      "split": "test",
+      "category": "real_instance_identity",
+      "sample_count": 15,
+      "risk_metrics": {
+        "semantic_uncertainty": 0.5489189011960419
+      }
+    }
+  ],
+  "occlusion_reappear_identity_top1": 0.0,
+  "occlusion_reappear_identity_hard_risk": true,
+  "semantic_gap_vs_teacher_trace_upper_bound": {
+    "semantic_changed_balanced_accuracy_val_mean_gap_vs_teacher_trace_upper_bound": -0.04099696628994509,
+    "semantic_changed_balanced_accuracy_test_mean_gap_vs_teacher_trace_upper_bound": -0.04027066524620149,
+    "semantic_hard_balanced_accuracy_val_mean_gap_vs_teacher_trace_upper_bound": -0.06348623230830186,
+    "semantic_hard_balanced_accuracy_test_mean_gap_vs_teacher_trace_upper_bound": -0.04070665631791304,
+    "semantic_uncertainty_balanced_accuracy_val_mean_gap_vs_teacher_trace_upper_bound": -0.04040068185853296,
+    "semantic_uncertainty_balanced_accuracy_test_mean_gap_vs_teacher_trace_upper_bound": -0.05871949673754906
+  },
+  "recommended_next_step": "fix_occlusion_reappear_identity_field",
+  "中文总结": "V36.5 reviewer-risk audit 确认：V36.3 causal M128/H32 full-325 benchmark claim 可以保留，但不能升级为 full CVPR-scale。最明确的下一步是修 occlusion/reappear identity field，而不是继续扩大 claim 或训练 V34 路线。"
+}

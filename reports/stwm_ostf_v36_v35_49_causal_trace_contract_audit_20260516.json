@@ -1,0 +1,210 @@
+{
+  "generated_at_utc": "2026-05-16T09:16:28.118041+00:00",
+  "v35_49_causal_trace_contract_audit_done": true,
+  "frontend_reads_future_frames": true,
+  "cotracker_offline_sees_future_frames": true,
+  "future_points_from_full_clip_frontend": true,
+  "semantic_input_contains_future_trace": true,
+  "identity_input_contains_future_trace": true,
+  "v35_49_is_causal_past_only_world_model": false,
+  "v35_49_is_teacher_trace_upper_bound": true,
+  "claim_boundary_requires_rename": true,
+  "v35_49_previous_claim_field": {
+    "m128_h32_full_325_video_system_benchmark_claim_allowed": true,
+    "full_cvpr_scale_claim_allowed": false
+  },
+  "suggested_renamed_claim": {
+    "m128_h32_full_325_teacher_trace_closure_claim_allowed": true,
+    "m128_h32_causal_video_world_model_claim_allowed": false
+  },
+  "source_reports": {
+    "v35_49_decision": "reports/stwm_ostf_v35_49_full_325_raw_video_closure_decision_20260516.json",
+    "v35_49_eval_summary": "reports/stwm_ostf_v35_49_full_325_raw_video_closure_benchmark_eval_summary_20260516.json"
+  },
+  "slice_probe": {
+    "slice_present": true,
+    "sample_path": "outputs/cache/stwm_ostf_v35_49_full_325_rerun_unified_slice/M128_H32/test/VIPSEG__1007_nnjklmugBfo.npz",
+    "has_future_points": true,
+    "has_future_vis": true,
+    "has_future_conf": true,
+    "identity_feature_dim": 908,
+    "future_points_shape": [
+      1024,
+      32,
+      2
+    ],
+    "video_trace_source_npz": "outputs/cache/stwm_ostf_v35_49_full_325_raw_video_frontend_rerun/M128_H32/test/VIPSEG__1007_nnjklmugBfo.npz"
+  },
+  "exact_code_locations": {
+    "frontend_full_clip": [
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 124,
+        "text": "def _frame_sequence(anchor: Path, total: int = 16, preferred_query_frame: int = 7) -> tuple[list[Path] | None, int | None, str | None]:"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 140,
+        "text": "start = idx - preferred_query_frame"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 143,
+        "text": "return frames[start:end], preferred_query_frame, None"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 271,
+        "text": "frames, query_frame, frame_err = _frame_sequence(anchor, total=args.obs_len + args.horizon, preferred_query_frame=args.obs_len - 1)"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 284,
+        "text": "queries[:, 0] = float(query_frame)"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 298,
+        "text": "tr = tr.reshape(args.obs_len + args.horizon, obj_count, args.m, 2).transpose(1, 2, 0, 3)"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 299,
+        "text": "vis = vis.reshape(args.obs_len + args.horizon, obj_count, args.m).transpose(1, 2, 0)"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 310,
+        "text": "query_frame=np.asarray(query_frame, dtype=np.int32),"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 327,
+        "text": "teacher_uses_full_obs_future_clip_as_target=np.asarray(True),"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 339,
+        "text": "\"query_frame\": int(query_frame),"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 383,
+        "text": "from cotracker.predictor import CoTrackerPredictor  # type: ignore"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 386,
+        "text": "model = CoTrackerPredictor(checkpoint=str(ckpt), offline=True, window_len=60).to(device).eval()"
+      },
+      {
+        "path": "code/stwm/tools/run_cotracker_object_dense_teacher_v15c_20260502.py",
+        "line": 440,
+        "text": "\"teacher_uses_full_obs_future_clip_as_target\": True,"
+      }
+    ],
+    "rerun_wrapper": [
+      {
+        "path": "code/stwm/tools/run_ostf_v35_49_full_325_raw_video_frontend_rerun_20260516.py",
+        "line": 16,
+        "text": "base.MANIFEST = ROOT / \"outputs/cache/stwm_ostf_v35_49_full_325_raw_video_closure_manifest/manifest.json\""
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_49_full_325_raw_video_frontend_rerun_20260516.py",
+        "line": 17,
+        "text": "base.OUT_ROOT = ROOT / \"outputs/cache/stwm_ostf_v35_49_full_325_raw_video_frontend_rerun/M128_H32\""
+      }
+    ],
+    "slice_future_trace": [
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 39,
+        "text": "future_crossing_pair,"
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 114,
+        "text": "def trace_features_from_payload(payload: dict[str, np.ndarray]) -> np.ndarray:"
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 116,
+        "text": "fut = np.asarray(payload[\"future_points\"], dtype=np.float32)"
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 306,
+        "text": "payload[\"future_points\"] = tracks[:, :, obs_len : obs_len + horizon].reshape(point_n, horizon, 2).astype(np.float32)"
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 314,
+        "text": "payload[\"identity_identity_input_features\"] = np.concatenate("
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 315,
+        "text": "[meas, one_hot_semantic_from_payload(payload), trace_features_from_payload(payload)],"
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 327,
+        "text": "crossing = future_crossing_pair(payload[\"future_points\"], inst)"
+      },
+      {
+        "path": "code/stwm/tools/run_ostf_v35_35_raw_video_frontend_rerun_smoke_20260516.py",
+        "line": 397,
+        "text": "\"x\": np.asarray(z[\"identity_identity_input_features\"], dtype=np.float32),"
+      }
+    ],
+    "semantic_future_features": [
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 93,
+        "text": "future_points = np.asarray(z[\"future_points\"], dtype=np.float32)"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 94,
+        "text": "future_vis = np.asarray(z[\"future_vis\"], dtype=np.float32)"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 95,
+        "text": "future_conf = np.asarray(z[\"future_conf\"], dtype=np.float32)"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 130,
+        "text": "fut_disp = future_points - obs_points[:, -1:, :]"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 131,
+        "text": "fut_step = np.concatenate("
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 133,
+        "text": "fut_disp,"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 134,
+        "text": "future_vis[:, :, None],"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 135,
+        "text": "future_conf[:, :, None],"
+      },
+      {
+        "path": "code/stwm/tools/eval_ostf_v35_14_mask_video_semantic_state_predictability_20260515.py",
+        "line": 140,
+        "text": "feat = np.concatenate([np.repeat(base[:, None, :], h, axis=1), fut_step], axis=-1)"
+      }
+    ]
+  },
+  "recommended_fix": "build_v36_past_only_observed_trace_then_run_frozen_v30_rollout",
+  "中文总结": "V35.49 的 raw-video rerun 是 full-clip CoTracker teacher trace closure：frontend 读取 obs+future 帧，future_points 来自 full-clip tracks，并且 semantic/identity 输入特征会使用 future trace 字段。因此 V35.49 只能标注为 teacher-trace upper-bound，不是严格因果 past-only world model。"
+}

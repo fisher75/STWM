@@ -1,0 +1,26 @@
+{
+  "generated_at_utc": "2026-05-16T10:47:02.619845+00:00",
+  "trace_rollout_failure_atlas_done": true,
+  "strongest_prior_downstream_slice_built": true,
+  "strongest_prior_downstream_eval_done": true,
+  "strongest_prior_name": "last_observed_copy",
+  "v30_beats_strongest_prior_trace_ADE": false,
+  "v30_minus_strongest_prior_ADE": 10.000746079679544,
+  "v30_sample_win_rate_vs_sample_strongest_prior": 0.1076923076923077,
+  "v36_v30_downstream_beats_strongest_prior_semantic": true,
+  "v36_v30_downstream_beats_strongest_prior_identity": true,
+  "v36_v30_downstream_utility_beats_strongest_prior_slice": true,
+  "semantic_three_seed_passed_on_strongest_prior_slice": true,
+  "identity_real_instance_three_seed_passed_on_strongest_prior_slice": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "m128_h32_causal_video_world_model_claim_allowed": false,
+  "full_cvpr_scale_claim_allowed": false,
+  "recommended_next_step": "run_v36_2_frozen_v30_prior_selector_calibration",
+  "paths": {
+    "trace_failure_atlas": "reports/stwm_ostf_v36_1_trace_rollout_failure_atlas_20260516.json",
+    "strongest_prior_slice_build": "reports/stwm_ostf_v36_1_strongest_prior_downstream_slice_build_20260516.json",
+    "strongest_prior_downstream_eval": "reports/stwm_ostf_v36_1_strongest_prior_downstream_baseline_decision_20260516.json"
+  },
+  "中文结论": "V36.1 说明 V30 trace ADE 虽未赢 strongest prior，但 downstream utility 仍有机会；下一步应做 frozen V30 prior selector/calibration。"
+}

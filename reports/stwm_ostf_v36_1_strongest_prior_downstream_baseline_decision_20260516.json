@@ -1,0 +1,59 @@
+{
+  "generated_at_utc": "2026-05-16T10:46:47.866040+00:00",
+  "strongest_prior_downstream_eval_done": true,
+  "strongest_prior_name": "last_observed_copy",
+  "slice_root": "outputs/cache/stwm_ostf_v36_1_strongest_prior_downstream_slice/M128_H32",
+  "semantic_three_seed_passed": true,
+  "stable_preservation": true,
+  "identity_real_instance_three_seed_passed": true,
+  "identity_pseudo_targets_excluded_from_claim": true,
+  "pseudo_identity_diagnostic_sample_count_val": 36,
+  "pseudo_identity_diagnostic_sample_count_test": 20,
+  "prior_semantic_metrics": {
+    "semantic_changed_balanced_accuracy_val_mean": 0.5864532466503075,
+    "semantic_changed_balanced_accuracy_test_mean": 0.5764140642124278,
+    "semantic_hard_balanced_accuracy_val_mean": 0.5715990947609048,
+    "semantic_hard_balanced_accuracy_test_mean": 0.5516832354338136,
+    "semantic_uncertainty_balanced_accuracy_val_mean": 0.5805732172470289,
+    "semantic_uncertainty_balanced_accuracy_test_mean": 0.555546494087729
+  },
+  "prior_identity_test_means": {
+    "identity_retrieval_exclude_same_point_top1": 0.9971354166666666,
+    "identity_retrieval_same_frame_top1": 0.9971354166666666,
+    "identity_retrieval_instance_pooled_top1": 0.9381076388888889,
+    "identity_confuser_avoidance_top1": 0.996957596501236,
+    "occlusion_reappear_retrieval_top1": 0.0,
+    "trajectory_crossing_retrieval_top1": 0.9960449882585589
+  },
+  "v36_v30_identity_test_means": {
+    "identity_retrieval_exclude_same_point_top1": 0.9971354166666666,
+    "identity_retrieval_same_frame_top1": 0.9971354166666666,
+    "identity_retrieval_instance_pooled_top1": 0.9472222222222223,
+    "identity_confuser_avoidance_top1": 0.9969100589465678,
+    "occlusion_reappear_retrieval_top1": 0.0,
+    "trajectory_crossing_retrieval_top1": 0.9962533863623264
+  },
+  "semantic_v36_minus_prior_deltas": {
+    "semantic_changed_balanced_accuracy_val_v36_minus_prior": -0.0011378585721524281,
+    "semantic_changed_balanced_accuracy_test_v36_minus_prior": -0.01053541801351987,
+    "semantic_hard_balanced_accuracy_val_v36_minus_prior": 0.016791178795077077,
+    "semantic_hard_balanced_accuracy_test_v36_minus_prior": 0.018107988498601624,
+    "semantic_uncertainty_balanced_accuracy_val_v36_minus_prior": 0.03207790694933732,
+    "semantic_uncertainty_balanced_accuracy_test_v36_minus_prior": 0.013995052293771515
+  },
+  "identity_v36_minus_prior_deltas": {
+    "identity_retrieval_exclude_same_point_top1_test_v36_minus_prior": 0.0,
+    "identity_retrieval_same_frame_top1_test_v36_minus_prior": 0.0,
+    "identity_retrieval_instance_pooled_top1_test_v36_minus_prior": 0.00911458333333337,
+    "identity_confuser_avoidance_top1_test_v36_minus_prior": -4.7537554668242166e-05,
+    "occlusion_reappear_retrieval_top1_test_v36_minus_prior": 0.0,
+    "trajectory_crossing_retrieval_top1_test_v36_minus_prior": 0.00020839810376749313
+  },
+  "v36_v30_downstream_beats_strongest_prior_semantic": true,
+  "v36_v30_downstream_beats_strongest_prior_identity": true,
+  "v36_v30_downstream_utility_beats_strongest_prior_slice": true,
+  "future_leakage_detected": false,
+  "trajectory_degraded": false,
+  "recommended_next_step": "run_v36_2_frozen_v30_prior_selector_calibration",
+  "中文结论": "V36 V30 predicted trace 虽然 ADE 输给 strongest prior，但 downstream semantic/identity utility 至少有一条线优于 strongest-prior slice；下一步应做 frozen V30 prior selector/calibration。"
+}
